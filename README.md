@@ -1,0 +1,2 @@
+# mintlify
+mintlify lemlist repo
