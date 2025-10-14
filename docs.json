@@ -1,14 +1,83 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Lemlist Developer Docs",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#316bff",
+    "light": "#316bff",
+    "dark": "#316bff"
   },
-  "favicon": "/favicon.svg",
+  "favicon": {
+    "light": "/favicon.ico",
+    "dark": "/favicon.ico"
+  },
+  "description": "Lemlist API documentation to help you integrate and automate your email outreach.",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "thumbnails": {
+    "appearance": "dark",
+    "background": "/thumbnails/dark.jpg"
+  },
+  "styling": {
+    "eyebrows": "section",
+    "codeblocks": {
+      "theme": "dracula"
+    }
+  },
+  "icons": {
+    "library": "fontawesome"
+  },
+  "fonts": {
+    "family": "Inter",
+    "weight": 500
+  },
+  "appearance": {
+    "default": "system"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "https://lemlist.typeform.com/to/mfVlkyGf"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Open App",
+      "href": "https://app.lemlist.com"
+    }
+  },
   "navigation": {
+    "global": {
+      "versions": [
+        {
+          "version": "v2",
+          "default": true,
+          "hidden": false,
+          "href": "https://localhost:3000/"
+        },
+        {
+          "version": "v1",
+          "default": false,
+          "hidden": false,
+          "href": "https://developer.lemlist.com/"
+        }
+      ],
+      "anchors": [
+        {
+          "anchor": "Academy",
+          "href": "https://www.lemlist.com/academy?r=0",
+          "icon": "graduation-cap"
+        },
+        {
+          "anchor": "Blog",
+          "href": "https://www.lemlist.com/blog?r=0",
+          "icon": "newspaper"
+        }
+      ]
+    },
     "tabs": [
       {
         "tab": "Guides",
@@ -48,75 +117,290 @@
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "API Reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Getting started",
             "pages": [
               "api-reference/introduction"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Objects",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Endpoints",
+            "expanded": false,
+            "pages": [
+              {
+                "group": "Activities",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/activities/retrieve-activities"
+                ]
+              },
+              {
+                "group": "Campaigns",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/campaigns/create-a-new-campaign",
+                  "api-reference/endpoints/campaigns/export-campaign-leads",
+                  "api-reference/endpoints/campaigns/export-campaign-send-status-by-email",
+                  "api-reference/endpoints/campaigns/get-status-of-campaign-export",
+                  "api-reference/endpoints/campaigns/pause-a-campaign",
+                  "api-reference/endpoints/campaigns/reports",
+                  "api-reference/endpoints/campaigns/retrieve-all-campaigns",
+                  "api-reference/endpoints/campaigns/retrieve-one-campaigns",
+                  "api-reference/endpoints/campaigns/start-an-export-campaign-stats",
+                  "api-reference/endpoints/campaigns/update-campaign-configuration"
+                ]
+              },
+              {
+                "group": "Companies",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/companies/create-company-note",
+                  "api-reference/endpoints/companies/retrieve-companies",
+                  "api-reference/endpoints/companies/retrieve-company-notes"
+                ]
+              },
+              {
+                "group": "Contacts",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/contacts/get-contact",
+                  "api-reference/endpoints/contacts/get-contacts"
+                ]
+              },
+              {
+                "group": "Enrich",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/enrich/bulk-enrichments",
+                  "api-reference/endpoints/enrich/enrich",
+                  "api-reference/endpoints/enrich/enrich-1",
+                  "api-reference/endpoints/enrich/enrich-lead"
+                ]
+              },
+              {
+                "group": "Inbox",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/inbox/contact-messages",
+                  "api-reference/endpoints/inbox/retrieve-inbox-list",
+                  "api-reference/endpoints/inbox/send-email",
+                  "api-reference/endpoints/inbox/send-linkedin-message",
+                  "api-reference/endpoints/inbox/send-whatsapp-message"
+                ]
+              },
+              {
+                "group": "Leads",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/leads/add-variables",
+                  "api-reference/endpoints/leads/create-lead-in-a-campaign",
+                  "api-reference/endpoints/leads/delete-lead",
+                  "api-reference/endpoints/leads/delete-variables",
+                  "api-reference/endpoints/leads/get-crm-filters",
+                  "api-reference/endpoints/leads/import-leads-from-crm",
+                  "api-reference/endpoints/leads/mark-a-lead-as-interested",
+                  "api-reference/endpoints/leads/mark-a-lead-as-interested-in-one-campaign",
+                  "api-reference/endpoints/leads/mark-a-lead-as-not-interested",
+                  "api-reference/endpoints/leads/mark-a-lead-as-not-interested-in-one-campaign",
+                  "api-reference/endpoints/leads/pause-a-lead",
+                  "api-reference/endpoints/leads/resume-a-paused-lead",
+                  "api-reference/endpoints/leads/retrieve-lead-with-email",
+                  "api-reference/endpoints/leads/retrieve-lead-with-email-or-id",
+                  "api-reference/endpoints/leads/unsubscribe-lead-from-campaign",
+                  "api-reference/endpoints/leads/update-lead",
+                  "api-reference/endpoints/leads/update-variables",
+                  "api-reference/endpoints/leads/upload-an-audio-file-to-a-voice-message-step"
+                ]
+              },
+              {
+                "group": "Lemwarm",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/lemwarm/get-settings",
+                  "api-reference/endpoints/lemwarm/pause",
+                  "api-reference/endpoints/lemwarm/start",
+                  "api-reference/endpoints/lemwarm/update-settings"
+                ]
+              },
+              {
+                "group": "People database",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/people-database/companies-database",
+                  "api-reference/endpoints/people-database/companies-schema",
+                  "api-reference/endpoints/people-database/filters",
+                  "api-reference/endpoints/people-database/people-database",
+                  "api-reference/endpoints/people-database/people-schema"
+                ]
+              },
+              {
+                "group": "Schedules",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/schedules/associate-schedule-with-campaign",
+                  "api-reference/endpoints/schedules/create-a-new-schedule",
+                  "api-reference/endpoints/schedules/delete-a-schedule",
+                  "api-reference/endpoints/schedules/retrieve-all-schedules",
+                  "api-reference/endpoints/schedules/retrieve-campaign-schedules",
+                  "api-reference/endpoints/schedules/retrieve-one-schedule",
+                  "api-reference/endpoints/schedules/update-a-schedule"
+                ]
+              },
+              {
+                "group": "Sequences",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/sequences/add-step-to-sequence",
+                  "api-reference/endpoints/sequences/delete-sequence-step",
+                  "api-reference/endpoints/sequences/retrieve-campaign-sequences",
+                  "api-reference/endpoints/sequences/update-sequence-step"
+                ]
+              },
+              {
+                "group": "Stats",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/stats/campaign-stats",
+                  "api-reference/endpoints/stats/campaign-stats-v2"
+                ]
+              },
+              {
+                "group": "Tasks",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/tasks/ignore-tasks",
+                  "api-reference/endpoints/tasks/tasks",
+                  "api-reference/endpoints/tasks/tasks-1",
+                  "api-reference/endpoints/tasks/tasks-2"
+                ]
+              },
+              {
+                "group": "Teams",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/team/credits",
+                  "api-reference/endpoints/team/get-senders",
+                  "api-reference/endpoints/team/get-team",
+                  "api-reference/endpoints/team/get-users-crms"
+                ]
+              },
+              {
+                "group": "Unsubscribes",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/unsubscribes/add-unsubscribe-emaildomain",
+                  "api-reference/endpoints/unsubscribes/delete-unsubscribe-email",
+                  "api-reference/endpoints/unsubscribes/export-unsubscribes",
+                  "api-reference/endpoints/unsubscribes/get-unsubscribe-email",
+                  "api-reference/endpoints/unsubscribes/retrieve-unsubscribes"
+                ]
+              },
+              {
+                "group": "Users",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/users/get-user"
+                ]
+              },
+              {
+                "group": "Webhooks",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/webhooks/add-a-webhook",
+                  "api-reference/endpoints/webhooks/delete-a-webhook",
+                  "api-reference/endpoints/webhooks/get-all-webhooks"
+                ]
+              }
             ]
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
+    ]
+  },
+  "interaction": {
+    "drilldown": true
+  },
+  "api": {
+    "params": {
+      "expanded": "closed"
+    },
+    "playground": {
+      "display": "interactive",
+      "proxy": false
+    },
+    "examples": {
+      "languages": [
+        "curl",
+        "python",
+        "javascript"
+      ],
+      "defaults": "required",
+      "prefill": true
+    },
+    "mdx": {
+      "auth": {
+        "method": "basic",
+        "name": "Basic"
+      }
     }
   },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+  "seo": {
+    "metatags": {
+      "facebook": "to replace",
+      "twitter": "to replace"
+    },
+    "indexing": "all"
   },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+  "search": {
+    "prompt": "Explain this for me pls"
+  },
+  "integrations": {
+    "intercom": {
+      "appId": "replace"
+    }
+  },
+  "errors": {
+    "404": {
+      "redirect": true,
+      "title": "someone took the wrong turn 🌝",
+      "description": "![404](./images/confused-monkey.jpg)\n\nWe could make the best of the 404 page and use it to capture new leads ;)"
     }
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+      "linkedin": "https://www.linkedin.com/company/lemlist/",
+      "youtube": "https://www.youtube.com/c/lemlist"
+    },
+    "links": [
+      {
+        "header": "TikTok",
+        "items": [
+          {
+            "label": "Follow us on TikTok",
+            "href": "https://www.tiktok.com/@lemlist"
+          }
+        ]
+      }
+    ]
   }
 }
