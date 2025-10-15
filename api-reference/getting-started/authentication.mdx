@@ -2,6 +2,7 @@
 title: 'Authentication'
 description: 'How to authenticate with the API.'
 ---
+import SnippetFeedback from '/snippets/snippet-feedback.mdx';
 
 ## HEADS-UP BASIC AUTH (NOT BEARER)
 <span style={{ color: '#ff8080', fontWeight: 'bold' }}>We use BASIC authentication NOT bearer.</span> Confusing, we know. Read on.
@@ -49,3 +50,5 @@ In the end, a curl request to any `endpoint` in the API will look similar to thi
 curl --location 'https://api.lemlist.com/api/{endpoint}' \
 --header 'Authorization: Basic {the base64-encoded stuff from step 3}'
 ```
+
+<SnippetFeedback />
