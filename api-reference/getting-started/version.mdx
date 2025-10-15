@@ -1,0 +1,20 @@
+---
+title: 'Versions'
+description: 'There are multiple versions of our API. Learn how to pick the right one.'
+---
+import SnippetFeedback from '/snippets/snippet-feedback.mdx';
+
+## Use v2
+
+There are two API versions:
+- v1: which is deprecated - <span style={{ color: '#ff8080', fontWeight: 'bold' }}>do not use it</span>
+- v2: **use this one**
+
+Problem is that the default version in our API is still v1 for *some* endpoints (we're working on a better solution as i type).
+
+For such endpoints - like [GET Many Campaigns](http://localhost:3000/api-reference/endpoints/campaigns/retrieve-campaigns) - you'll have to explicitly specify that you want to use v2 by adding `version=v2` in your query parameters.
+
+> We will remind you of this throughout the docs.
+
+
+<SnippetFeedback />
