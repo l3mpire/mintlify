@@ -83,27 +83,27 @@
         "tab": "Guides",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "User Guides",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "guides/index",
+              "guides/quickstart",
+              "guides/development"
             ]
           },
           {
             "group": "Customization",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "guides/settings",
+              "guides/navigation"
             ]
           },
           {
             "group": "Writing content",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "guides/markdown",
+              "guides/code",
+              "guides/images",
+              "guides/reusable-snippets"
             ]
           },
           {
@@ -122,7 +122,11 @@
           {
             "group": "Getting started",
             "pages": [
-              "api-reference/introduction"
+              "api-reference/getting-started/introduction",
+              "api-reference/getting-started/authentication",
+              "api-reference/getting-started/rate-limits",
+              "api-reference/getting-started/version",
+              "api-reference/getting-started/feedback"
             ]
           },
           {
