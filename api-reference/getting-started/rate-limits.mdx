@@ -4,28 +4,35 @@ description: 'How not to get blocked by our API'
 ---
 import SnippetFeedback from '/snippets/snippet-feedback.mdx';
 
-# Rate Limit
-lemlist's API rate limits requests in order to prevent abuse and overload of our services. Rate limits are applied on all routes and per API key performing the request. The rate limits are **20** requests per **2** seconds.
+## Stay within bounds
 
-The response provides the following information about rate limiting:
+> The rate limits are **20 requests per 2 seconds**.
+
+To make sure everyone gets a fair and seemless use of our services, we apply rate limits to our API:
+- on **all routes**
+- for **each API key** separately
+
+## Know where you stand
+
+The responses of all queries provide will tell you where you stand with your rate limits. More specifically, you'll always have the following headers:
 
 | Header | Description |
-| --- | --- |
-| Retry-After | The number of seconds in which you can retry |
-| X-RateLimit-Limit | The maximum requests in that time |
-| X-RateLimit-Remaining | The number of remaining requests you can make |
-| X-RateLimit-Reset | The date when the rate limit will reset |
+| :--- | :--- |
+| `Retry-After` | The number of seconds in which you can retry |
+| `X-RateLimit-Limit` | The maximum requests in that time |
+| `X-RateLimit-Remaining` | The number of remaining requests you can make |
+| `X-RateLimit-Reset` | The date when the rate limit will reset |
 
-### Example Rate Limit Headers
-
-
+And here's a concrete example of what they could look like:
 ```json
 {
     "Retry-After": 2,
     "X-RateLimit-Limit": 20,
     "X-RateLimit-Remaining": 7,
-    "Retry-After" : "Tue Feb 16 2021 09:02:42 GMT+0100 (Central European Standard Time)"
+    "X-RateLimit-Reset": "Tue Feb 16 2021 09:02:42 GMT+0100 (Central European Standard Time)"
 }
 ```
+
+> Pay special attention to the human-readable date format of `X-RateLimit-Reset`.
 
 <SnippetFeedback />
