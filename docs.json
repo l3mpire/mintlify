@@ -336,7 +336,9 @@
       "languages": [
         "curl",
         "python",
-        "javascript"
+        "javascript",
+        "ruby",
+        "php"
       ],
       "defaults": "required",
       "prefill": true
