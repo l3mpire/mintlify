@@ -5,17 +5,17 @@ description: 'How to authenticate with the API.'
 import SnippetFeedback from '/snippets/snippet-feedback.mdx';
 
 ## HEADS-UP BASIC AUTH (NOT BEARER)
-<span style={{ color: '#ff8080', fontWeight: 'bold' }}>We use BASIC authentication NOT bearer.</span> Confusing, we know. Read on.
+<span style={{ color: '#ff8080', fontWeight: 'bold' }}>We use BASIC authentication NOT bearer.</span>
 
-This trips up a lot of users, so let's be explicit:
+Pay special attention to the following:
 - You must use HTTP **BASIC** authentication (more [below](#authenticate)).
 - The *login* (username) is **always empty**.
 - The *password* is **your API key**.
 - <span style={{ color: '#ff8080', fontWeight: 'bold' }}>THERE IS A COLON</span> before your API key.
 
 Read on to learn:
-- how to grab your API key
-- how to authenticate
+- [how to grab your API key](#grab-your-api-key)
+- [how to authenticate](#authenticate)
 
 
 ## Grab your API key
