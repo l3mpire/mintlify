@@ -24,12 +24,6 @@
                 "type": "http",
                 "scheme": "basic",
                 "description": "Use an empty username and your API key as the password"
-            },
-            "apiKeyQuery": {
-                "type": "apiKey",
-                "in": "query",
-                "name": "access_token",
-                "description": "Your API key as a query parameter"
             }
         }
     },
