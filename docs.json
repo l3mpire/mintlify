@@ -118,6 +118,7 @@
       },
       {
         "tab": "API Reference",
+        "openapi": "api-reference/openapi/v2.json",
         "groups": [
           {
             "group": "Getting started",
@@ -133,171 +134,13 @@
             "group": "Endpoints",
             "pages": [
               {
-                "group": "Activities",
+                "group": "Team",
                 "expanded": false,
                 "pages": [
-                  "api-reference/endpoints/activities/retrieve-activities"
-                ]
-              },
-              {
-                "group": "Campaigns",
-                "expanded": false,
-                "pages": [
-                  "api-reference/endpoints/campaigns/create-a-new-campaign",
-                  "api-reference/endpoints/campaigns/export-campaign-leads",
-                  "api-reference/endpoints/campaigns/export-campaign-send-status-by-email",
-                  "api-reference/endpoints/campaigns/get-status-of-campaign-export",
-                  "api-reference/endpoints/campaigns/pause-a-campaign",
-                  "api-reference/endpoints/campaigns/reports",
-                  "api-reference/endpoints/campaigns/retrieve-all-campaigns",
-                  "api-reference/endpoints/campaigns/retrieve-one-campaigns",
-                  "api-reference/endpoints/campaigns/start-an-export-campaign-stats",
-                  "api-reference/endpoints/campaigns/update-campaign-configuration"
-                ]
-              },
-              {
-                "group": "Companies",
-                "expanded": false,
-                "pages": [
-                  "api-reference/endpoints/companies/create-company-note",
-                  "api-reference/endpoints/companies/retrieve-companies",
-                  "api-reference/endpoints/companies/retrieve-company-notes"
-                ]
-              },
-              {
-                "group": "Contacts",
-                "expanded": false,
-                "pages": [
-                  "api-reference/endpoints/contacts/get-contact",
-                  "api-reference/endpoints/contacts/get-contacts"
-                ]
-              },
-              {
-                "group": "Enrich",
-                "expanded": false,
-                "pages": [
-                  "api-reference/endpoints/enrich/bulk-enrichments",
-                  "api-reference/endpoints/enrich/enrich",
-                  "api-reference/endpoints/enrich/enrich-1",
-                  "api-reference/endpoints/enrich/enrich-lead"
-                ]
-              },
-              {
-                "group": "Inbox",
-                "expanded": false,
-                "pages": [
-                  "api-reference/endpoints/inbox/contact-messages",
-                  "api-reference/endpoints/inbox/retrieve-inbox-list",
-                  "api-reference/endpoints/inbox/send-email",
-                  "api-reference/endpoints/inbox/send-linkedin-message",
-                  "api-reference/endpoints/inbox/send-whatsapp-message"
-                ]
-              },
-              {
-                "group": "Leads",
-                "expanded": false,
-                "pages": [
-                  "api-reference/endpoints/leads/add-variables",
-                  "api-reference/endpoints/leads/create-lead-in-a-campaign",
-                  "api-reference/endpoints/leads/delete-lead",
-                  "api-reference/endpoints/leads/delete-variables",
-                  "api-reference/endpoints/leads/get-crm-filters",
-                  "api-reference/endpoints/leads/import-leads-from-crm",
-                  "api-reference/endpoints/leads/mark-a-lead-as-interested",
-                  "api-reference/endpoints/leads/mark-a-lead-as-interested-in-one-campaign",
-                  "api-reference/endpoints/leads/mark-a-lead-as-not-interested",
-                  "api-reference/endpoints/leads/mark-a-lead-as-not-interested-in-one-campaign",
-                  "api-reference/endpoints/leads/pause-a-lead",
-                  "api-reference/endpoints/leads/resume-a-paused-lead",
-                  "api-reference/endpoints/leads/retrieve-lead-with-email",
-                  "api-reference/endpoints/leads/retrieve-lead-with-email-or-id",
-                  "api-reference/endpoints/leads/unsubscribe-lead-from-campaign",
-                  "api-reference/endpoints/leads/update-lead",
-                  "api-reference/endpoints/leads/update-variables",
-                  "api-reference/endpoints/leads/upload-an-audio-file-to-a-voice-message-step"
-                ]
-              },
-              {
-                "group": "Lemwarm",
-                "expanded": false,
-                "pages": [
-                  "api-reference/endpoints/lemwarm/get-settings",
-                  "api-reference/endpoints/lemwarm/pause",
-                  "api-reference/endpoints/lemwarm/start",
-                  "api-reference/endpoints/lemwarm/update-settings"
-                ]
-              },
-              {
-                "group": "People database",
-                "expanded": false,
-                "pages": [
-                  "api-reference/endpoints/people-database/companies-database",
-                  "api-reference/endpoints/people-database/companies-schema",
-                  "api-reference/endpoints/people-database/filters",
-                  "api-reference/endpoints/people-database/people-database",
-                  "api-reference/endpoints/people-database/people-schema"
-                ]
-              },
-              {
-                "group": "Schedules",
-                "expanded": false,
-                "pages": [
-                  "api-reference/endpoints/schedules/associate-schedule-with-campaign",
-                  "api-reference/endpoints/schedules/create-a-new-schedule",
-                  "api-reference/endpoints/schedules/delete-a-schedule",
-                  "api-reference/endpoints/schedules/retrieve-all-schedules",
-                  "api-reference/endpoints/schedules/retrieve-campaign-schedules",
-                  "api-reference/endpoints/schedules/retrieve-one-schedule",
-                  "api-reference/endpoints/schedules/update-a-schedule"
-                ]
-              },
-              {
-                "group": "Sequences",
-                "expanded": false,
-                "pages": [
-                  "api-reference/endpoints/sequences/add-step-to-sequence",
-                  "api-reference/endpoints/sequences/delete-sequence-step",
-                  "api-reference/endpoints/sequences/retrieve-campaign-sequences",
-                  "api-reference/endpoints/sequences/update-sequence-step"
-                ]
-              },
-              {
-                "group": "Stats",
-                "expanded": false,
-                "pages": [
-                  "api-reference/endpoints/stats/campaign-stats",
-                  "api-reference/endpoints/stats/campaign-stats-v2"
-                ]
-              },
-              {
-                "group": "Tasks",
-                "expanded": false,
-                "pages": [
-                  "api-reference/endpoints/tasks/ignore-tasks",
-                  "api-reference/endpoints/tasks/tasks",
-                  "api-reference/endpoints/tasks/tasks-1",
-                  "api-reference/endpoints/tasks/tasks-2"
-                ]
-              },
-              {
-                "group": "Teams",
-                "expanded": false,
-                "pages": [
-                  "api-reference/endpoints/team/credits",
-                  "api-reference/endpoints/team/get-senders",
                   "api-reference/endpoints/team/get-team",
-                  "api-reference/endpoints/team/get-users-crms"
-                ]
-              },
-              {
-                "group": "Unsubscribes",
-                "expanded": false,
-                "pages": [
-                  "api-reference/endpoints/unsubscribes/add-unsubscribe-emaildomain",
-                  "api-reference/endpoints/unsubscribes/delete-unsubscribe-email",
-                  "api-reference/endpoints/unsubscribes/export-unsubscribes",
-                  "api-reference/endpoints/unsubscribes/get-unsubscribe-email",
-                  "api-reference/endpoints/unsubscribes/retrieve-unsubscribes"
+                  "api-reference/endpoints/team/get-team-senders",
+                  "api-reference/endpoints/team/get-team-credits",
+                  "api-reference/endpoints/team/get-team-crm-users"
                 ]
               },
               {
@@ -308,12 +151,162 @@
                 ]
               },
               {
+                "group": "Campaigns",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/campaigns/create-campaign",
+                  "api-reference/endpoints/campaigns/get-campaign",
+                  "api-reference/endpoints/campaigns/get-many-campaigns",
+                  "api-reference/endpoints/campaigns/update-campaign",
+                  "api-reference/endpoints/campaigns/pause-campaign"
+                ]
+              },
+              {
+                "group": "Sequences",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/sequences/add-step-to-sequence",
+                  "api-reference/endpoints/sequences/delete-sequence-step",
+                  "api-reference/endpoints/sequences/get-campaign-sequences",
+                  "api-reference/endpoints/sequences/update-sequence-step"
+                ]
+              },
+              {
+                "group": "Schedules",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/schedules/create-schedule",
+                  "api-reference/endpoints/schedules/get-schedule",
+                  "api-reference/endpoints/schedules/get-many-schedules",
+                  "api-reference/endpoints/schedules/update-schedule",
+                  "api-reference/endpoints/schedules/delete-schedule",
+                  "api-reference/endpoints/schedules/get-campaign-schedules",
+                  "api-reference/endpoints/schedules/associate-schedule-with-campaign"
+                ]
+              },
+              {
+                "group": "Leads",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/leads/create-lead-in-campaign",
+                  "api-reference/endpoints/leads/get-lead-by-email-or-id",
+                  "api-reference/endpoints/leads/get-lead-by-email",
+                  "api-reference/endpoints/leads/update-lead",
+                  "api-reference/endpoints/leads/delete-lead",
+                  "api-reference/endpoints/leads/add-lead-variables",
+                  "api-reference/endpoints/leads/update-lead-variables",
+                  "api-reference/endpoints/leads/delete-lead-variables",
+                  "api-reference/endpoints/leads/unsubscribe-lead-from-campaign",
+                  "api-reference/endpoints/leads/pause-lead",
+                  "api-reference/endpoints/leads/resume-paused-lead",
+                  "api-reference/endpoints/leads/mark-lead-as-interested",
+                  "api-reference/endpoints/leads/mark-lead-as-not-interested",
+                  "api-reference/endpoints/leads/mark-lead-as-interested-in-campaign",
+                  "api-reference/endpoints/leads/mark-lead-as-not-interested-in-campaign",
+                  "api-reference/endpoints/leads/get-crm-filters",
+                  "api-reference/endpoints/leads/import-leads-from-crm",
+                  "api-reference/endpoints/leads/upload-audio-for-voice-message-step"
+                ]
+              },
+              {
+                "group": "Companies",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/companies/create-company-note",
+                  "api-reference/endpoints/companies/get-many-companies",
+                  "api-reference/endpoints/companies/get-company-notes"
+                ]
+              },
+              {
+                "group": "Contacts",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/contacts/get-many-contacts",
+                  "api-reference/endpoints/contacts/get-contact"
+                ]
+              },
+              {
+                "group": "Inbox",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/inbox/get-many-inbox-conversations",
+                  "api-reference/endpoints/inbox/get-contact-messages",
+                  "api-reference/endpoints/inbox/send-email",
+                  "api-reference/endpoints/inbox/send-linkedin-message",
+                  "api-reference/endpoints/inbox/send-whatsapp-message"
+                ]
+              },
+              {
+                "group": "Tasks",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/tasks/create-task",
+                  "api-reference/endpoints/tasks/get-many-tasks",
+                  "api-reference/endpoints/tasks/update-task",
+                  "api-reference/endpoints/tasks/ignore-tasks"
+                ]
+              },
+              {
+                "group": "Activities",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/activities/get-many-activities"
+                ]
+              },
+              {
+                "group": "Unsubscribes",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/unsubscribes/add-unsubscribe-email-or-domain",
+                  "api-reference/endpoints/unsubscribes/delete-unsubscribe-email",
+                  "api-reference/endpoints/unsubscribes/export-unsubscribes",
+                  "api-reference/endpoints/unsubscribes/get-many-unsubscribes",
+                  "api-reference/endpoints/unsubscribes/get-unsubscribe-by-email"
+                ]
+              },
+              {
+                "group": "Stats",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/stats/get-campaign-stats"
+                ]
+              },
+              {
                 "group": "Webhooks",
                 "expanded": false,
                 "pages": [
-                  "api-reference/endpoints/webhooks/add-a-webhook",
-                  "api-reference/endpoints/webhooks/delete-a-webhook",
-                  "api-reference/endpoints/webhooks/get-all-webhooks"
+                  "api-reference/endpoints/webhooks/add-webhook",
+                  "api-reference/endpoints/webhooks/delete-webhook"
+                ]
+              },
+              {
+                "group": "People database",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/people-database/get-database-filters",
+                  "api-reference/endpoints/people-database/search-people-database",
+                  "api-reference/endpoints/people-database/get-people-schema",
+                  "api-reference/endpoints/people-database/search-companies-database",
+                  "api-reference/endpoints/people-database/get-companies-schema"
+                ]
+              },
+              {
+                "group": "Enrich",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/enrich/enrich-data",
+                  "api-reference/endpoints/enrich/enrich-lead",
+                  "api-reference/endpoints/enrich/get-enrichment-result"
+                ]
+              },
+              {
+                "group": "lemwarm",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/lemwarm/start-lemwarm",
+                  "api-reference/endpoints/lemwarm/pause-lemwarm",
+                  "api-reference/endpoints/lemwarm/get-lemwarm-settings",
+                  "api-reference/endpoints/lemwarm/update-lemwarm-settings"
                 ]
               }
             ]
