@@ -1,3 +1,15 @@
 ---
 openapi: post /leads/{leadId}/variables
 ---
+
+Add custom variables to a lead. Variables are passed as query parameters.
+
+<Note>
+By default, lemlist includes several variables related to leads: `email`, `firstName`, `lastName`, `picture`, `phone`, `linkedinUrl`, `companyName`, `companyDomain`, and `icebreaker`.
+
+These variables can be used to personalize and enhance your outreach campaigns effectively.
+</Note>
+
+<Warning>
+You cannot add a new variable with the same name as an existing default variable.
+</Warning>
