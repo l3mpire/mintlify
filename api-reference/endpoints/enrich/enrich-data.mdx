@@ -1,3 +1,15 @@
 ---
 openapi: post /enrich
 ---
+
+This endpoint allows you to enrich data by providing inputs such as email, LinkedIn URL, or other information.
+
+The enrichment API provides the ability to request data (email, phone number, LinkedIn information) in multiple ways:
+
+- Given some input (email, LinkedIn URL, etc.) for a single enrichment
+- Bulk inputs that process many data points at once
+
+All enrichment APIs are asynchronous. There are two ways to retrieve your enriched data:
+
+1. Call the GET endpoint with the `enrichmentId` that was provided
+2. Use webhooks to receive notifications when enrichment is complete

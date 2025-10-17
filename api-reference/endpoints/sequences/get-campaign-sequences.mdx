@@ -1,3 +1,7 @@
 ---
 openapi: get /campaigns/{campaignId}/sequences
 ---
+
+This endpoint retrieves a list of campaign sequences along with their steps and conditions.
+
+For example, if the main sequence includes a condition that contains two sequences, you will receive both the sequence tree and all condition sequences in the main sequences array.

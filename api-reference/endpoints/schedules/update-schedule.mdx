@@ -1,3 +1,19 @@
 ---
 openapi: patch /schedules/{scheduleId}
 ---
+
+Updates an existing schedule with new parameters.
+
+## Request Body
+
+All fields are optional. Only include the fields you want to update:
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `name` | string | The name of the schedule |
+| `secondsToWait` | number | Delay in seconds between operations |
+| `timezone` | string | The timezone for the schedule |
+| `start` | string | Start time in `HH:mm` format |
+| `end` | string | End time in `HH:mm` format |
+| `weekdays` | array of numbers | Days of the week the schedule is active |
+| `public` | boolean | Set to `true` to make the schedule visible to use as a template |
