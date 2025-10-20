@@ -200,8 +200,37 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "Possible errors: No API key provided / Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "No API key provided"
+                            }
+                        }
+                    },
                     "401": {
-                        "description": "Unauthorized"
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "User linked to this API key is blocked",
+                        "content": {
+                            "text/plain": {
+                                "example": "User linked to this API key is blocked"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No user found for this API key",
+                        "content": {
+                            "text/plain": {
+                                "example": "No user found for this API key"
+                            }
+                        }
                     }
                 }
             }
@@ -375,8 +404,24 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "Bad params (invalid state parameter)",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad params (invalid state parameter)"
+                            }
+                        }
+                    },
                     "401": {
-                        "description": "Unauthorized"
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -459,8 +504,40 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "No API key provided",
+                        "content": {
+                            "text/plain": {
+                                "example": "No API key provided"
+                            }
+                        }
+                    },
                     "401": {
-                        "description": "Unauthorized"
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "User linked to this API key is blocked",
+                        "content": {
+                            "text/plain": {
+                                "example": "User linked to this API key is blocked"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No user found for this API key",
+                        "content": {
+                            "text/plain": {
+                                "example": "No user found for this API key"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -526,8 +603,21 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "Possible errors: Bad team / Endpoint not available",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
                     "401": {
-                        "description": "Unauthorized"
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
                     }
                 }
             }
@@ -682,8 +772,21 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "Possible errors: Bad team / Endpoint not available",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
                     "401": {
-                        "description": "Unauthorized"
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
                     }
                 }
             }
@@ -883,6 +986,38 @@
                                 ]
                             }
                         }
+                    },
+                    "400": {
+                        "description": "No API key provided",
+                        "content": {
+                            "text/plain": {
+                                "example": "No API key provided"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "User linked to this API key is blocked",
+                        "content": {
+                            "text/plain": {
+                                "example": "User linked to this API key is blocked"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No user found for this API key",
+                        "content": {
+                            "text/plain": {
+                                "example": "No user found for this API key"
+                            }
+                        }
                     }
                 }
             },
@@ -1022,6 +1157,38 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "No API key provided",
+                        "content": {
+                            "text/plain": {
+                                "example": "No API key provided"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "User linked to this API key is blocked",
+                        "content": {
+                            "text/plain": {
+                                "example": "User linked to this API key is blocked"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No user found for this API key",
+                        "content": {
+                            "text/plain": {
+                                "example": "No user found for this API key"
+                            }
+                        }
                     }
                 },
                 "requestBody": {
@@ -1128,6 +1295,25 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Campaign not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Campaign not found"
+                            }
+                        }
                     }
                 }
             },
@@ -1175,6 +1361,25 @@
                                     "name": "New campaign name",
                                     "stopOnEmailReplied": false
                                 }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Campaign not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Campaign not found"
                             }
                         }
                     }
@@ -1305,6 +1510,25 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Campaign not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Campaign not found"
+                            }
+                        }
                     }
                 }
             }
@@ -1423,6 +1647,33 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Campaign has no sequence",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Campaign not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Campaign not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -1498,6 +1749,25 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Error from createStep",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 },
                 "requestBody": {
@@ -1611,6 +1881,25 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Error from updateStep",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 },
                 "requestBody": {
@@ -1679,6 +1968,33 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / You cannot delete this step because the campaign is running",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Possible errors: Sequence not found / Step not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Sequence not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -1783,6 +2099,22 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
                     }
                 }
             },
@@ -1881,6 +2213,22 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Bad request / Validation errors from validateScheduleFields",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
                     }
                 }
             }
@@ -1926,6 +2274,30 @@
                                     "createdBy": "usr_n2PG5aHnsGErYS2Yg",
                                     "createdAt": "2025-01-17T15:17:59.207Z"
                                 }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Schedule not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Schedule not found"
                             }
                         }
                     }
@@ -1977,6 +2349,25 @@
                 "responses": {
                     "200": {
                         "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Schedule not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Schedule not found"
+                            }
+                        }
                     }
                 }
             },
@@ -1993,6 +2384,25 @@
                                 "example": {
                                     "_id": "skd_L2sKZ3HMddtrfmHGr"
                                 }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Schedule not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Schedule not found"
                             }
                         }
                     }
@@ -2020,6 +2430,25 @@
                 "responses": {
                     "200": {
                         "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Campaign not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Campaign not found"
+                            }
+                        }
                     }
                 }
             }
@@ -2063,6 +2492,28 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Possible errors: Campaign not found / Schedule not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Campaign not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -2127,8 +2578,24 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
                     "404": {
-                        "description": "Lead not found"
+                        "description": "Lead not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Lead not found"
+                            }
+                        }
                     }
                 }
             }
@@ -2192,8 +2659,24 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
                     "404": {
-                        "description": "Lead not found"
+                        "description": "Lead not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Lead not found"
+                            }
+                        }
                     }
                 }
             }
@@ -2357,7 +2840,36 @@
                         }
                     },
                     "400": {
-                        "description": "Already in the campaign"
+                        "description": "Possible errors: No API key provided / Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "No API key provided"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "User linked to this API key is blocked",
+                        "content": {
+                            "text/plain": {
+                                "example": "User linked to this API key is blocked"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Possible errors: No user found for this API key / Campaign not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "No user found for this API key"
+                            }
+                        }
                     }
                 }
             },
@@ -2382,8 +2894,24 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
                     "404": {
-                        "description": "Already unsubscribed or invalid email"
+                        "description": "Lead not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Lead not found"
+                            }
+                        }
                     }
                 }
             }
@@ -2465,8 +2993,24 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
                     "404": {
-                        "description": "Lead not found"
+                        "description": "Lead not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Lead not found"
+                            }
+                        }
                     },
                     "500": {
                         "description": "Lead in graveyard"
@@ -2503,8 +3047,24 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
                     "404": {
-                        "description": "Lead not found"
+                        "description": "Lead not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Lead not found"
+                            }
+                        }
                     }
                 }
             }
@@ -2544,6 +3104,20 @@
                                 ]
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Lead not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Lead not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -2595,6 +3169,20 @@
                                 ]
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Lead not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Lead not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -2633,6 +3221,20 @@
                                 ]
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Lead not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Lead not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -2670,6 +3272,20 @@
                                 ]
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Lead not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Lead not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -2714,6 +3330,20 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Possible errors: Campaign not found / Lead not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Campaign not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -2749,6 +3379,20 @@
                 "responses": {
                     "200": {
                         "description": "Success"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Possible errors: Campaign not found / Lead not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Campaign not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -2796,13 +3440,21 @@
                         }
                     },
                     "400": {
-                        "description": "Variable already exists",
+                        "description": "Bad team",
                         "content": {
-                            "application/json": {
-                                "example": {
-                                    "ok": false,
-                                    "status": "Variable already exists"
-                                }
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Lead not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Lead not found"
                             }
                         }
                     }
@@ -2838,7 +3490,23 @@
                         }
                     },
                     "400": {
-                        "description": "Variable not found"
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Lead not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Lead not found"
+                            }
+                        }
                     }
                 }
             },
@@ -2865,7 +3533,23 @@
                         "description": "Success"
                     },
                     "400": {
-                        "description": "Variable not found"
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Lead not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Lead not found"
+                            }
+                        }
                     }
                 }
             }
@@ -2931,6 +3615,17 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Invalid audio file",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
                     }
                 }
             }
@@ -2993,6 +3688,14 @@
                                         "name": "Filter 2"
                                     }
                                 ]
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
                             }
                         }
                     },
@@ -3073,6 +3776,14 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
                     "401": {
                         "description": "Unauthorized"
                     }
@@ -3104,6 +3815,25 @@
                                 ]
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -3180,6 +3910,25 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Parameter filters is invalid",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -3209,6 +3958,25 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -3281,6 +4049,25 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Parameter filters is invalid",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -3309,6 +4096,25 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -3338,6 +4144,22 @@
                                     ],
                                     "page": 0
                                 }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
                             }
                         }
                     }
@@ -3382,6 +4204,25 @@
                 "responses": {
                     "200": {
                         "description": "Success"
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Bad method",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             },
@@ -3412,6 +4253,25 @@
                 "responses": {
                     "200": {
                         "description": "Success"
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Bad method",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -3443,6 +4303,25 @@
                 "responses": {
                     "200": {
                         "description": "Success"
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Error message from opportunitiesDone",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -3519,6 +4398,25 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / User ID is required / User not in team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -3608,6 +4506,25 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Invalid contactId / Invalid userId / User not in team / User ID is required to mark as read",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -3693,6 +4610,25 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Invalid sendUserId / Invalid sendUserEmail / Invalid sendUserMailboxId / contactId or leadId is required / Invalid leadId / Lead not found / Failed to send email",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -3752,6 +4688,25 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Invalid sendUserId / contactId or leadId is required / Invalid leadId / Lead not found / Invalid contactId / Failed to send message",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -3810,6 +4765,25 @@
                 "responses": {
                     "200": {
                         "description": "Success"
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Invalid sendUserId / Invalid sendUserWhatsappAccountId / contactId or leadId is required / Invalid leadId / Lead not found / Failed to send whatsapp message",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -3849,6 +4823,25 @@
                                 ]
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / idsOrEmails not found in query",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -3898,6 +4891,25 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -3930,6 +4942,25 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Error from warmupToggle (invalid-usermailbox, invalid-sender, mailbox-deleted, emailWarmedByAnotherAccount, billing-error, etc.)",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -3962,6 +4993,25 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Error from warmupToggle",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -4000,6 +5050,25 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Error retrieving settings",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             },
@@ -4041,6 +5110,25 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Error updating settings (warmEmailMax, warmEmailRampup)",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -4136,6 +5224,25 @@
                                 ]
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -4222,6 +5329,33 @@
                                 ]
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Company not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Company not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             },
@@ -4264,6 +5398,33 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Company not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Company not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -4375,6 +5536,17 @@
                                 ]
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
                     }
                 }
             }
@@ -4452,6 +5624,25 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Campaign not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Campaign not found"
+                            }
+                        }
                     }
                 }
             }
@@ -4514,6 +5705,38 @@
                                 ]
                             }
                         }
+                    },
+                    "400": {
+                        "description": "No API key provided",
+                        "content": {
+                            "text/plain": {
+                                "example": "No API key provided"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "User linked to this API key is blocked",
+                        "content": {
+                            "text/plain": {
+                                "example": "User linked to this API key is blocked"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No user found for this API key",
+                        "content": {
+                            "text/plain": {
+                                "example": "No user found for this API key"
+                            }
+                        }
                     }
                 }
             }
@@ -4538,6 +5761,17 @@
                 "responses": {
                     "200": {
                         "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
                     }
                 }
             }
@@ -4587,8 +5821,40 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "No API key provided",
+                        "content": {
+                            "text/plain": {
+                                "example": "No API key provided"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "User linked to this API key is blocked",
+                        "content": {
+                            "text/plain": {
+                                "example": "User linked to this API key is blocked"
+                            }
+                        }
+                    },
                     "404": {
-                        "description": "Not found"
+                        "description": "Possible errors: No user found for this API key / Unsubscriber not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "No user found for this API key"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Possible errors: Invalid value / Invalid email address or domain / Invalid email address or domain. Domains must start with @"
                     }
                 }
             },
@@ -4611,6 +5877,25 @@
                 "responses": {
                     "200": {
                         "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Unsubscribe not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Unsubscribe not found"
+                            }
+                        }
                     }
                 }
             },
@@ -4633,6 +5918,25 @@
                 "responses": {
                     "200": {
                         "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Unsubscribe not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Unsubscribe not found"
+                            }
+                        }
                     }
                 }
             }
@@ -4661,6 +5965,25 @@
                                         "createdAt": "2018-08-09T07:45:56.789Z"
                                     }
                                 ]
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Webhook not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Webhook not found"
                             }
                         }
                     }
@@ -4724,6 +6047,25 @@
                 "responses": {
                     "200": {
                         "description": "Success"
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Webhook not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Webhook not found"
+                            }
+                        }
                     }
                 }
             }
@@ -4759,8 +6101,24 @@
                     "200": {
                         "description": "Success"
                     },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
                     "404": {
-                        "description": "Not found"
+                        "description": "Webhook not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Webhook not found"
+                            }
+                        }
                     }
                 }
             }
@@ -4799,8 +6157,27 @@
                     "202": {
                         "description": "In progress"
                     },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
                     "404": {
-                        "description": "Not found"
+                        "description": "Enrichment not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Enrichment not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -4937,7 +6314,23 @@
                         "description": "Success"
                     },
                     "400": {
-                        "description": "Missing enrichment params"
+                        "description": "Possible errors: Bad team / Bad request / No enrichment requested (findEmail, findPhone, linkedinEnrichment or verifyEmail required) / Invalid webhookUrl",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
@@ -5024,7 +6417,26 @@
                         "description": "Success"
                     },
                     "400": {
-                        "description": "Error Invalid leadId"
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Lead not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Lead not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
                     }
                 }
             }
