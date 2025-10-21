@@ -312,9 +312,7 @@
           },
           {
             "group": "Objects",
-            "pages": [
-              "api-reference/introduction"
-            ]
+            "pages": []
           }
         ]
       }

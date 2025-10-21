@@ -3,17 +3,3 @@ openapi: post /schedules
 ---
 
 Creates a new schedule. This endpoint allows setting up schedules with customizable parameters for timing, timezone, and working days.
-
-## Request Body
-
-All fields are optional and will use default values if not provided:
-
-| Field | Type | Default | Description |
-| --- | --- | --- | --- |
-| `name` | string | "Default schedule" | The name of the schedule |
-| `secondsToWait` | number | 1200 | Delay in seconds between operations |
-| `timezone` | string | "Europe/Paris" | Timezone for the schedule |
-| `start` | string | "09:00" | Start time in `HH:mm` format |
-| `end` | string | "18:00" | End time in `HH:mm` format |
-| `weekdays` | array of numbers | [1, 2, 3, 4, 5] | Days of the week the schedule is active (Monday to Friday) |
-| `public` | boolean | false | Set to `true` to make the schedule visible to use as a template |
