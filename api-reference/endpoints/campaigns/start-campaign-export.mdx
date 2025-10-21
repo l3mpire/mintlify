@@ -1,0 +1,32 @@
+---
+openapi: get /campaigns/{campaignId}/export/start
+---
+
+This endpoint starts an asynchronous export of all campaign statistics. The final export result is a CSV file.
+
+You first start an export, get an export ID, and then periodically check the status of the export with the [Get Campaign Export Status](/api-reference/endpoints/campaigns/get-campaign-export-status) endpoint.
+
+You should stop polling as soon as you have a status that is different than \"pending\".
+
+Multiple exports on the same campaign can be done simultaneously as it is export ID based.
+
+## How it works
+
+1. **Start the export**: Call this endpoint to initiate the export process. You'll receive an `exportId` in the response.
+2. **Check status**: Use the `exportId` with the [Get Campaign Export Status](/api-reference/endpoints/campaigns/get-campaign-export-status) endpoint to periodically check the export status.
+3. **Download**: Once the status is `"done"`, use the provided URL to download the CSV file.
+
+<Note>
+The export is ID-based rather than campaign-based, allowing multiple simultaneous exports of the same campaign (e.g., one by a user in the application and another by a script).
+</Note>
+
+## Response
+
+The response includes:
+- **exportId**: Use this to check the export status
+- **status**: Will be `"pending"` initially, then `"done"` or `"error"`
+- **progress information**: Track the export progress
+
+## Next steps
+
+After starting an export, use the [Get Campaign Export Status](/api-reference/endpoints/campaigns/get-campaign-export-status) endpoint to monitor progress and retrieve the download URL when ready.

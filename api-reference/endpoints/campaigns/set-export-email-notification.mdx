@@ -1,0 +1,34 @@
+---
+openapi: put /campaigns/{campaignId}/export/{exportId}/email/{email}
+---
+
+This endpoint sets an email address to receive a notification when a campaign export is complete.
+
+## How it works
+
+When you set an email address for an export:
+1. The export continues processing in the background
+2. When the export status becomes `"done"`, an automated email is sent to the specified address
+3. The email contains the download URL for the CSV file
+
+## Use cases
+
+This is particularly useful for:
+- **Long-running exports**: Set an email and continue working without having to poll the status endpoint
+- **Automated workflows**: Set up scripts that trigger exports and notify specific team members
+- **Multiple recipients**: Call this endpoint with different email addresses to notify multiple people
+
+<Tip>
+You can set the email notification at any time after starting an export, even if the export is already complete. However, it's most useful to set it immediately after starting the export.
+</Tip>
+
+## Email format
+
+The notification email includes:
+- Campaign name
+- Export completion timestamp
+- Direct download link to the CSV file
+
+<Warning>
+Remember that the CSV file is only available for 24 hours after the export completes.
+</Warning>
