@@ -157,7 +157,13 @@
                   "api-reference/endpoints/campaigns/get-campaign",
                   "api-reference/endpoints/campaigns/get-many-campaigns",
                   "api-reference/endpoints/campaigns/update-campaign",
-                  "api-reference/endpoints/campaigns/pause-campaign"
+                  "api-reference/endpoints/campaigns/pause-campaign",
+                  "api-reference/endpoints/campaigns/get-campaign-stats",
+                  "api-reference/endpoints/campaigns/start-campaign-export",
+                  "api-reference/endpoints/campaigns/get-campaign-export-status",
+                  "api-reference/endpoints/campaigns/set-export-email-notification",
+                  "api-reference/endpoints/campaigns/export-campaign-leads",
+                  "api-reference/endpoints/campaigns/get-campaign-reports"
                 ]
               },
               {
@@ -261,13 +267,6 @@
                   "api-reference/endpoints/unsubscribes/export-unsubscribes",
                   "api-reference/endpoints/unsubscribes/get-many-unsubscribes",
                   "api-reference/endpoints/unsubscribes/get-unsubscribe-by-email"
-                ]
-              },
-              {
-                "group": "Stats",
-                "expanded": false,
-                "pages": [
-                  "api-reference/endpoints/stats/get-campaign-stats"
                 ]
               },
               {

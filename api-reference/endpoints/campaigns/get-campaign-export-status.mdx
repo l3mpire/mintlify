@@ -1,0 +1,30 @@
+---
+openapi: get /campaigns/{campaignId}/export/{exportId}/status
+---
+
+This endpoint checks the status of an asynchronous campaign export initiated with the [Start Campaign Stats Export](/api-reference/endpoints/campaigns/start-campaign-export) endpoint.
+
+## Status values
+
+The `status` field in the response can be:
+- **`pending`**: The export is still being processed
+- **`done`**: The export is complete and ready to download
+- **`error`**: An error occurred during the export
+
+## Expiration times
+
+<Warning>
+- **Status availability**: Export statuses are available for **2 hours only**. An export still pending after 2 hours will be considered failed and return a 404 error.
+- **File availability**: Once you obtain the CSV file URL, you must download it within **24 hours**. After that, the file will be deleted.
+</Warning>
+
+## Polling strategy
+
+Check the status periodically until you receive a status other than `"pending"`. We recommend:
+- Starting with a 5-second interval
+- Increasing to 10-15 seconds for longer exports
+- Stopping immediately when status is `"done"` or `"error"`
+
+## Download URL
+
+When the status is `"done"`, the response will include a `url` field containing the download link for the CSV file.

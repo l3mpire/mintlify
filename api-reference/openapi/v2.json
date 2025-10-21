@@ -1530,6 +1530,805 @@
                 }
             }
         },
+        "/campaigns/{campaignId}/export/start": {
+            "parameters": [
+                {
+                    "name": "campaignId",
+                    "in": "path",
+                    "required": true,
+                    "description": "The unique identifier of the campaign to export",
+                    "example": "cam_A1B2C3D4E5F6G7H8I9",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "get": {
+                "summary": "Start Campaign Stats Export",
+                "description": "Start an asynchronous export of all campaign statistics. The final export result is a CSV file.",
+                "tags": [
+                    "Campaigns"
+                ],
+                "parameters": [
+                    {
+                        "name": "Content-Type",
+                        "in": "header",
+                        "required": false,
+                        "example": "application/json",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Export started successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "_id": {
+                                            "type": "string",
+                                            "description": "The unique identifier of the export"
+                                        },
+                                        "id": {
+                                            "type": "string",
+                                            "description": "The unique identifier of the export (same as _id)"
+                                        },
+                                        "teamId": {
+                                            "type": "string",
+                                            "description": "The team identifier"
+                                        },
+                                        "campaignId": {
+                                            "type": "string",
+                                            "description": "The campaign identifier"
+                                        },
+                                        "campaignName": {
+                                            "type": "string",
+                                            "description": "The name of the campaign"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "pending",
+                                                "done",
+                                                "error"
+                                            ],
+                                            "description": "Current status of the export"
+                                        },
+                                        "startedAt": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "description": "When the export was started"
+                                        },
+                                        "progressIndex": {
+                                            "type": "integer",
+                                            "description": "Current progress index"
+                                        },
+                                        "progressTime": {
+                                            "type": "integer",
+                                            "description": "Timestamp of progress"
+                                        },
+                                        "progressLastStepDuration": {
+                                            "type": "integer",
+                                            "description": "Duration of last step in milliseconds"
+                                        },
+                                        "progressType": {
+                                            "type": "string",
+                                            "description": "Type of current progress step"
+                                        },
+                                        "progress": {
+                                            "type": "integer",
+                                            "description": "Number of items processed"
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "description": "Total number of items to process"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "_id": "axp_7dKLTwqpjxzR5vh2n",
+                                    "id": "axp_7dKLTwqpjxzR5vh2n",
+                                    "teamId": "tea_c123fg5h8ijKL9noP",
+                                    "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
+                                    "campaignName": "Insights Outreach 2024",
+                                    "status": "pending",
+                                    "startedAt": "2024-07-09T13:43:52.124Z",
+                                    "progressIndex": 0,
+                                    "progressTime": 1720532632124,
+                                    "progressLastStepDuration": 0,
+                                    "progressType": "starting",
+                                    "progress": 0,
+                                    "total": 0
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Campaign not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Campaign not found"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/campaigns/{campaignId}/export/{exportId}/status": {
+            "parameters": [
+                {
+                    "name": "campaignId",
+                    "in": "path",
+                    "required": true,
+                    "description": "The unique identifier of the campaign that was exported",
+                    "example": "cam_A1B2C3D4E5F6G7H8I9",
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "exportId",
+                    "in": "path",
+                    "required": true,
+                    "description": "The unique identifier of the export returned by the /start endpoint",
+                    "example": "axp_7dKLTwqpjxzR5vh2n",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "get": {
+                "summary": "Get Campaign Export Status",
+                "description": "Check the status of an asynchronous campaign export. Status are available for 2 hours only. An export that is still pending after 2 hours will be considered as failed and HTTP request will return 404. When you obtain the CSV file URL, you have to download the file within a 24 hours time frame. After that, the file will be deleted.",
+                "tags": [
+                    "Campaigns"
+                ],
+                "parameters": [
+                    {
+                        "name": "Content-Type",
+                        "in": "header",
+                        "required": false,
+                        "example": "application/json",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Export status retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "ok": {
+                                            "type": "boolean"
+                                        },
+                                        "status": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "description": "The unique identifier of the export"
+                                                },
+                                                "teamId": {
+                                                    "type": "string",
+                                                    "description": "The team identifier"
+                                                },
+                                                "campaignId": {
+                                                    "type": "string",
+                                                    "description": "The campaign identifier"
+                                                },
+                                                "campaignName": {
+                                                    "type": "string",
+                                                    "description": "The name of the campaign"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "pending",
+                                                        "done",
+                                                        "error"
+                                                    ],
+                                                    "description": "Current status of the export"
+                                                },
+                                                "startedAt": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "description": "When the export was started"
+                                                },
+                                                "endedAt": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "description": "When the export finished (only present when done)"
+                                                },
+                                                "progressIndex": {
+                                                    "type": "integer",
+                                                    "description": "Current progress index"
+                                                },
+                                                "progressTime": {
+                                                    "type": "integer",
+                                                    "description": "Timestamp of progress"
+                                                },
+                                                "progressLastStepDuration": {
+                                                    "type": "integer",
+                                                    "description": "Duration of last step in milliseconds"
+                                                },
+                                                "progressType": {
+                                                    "type": "string",
+                                                    "description": "Type of current progress step"
+                                                },
+                                                "progress": {
+                                                    "type": "integer",
+                                                    "description": "Number of items processed"
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items to process"
+                                                },
+                                                "url": {
+                                                    "type": "string",
+                                                    "description": "Download URL for the CSV file (only present when status is done)"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "done": {
+                                        "summary": "Export completed",
+                                        "value": {
+                                            "ok": true,
+                                            "status": {
+                                                "id": "axp_7dKLTwqpjxzR5vh2n",
+                                                "teamId": "tea_c123fg5h8ijKL9noP",
+                                                "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
+                                                "campaignName": "Insights Outreach 2024",
+                                                "status": "done",
+                                                "startedAt": "2020-01-01T00:00:00.000Z",
+                                                "endedAt": "2020-01-01T00:00:00.000Z",
+                                                "progressIndex": 6,
+                                                "progressTime": 1639138959979,
+                                                "progressLastStepDuration": 476,
+                                                "progressType": "done",
+                                                "progress": 0,
+                                                "total": 0,
+                                                "url": "https://api.lemlist.com/api/files/exports/fil_axp_7dKLTwqpjxzR5vh2n_insights_outreach_2024.csv"
+                                            }
+                                        }
+                                    },
+                                    "pending": {
+                                        "summary": "Export in progress",
+                                        "value": {
+                                            "ok": true,
+                                            "status": {
+                                                "id": "axp_7dKLTwqpjxzR5vh2n",
+                                                "teamId": "tea_c123fg5h8ijKL9noP",
+                                                "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
+                                                "campaignName": "Insights Outreach 2024",
+                                                "status": "pending",
+                                                "startedAt": "2020-01-01T00:00:00.000Z",
+                                                "progressIndex": 3,
+                                                "progressTime": 1639138959979,
+                                                "progressLastStepDuration": 200,
+                                                "progressType": "processing",
+                                                "progress": 50,
+                                                "total": 100
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Campaign or export not found",
+                        "content": {
+                            "application/json": {
+                                "examples": {
+                                    "exportNotFound": {
+                                        "summary": "Export not found",
+                                        "value": {
+                                            "ok": false,
+                                            "message": "Export with id axp_8bALQxunkwwC3yc9p not found"
+                                        }
+                                    },
+                                    "campaignNotFound": {
+                                        "summary": "Campaign not found",
+                                        "value": "Campaign not found"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/campaigns/{campaignId}/export/{exportId}/email/{email}": {
+            "parameters": [
+                {
+                    "name": "campaignId",
+                    "in": "path",
+                    "required": true,
+                    "description": "The unique identifier of the campaign that was exported",
+                    "example": "cam_A1B2C3D4E5F6G7H8I9",
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "exportId",
+                    "in": "path",
+                    "required": true,
+                    "description": "The unique identifier of the export returned by the /start endpoint",
+                    "example": "axp_7dKLTwqpjxzR5vh2n",
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "email",
+                    "in": "path",
+                    "required": true,
+                    "description": "The email address to send the export URL to when the export is done",
+                    "example": "emily.johnson@example.com",
+                    "schema": {
+                        "type": "string",
+                        "format": "email"
+                    }
+                }
+            ],
+            "put": {
+                "summary": "Set Email for Campaign Export Notification",
+                "description": "Set an email address for a given export. When the export is done, an email with the download URL will be sent to the address provided.",
+                "tags": [
+                    "Campaigns"
+                ],
+                "parameters": [
+                    {
+                        "name": "Content-Type",
+                        "in": "header",
+                        "required": false,
+                        "example": "application/json",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email notification set successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "ok": {
+                                            "type": "boolean"
+                                        },
+                                        "status": {
+                                            "type": "object",
+                                            "properties": {
+                                                "_id": {
+                                                    "type": "string"
+                                                },
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "teamId": {
+                                                    "type": "string"
+                                                },
+                                                "campaignId": {
+                                                    "type": "string"
+                                                },
+                                                "campaignName": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "pending",
+                                                        "done",
+                                                        "error"
+                                                    ]
+                                                },
+                                                "startedAt": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "progressIndex": {
+                                                    "type": "integer"
+                                                },
+                                                "progressTime": {
+                                                    "type": "integer"
+                                                },
+                                                "progressLastStepDuration": {
+                                                    "type": "integer"
+                                                },
+                                                "progressType": {
+                                                    "type": "string"
+                                                },
+                                                "progress": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "fileSize": {
+                                                    "type": "integer",
+                                                    "description": "Size of the export file in bytes"
+                                                },
+                                                "endedAt": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "url": {
+                                                    "type": "string",
+                                                    "description": "Download URL for the CSV file"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "format": "email",
+                                                    "description": "Email address that will receive the notification"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "ok": true,
+                                    "status": {
+                                        "_id": "axp_7dKLTwqpjxzR5vh2n",
+                                        "id": "axp_7dKLTwqpjxzR5vh2n",
+                                        "teamId": "tea_c123fg5h8ijKL9noP",
+                                        "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
+                                        "campaignName": "Insights Outreach 2024",
+                                        "status": "done",
+                                        "startedAt": "2024-07-11T09:49:15.278Z",
+                                        "progressIndex": 6,
+                                        "progressTime": 1720691355497,
+                                        "progressLastStepDuration": 0,
+                                        "progressType": "done",
+                                        "progress": 0,
+                                        "total": 0,
+                                        "fileSize": 654,
+                                        "endedAt": "2024-07-11T09:49:15.497Z",
+                                        "url": "https://api.lemlist.com/api/files/exports/fil_axp_7dKLTwqpjxzR5vh2n_insights_outreach_2024.csv",
+                                        "email": "emily.johnson@example.com"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Campaign or export not found",
+                        "content": {
+                            "text/plain": {
+                                "examples": {
+                                    "campaignNotFound": {
+                                        "summary": "Campaign not found",
+                                        "value": "Campaign not found"
+                                    },
+                                    "exportNotFound": {
+                                        "summary": "Export not found",
+                                        "value": "Export not found"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/campaigns/{campaignId}/export/leads": {
+            "parameters": [
+                {
+                    "name": "campaignId",
+                    "in": "path",
+                    "required": true,
+                    "description": "The unique identifier of the campaign",
+                    "example": "cam_A1B2C3D4E5F6G7H8I9",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "get": {
+                "summary": "Export Campaign Leads",
+                "description": "Export leads from a campaign with filtering options. Returns leads in CSV or JSON format based on their state (e.g., contacted, interested, replied, etc.).",
+                "tags": [
+                    "Campaigns"
+                ],
+                "parameters": [
+                    {
+                        "name": "state",
+                        "in": "query",
+                        "required": false,
+                        "description": "Filter to export only the specified lead's last states. Use 'all' to export all states. Can be a comma-separated list of states. **Global states**: imported, scanned, skipped, reviewed, contacted, hooked, attracted, warmed, interested, notInterested, emailsBounced, emailsUnsubscribed, failed, meetingBooked, paused. **Detailed states**: emailsSent, emailsOpened, emailsClicked, emailsReplied, emailsInterested, emailsNotInterested, emailsFailed, opportunitiesDone, aircallDone, aircallInterested, aircallNotInterested, apiDone, apiInterested, apiNotInterested, linkedinVisitDone, linkedinVisitFailed, linkedinInviteDone, linkedinInviteAccepted, linkedinInviteFailed, linkedinSent, linkedinOpened, linkedinReplied, linkedinInterested, linkedinNotInterested, linkedinSendFailed, manualInterested, manualNotInterested",
+                        "example": "all",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "required": false,
+                        "description": "Output format: 'json' or 'csv'. Default is CSV.",
+                        "example": "json",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "Content-Type",
+                        "in": "header",
+                        "required": false,
+                        "example": "application/json",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Leads exported successfully",
+                        "content": {
+                            "text/csv": {
+                                "example": "emailStatus,email,firstName,lastName,picture,phone,linkedinUrl,companyName,companyDomain,icebreaker,firstname,lastname,jobTitle,lastState,status\ndeliverable,john.doe@domain.com,,,,,https://www.linkedin.com/in/johndoe,lempire,,,John,Doe,Developer,emailsOpened,review\nrisky,bob.smith@example.com,,,,,https://www.linkedin.com/in/bobsmith,TechWave,,,Bob,Smith,Engineer,emailsClicked,scanning\nundeliverable,susan.jones@example.org,,,,,https://www.linkedin.com/in/susanjones,Innovatech,,,Susan,Jones,Product Manager,emailsFailed,unsubscribed\ndeliverable,alice.brown@fakemail.com,,,,,https://www.linkedin.com/in/alicebrown,CreativeWorks,,,Alice,Brown,Designer,emailsReplied,interested\nrisky,michael.johnson@mockmail.net,,,,,https://www.linkedin.com/in/michaeljohnson,AlphaCorp,,,Michael,Johnson,Data Scientist,emailsNotInterested,notInterested\ndeliverable,emma.williams@samplemail.com,,,,,https://www.linkedin.com/in/emmawilliams,BetaTech,,,Emma,Williams,Marketing Specialist,emailsInterested,interested\ndeliverable,william.brown@domainexample.com,,,,,https://www.linkedin.com/in/williambrown,GammaLabs,,,William,Brown,Sales Executive,emailsSent,running\nrisky,olivia.jones@sampledomain.org,,,,,https://www.linkedin.com/in/oliviajones,DeltaInnovations,,,Olivia,Jones,HR Manager,emailsOpened,review\nundeliverable,james.taylor@mockdomain.com,,,,,https://www.linkedin.com/in/jamestaylor,EpsilonTech,,,James,Taylor,Operations Manager,emailsFailed,unsubscribed\ndeliverable,patricia.miller@fakedomain.net,,,,,https://www.linkedin.com/in/patriciamiller,ZetaIndustries,,,Patricia,Miller,Customer Success Manager,emailsReplied,interested"
+                            },
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "emailStatus": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "deliverable",
+                                                    "risky",
+                                                    "undeliverable"
+                                                ]
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "format": "email"
+                                            },
+                                            "firstName": {
+                                                "type": "string"
+                                            },
+                                            "lastName": {
+                                                "type": "string"
+                                            },
+                                            "picture": {
+                                                "type": "string"
+                                            },
+                                            "phone": {
+                                                "type": "string"
+                                            },
+                                            "linkedinUrl": {
+                                                "type": "string"
+                                            },
+                                            "companyName": {
+                                                "type": "string"
+                                            },
+                                            "companyDomain": {
+                                                "type": "string"
+                                            },
+                                            "icebreaker": {
+                                                "type": "string"
+                                            },
+                                            "jobTitle": {
+                                                "type": "string"
+                                            },
+                                            "lastState": {
+                                                "type": "string"
+                                            },
+                                            "status": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Campaign not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Campaign not found"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/campaigns/reports": {
+            "get": {
+                "summary": "Get Campaign Reports",
+                "description": "Retrieve reports for one or multiple campaigns. Returns aggregated statistics and export status for the specified campaigns.",
+                "tags": [
+                    "Campaigns"
+                ],
+                "parameters": [
+                    {
+                        "name": "campaignIds",
+                        "in": "query",
+                        "required": true,
+                        "description": "Comma-separated list of campaign IDs to retrieve reports for",
+                        "example": "cam_A1B2C3D4E5F6G7H8I9,cam_B2C3D4E5F6G7H8I9J0",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Content-Type",
+                        "in": "header",
+                        "required": false,
+                        "example": "application/json",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Campaign reports retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "ok": {
+                                            "type": "boolean"
+                                        },
+                                        "status": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "teamId": {
+                                                    "type": "string"
+                                                },
+                                                "campaignId": {
+                                                    "type": "string"
+                                                },
+                                                "campaignName": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "pending",
+                                                        "done",
+                                                        "error"
+                                                    ]
+                                                },
+                                                "startedAt": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "endedAt": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "progressIndex": {
+                                                    "type": "integer"
+                                                },
+                                                "progressTime": {
+                                                    "type": "integer"
+                                                },
+                                                "progressLastStepDuration": {
+                                                    "type": "integer"
+                                                },
+                                                "progressType": {
+                                                    "type": "string"
+                                                },
+                                                "progress": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "url": {
+                                                    "type": "string",
+                                                    "description": "Download URL for the CSV file"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "ok": true,
+                                    "status": {
+                                        "id": "axp_7dKLTwqpjxzR5vh2n",
+                                        "teamId": "tea_c123fg5h8ijKL9noP",
+                                        "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
+                                        "campaignName": "Insights Outreach 2024",
+                                        "status": "done",
+                                        "startedAt": "2020-01-01T00:00:00.000Z",
+                                        "endedAt": "2020-01-01T00:00:00.000Z",
+                                        "progressIndex": 6,
+                                        "progressTime": 1639138959979,
+                                        "progressLastStepDuration": 476,
+                                        "progressType": "done",
+                                        "progress": 0,
+                                        "total": 0,
+                                        "url": "https://api.lemlist.com/api/files/exports/fil_axp_7dKLTwqpjxzR5vh2n_insights_outreach_2024.csv"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
         "/campaigns/{campaignId}/sequences": {
             "parameters": [
                 {
@@ -5953,7 +6752,7 @@
             "get": {
                 "summary": "Get Campaign Stats",
                 "tags": [
-                    "Stats"
+                    "Campaigns"
                 ],
                 "parameters": [
                     {
@@ -5999,6 +6798,53 @@
                         }
                     },
                     {
+                        "name": "version",
+                        "in": "query",
+                        "required": false,
+                        "description": "API version. Use 'v2' to access the enhanced stats endpoint with additional filtering options.",
+                        "example": "v2",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "v2"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "channels",
+                        "in": "query",
+                        "required": false,
+                        "description": "Filter stats by communication channels. Provide as a comma-separated list or array. Valid values: 'email', 'linkedin', 'others'. Only works with version=v2.",
+                        "example": "email,linkedin",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ABSelected",
+                        "in": "query",
+                        "required": false,
+                        "description": "Filter stats by A/B test variant. Valid values: 'A' or 'B'. Only works with version=v2.",
+                        "example": "A",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "A",
+                                "B"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sendUser",
+                        "in": "query",
+                        "required": false,
+                        "description": "Filter stats by send user. Format: '<sendUserId>|<sendUserEmail>'. Only works with version=v2.",
+                        "example": "usr_abc123|john@example.com",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "Content-Type",
                         "in": "header",
                         "required": false,
@@ -6014,20 +6860,106 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object"
+                                    "type": "object",
+                                    "properties": {
+                                        "leadTotal": {
+                                            "type": "integer",
+                                            "description": "Total number of leads"
+                                        },
+                                        "sentCount": {
+                                            "type": "integer",
+                                            "description": "Total number of messages sent"
+                                        },
+                                        "emailsSent": {
+                                            "type": "integer",
+                                            "description": "Number of emails sent (v2 only)"
+                                        },
+                                        "emailsOpened": {
+                                            "type": "integer",
+                                            "description": "Number of emails opened (v2 only)"
+                                        },
+                                        "emailsClicked": {
+                                            "type": "integer",
+                                            "description": "Number of emails clicked (v2 only)"
+                                        },
+                                        "emailsReplied": {
+                                            "type": "integer",
+                                            "description": "Number of email replies (v2 only)"
+                                        },
+                                        "linkedinSent": {
+                                            "type": "integer",
+                                            "description": "Number of LinkedIn messages sent (v2 only)"
+                                        },
+                                        "linkedinOpened": {
+                                            "type": "integer",
+                                            "description": "Number of LinkedIn messages opened (v2 only)"
+                                        },
+                                        "linkedinReplied": {
+                                            "type": "integer",
+                                            "description": "Number of LinkedIn replies (v2 only)"
+                                        },
+                                        "interested": {
+                                            "type": "integer",
+                                            "description": "Number of interested leads (v2 only)"
+                                        },
+                                        "notInterested": {
+                                            "type": "integer",
+                                            "description": "Number of not interested leads (v2 only)"
+                                        }
+                                    }
                                 },
-                                "example": {
-                                    "leadTotal": 0,
-                                    "sentCount": 0
-                                }
+                                "example": [
+                                    {
+                                        "leadTotal": 150,
+                                        "sentCount": 320,
+                                        "emailsSent": 250,
+                                        "emailsOpened": 180,
+                                        "emailsClicked": 45,
+                                        "emailsReplied": 32,
+                                        "linkedinSent": 70,
+                                        "linkedinOpened": 55,
+                                        "linkedinReplied": 12,
+                                        "interested": 28,
+                                        "notInterested": 5
+                                    }
+                                ]
                             }
                         }
                     },
                     "400": {
-                        "description": "Bad team",
+                        "description": "Bad request - Invalid parameters",
                         "content": {
                             "text/plain": {
-                                "example": "Bad team"
+                                "examples": {
+                                    "badTeam": {
+                                        "summary": "Bad team",
+                                        "value": "Bad team"
+                                    },
+                                    "missingDates": {
+                                        "summary": "Missing dates (v2)",
+                                        "value": "Bad params: startDate and endDate are required"
+                                    },
+                                    "invalidChannels": {
+                                        "summary": "Invalid channels format",
+                                        "value": "Bad params: channels must be a valid array"
+                                    },
+                                    "invalidChannelValues": {
+                                        "summary": "Invalid channel values",
+                                        "value": "Bad params: channels must be empty or contain \"others\", \"email\" or \"linkedin\""
+                                    },
+                                    "invalidAB": {
+                                        "summary": "Invalid A/B selection",
+                                        "value": "Bad params: ABSelected must be A or B"
+                                    },
+                                    "invalidSendUserFormat": {
+                                        "summary": "Invalid send user format",
+                                        "value": "Bad param format: sendUser must be formatted as follow: <sendUserId>|<sendUserEmail>"
+                                    },
+                                    "invalidSendUser": {
+                                        "summary": "Send user email mismatch",
+                                        "value": "Bad params: the send user email is not related to the send user id"
+                                    }
+                                }
                             }
                         }
                     },
@@ -6039,6 +6971,14 @@
                         "content": {
                             "text/plain": {
                                 "example": "Campaign not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad method"
                             }
                         }
                     }
