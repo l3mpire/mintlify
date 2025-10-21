@@ -1,3 +1,60 @@
 ---
 openapi: patch /sequences/{sequenceId}/steps/{stepId}
 ---
+
+Update an existing step inside a sequence.
+
+Use this endpoint to:
+
+- Edit the message content or subject of the step
+- Change the delay before this step executes
+- Update the title (for manual steps)
+- Change method/URL (for API steps)
+- Adjust delay logic for conditional steps
+
+<Warning>
+You **cannot** change the `type` of a step (e.g., from `email` to `linkedinInvite`). To do so, delete the step and create a new one.
+</Warning>
+
+## Supported Step Types
+
+| Type | Editable Fields | Description |
+| --- | --- | --- |
+| `email` | `subject`, `message`, `delay` | Sends an email to the lead |
+| `manual` | `title`, `message`, `delay` | Manual task to be performed by the user |
+| `phone` | `message`, `delay` | Reminder to make a phone call |
+| `api` | `method`, `url`, `delay` | Makes an API call |
+| `linkedinVisit` | `delay` | Simulates a profile visit on LinkedIn |
+| `linkedinInvite` | `message`, `delay` | Sends a LinkedIn invite with message |
+| `linkedinSend` | `message`, `altMessage`, `delay` | Sends a LinkedIn message |
+| `sendToAnotherCampaign` | `campaignId` | Sends the lead to another campaign |
+| `conditional` | `conditionKey`, `delayType`, `delay` | Triggers the next step based on lead behavior |
+| `whatsappMessage` | `message`, `delay` | Sends a WhatsApp message |
+
+## Request Body
+
+Only include the fields you want to update. Required fields are not enforced here.
+
+| Field | Type | Applies To | Description |
+| --- | --- | --- | --- |
+| `subject` | string | `email` | Email subject line |
+| `message` | string | `email`, `linkedin*`, `manual`, `phone`, `whatsappMessage` | Message text |
+| `altMessage` | string | `linkedinSend` | Fallback LinkedIn message |
+| `title` | string | `manual` | Title for manual task |
+| `method` | string | `api` | One of `GET`, `POST`, `PUT`, `DELETE`, `PATCH` |
+| `url` | string | `api` | Valid HTTP/HTTPS URL |
+| `delay` | integer | all except `sendToAnotherCampaign` | Delay before this step in hours |
+| `delayType` | string | `conditional` | One of `within`, `waitUntil` |
+| `conditionKey` | string | `conditional` | See supported condition keys below |
+| `campaignId` | string | `sendToAnotherCampaign` | ID of destination campaign |
+
+## Supported Condition Keys
+
+For `conditional` steps:
+
+- `emailsOpened`
+- `emailsClicked`
+- `emailsUnsubscribed`
+- `meetingBooked`
+- `linkedinInviteAccepted`
+- `linkedinOpened`

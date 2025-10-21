@@ -1,3 +1,101 @@
 ---
 openapi: post /sequences/{sequenceId}/steps
 ---
+
+This endpoint creates a step or condition within a sequence. If you want to get the main sequence or a list of sequences for a campaign, you can call `/api/campaigns/{campaignId}/sequences`.
+
+## Adding Steps
+
+To add a new step to a sequence, call the API with the sequence ID in the parameters and the step details in the request body.
+
+For example, adding a LinkedIn invite step:
+
+```json
+{
+    "type": "linkedinInvite",
+    "message": "Invite message...."
+}
+```
+
+## Adding Conditions
+
+To add a condition to a sequence, you must provide the `conditionKey` and type `conditional` along with the required fields. The API will return a condition with an array of condition sequences, where you can call the same API again to add steps to those sequences.
+
+For example, creating a LinkedIn invite condition:
+
+```json
+{
+    "type": "conditional",
+    "conditionKey": "linkedinInviteAccepted",
+    "delayType": "waitUntil"
+}
+```
+
+This will return:
+
+```json
+{
+    "_id": "stp_Ae93hiemDkypHLys2",
+    "type": "conditional",
+    "conditions": [
+        {
+            "sequenceId": "seq_jacL5GNH3YpNnuNQ2",
+            "label": "Accepted invite",
+            "key": "linkedinInviteAccepted",
+            "delay": 1,
+            "delayType": "waitUntil"
+        },
+        {
+            "sequenceId": "seq_xzrGLxhZwoo5oxukc",
+            "fallback": true
+        }
+    ]
+}
+```
+
+Then you can call `/api/sequences/seq_jacL5GNH3YpNnuNQ2/steps` to add a send step if the invite is accepted:
+
+```json
+{
+    "type": "linkedinSend",
+    "message": "Hello, ..."
+}
+```
+
+## Step Types and Required Fields
+
+The table below summarizes the required and optional fields for each step type. Note that all step requests must include a common `type` field.
+
+| Step Type | Required Fields | Optional Fields |
+| --- | --- | --- |
+| `email` | `subject`, `message` | `index`, `delay` |
+| `manual` | `title` | `message`, `index`, `delay` |
+| `phone` | - | `message`, `index`, `delay` |
+| `api` | `method`, `url` | `index`, `delay` |
+| `linkedinVisit` | - | `index`, `delay` |
+| `linkedinInvite` | - | `message`, `index`, `delay` |
+| `linkedinSend` | `message` | `altMessage`, `index`, `delay` |
+| `sendToAnotherCampaign` | `campaignId` | `index`, `delay` |
+| `conditional` | `conditionKey`, `delayType` (and `delay` when `delayType` is `within`) | `index` |
+| `whatsappMessage` | `message` | `index`, `delay` |
+
+<Note>
+In conditional steps, if the `delayType` is not `"within"`, the `delay` field is not required.
+</Note>
+
+## All Request Body Fields
+
+| Field | Description |
+| --- | --- |
+| `type` (String, Required) | The type of step to create. Allowed values: `email`, `manual`, `phone`, `api`, `linkedinVisit`, `linkedinInvite`, `linkedinSend`, `sendToAnotherCampaign`, `conditional`, `whatsappMessage` |
+| `index` (Integer, Optional) | The position within the sequence to insert the new step. Must be an integer ≥ -1. If omitted or if the index is greater than the number of steps, the new step is added to the end |
+| `delay` (Integer, Optional) | The delay (in seconds) before executing the step. Defaults to 0 for the first step and to 1 for subsequent steps (except for certain conditional configurations) |
+| `subject` (String, Conditional) | The email subject. Required for steps of type `email` |
+| `message` (String, Conditional) | Content of the email or message. Used for `email`, `linkedinInvite`, and `linkedinSend` step types, or the note of `manual` and `phone` step types |
+| `altMessage` (String, Conditional) | An alternate message for steps of type `linkedinSend` |
+| `title` (String, Conditional) | A title or label used in `manual` steps |
+| `method` (String, Conditional) | The HTTP method to use for API steps. Allowed values: `GET`, `POST`, `PUT`, `DELETE`, `PATCH` |
+| `url` (String, Conditional) | The URL of the API endpoint to call. Must be a valid URL (starting with `http://` or `https://`) |
+| `conditionKey` (String, Conditional) | For conditional steps only. Defines the condition key. Allowed values: `emailsOpened`, `emailsClicked`, `emailsUnsubscribed`, `meetingBooked`, `linkedinInviteAccepted`, `hasWhatsappAccount` |
+| `delayType` (String, Conditional) | For conditional steps only. Specifies the delay type. Allowed values: `within`, `waitUntil` |
+| `campaignId` (String, Conditional) | For steps of type `sendToAnotherCampaign` only. The target campaign ID to which a lead should be sent. The specified campaign must exist in the team and not be archived |
