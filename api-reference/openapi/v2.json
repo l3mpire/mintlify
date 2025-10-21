@@ -3,7 +3,7 @@
     "info": {
         "title": "lemlist API",
         "version": "1.0.0",
-        "description": "Welcome to the lemlist Developer Documentation.\n\nlemlist is very customizable and open. You'll find on this page all the API and integration you can do with lemlist.\n\n# Rate Limit\n\nlemlist's API rate limits requests in order to prevent abuse and overload of our services.  \nRate limits are applied on all routes and per API key performing the request.  \nThe rate limits are **20** requests per **2** seconds.  \nThe response provides any information you may need about it:\n\n| Header | Description |\n| --- | --- |\n| Retry-After | The number of seconds in which you can retry |\n| X-RateLimit-Limit | The maximum requests in that time |\n| X-RateLimit-Remaining | The number of remaining requests you can make |\n| X-RateLimit-Reset | The date when the rate limit will reset |\n\n_Example of values for the rate limit headers_\n\n``` json\n{\n    \"Retry-After\": 2,\n    \"X-RateLimit-Limit\": 20,\n    \"X-RateLimit-Remaining\": 7,\n    \"X-RateLimit-Reset\" : \"Tue Feb 16 2021 09:02:42 GMT+0100 (Central European Standard Time)\"\n}\n\n ```\n\n# Definitions\n\n## Team\n\nA team is the entity of lemlist that can handle users and billing.\n\n## Credits\n\nCredits are the coins a team uses to enrich emails, LinkedIn URLs, etc. via the enrich route. Each enrichment feature needs a certain amount of credits to run.\n\n## User\n\nYou use a user account to connect to lemlist and send messages via the connected emails or LinkedIn account.\n\n## Campaign\n\nA campaign is the entity to automate outreach. A campaign has multiple sequences composed of steps.\n\n## Lead\n\nA lead is a person that you try to contact via a campaign.\n\n## Activity\n\nAn activity is the history of all the steps.\n\n## Unsubscribe\n\nAn unsubscribe occurs when a person decides they don't want to receive emails from you anymore.\n\n# Authentication\n\nAll API routes use the dedicated subdomain `api.lemlist.com`.\n\nlemlist uses API keys to allow access to the API. You can get your lemlist API key at our [integration page](https://app.lemlist.com/settings/integrations).\n\nYou need to add the `Authorization` header using the `Basic` authentication type. `login:password` **where the login is always empty and the password is the API key**.\n\nOr pass your API key as a query parameter `access_token`.\n\n⚠️ **Don't forget to add the semicolon (**`:`**) before your API key in curl command.**\n\n> To authorize, use this code: \n  \n\n``` shell\ncurl https://api.lemlist.com/api/team \\\n  --user \":YourApiKey\"\n\n ```\n\n> Or \n  \n\n``` shell\ncurl https://api.lemlist.com/api/team?access_token=YourApiKey\n\n ```\n\n**Make sure to replace** **`YourApiKey`** **with your API key.**\n\n# Give feedback\n\nIf you want to report a bug, ask for data, or share with us a use case, please fill this [form](https://lemlist.typeform.com/to/mfVlkyGf). It will help us centralize your needs!"
+        "description": "Welcome to the lemlist Developer Documentation.\n\nlemlist is very customizable and open. You'll find on this page all the API and integration you can do with lemlist.\n\n# Rate Limit\n\nlemlist's API rate limits requests in order to prevent abuse and overload of our services.  \nRate limits are applied on all routes and per API key performing the request.  \nThe rate limits are **20** requests per **2** seconds.  \nThe response provides any information you may need about it:\n\n| Header | Description |\n| --- | --- |\n| Retry-After | The number of seconds in which you can retry |\n| X-RateLimit-Limit | The maximum requests in that time |\n| X-RateLimit-Remaining | The number of remaining requests you can make |\n| X-RateLimit-Reset | The date when the rate limit will reset |\n\n_Example of values for the rate limit headers_\n\n``` json\n{\n    \"Retry-After\": 2,\n    \"X-RateLimit-Limit\": 20,\n    \"X-RateLimit-Remaining\": 7,\n    \"X-RateLimit-Reset\" : \"Tue Feb 16 2021 09:02:42 GMT+0100 (Central European Standard Time)\"\n}\n\n ```\n\n# Definitions\n\n## Team\n\nA team is the entity of lemlist that can handle users and billing.\n\n## Credits\n\nCredits are the coins a team uses to enrich emails, LinkedIn URLs, etc. via the enrich route. Each enrichment feature needs a certain amount of credits to run.\n\n## User\n\nYou use a user account to connect to lemlist and send messages via the connected emails or LinkedIn account.\n\n## Campaign\n\nA campaign is the entity to automate outreach. A campaign has multiple sequences composed of steps.\n\n## Lead\n\nA lead is a person that you try to contact via a campaign.\n\n## Activity\n\nAn activity is the history of all the steps.\n\n## Unsubscribe\n\nAn unsubscribe occurs when a person decides they don't want to receive emails from you anymore.\n\n# Authentication\n\nAll API routes use the dedicated subdomain `api.lemlist.com`.\n\nlemlist uses API keys to allow access to the API. You can get your lemlist API key at our [integration page](https://app.lemlist.com/settings/integrations).\n\nYou need to add the `Authorization` header using the `Basic` authentication type. `login:password` **where the login is always empty and the password is the API key**.\n\n⚠️ **Don't forget to add the semicolon (**`:`**) before your API key in curl command.**\n\n> To authorize, use this code: \n  \n\n``` shell\ncurl https://api.lemlist.com/api/team \\\n  --user \":YourApiKey\"\n\n ```\n\n**Make sure to replace** **`YourApiKey`** **with your API key.**\n\n# Give feedback\n\nIf you want to report a bug, ask for data, or share with us a use case, please fill this [form](https://lemlist.typeform.com/to/mfVlkyGf). It will help us centralize your needs!"
     },
     "servers": [
         {
@@ -13,9 +13,6 @@
     "security": [
         {
             "basicAuth": []
-        },
-        {
-            "apiKeyQuery": []
         }
     ],
     "components": {
@@ -2069,6 +2066,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "schedules": [
                                         {
@@ -2123,7 +2124,13 @@
                 "tags": [
                     "Schedules"
                 ],
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ],
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -2131,34 +2138,51 @@
                                 "properties": {
                                     "name": {
                                         "type": "string",
-                                        "description": "The name of the schedule"
+                                        "description": "The name of the schedule",
+                                        "default": "Default schedule"
                                     },
                                     "secondsToWait": {
                                         "type": "integer",
-                                        "description": "Seconds to wait between actions"
+                                        "description": "Delay in seconds between operations",
+                                        "default": 1200
                                     },
                                     "timezone": {
                                         "type": "string",
-                                        "description": "Timezone for the schedule (e.g., 'Europe/Paris')"
+                                        "description": "Timezone for the schedule (e.g., 'Europe/Paris')",
+                                        "default": "Europe/Paris"
                                     },
                                     "start": {
                                         "type": "string",
-                                        "description": "Start time in HH:MM format"
+                                        "description": "Start time in HH:mm format",
+                                        "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                                        "default": "09:00"
                                     },
                                     "end": {
                                         "type": "string",
-                                        "description": "End time in HH:MM format"
+                                        "description": "End time in HH:mm format",
+                                        "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                                        "default": "18:00"
                                     },
                                     "weekdays": {
                                         "type": "array",
                                         "items": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "minimum": 1,
+                                            "maximum": 7
                                         },
-                                        "description": "Array of weekday numbers (1=Monday, 7=Sunday)"
+                                        "description": "Days of the week the schedule is active (1=Monday, 7=Sunday)",
+                                        "default": [
+                                            1,
+                                            2,
+                                            3,
+                                            4,
+                                            5
+                                        ]
                                     },
                                     "public": {
                                         "type": "boolean",
-                                        "description": "Whether the schedule is public"
+                                        "description": "Set to true to make the schedule visible to use as a template",
+                                        "default": false
                                     }
                                 },
                                 "required": [
@@ -2171,7 +2195,7 @@
                             },
                             "example": {
                                 "name": "Default schedule",
-                                "secondsToWait": 120,
+                                "secondsToWait": 1200,
                                 "timezone": "Europe/Paris",
                                 "start": "09:00",
                                 "end": "18:00",
@@ -2189,9 +2213,64 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success",
+                        "description": "Schedule successfully created",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "_id": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "secondsToWait": {
+                                            "type": "integer"
+                                        },
+                                        "timezone": {
+                                            "type": "string"
+                                        },
+                                        "start": {
+                                            "type": "string"
+                                        },
+                                        "end": {
+                                            "type": "string"
+                                        },
+                                        "weekdays": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "public": {
+                                            "type": "boolean"
+                                        },
+                                        "teamId": {
+                                            "type": "string"
+                                        },
+                                        "createdBy": {
+                                            "type": "string"
+                                        },
+                                        "createdAt": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "required": [
+                                        "_id",
+                                        "name",
+                                        "secondsToWait",
+                                        "timezone",
+                                        "start",
+                                        "end",
+                                        "weekdays",
+                                        "public",
+                                        "teamId",
+                                        "createdBy",
+                                        "createdAt"
+                                    ]
+                                },
                                 "example": {
                                     "_id": "skd_JTb4gjdiizqPoYqzh",
                                     "name": "Default schedule",
@@ -2215,22 +2294,47 @@
                         }
                     },
                     "400": {
-                        "description": "Possible errors: Bad team / Bad request / Validation errors from validateScheduleFields",
+                        "description": "Bad request (invalid team or schedule data)",
                         "content": {
-                            "text/plain": {
-                                "example": "Bad team"
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "error": "BadRequest",
+                                    "message": "Bad team or invalid schedule fields"
+                                }
                             }
                         }
                     },
                     "401": {
-                        "description": "The authentication you supplied is incorrect",
+                        "description": "Unauthorized",
                         "content": {
-                            "text/plain": {
-                                "example": "The authentication you supplied is incorrect"
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "error": "The authentication you supplied is incorrect"
+                                }
                             }
                         }
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/schedules/{scheduleId}": {
@@ -2256,6 +2360,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "_id": "skd_JTb4gjdiizqPoYqzh",
                                     "name": "Default schedule",
@@ -2301,42 +2409,60 @@
                             }
                         }
                     }
-                }
+                },
+                "parameters": []
             },
             "patch": {
                 "summary": "Update Schedule",
                 "tags": [
                     "Schedules"
                 ],
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ],
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
                                     "name": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "description": "The name of the schedule"
                                     },
                                     "secondsToWait": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "description": "Delay in seconds between operations"
                                     },
                                     "timezone": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "description": "Timezone for the schedule (e.g., 'Europe/Paris')"
                                     },
                                     "start": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "description": "Start time in HH:mm format",
+                                        "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
                                     },
                                     "end": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "description": "End time in HH:mm format",
+                                        "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
                                     },
                                     "weekdays": {
                                         "type": "array",
                                         "items": {
-                                            "type": "integer"
-                                        }
+                                            "type": "integer",
+                                            "minimum": 1,
+                                            "maximum": 7
+                                        },
+                                        "description": "Days of the week the schedule is active (1=Monday, 7=Sunday)"
                                     },
                                     "public": {
-                                        "type": "boolean"
+                                        "type": "boolean",
+                                        "description": "Set to true to make the schedule visible to use as a template"
                                     }
                                 }
                             },
@@ -2348,28 +2474,129 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Schedule successfully updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "_id": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "secondsToWait": {
+                                            "type": "integer"
+                                        },
+                                        "timezone": {
+                                            "type": "string"
+                                        },
+                                        "start": {
+                                            "type": "string"
+                                        },
+                                        "end": {
+                                            "type": "string"
+                                        },
+                                        "weekdays": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "public": {
+                                            "type": "boolean"
+                                        },
+                                        "teamId": {
+                                            "type": "string"
+                                        },
+                                        "updatedAt": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "_id": "skd_JTb4gjdiizqPoYqzh",
+                                    "name": "Schedule new name",
+                                    "secondsToWait": 120,
+                                    "timezone": "Europe/Paris",
+                                    "start": "09:00",
+                                    "end": "18:00",
+                                    "weekdays": [
+                                        1,
+                                        2,
+                                        3,
+                                        4,
+                                        5
+                                    ],
+                                    "public": false,
+                                    "teamId": "tea_Lq4kN7R2pqEA4YFst",
+                                    "updatedAt": "2025-01-18T10:21:42.000Z"
+                                }
+                            }
+                        }
                     },
                     "400": {
-                        "description": "Bad team",
+                        "description": "Bad request (invalid data or team)",
                         "content": {
-                            "text/plain": {
-                                "example": "Bad team"
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "error": "BadRequest",
+                                    "message": "Bad team or invalid schedule update"
+                                }
                             }
                         }
                     },
                     "401": {
-                        "description": "Unauthorized"
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "error": "The authentication you supplied is incorrect"
+                                }
+                            }
+                        }
                     },
                     "404": {
                         "description": "Schedule not found",
                         "content": {
-                            "text/plain": {
-                                "example": "Schedule not found"
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "error": "Schedule not found"
+                                }
                             }
                         }
                     }
-                }
+                },
+                "parameters": []
             },
             "delete": {
                 "summary": "Delete Schedule",
@@ -2381,6 +2608,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "_id": "skd_L2sKZ3HMddtrfmHGr"
                                 }
@@ -2406,7 +2637,8 @@
                             }
                         }
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/campaigns/{campaignId}/schedules/": {
@@ -2450,7 +2682,8 @@
                             }
                         }
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/campaigns/{campaignId}/schedules/{scheduleId}": {
@@ -2486,6 +2719,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "scheduleId": "skd_CBHNKLZsZr3FFJHPK",
                                     "campaignId": "cam_SaAarzTsXms8BENvR"
@@ -2515,7 +2752,8 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/leads": {
@@ -2566,6 +2804,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "email": "john.doe@domain.com",
                                     "firstName": "John",
@@ -2640,6 +2882,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "email": "john.doe@domain.com",
                                     "firstName": "John",
@@ -2826,6 +3072,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
                                     "campaignName": "Insights Outreach 2024",
@@ -2913,7 +3163,8 @@
                             }
                         }
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/campaigns/{campaignId}/leads/{leadId}": {
@@ -2979,6 +3230,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
                                     "campaignName": "Insights Outreach 2024",
@@ -3015,7 +3270,8 @@
                     "500": {
                         "description": "Lead in graveyard"
                     }
-                }
+                },
+                "parameters": []
             },
             "delete": {
                 "summary": "Delete Lead",
@@ -3092,6 +3348,13 @@
                         "description": "Success - all campaigns",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "additionalProperties": true
+                                    }
+                                },
                                 "example": [
                                     {
                                         "email": "john.doe@domain.com",
@@ -3119,7 +3382,8 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/leads/pause/{leadId}": {
@@ -3157,6 +3421,13 @@
                         "description": "Success - all campaigns",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "additionalProperties": true
+                                    }
+                                },
                                 "example": [
                                     {
                                         "email": "john.doe@domain.com",
@@ -3211,6 +3482,13 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "additionalProperties": true
+                                    }
+                                },
                                 "example": [
                                     {
                                         "email": "john.doe@domain.com",
@@ -3236,7 +3514,8 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/leads/notinterested/{leadIdOrEmail}": {
@@ -3263,6 +3542,13 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "additionalProperties": true
+                                    }
+                                },
                                 "example": [
                                     {
                                         "email": "john.doe@domain.com",
@@ -3287,7 +3573,8 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/campaigns/{campaignId}/leads/{leadIdOrEmail}/interested": {
@@ -3323,6 +3610,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "email": "john.doe@domain.com",
                                     "_id": "lea_7kMNQwplxvvD2hf5z",
@@ -3345,7 +3636,8 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/campaigns/{campaignId}/leads/{leadIdOrEmail}/notinterested": {
@@ -3394,7 +3686,8 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/leads/{leadId}/variables": {
@@ -3433,6 +3726,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "ok": true
                                 }
@@ -3483,6 +3780,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "ok": true
                                 }
@@ -3603,6 +3904,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "ok": true,
                                     "status": {
@@ -3678,6 +3983,13 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "additionalProperties": true
+                                    }
+                                },
                                 "example": [
                                     {
                                         "id": 16,
@@ -3770,6 +4082,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "ok": true
                                 }
@@ -3787,7 +4103,8 @@
                     "401": {
                         "description": "Unauthorized"
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/database/filters": {
@@ -3801,6 +4118,13 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "additionalProperties": true
+                                    }
+                                },
                                 "example": [
                                     {
                                         "filterId": "country",
@@ -3835,7 +4159,8 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/database/people": {
@@ -3898,6 +4223,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "results": [],
                                     "total": 18540918,
@@ -3930,7 +4259,8 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/schema/people": {
@@ -3945,6 +4275,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "schema": {
                                         "lead_id": 231488528,
@@ -3978,7 +4312,8 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/database/companies": {
@@ -4041,6 +4376,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "results": [],
                                     "total": 18540918,
@@ -4069,7 +4408,8 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/schema/companies": {
@@ -4084,6 +4424,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "schema": {
                                         "company_id": 7842391,
@@ -4116,7 +4460,8 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/tasks": {
@@ -4130,6 +4475,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "results": [
                                         {
@@ -4163,7 +4512,8 @@
                             }
                         }
                     }
-                }
+                },
+                "parameters": []
             },
             "post": {
                 "summary": "Create Task",
@@ -4224,7 +4574,8 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                }
+                },
+                "parameters": []
             },
             "patch": {
                 "summary": "Update Task",
@@ -4273,7 +4624,8 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/tasks/ignore": {
@@ -4282,6 +4634,7 @@
                 "tags": [
                     "Tasks"
                 ],
+                "parameters": [],
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -4377,6 +4730,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "data": [
                                         {
@@ -4485,6 +4842,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "data": [
                                         {
@@ -4605,6 +4966,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "ok": true
                                 }
@@ -4630,7 +4995,8 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/inbox/linkedin": {
@@ -4708,7 +5074,8 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/inbox/whatsapp": {
@@ -4785,7 +5152,8 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/contacts": {
@@ -4799,6 +5167,13 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "additionalProperties": true
+                                    }
+                                },
                                 "example": [
                                     {
                                         "_id": "ctc_Ri5gMtaeDGufRQ3M2",
@@ -4843,7 +5218,8 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/contacts/{idOrEmail}": {
@@ -4869,6 +5245,10 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "_id": "ctc_Ri5gMtaeDGufRQ3M2",
                                     "teamId": "tea_8GdMrBZ3gf4p2rj2h",
@@ -4911,7 +5291,8 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/lemwarm/{userMailboxId}/start": {
@@ -4932,11 +5313,16 @@
                 "tags": [
                     "lemwarm"
                 ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "ok": true
                                 }
@@ -4983,11 +5369,16 @@
                 "tags": [
                     "lemwarm"
                 ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "ok": true
                                 }
@@ -5034,11 +5425,16 @@
                 "tags": [
                     "lemwarm"
                 ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
                                 "example": {
                                     "warmEmailRampup": 5,
                                     "warmEmailMax": 5,
@@ -5077,6 +5473,7 @@
                 "tags": [
                     "lemwarm"
                 ],
+                "parameters": [],
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -5426,7 +5823,8 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                }
+                },
+                "parameters": []
             }
         },
         "/activities": {
@@ -5955,7 +6353,8 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "type": "object"
+                                        "type": "object",
+                                        "additionalProperties": true
                                     }
                                 },
                                 "example": [
@@ -5987,7 +6386,8 @@
                             }
                         }
                     }
-                }
+                },
+                "parameters": []
             },
             "post": {
                 "summary": "Add Webhook",
