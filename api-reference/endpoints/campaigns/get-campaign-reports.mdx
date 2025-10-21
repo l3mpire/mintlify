@@ -1,0 +1,46 @@
+---
+openapi: get /campaigns/reports
+---
+
+This endpoint retrieves aggregated reports for one or multiple campaigns. It provides a convenient way to get export status and statistics across multiple campaigns in a single request.
+
+## Multiple campaigns
+
+Pass multiple campaign IDs as a comma-separated list in the `campaignIds` parameter:
+
+```bash
+https://api.lemlist.com/api/campaigns/reports?campaignIds=cam_123,cam_456,cam_789
+```
+
+## Response structure
+
+The response includes export status information similar to the [Get Campaign Export Status](/api-reference/endpoints/campaigns/get-campaign-export-status) endpoint, but can aggregate data across multiple campaigns.
+
+## Use cases
+
+This endpoint is particularly useful for:
+- **Dashboard views**: Get stats for multiple campaigns at once
+- **Portfolio reporting**: Monitor performance across several outreach campaigns
+- **Batch processing**: Check export status for multiple campaigns initiated earlier
+
+<Tip>
+This is more efficient than calling individual campaign endpoints when you need data from multiple campaigns.
+</Tip>
+
+## Example
+
+<CodeGroup>
+
+```bash Single campaign
+curl --request GET \
+  --url 'https://api.lemlist.com/api/campaigns/reports?campaignIds=cam_A1B2C3D4E5F6G7H8I9' \
+    --header 'Authorization: Basic <encoded-value>'
+```
+
+```bash Multiple campaigns
+curl --request GET \
+  --url 'https://api.lemlist.com/api/campaigns/reports?campaignIds=cam_123,cam_456,cam_789' \
+    --header 'Authorization: Basic <encoded-value>'
+```
+
+</CodeGroup>

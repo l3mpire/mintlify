@@ -1,0 +1,18 @@
+---
+openapi: get /campaigns
+---
+
+This endpoint retrieves the list of all campaigns.
+
+<Note>
+There are two versions of this route:
+
+- **v1 (default)**: Returns an array of campaigns based on the parameters given.
+- **v2**: Designed for pagination. It returns an array of campaigns and pagination information to help you easily navigate through the entire list if you have more than 100 elements.
+
+See the provided examples for more details.
+</Note>
+
+<Warning>
+We recommend migrating to v2 before the end of 2024 with the query parameter `version=v2`, after which v1 will be discontinued.
+</Warning>
