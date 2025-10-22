@@ -1,0 +1,88 @@
+---
+title: 'API Errors'
+description: 'Common error responses, status codes, and how to handle them.'
+---
+
+## HTTP Status Codes
+
+The lemlist API uses standard HTTP status codes to indicate the success or failure of requests:
+
+| Status Code | Meaning |
+|-------------|---------|
+| `200` | **Success** - The request was successful |
+| `400` | **Bad Request** - Invalid parameters or invalid team |
+| `401` | **Unauthorized** - Authentication is missing or invalid |
+| `403` | **Forbidden** - User is blocked |
+| `404` | **Not Found** - Resource does not exist |
+| `405` | **Method Not Allowed** - HTTP method is not allowed for this endpoint |
+| `429` | **Too Many Requests** - Rate limit exceeded |
+| `500` | **Internal Server Error** - An error occurred on the server |
+
+<Note>
+    For authentication related errors, refer to the <a href="/api-reference/getting-started/authentication">Authentication</a> section.
+</Note>
+
+## Common error messages
+
+<AccordionGroup>
+	<Accordion title="Bad team">
+		This indicates that the team associated with your API key is invalid or you don't have permission to access the requested resource.
+
+		<b>Common causes</b>
+		<ul>
+			<li>The resource belongs to a different team</li>
+			<li>Your API key doesn't have access to the requested team</li>
+			<li>Invalid team configuration</li>
+		</ul>
+	</Accordion>
+
+	<Accordion title="Bad params">
+		One or more request parameters are invalid.
+
+		<b>Common causes</b>
+		<ul>
+			<li>Missing required parameters</li>
+			<li>Invalid parameter format</li>
+			<li>Parameter values out of acceptable range</li>
+			<li>Invalid JSON in request body</li>
+		</ul>
+
+		<b>How to fix</b>: Review the endpoint documentation and ensure all required parameters are provided with correct formatting.
+	</Accordion>
+
+	<Accordion title="Bad request">
+		A generic error indicating that the request could not be processed due to client error.
+
+		<b>Common causes</b>
+		<ul>
+			<li>Malformed JSON</li>
+			<li>Invalid data types</li>
+			<li>Logical errors in request data</li>
+		</ul>
+	</Accordion>
+</AccordionGroup>
+
+
+## Best practices
+
+<Accordion title="Recommendations">
+	<ol>
+		<li><b>Always check the response status code</b> before processing the response body</li>
+		<li><b>Implement exponential backoff</b> for retrying failed requests</li>
+		<li><b>Log error responses</b> for debugging and monitoring</li>
+		<li><b>Handle authentication errors</b> by refreshing or validating your API key — see <a href="/api-reference/getting-started/authentication">Authentication</a></li>
+		<li><b>Respect rate limits</b> by implementing request throttling — see <a href="/api-reference/getting-started/rate-limits">Rate limits</a></li>
+		<li><b>Validate input</b> before sending requests to avoid unnecessary API calls</li>
+	</ol>
+</Accordion>
+
+## Getting help
+
+<Accordion title="If you need assistance">
+	If you encounter errors that are not documented here or need assistance:
+	<ol>
+		<li>Review the endpoint-specific documentation</li>
+		<li>Make sure you understood how <a href="/api-reference/getting-started/authentication">Authentication</a> works</li>
+		<li>Contact lemlist support through the <a href="https://lemlist.typeform.com/to/mfVlkyGf" target="_blank" rel="noreferrer">feedback form</a></li>
+	</ol>
+</Accordion>
