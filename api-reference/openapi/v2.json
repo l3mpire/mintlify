@@ -12,7 +12,14 @@
     ],
     "security": [
         {
-            "basicAuth": []
+            "basicAuth": [
+                {
+                    "description": "Basic authentication scheme for API access. Note: The login field must remain empty - only the API key should be provided as the password.",
+                    "type": "http",
+                    "scheme": "basic",
+                    "x-basic-info-link": "https://developer.lemlist.com/reference/authentication"
+                }
+            ]
         }
     ],
     "components": {

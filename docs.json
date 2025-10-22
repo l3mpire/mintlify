@@ -125,6 +125,7 @@
               "api-reference/getting-started/introduction",
               "api-reference/getting-started/authentication",
               "api-reference/getting-started/rate-limits",
+              "api-reference/getting-started/errors",
               "api-reference/getting-started/version",
               "api-reference/getting-started/feedback"
             ]
