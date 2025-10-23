@@ -85,33 +85,7 @@
           {
             "group": "User Guides",
             "pages": [
-              "guides/index",
-              "guides/quickstart",
-              "guides/development"
-            ]
-          },
-          {
-            "group": "Customization",
-            "pages": [
-              "guides/settings",
-              "guides/navigation"
-            ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "guides/markdown",
-              "guides/code",
-              "guides/images",
-              "guides/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "guides/index"
             ]
           }
         ]
