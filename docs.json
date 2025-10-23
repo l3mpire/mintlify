@@ -358,8 +358,8 @@
     "prompt": "Explain this for me pls"
   },
   "integrations": {
-    "intercom": {
-      "appId": "replace"
+    "ga4": {
+      "measurementId": "G-XRXQRF7W03"
     }
   },
   "errors": {
