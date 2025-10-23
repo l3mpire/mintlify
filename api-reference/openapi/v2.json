@@ -570,6 +570,32 @@
                     }
                 }
             },
+            "DatabaseCompany": {
+                "type": "object",
+                "description": "A company from the people database.",
+                "properties": {
+                    "company_id": {
+                        "type": "integer",
+                        "description": "Unique identifier of the company"
+                    },
+                    "company_name": {
+                        "type": "string",
+                        "description": "Name of the company"
+                    },
+                    "company_website_url": {
+                        "type": "string",
+                        "description": "Website URL of the company"
+                    },
+                    "company_employee_count": {
+                        "type": "integer",
+                        "description": "Number of employees in the company"
+                    },
+                    "company_industry": {
+                        "type": "string",
+                        "description": "Industry the company operates in"
+                    }
+                }
+            },
             "CompanyNote": {
                 "type": "object",
                 "description": "Notes attached to companies for tracking interactions and information.",
@@ -682,44 +708,42 @@
                 "properties": {
                     "_id": {
                         "type": "string",
-                        "description": "Unique identifier of the schedule"
+                        "description": "The unique identifier of the schedule"
                     },
                     "name": {
                         "type": "string",
-                        "description": "Name of the schedule"
+                        "description": "The name of the schedule"
+                    },
+                    "secondsToWait": {
+                        "type": "integer",
+                        "description": "Delay in seconds between operations"
                     },
                     "timezone": {
                         "type": "string",
-                        "description": "Timezone for the schedule"
+                        "description": "Timezone for the schedule (e.g., 'Europe/Paris')"
                     },
-                    "days": {
+                    "start": {
+                        "type": "string",
+                        "description": "Start time in HH:mm format",
+                        "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                    },
+                    "end": {
+                        "type": "string",
+                        "description": "End time in HH:mm format",
+                        "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                    },
+                    "weekdays": {
                         "type": "array",
-                        "description": "Days of the week when sending is allowed",
                         "items": {
-                            "type": "string",
-                            "enum": [
-                                "monday",
-                                "tuesday",
-                                "wednesday",
-                                "thursday",
-                                "friday",
-                                "saturday",
-                                "sunday"
-                            ]
-                        }
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 7
+                        },
+                        "description": "Days of the week the schedule is active (1=Monday, 7=Sunday)"
                     },
-                    "startTime": {
-                        "type": "string",
-                        "description": "Start time for sending (HH:MM format)"
-                    },
-                    "endTime": {
-                        "type": "string",
-                        "description": "End time for sending (HH:MM format)"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time",
-                        "description": "When the schedule was created"
+                    "public": {
+                        "type": "boolean",
+                        "description": "Set to true to make the schedule visible to use as a template"
                     }
                 }
             },
@@ -1039,31 +1063,24 @@
                 "type": "object",
                 "description": "A person in the people database.",
                 "properties": {
-                    "_id": {
+                    "lead_id": {
+                        "type": "string"
+                    },
+                    "full_name": {
                         "type": "string"
                     },
                     "email": {
                         "type": "string",
                         "format": "email"
                     },
-                    "firstName": {
+                    "title": {
                         "type": "string"
                     },
-                    "lastName": {
-                        "type": "string"
-                    },
-                    "companyName": {
-                        "type": "string"
-                    },
-                    "jobTitle": {
+                    "company_name": {
                         "type": "string"
                     },
                     "location": {
                         "type": "string"
-                    },
-                    "createdAt": {
-                        "type": "string",
-                        "format": "date-time"
                     }
                 }
             },
@@ -2680,6 +2697,24 @@
                         "description": "Campaign or export not found",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "ok": {
+                                                    "type": "boolean"
+                                                },
+                                                "message": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
                                 "examples": {
                                     "exportNotFound": {
                                         "summary": "Export not found",
@@ -3845,58 +3880,7 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "properties": {
-                                        "_id": {
-                                            "type": "string"
-                                        },
-                                        "name": {
-                                            "type": "string"
-                                        },
-                                        "secondsToWait": {
-                                            "type": "integer"
-                                        },
-                                        "timezone": {
-                                            "type": "string"
-                                        },
-                                        "start": {
-                                            "type": "string"
-                                        },
-                                        "end": {
-                                            "type": "string"
-                                        },
-                                        "weekdays": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "integer"
-                                            }
-                                        },
-                                        "public": {
-                                            "type": "boolean"
-                                        },
-                                        "teamId": {
-                                            "type": "string"
-                                        },
-                                        "createdBy": {
-                                            "type": "string"
-                                        },
-                                        "createdAt": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        }
-                                    },
-                                    "required": [
-                                        "_id",
-                                        "name",
-                                        "secondsToWait",
-                                        "timezone",
-                                        "start",
-                                        "end",
-                                        "weekdays",
-                                        "public",
-                                        "teamId",
-                                        "createdBy",
-                                        "createdAt"
-                                    ]
+                                    "$ref": "#/components/schemas/Schedule"
                                 },
                                 "example": {
                                     "_id": "skd_JTb4gjdiizqPoYqzh",
@@ -3988,8 +3972,16 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "additionalProperties": true
+                                    "$ref": "#/components/schemas/Schedule",
+                                    "required": [
+                                        "_id",
+                                        "name",
+                                        "secondsToWait",
+                                        "timezone",
+                                        "start",
+                                        "end",
+                                        "weekdays"
+                                    ]
                                 },
                                 "example": {
                                     "_id": "skd_JTb4gjdiizqPoYqzh",
@@ -4237,7 +4229,11 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "_id": {
+                                            "type": "string"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "_id": "skd_L2sKZ3HMddtrfmHGr"
@@ -4414,7 +4410,14 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "scheduleId": {
+                                            "type": "string"
+                                        },
+                                        "campaignId": {
+                                            "type": "string"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "scheduleId": "skd_CBHNKLZsZr3FFJHPK",
@@ -4499,7 +4502,37 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "email": {
+                                            "type": "string",
+                                            "format": "email",
+                                            "description": "Email address of the lead"
+                                        },
+                                        "firstName": {
+                                            "type": "string",
+                                            "description": "First name of the lead"
+                                        },
+                                        "lastName": {
+                                            "type": "string",
+                                            "description": "Last name of the lead"
+                                        },
+                                        "_id": {
+                                            "type": "string",
+                                            "description": "Unique identifier for the lead"
+                                        },
+                                        "isPaused": {
+                                            "type": "boolean",
+                                            "description": "Indicates if the lead is paused"
+                                        },
+                                        "campaignId": {
+                                            "type": "string",
+                                            "description": "ID of the campaign the lead is associated with"
+                                        },
+                                        "emailStatus": {
+                                            "type": "string",
+                                            "description": "Email status of the lead"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "email": "john.doe@domain.com",
@@ -4576,8 +4609,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "additionalProperties": true
+                                    "$ref": "#/components/schemas/Lead"
                                 },
                                 "example": {
                                     "email": "john.doe@domain.com",
@@ -4767,7 +4799,34 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "campaignId": {
+                                            "type": "string"
+                                        },
+                                        "campaignName": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "format": "email"
+                                        },
+                                        "firstName": {
+                                            "type": "string"
+                                        },
+                                        "lastName": {
+                                            "type": "string"
+                                        },
+                                        "_id": {
+                                            "type": "string"
+                                        },
+                                        "isPaused": {
+                                            "type": "boolean",
+                                            "description": "Whether the lead is paused in the campaign"
+                                        },
+                                        "leadUrl": {
+                                            "type": "string"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
@@ -4826,6 +4885,29 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "firstName": {
+                                            "type": "string"
+                                        },
+                                        "lastName": {
+                                            "type": "string"
+                                        },
+                                        "_id": {
+                                            "type": "string"
+                                        },
+                                        "isPaused": {
+                                            "type": "boolean"
+                                        },
+                                        "campaignId": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
                                 "example": {
                                     "email": "john.doe@domain.com",
                                     "firstName": "John",
@@ -4925,7 +5007,37 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "campaignId": {
+                                            "type": "string"
+                                        },
+                                        "campaignName": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "format": "email"
+                                        },
+                                        "firstName": {
+                                            "type": "string"
+                                        },
+                                        "lastName": {
+                                            "type": "string"
+                                        },
+                                        "preferredContactMethod": {
+                                            "type": "string"
+                                        },
+                                        "_id": {
+                                            "type": "string"
+                                        },
+                                        "isPaused": {
+                                            "type": "boolean",
+                                            "description": "Whether the lead is paused in the campaign"
+                                        },
+                                        "leadUrl": {
+                                            "type": "string"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
@@ -4988,6 +5100,20 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "_id": {
+                                            "type": "string"
+                                        },
+                                        "campaignId": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
                                 "example": {
                                     "email": "john.doe@domain.com",
                                     "_id": "lea_7kMNQwplxvvD2hf5z",
@@ -5045,7 +5171,27 @@
                                     "type": "array",
                                     "items": {
                                         "type": "object",
-                                        "additionalProperties": true
+                                        "properties": {
+                                            "email": {
+                                                "type": "string",
+                                                "format": "email"
+                                            },
+                                            "firstName": {
+                                                "type": "string"
+                                            },
+                                            "lastName": {
+                                                "type": "string"
+                                            },
+                                            "_id": {
+                                                "type": "string"
+                                            },
+                                            "isPaused": {
+                                                "type": "boolean"
+                                            },
+                                            "campaignId": {
+                                                "type": "string"
+                                            }
+                                        }
                                     }
                                 },
                                 "example": [
@@ -5118,7 +5264,26 @@
                                     "type": "array",
                                     "items": {
                                         "type": "object",
-                                        "additionalProperties": true
+                                        "properties": {
+                                            "email": {
+                                                "type": "string"
+                                            },
+                                            "firstName": {
+                                                "type": "string"
+                                            },
+                                            "lastName": {
+                                                "type": "string"
+                                            },
+                                            "_id": {
+                                                "type": "string"
+                                            },
+                                            "isPaused": {
+                                                "type": "boolean"
+                                            },
+                                            "campaignId": {
+                                                "type": "string"
+                                            }
+                                        }
                                     }
                                 },
                                 "example": [
@@ -5179,7 +5344,20 @@
                                     "type": "array",
                                     "items": {
                                         "type": "object",
-                                        "additionalProperties": true
+                                        "properties": {
+                                            "email": {
+                                                "type": "string"
+                                            },
+                                            "firstName": {
+                                                "type": "string"
+                                            },
+                                            "_id": {
+                                                "type": "string"
+                                            },
+                                            "campaignId": {
+                                                "type": "string"
+                                            }
+                                        }
                                     }
                                 },
                                 "example": [
@@ -5239,7 +5417,17 @@
                                     "type": "array",
                                     "items": {
                                         "type": "object",
-                                        "additionalProperties": true
+                                        "properties": {
+                                            "email": {
+                                                "type": "string"
+                                            },
+                                            "_id": {
+                                                "type": "string"
+                                            },
+                                            "campaignId": {
+                                                "type": "string"
+                                            }
+                                        }
                                     }
                                 },
                                 "example": [
@@ -5305,7 +5493,17 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "_id": {
+                                            "type": "string"
+                                        },
+                                        "campaignId": {
+                                            "type": "string"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "email": "john.doe@domain.com",
@@ -5621,7 +5819,31 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "ok": {
+                                            "type": "boolean"
+                                        },
+                                        "status": {
+                                            "type": "object",
+                                            "properties": {
+                                                "url": {
+                                                    "type": "string"
+                                                },
+                                                "teamId": {
+                                                    "type": "string"
+                                                },
+                                                "campaignId": {
+                                                    "type": "string"
+                                                },
+                                                "leadId": {
+                                                    "type": "string"
+                                                },
+                                                "fileName": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "ok": true,
@@ -5938,14 +6160,51 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "results": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PeopleSchema"
+                                            }
+                                        },
+                                        "total": {
+                                            "type": "integer"
+                                        },
+                                        "took": {
+                                            "type": "integer"
+                                        },
+                                        "page": {
+                                            "type": "integer"
+                                        },
+                                        "size": {
+                                            "type": "integer"
+                                        },
+                                        "search": {
+                                            "type": "string"
+                                        },
+                                        "limitation": {
+                                            "type": "integer"
+                                        },
+                                        "team": {
+                                            "type": "string"
+                                        }
+                                    }
                                 },
                                 "example": {
-                                    "results": [],
+                                    "results": [
+                                        {
+                                            "lead_id": 231488528,
+                                            "full_name": "John Doe",
+                                            "email": "john.doe@example.com",
+                                            "title": "Senior Machine Learning Engineer",
+                                            "company_name": "TechCorp Inc.",
+                                            "location": "San Francisco Bay Area"
+                                        }
+                                    ],
                                     "total": 18540918,
                                     "took": 903,
                                     "page": 1,
-                                    "size": 100,
+                                    "size": 1,
                                     "search": "lsh_ENeC6oBSdwSArkywL",
                                     "limitation": 999,
                                     "team": "tea_MtScZ2GexXzHXRdTr"
@@ -5989,7 +6248,16 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/PeopleSchema"
+                                    "type": "object",
+                                    "properties": {
+                                        "schema": {
+                                            "type": "object",
+                                            "$ref": "#/components/schemas/PeopleSchema"
+                                        },
+                                        "version": {
+                                            "type": "integer"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "schema": {
@@ -6090,13 +6358,38 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "results": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "$ref": "#/components/schemas/CompaniesSchema"
+                                            }
+                                        },
+                                        "total": {
+                                            "type": "integer"
+                                        },
+                                        "page": {
+                                            "type": "integer"
+                                        },
+                                        "size": {
+                                            "type": "integer"
+                                        }
+                                    }
                                 },
                                 "example": {
-                                    "results": [],
+                                    "results": [
+                                        {
+                                            "company_id": 7842391,
+                                            "company_name": "InnovateTech Solutions",
+                                            "company_website_url": "https://www.innovatetech.io",
+                                            "company_employee_count": 245,
+                                            "company_industry": "Information Technology"
+                                        }
+                                    ],
                                     "total": 18540918,
                                     "page": 1,
-                                    "size": 100
+                                    "size": 1
                                 }
                             }
                         }
@@ -6138,7 +6431,15 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "schema": {
+                                            "type": "object",
+                                            "$ref": "#/components/schemas/CompaniesSchema"
+                                        },
+                                        "version": {
+                                            "type": "integer"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "schema": {
@@ -6802,6 +7103,14 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "ok": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                },
                                 "example": {
                                     "ok": true
                                 }
@@ -7252,6 +7561,14 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "ok": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                },
                                 "example": {
                                     "ok": true
                                 }
@@ -7549,6 +7866,9 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CompanyNote"
+                                },
                                 "example": {
                                     "_id": "not_XYZ789",
                                     "note": "Note created from the API!",
@@ -8116,7 +8436,26 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object"
+                                    "type": "object",
+                                    "properties": {
+                                        "_id": {
+                                            "type": "string",
+                                            "description": "Unique identifier for the unsubscribe entry"
+                                        },
+                                        "createdAt": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "description": "Timestamp when the unsubscribe entry was created"
+                                        },
+                                        "value": {
+                                            "type": "string",
+                                            "description": "The unsubscribed email address"
+                                        },
+                                        "source": {
+                                            "type": "string",
+                                            "description": "Source of the unsubscribe (e.g., user, lead, abuse, bounce, api)"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "_id": "uns_Y9Lf5R2mpNWs8x0cz",
@@ -8357,11 +8696,26 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object"
+                                    "type": "object",
+                                    "properties": {
+                                        "_id": {
+                                            "type": "string",
+                                            "description": "Unique identifier for the webhook"
+                                        },
+                                        "targetUrl": {
+                                            "type": "string",
+                                            "description": "The URL where the webhook will send data"
+                                        },
+                                        "createdAt": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "description": "Timestamp when the webhook was created"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "_id": "hoo_dJt787EqeEmo7yxab",
-                                    "targetUrl": "https://webhook.site/1d50ac35-2755-42cc-964c-9acbb4ebca30",
+                                    "targetUrl": "https://webhook.site/*your-webhook-id*/",
                                     "createdAt": "2024-07-11T13:51:44.918Z"
                                 }
                             }
@@ -8422,11 +8776,34 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object"
+                                    "type": "object",
+                                    "properties": {
+                                        "_id": {
+                                            "type": "string",
+                                            "description": "Unique identifier for the webhook"
+                                        },
+                                        "targetUrl": {
+                                            "type": "string",
+                                            "description": "The URL where the webhook will send data"
+                                        },
+                                        "createdAt": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "description": "Timestamp when the webhook was created"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "description": "Type of webhook event"
+                                        },
+                                        "campaignId": {
+                                            "type": "string",
+                                            "description": "Associated campaign ID, if applicable"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "_id": "hoo_orQP33YrZgeKkswJK",
-                                    "targetUrl": "https://webhook.site/1d50ac35-2755-42cc-964c-9acbb4ebca30",
+                                    "targetUrl": "https://webhook.site/*your-webhook-id*/",
                                     "createdAt": "2024-07-11T13:55:06.276Z",
                                     "type": "linkedinInterested",
                                     "campaignId": "cam_A1B2C3D4E5F6G7H8I9"
