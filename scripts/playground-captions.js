@@ -29,7 +29,7 @@
 
     function applyHints() {
         insertCaptionFor(USERNAME_TITLE, 'Leave this value empty');
-        insertCaptionFor(PASSWORD_TITLE, 'Use your API token with a prepended colon, e.g. :YOUR_TOKEN');
+        insertCaptionFor(PASSWORD_TITLE, 'Use your API token here');
     }
 
     // Initial run (after hydration)
