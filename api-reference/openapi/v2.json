@@ -3694,8 +3694,7 @@
                             "content": {
                                 "application/json": {
                                     "schema": {
-                                        "type": "object",
-                                        "additionalProperties": true
+                                        "$ref": "#/components/schemas/ScheduleListResponse"
                                     },
                                     "example": {
                                         "schedules": [
@@ -5613,8 +5612,7 @@
                                     "schema": {
                                         "type": "array",
                                         "items": {
-                                            "type": "object",
-                                            "additionalProperties": true
+                                            "$ref": "#/components/schemas/CrmFilter"
                                         }
                                     },
                                     "example": [
@@ -5748,8 +5746,7 @@
                                     "schema": {
                                         "type": "array",
                                         "items": {
-                                            "type": "object",
-                                            "additionalProperties": true
+                                            "$ref": "#/components/schemas/DatabaseFilter"
                                         }
                                     },
                                     "example": [
@@ -5903,8 +5900,7 @@
                             "content": {
                                 "application/json": {
                                     "schema": {
-                                        "type": "object",
-                                        "additionalProperties": true
+                                        "$ref": "#/components/schemas/PeopleSchema"
                                     },
                                     "example": {
                                         "schema": {
@@ -6103,8 +6099,7 @@
                             "content": {
                                 "application/json": {
                                     "schema": {
-                                        "type": "object",
-                                        "additionalProperties": true
+                                        "$ref": "#/components/schemas/TaskListResponse"
                                     },
                                     "example": {
                                         "results": [
@@ -6358,8 +6353,7 @@
                             "content": {
                                 "application/json": {
                                     "schema": {
-                                        "type": "object",
-                                        "additionalProperties": true
+                                        "$ref": "#/components/schemas/InboxConversationPagination"
                                     },
                                     "example": {
                                         "data": [
@@ -6470,8 +6464,7 @@
                             "content": {
                                 "application/json": {
                                     "schema": {
-                                        "type": "object",
-                                        "additionalProperties": true
+                                        "$ref": "#/components/schemas/InboxMessagePagination"
                                     },
                                     "example": {
                                         "data": [
@@ -7057,8 +7050,7 @@
                             "content": {
                                 "application/json": {
                                     "schema": {
-                                        "type": "object",
-                                        "additionalProperties": true
+                                        "$ref": "#/components/schemas/LemwarmSettings"
                                     },
                                     "example": {
                                         "warmEmailRampup": 5,
