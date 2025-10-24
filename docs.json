@@ -377,7 +377,7 @@
     "404": {
       "redirect": false,
       "title": "someone took the wrong turn 🌝",
-      "description": "![404](./images/confused-monkey.jpg)\n\nWe could make the best of the 404 page and use it to capture new leads ;)"
+      "description": "![404](/images/utils/confused-monkey.jpg)"
     }
   },
   "contextual": {
