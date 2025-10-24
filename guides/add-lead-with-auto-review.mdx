@@ -1,0 +1,45 @@
+---
+title: "Add lead with auto review"
+description: "Learn how to add leads to your lemlist campaign automatically when they fill out a form, with auto-review enabled"
+---
+
+## Overview
+
+This guide will walk you through setting up an automated workflow to add leads to your lemlist campaign with auto-review enabled. Perfect for capturing form submissions and automatically enrolling them in your campaigns.
+
+## Setup in lemlist
+
+<Steps>
+    <Step title="Create your campaign">
+        Navigate to lemlist and create a new campaign with your desired email sequence.
+    </Step>
+    
+    <Step title="Enable auto-review">
+        In your campaign settings, activate the **auto-review** feature to automatically process new leads.
+    </Step>
+    
+    <Step title="Get your campaign ID">
+        Find your `campaign_id` in the URL (the part starting with `cam_`):
+        
+        ```
+        https://app.lemlist.com/teams/tea_aeAxLzL3nyWmvRaC9/campaigns-next/cam_efScYHHY2X7mR85Jc/leads
+                                                                           ^^^^^^^^^^^^^^^^^^^^
+        ```
+    </Step>
+</Steps>
+
+## Using the API
+
+<Steps>
+    <Step title="Add lead via API">
+        Use the [Create Lead in Campaign](/api-reference/endpoints/leads/create-lead-in-campaign) endpoint to add leads programmatically.
+    </Step>
+    
+    <Step title="Activate your workflow">
+        Once configured, your leads will be automatically added to the campaign and processed by auto-review.
+    </Step>
+</Steps>
+
+## Integration Examples
+
+### Using n8n
