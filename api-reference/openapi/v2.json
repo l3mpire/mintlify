@@ -25,19 +25,19 @@
         "schemas": {
             "Team": {
                 "type": "object",
-                "description": "A team is the entity of lemlist that can handle users and billing.",
+                "description": "The organization account that manages users and billing.",
                 "properties": {
                     "_id": {
                         "type": "string",
-                        "description": "Unique identifier of the team"
+                        "description": "Unique team identifier"
                     },
                     "name": {
                         "type": "string",
-                        "description": "Name of the team"
+                        "description": "Team name"
                     },
                     "userIds": {
                         "type": "array",
-                        "description": "Array of user IDs that belong to this team",
+                        "description": "User IDs in this team",
                         "items": {
                             "type": "string"
                         }
@@ -72,7 +72,7 @@
                     },
                     "invitedUsers": {
                         "type": "array",
-                        "description": "Users who have been invited to join the team",
+                        "description": "Pending user invitations",
                         "items": {
                             "type": "object",
                             "properties": {
@@ -99,7 +99,7 @@
                     },
                     "pictureId": {
                         "type": "string",
-                        "description": "Team picture file identifier"
+                        "description": "Team profile picture file ID"
                     }
                 }
             },
@@ -109,7 +109,7 @@
                 "properties": {
                     "credits": {
                         "type": "integer",
-                        "description": "Total number of credits remaining"
+                        "description": "Total credits remaining"
                     },
                     "details": {
                         "type": "object",
@@ -119,23 +119,23 @@
                                 "properties": {
                                     "total": {
                                         "type": "integer",
-                                        "description": "Total remaining credits"
+                                        "description": "Total credits remaining"
                                     },
                                     "freemium": {
                                         "type": "integer",
-                                        "description": "Remaining freemium credits"
+                                        "description": "Freemium credits remaining"
                                     },
                                     "subscription": {
                                         "type": "integer",
-                                        "description": "Remaining subscription credits"
+                                        "description": "Subscription credits remaining"
                                     },
                                     "gifted": {
                                         "type": "integer",
-                                        "description": "Remaining gifted credits"
+                                        "description": "Gifted credits remaining"
                                     },
                                     "paid": {
                                         "type": "integer",
-                                        "description": "Remaining paid credits"
+                                        "description": "Paid credits remaining"
                                     }
                                 }
                             }
@@ -145,20 +145,20 @@
             },
             "User": {
                 "type": "object",
-                "description": "A user account to connect to lemlist and send messages via connected emails or LinkedIn account.",
+                "description": "A team member account with connected email and/or LinkedIn sending capabilities.",
                 "properties": {
                     "_id": {
                         "type": "string",
-                        "description": "Unique identifier of the user"
+                        "description": "Unique user identifier"
                     },
                     "email": {
                         "type": "string",
                         "format": "email",
-                        "description": "User's email address"
+                        "description": "User email address"
                     },
                     "role": {
                         "type": "string",
-                        "description": "User's role in the team (admin, member, etc.)"
+                        "description": "User role in the team (admin, member, etc.)"
                     },
                     "linkedIn": {
                         "type": "object",
@@ -193,19 +193,19 @@
             },
             "Campaign": {
                 "type": "object",
-                "description": "A campaign is the entity to automate outreach. A campaign has multiple sequences composed of steps.",
+                "description": "An automated outreach workflow containing sequences of steps.",
                 "properties": {
                     "_id": {
                         "type": "string",
-                        "description": "Unique identifier of the campaign"
+                        "description": "Unique campaign identifier"
                     },
                     "name": {
                         "type": "string",
-                        "description": "Name of the campaign"
+                        "description": "Campaign name"
                     },
                     "labels": {
                         "type": "array",
-                        "description": "Labels for categorizing the campaign",
+                        "description": "Categorization labels",
                         "items": {
                             "type": "string"
                         }
@@ -213,15 +213,15 @@
                     "createdAt": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "Date and time when the campaign was created"
+                        "description": "Creation timestamp"
                     },
                     "createdBy": {
                         "type": "string",
-                        "description": "User ID who created the campaign"
+                        "description": "Creator user ID"
                     },
                     "status": {
                         "type": "string",
-                        "description": "Current status of the campaign",
+                        "description": "Campaign status",
                         "enum": [
                             "running",
                             "paused",
@@ -233,11 +233,11 @@
                     },
                     "sequenceId": {
                         "type": "string",
-                        "description": "ID of the main sequence"
+                        "description": "Main sequence ID"
                     },
                     "scheduleIds": {
                         "type": "array",
-                        "description": "Array of schedule IDs associated with this campaign",
+                        "description": "Associated schedule IDs",
                         "items": {
                             "type": "string"
                         }
@@ -252,7 +252,7 @@
                     },
                     "isEnded": {
                         "type": "boolean",
-                        "description": "Whether the campaign has ended"
+                        "description": "Completion status"
                     },
                     "hasError": {
                         "type": "boolean",
@@ -262,32 +262,32 @@
             },
             "Lead": {
                 "type": "object",
-                "description": "A lead is a person that you try to contact via a campaign.",
+                "description": "A prospect added to a campaign for outreach.",
                 "properties": {
                     "_id": {
                         "type": "string",
-                        "description": "Unique identifier of the lead"
+                        "description": "Unique lead identifier"
                     },
                     "email": {
                         "type": "string",
                         "format": "email",
-                        "description": "Email address of the lead"
+                        "description": "Lead email address"
                     },
                     "firstName": {
                         "type": "string",
-                        "description": "First name of the lead"
+                        "description": "First name"
                     },
                     "lastName": {
                         "type": "string",
-                        "description": "Last name of the lead"
+                        "description": "Last name"
                     },
                     "companyName": {
                         "type": "string",
-                        "description": "Company name of the lead"
+                        "description": "Company name"
                     },
                     "phone": {
                         "type": "string",
-                        "description": "Phone number of the lead"
+                        "description": "Phone number"
                     },
                     "linkedinUrl": {
                         "type": "string",
@@ -313,37 +313,37 @@
                     },
                     "isUnsubscribed": {
                         "type": "boolean",
-                        "description": "Whether the lead has unsubscribed"
+                        "description": "Whether the lead is unsubscribed"
                     }
                 }
             },
             "Activity": {
                 "type": "object",
-                "description": "An activity is the history of all the steps. It represents an action taken in a campaign sequence.",
+                "description": "A recorded action or event in a campaign sequence (email sent, opened, clicked, etc.).",
                 "properties": {
                     "_id": {
                         "type": "string",
-                        "description": "Unique identifier of the activity"
+                        "description": "Unique activity identifier"
                     },
                     "type": {
                         "type": "string",
-                        "description": "Type of activity (emailOpened, emailClicked, emailReplied, etc.)"
+                        "description": "Activity type (emailOpened, emailClicked, emailReplied, etc.)"
                     },
                     "leadId": {
                         "type": "string",
-                        "description": "ID of the lead associated with this activity"
+                        "description": "Associated lead ID"
                     },
                     "campaignId": {
                         "type": "string",
-                        "description": "ID of the campaign"
+                        "description": "Campaign ID"
                     },
                     "sequenceId": {
                         "type": "string",
-                        "description": "ID of the sequence"
+                        "description": "Sequence ID"
                     },
                     "stepId": {
                         "type": "string",
-                        "description": "ID of the step"
+                        "description": "Step ID"
                     },
                     "createdAt": {
                         "type": "string",
@@ -354,16 +354,16 @@
             },
             "Unsubscribe": {
                 "type": "object",
-                "description": "An unsubscribe occurs when a person decides they don't want to receive emails from you anymore.",
+                "description": "A record of someone opting out of receiving emails.",
                 "properties": {
                     "_id": {
                         "type": "string",
-                        "description": "Unique identifier of the unsubscribe"
+                        "description": "Unique unsubscribe identifier"
                     },
                     "email": {
                         "type": "string",
                         "format": "email",
-                        "description": "Email address that unsubscribed"
+                        "description": "Unsubscribed email address"
                     },
                     "campaignId": {
                         "type": "string",
@@ -376,11 +376,11 @@
                     "unsubscribedAt": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "When the unsubscribe occurred"
+                        "description": "Unsubscribe timestamp"
                     },
                     "scope": {
                         "type": "string",
-                        "description": "Scope of unsubscribe (campaign, team, global)",
+                        "description": "Unsubscribe scope",
                         "enum": [
                             "campaign",
                             "team",
@@ -391,15 +391,15 @@
             },
             "Enrich": {
                 "type": "object",
-                "description": "Enrichment data for finding emails, phone numbers, and other contact information.",
+                "description": "Contact information discovered through data enrichment (emails, phone numbers, LinkedIn URLs).",
                 "properties": {
                     "_id": {
                         "type": "string",
-                        "description": "Unique identifier of the enrichment request"
+                        "description": "Unique enrichment request identifier"
                     },
                     "status": {
                         "type": "string",
-                        "description": "Status of the enrichment",
+                        "description": "Enrichment status",
                         "enum": [
                             "pending",
                             "completed",
@@ -409,62 +409,62 @@
                     "email": {
                         "type": "string",
                         "format": "email",
-                        "description": "Enriched email address"
+                        "description": "Found email address"
                     },
                     "phone": {
                         "type": "string",
-                        "description": "Enriched phone number"
+                        "description": "Found phone number"
                     },
                     "firstName": {
                         "type": "string",
-                        "description": "Enriched first name"
+                        "description": "Found first name"
                     },
                     "lastName": {
                         "type": "string",
-                        "description": "Enriched last name"
+                        "description": "Found last name"
                     },
                     "companyName": {
                         "type": "string",
-                        "description": "Enriched company name"
+                        "description": "Found company name"
                     },
                     "linkedinUrl": {
                         "type": "string",
                         "format": "uri",
-                        "description": "Enriched LinkedIn URL"
+                        "description": "Found LinkedIn URL"
                     },
                     "credits": {
                         "type": "integer",
-                        "description": "Number of credits used for this enrichment"
+                        "description": "Credits consumed"
                     }
                 }
             },
             "Task": {
                 "type": "object",
-                "description": "Tasks represent manual actions to be completed within lemlist.",
+                "description": "A manual action assigned to a user to complete.",
                 "properties": {
                     "_id": {
                         "type": "string",
-                        "description": "Unique identifier of the task"
+                        "description": "Unique task identifier"
                     },
                     "type": {
                         "type": "string",
-                        "description": "Type of task"
+                        "description": "Task type"
                     },
                     "leadId": {
                         "type": "string",
-                        "description": "ID of the lead associated with this task"
+                        "description": "Associated lead ID"
                     },
                     "campaignId": {
                         "type": "string",
-                        "description": "ID of the campaign"
+                        "description": "Campaign ID"
                     },
                     "userId": {
                         "type": "string",
-                        "description": "ID of the user assigned to the task"
+                        "description": "Assigned user ID"
                     },
                     "status": {
                         "type": "string",
-                        "description": "Status of the task",
+                        "description": "Task status",
                         "enum": [
                             "pending",
                             "completed",
@@ -474,48 +474,48 @@
                     "dueDate": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "When the task is due"
+                        "description": "Due date timestamp"
                     },
                     "createdAt": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "When the task was created"
+                        "description": "Creation timestamp"
                     },
                     "completedAt": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "When the task was completed"
+                        "description": "Completion timestamp"
                     }
                 }
             },
             "Contact": {
                 "type": "object",
-                "description": "A contact is a person who has interacted with your campaigns. Contacts are leads who have engaged with your outreach.",
+                "description": "A contact is a lead who has engaged with your outreach (replied, opened, clicked, etc.).",
                 "properties": {
                     "_id": {
                         "type": "string",
-                        "description": "Unique identifier of the contact"
+                        "description": "Unique contact identifier"
                     },
                     "email": {
                         "type": "string",
                         "format": "email",
-                        "description": "Email address of the contact"
+                        "description": "Contact email address"
                     },
                     "firstName": {
                         "type": "string",
-                        "description": "First name of the contact"
+                        "description": "First name"
                     },
                     "lastName": {
                         "type": "string",
-                        "description": "Last name of the contact"
+                        "description": "Last name"
                     },
                     "companyName": {
                         "type": "string",
-                        "description": "Company name of the contact"
+                        "description": "Company name"
                     },
                     "campaigns": {
                         "type": "array",
-                        "description": "Campaigns this contact has been part of",
+                        "description": "Associated campaigns",
                         "items": {
                             "type": "object",
                             "properties": {
@@ -531,17 +531,17 @@
                     "lastInteractionDate": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "Date of last interaction"
+                        "description": "Last interaction timestamp"
                     }
                 }
             },
             "Company": {
                 "type": "object",
-                "description": "A company represents an organization tracked in your CRM.",
+                "description": "An organization record in your CRM.",
                 "properties": {
                     "_id": {
                         "type": "string",
-                        "description": "Unique identifier of the company"
+                        "description": "Unique company identifier"
                     },
                     "name": {
                         "type": "string",
@@ -549,11 +549,11 @@
                     },
                     "domain": {
                         "type": "string",
-                        "description": "Company domain"
+                        "description": "Website domain"
                     },
                     "industry": {
                         "type": "string",
-                        "description": "Industry the company operates in"
+                        "description": "Industry sector"
                     },
                     "size": {
                         "type": "string",
@@ -561,88 +561,88 @@
                     },
                     "location": {
                         "type": "string",
-                        "description": "Company location"
+                        "description": "Geographic location"
                     },
                     "createdAt": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "When the company was created"
+                        "description": "Creation timestamp"
                     }
                 }
             },
             "DatabaseCompany": {
                 "type": "object",
-                "description": "A company from the people database.",
+                "description": "A company record from lemlist's People database.",
                 "properties": {
                     "company_id": {
                         "type": "integer",
-                        "description": "Unique identifier of the company"
+                        "description": "Unique company identifier"
                     },
                     "company_name": {
                         "type": "string",
-                        "description": "Name of the company"
+                        "description": "Company name"
                     },
                     "company_website_url": {
                         "type": "string",
-                        "description": "Website URL of the company"
+                        "description": "Website URL"
                     },
                     "company_employee_count": {
                         "type": "integer",
-                        "description": "Number of employees in the company"
+                        "description": "Employee count"
                     },
                     "company_industry": {
                         "type": "string",
-                        "description": "Industry the company operates in"
+                        "description": "Industry sector"
                     }
                 }
             },
             "CompanyNote": {
                 "type": "object",
-                "description": "Notes attached to companies for tracking interactions and information.",
+                "description": "A text note attached to a company record to store information.",
                 "properties": {
                     "_id": {
                         "type": "string",
-                        "description": "Unique identifier of the note"
+                        "description": "Unique note identifier"
                     },
                     "companyId": {
                         "type": "string",
-                        "description": "ID of the company this note belongs to"
+                        "description": "Parent company ID"
                     },
                     "content": {
                         "type": "string",
-                        "description": "Content of the note"
+                        "description": "Note text content"
                     },
                     "createdBy": {
                         "type": "string",
-                        "description": "User ID who created the note"
+                        "description": "Creator user ID"
                     },
                     "createdAt": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "When the note was created"
+                        "description": "Creation timestamp"
                     },
                     "updatedAt": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "When the note was last updated"
+                        "description": "Last update timestamp"
                     }
                 }
             },
             "Sequence": {
                 "type": "object",
-                "description": "A sequence is a series of steps in a campaign that are executed in order.",
+                "description": "An ordered series of steps within a campaign.",
                 "properties": {
                     "_id": {
                         "type": "string",
-                        "description": "Unique identifier of the sequence"
+                        "description": "Unique sequence identifier"
                     },
                     "campaignId": {
                         "type": "string",
-                        "description": "Campaign ID this sequence belongs to"
+                        "description": "Parent campaign ID"
                     },
                     "steps": {
                         "type": "array",
-                        "description": "Steps in this sequence",
+                        "description": "Ordered list of steps",
                         "items": {
                             "$ref": "#/components/schemas/Step"
                         }
@@ -650,25 +650,25 @@
                     "createdAt": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "When the sequence was created"
+                        "description": "Creation timestamp"
                     }
                 }
             },
             "Step": {
                 "type": "object",
-                "description": "A step is an individual action in a sequence (email, LinkedIn message, delay, etc.).",
+                "description": "A single action in a sequence (email, LinkedIn message, delay, task, etc.).",
                 "properties": {
                     "_id": {
                         "type": "string",
-                        "description": "Unique identifier of the step"
+                        "description": "Unique step identifier"
                     },
                     "sequenceId": {
                         "type": "string",
-                        "description": "Sequence ID this step belongs to"
+                        "description": "Parent sequence ID"
                     },
                     "type": {
                         "type": "string",
-                        "description": "Type of step",
+                        "description": "Action type",
                         "enum": [
                             "email",
                             "linkedinInvite",
@@ -681,55 +681,55 @@
                     },
                     "order": {
                         "type": "integer",
-                        "description": "Order of the step in the sequence"
+                        "description": "Position in sequence"
                     },
                     "delay": {
                         "type": "integer",
-                        "description": "Delay in days before executing this step"
+                        "description": "Wait days before execution"
                     },
                     "subject": {
                         "type": "string",
-                        "description": "Subject line (for email steps)"
+                        "description": "Email subject line"
                     },
                     "body": {
                         "type": "string",
-                        "description": "Body content of the message"
+                        "description": "Message content"
                     },
                     "createdAt": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "When the step was created"
+                        "description": "Creation timestamp"
                     }
                 }
             },
             "Schedule": {
                 "type": "object",
-                "description": "A schedule defines when campaigns can send messages (days of week and time ranges).",
+                "description": "Sending time windows defining when campaigns can send messages (days and hours).",
                 "properties": {
                     "_id": {
                         "type": "string",
-                        "description": "The unique identifier of the schedule"
+                        "description": "Unique schedule identifier"
                     },
                     "name": {
                         "type": "string",
-                        "description": "The name of the schedule"
+                        "description": "Schedule name"
                     },
                     "secondsToWait": {
                         "type": "integer",
-                        "description": "Delay in seconds between operations"
+                        "description": "Seconds between sends"
                     },
                     "timezone": {
                         "type": "string",
-                        "description": "Timezone for the schedule (e.g., 'Europe/Paris')"
+                        "description": "Schedule timezone (e.g., 'Europe/Paris')"
                     },
                     "start": {
                         "type": "string",
-                        "description": "Start time in HH:mm format",
+                        "description": "Daily start time (HH:mm)",
                         "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
                     },
                     "end": {
                         "type": "string",
-                        "description": "End time in HH:mm format",
+                        "description": "Daily end time (HH:mm)",
                         "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
                     },
                     "weekdays": {
@@ -739,30 +739,30 @@
                             "minimum": 1,
                             "maximum": 7
                         },
-                        "description": "Days of the week the schedule is active (1=Monday, 7=Sunday)"
+                        "description": "Active weekdays (1=Monday, 7=Sunday)"
                     },
                     "public": {
                         "type": "boolean",
-                        "description": "Set to true to make the schedule visible to use as a template"
+                        "description": "Available as template"
                     }
                 }
             },
             "Webhook": {
                 "type": "object",
-                "description": "Webhooks allow you to receive real-time notifications about events in your campaigns.",
+                "description": "Webhooks send real-time HTTP notifications upon campaign events (opens, clicks, replies, etc.).",
                 "properties": {
                     "_id": {
                         "type": "string",
-                        "description": "Unique identifier of the webhook"
+                        "description": "Unique webhook identifier"
                     },
                     "targetUrl": {
                         "type": "string",
                         "format": "uri",
-                        "description": "URL where webhook events will be sent"
+                        "description": "Destination URL for event notifications"
                     },
                     "type": {
                         "type": "string",
-                        "description": "Type of events this webhook listens to",
+                        "description": "Event type to listen for",
                         "enum": [
                             "emailsOpened",
                             "emailsClicked",
@@ -775,22 +775,22 @@
                     },
                     "campaignId": {
                         "type": "string",
-                        "description": "Campaign ID this webhook is associated with (optional)"
+                        "description": "The ID of the campaign the webhook is associated with (if any)"
                     },
                     "createdAt": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "When the webhook was created"
+                        "description": "Creation timestamp"
                     },
                     "zapId": {
                         "type": "integer",
-                        "description": "Zapier integration ID (if applicable)"
+                        "description": "Zapier integration ID (if the destination is a Zapier webhook)"
                     }
                 }
             },
             "Report": {
                 "type": "object",
-                "description": "Campaign reports provide aggregated statistics and performance metrics.",
+                "description": "Aggregated campaign performance statistics (sent, opened, clicked, replied, etc.).",
                 "properties": {
                     "campaignId": {
                         "type": "string",
@@ -802,37 +802,37 @@
                     },
                     "stats": {
                         "type": "object",
-                        "description": "Statistics for the campaign",
+                        "description": "Performance metrics",
                         "properties": {
                             "sent": {
                                 "type": "integer",
-                                "description": "Number of emails sent"
+                                "description": "Emails sent count"
                             },
                             "opened": {
                                 "type": "integer",
-                                "description": "Number of emails opened"
+                                "description": "Emails opened count"
                             },
                             "clicked": {
                                 "type": "integer",
-                                "description": "Number of links clicked"
+                                "description": "Links clicked count"
                             },
                             "replied": {
                                 "type": "integer",
-                                "description": "Number of replies received"
+                                "description": "Replies received count"
                             },
                             "bounced": {
                                 "type": "integer",
-                                "description": "Number of bounced emails"
+                                "description": "Bounced emails count"
                             },
                             "interested": {
                                 "type": "integer",
-                                "description": "Number of interested leads"
+                                "description": "Interested leads count"
                             }
                         }
                     },
                     "exportStatus": {
                         "type": "string",
-                        "description": "Status of export if one was requested",
+                        "description": "Export request status",
                         "enum": [
                             "pending",
                             "done",
@@ -843,16 +843,16 @@
             },
             "Mailbox": {
                 "type": "object",
-                "description": "An email mailbox connected to a user account for sending campaigns.",
+                "description": "An email account connected to a user for sending campaigns.",
                 "properties": {
                     "_id": {
                         "type": "string",
-                        "description": "Unique identifier of the mailbox"
+                        "description": "Unique mailbox identifier"
                     },
                     "email": {
                         "type": "string",
                         "format": "email",
-                        "description": "Email address of the mailbox"
+                        "description": "Mailbox email address"
                     },
                     "provider": {
                         "type": "string",
@@ -860,7 +860,7 @@
                     },
                     "status": {
                         "type": "string",
-                        "description": "Connection status of the mailbox",
+                        "description": "Connection status",
                         "enum": [
                             "CONNECTED",
                             "ERROR",
@@ -872,7 +872,7 @@
                         "properties": {
                             "emailLimit": {
                                 "type": "integer",
-                                "description": "Daily email sending limit"
+                                "description": "Daily send limit"
                             }
                         }
                     },
@@ -881,7 +881,7 @@
                         "properties": {
                             "active": {
                                 "type": "boolean",
-                                "description": "Whether lemwarm is active for this mailbox"
+                                "description": "Lemwarm activation status"
                             }
                         }
                     }
@@ -889,7 +889,7 @@
             },
             "ScheduleListResponse": {
                 "type": "object",
-                "description": "Paginated list of schedules.",
+                "description": "Paginated response containing multiple schedules.",
                 "properties": {
                     "results": {
                         "type": "array",
@@ -907,7 +907,7 @@
             },
             "LeadListResponse": {
                 "type": "object",
-                "description": "Paginated list of leads.",
+                "description": "Paginated response containing multiple leads.",
                 "properties": {
                     "results": {
                         "type": "array",
@@ -944,7 +944,7 @@
             },
             "InboxConversation": {
                 "type": "object",
-                "description": "A conversation in the inbox between a user and a contact.",
+                "description": "A message thread between a user and a contact in the inbox.",
                 "properties": {
                     "_id": {
                         "type": "string"
@@ -966,7 +966,7 @@
             },
             "InboxConversationPagination": {
                 "type": "object",
-                "description": "Paginated list of inbox conversations.",
+                "description": "Paginated response containing multiple inbox conversations.",
                 "properties": {
                     "results": {
                         "type": "array",
@@ -984,7 +984,7 @@
             },
             "InboxMessage": {
                 "type": "object",
-                "description": "A message in an inbox conversation.",
+                "description": "A single message within an inbox conversation.",
                 "properties": {
                     "_id": {
                         "type": "string"
@@ -1009,7 +1009,7 @@
             },
             "InboxMessagePagination": {
                 "type": "object",
-                "description": "Paginated list of inbox messages.",
+                "description": "Paginated response containing multiple inbox messages.",
                 "properties": {
                     "results": {
                         "type": "array",
@@ -1027,7 +1027,7 @@
             },
             "TaskListResponse": {
                 "type": "object",
-                "description": "Paginated list of tasks.",
+                "description": "Paginated response containing multiple tasks.",
                 "properties": {
                     "results": {
                         "type": "array",
@@ -1045,7 +1045,7 @@
             },
             "DatabaseFilter": {
                 "type": "object",
-                "description": "A filter for the people database.",
+                "description": "Saved search criteria for querying the People database.",
                 "properties": {
                     "_id": {
                         "type": "string"
@@ -1061,7 +1061,7 @@
             },
             "PeopleSchema": {
                 "type": "object",
-                "description": "A person in the people database.",
+                "description": "A person record from lemlist's People database.",
                 "properties": {
                     "lead_id": {
                         "type": "string"
@@ -1086,7 +1086,7 @@
             },
             "LemwarmSettings": {
                 "type": "object",
-                "description": "lemwarm settings for a mailbox.",
+                "description": "Lemwarm configuration for a mailbox.",
                 "properties": {
                     "active": {
                         "type": "boolean"
