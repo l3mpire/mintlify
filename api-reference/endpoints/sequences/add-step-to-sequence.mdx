@@ -1,6 +1,9 @@
 ---
 openapi: post /sequences/{sequenceId}/steps
 ---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Sequence" objectPath="sequence" />
 
 This endpoint creates a step or condition within a sequence. If you want to get the main sequence or a list of sequences for a campaign, you can call `/api/campaigns/{campaignId}/sequences`.
 
