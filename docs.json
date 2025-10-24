@@ -305,14 +305,14 @@
                 "pages": [
                   "api-reference/objects-definitions/database",
                   "api-reference/objects-definitions/people-database",
-                  "api-reference/objects-definitions/company-database"
+                  "api-reference/objects-definitions/company-database",
+                  "api-reference/objects-definitions/database-filter"
                 ]
               },
               "api-reference/objects-definitions/crm-filter",
-              "api-reference/objects-definitions/database-filter",
               "api-reference/objects-definitions/company",
               "api-reference/objects-definitions/lemwarm",
-              "api-reference/objects-definitions/status",
+              "api-reference/objects-definitions/campaign-status",
               "api-reference/objects-definitions/channel",
               "api-reference/objects-definitions/sequence",
               "api-reference/objects-definitions/step",
