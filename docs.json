@@ -303,9 +303,9 @@
                 "group": "People Database",
                 "expanded": false,
                 "pages": [
+                  "api-reference/objects-definitions/database",
                   "api-reference/objects-definitions/people-database",
-                  "api-reference/objects-definitions/people-database-people",
-                  "api-reference/objects-definitions/people-database-company"
+                  "api-reference/objects-definitions/company-database"
                 ]
               },
               "api-reference/objects-definitions/crm-filter",
