@@ -296,10 +296,20 @@
               "api-reference/objects-definitions/unsubscribe",
               "api-reference/objects-definitions/enrich",
               "api-reference/objects-definitions/task",
-              "api-reference/objects-definitions/inbox",
+              "api-reference/objects-definitions/inbox-conversation",
+              "api-reference/objects-definitions/inbox-message",
               "api-reference/objects-definitions/contact",
-              "api-reference/objects-definitions/people-database",
-              "api-reference/objects-definitions/filter",
+              {
+                "group": "People Database",
+                "expanded": false,
+                "pages": [
+                  "api-reference/objects-definitions/people-database",
+                  "api-reference/objects-definitions/people-database-people",
+                  "api-reference/objects-definitions/people-database-company"
+                ]
+              },
+              "api-reference/objects-definitions/crm-filter",
+              "api-reference/objects-definitions/database-filter",
               "api-reference/objects-definitions/company",
               "api-reference/objects-definitions/lemwarm",
               "api-reference/objects-definitions/status",
@@ -309,7 +319,6 @@
               "api-reference/objects-definitions/schedule",
               "api-reference/objects-definitions/label",
               "api-reference/objects-definitions/report",
-              "api-reference/objects-definitions/lead-state",
               "api-reference/objects-definitions/webhook",
               "api-reference/objects-definitions/mailbox",
               "api-reference/objects-definitions/company-note"
