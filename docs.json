@@ -249,18 +249,19 @@
                 "expanded": false,
                 "pages": [
                   "api-reference/endpoints/webhooks/add-webhook",
-                  "api-reference/endpoints/webhooks/delete-webhook"
+                  "api-reference/endpoints/webhooks/delete-webhook",
+                  "api-reference/endpoints/webhooks/get-many-webhooks"
                 ]
               },
               {
                 "group": "People database",
                 "expanded": false,
                 "pages": [
-                  "api-reference/endpoints/people-database/get-database-filters",
-                  "api-reference/endpoints/people-database/search-people-database",
                   "api-reference/endpoints/people-database/get-people-schema",
+                  "api-reference/endpoints/people-database/search-people-database",
+                  "api-reference/endpoints/people-database/get-companies-schema",
                   "api-reference/endpoints/people-database/search-companies-database",
-                  "api-reference/endpoints/people-database/get-companies-schema"
+                  "api-reference/endpoints/people-database/get-database-filters"
                 ]
               },
               {

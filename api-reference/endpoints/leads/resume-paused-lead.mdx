@@ -1,6 +1,9 @@
 ---
 openapi: post /leads/start/{leadId}
 ---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Lead" objectPath="lead" />
 
 This endpoint resumes a paused lead using its email or lead ID in all campaigns.
 

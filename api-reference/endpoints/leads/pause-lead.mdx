@@ -1,6 +1,9 @@
 ---
 openapi: post /leads/pause/{leadId}
 ---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Lead" objectPath="lead" />
 
 This endpoint pauses a specific lead using its email or lead ID in all campaigns.
 
