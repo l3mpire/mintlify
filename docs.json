@@ -371,6 +371,9 @@
   "integrations": {
     "ga4": {
       "measurementId": "G-XRXQRF7W03"
+    },
+    "gtm": {
+      "tagId": "GTM-PRZ945S"
     }
   },
   "errors": {
