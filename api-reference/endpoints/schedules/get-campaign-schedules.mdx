@@ -1,5 +1,8 @@
 ---
 openapi: get /campaigns/{campaignId}/schedules/
 ---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Schedule" objectPath="schedule" />
 
 This endpoint returns all schedule objects linked to a specific campaign. The campaign is identified by the `campaignId` provided in the URL path, and it must belong to your team.

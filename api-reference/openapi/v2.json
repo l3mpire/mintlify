@@ -21,6 +21,1084 @@
                 "type": "http",
                 "scheme": "basic"
             }
+        },
+        "schemas": {
+            "Team": {
+                "type": "object",
+                "description": "The organization account that manages users and billing.",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "Unique team identifier"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Team name"
+                    },
+                    "userIds": {
+                        "type": "array",
+                        "description": "User IDs in this team",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "createdBy": {
+                        "type": "string",
+                        "description": "User ID who created the team"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time when the team was created"
+                    },
+                    "hooks": {
+                        "type": "array",
+                        "description": "Webhooks configured for the team",
+                        "items": {
+                            "$ref": "#/components/schemas/Webhook"
+                        }
+                    },
+                    "beta": {
+                        "type": "array",
+                        "description": "Beta features enabled for the team",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "slackWebhook": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "Slack webhook URL for notifications"
+                    },
+                    "invitedUsers": {
+                        "type": "array",
+                        "description": "Pending user invitations",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string",
+                                    "format": "email"
+                                },
+                                "role": {
+                                    "type": "string"
+                                },
+                                "invitedBy": {
+                                    "type": "string"
+                                },
+                                "invitedAt": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                }
+                            }
+                        }
+                    },
+                    "agency": {
+                        "type": "string",
+                        "description": "Agency identifier if team is part of an agency"
+                    },
+                    "pictureId": {
+                        "type": "string",
+                        "description": "Team profile picture file ID"
+                    }
+                }
+            },
+            "Credits": {
+                "type": "object",
+                "description": "Credits are the coins a team uses to enrich emails, LinkedIn URLs, etc. Each enrichment feature needs a certain amount of credits to run.",
+                "properties": {
+                    "credits": {
+                        "type": "integer",
+                        "description": "Total credits remaining"
+                    },
+                    "details": {
+                        "type": "object",
+                        "properties": {
+                            "remaining": {
+                                "type": "object",
+                                "properties": {
+                                    "total": {
+                                        "type": "integer",
+                                        "description": "Total credits remaining"
+                                    },
+                                    "freemium": {
+                                        "type": "integer",
+                                        "description": "Freemium credits remaining"
+                                    },
+                                    "subscription": {
+                                        "type": "integer",
+                                        "description": "Subscription credits remaining"
+                                    },
+                                    "gifted": {
+                                        "type": "integer",
+                                        "description": "Gifted credits remaining"
+                                    },
+                                    "paid": {
+                                        "type": "integer",
+                                        "description": "Paid credits remaining"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "User": {
+                "type": "object",
+                "description": "A team member account with connected email and/or LinkedIn sending capabilities.",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "Unique user identifier"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "description": "User email address"
+                    },
+                    "role": {
+                        "type": "string",
+                        "description": "User role in the team (admin, member, etc.)"
+                    },
+                    "linkedIn": {
+                        "type": "object",
+                        "description": "LinkedIn integration settings",
+                        "properties": {
+                            "status": {
+                                "type": "boolean",
+                                "description": "Whether LinkedIn is connected"
+                            },
+                            "inviteLimit": {
+                                "type": "integer",
+                                "description": "Daily limit for LinkedIn connection invites"
+                            },
+                            "sendLimit": {
+                                "type": "integer",
+                                "description": "Daily limit for LinkedIn messages"
+                            },
+                            "visitLimit": {
+                                "type": "integer",
+                                "description": "Daily limit for LinkedIn profile visits"
+                            }
+                        }
+                    },
+                    "mailboxes": {
+                        "type": "array",
+                        "description": "Email mailboxes connected to this user",
+                        "items": {
+                            "$ref": "#/components/schemas/Mailbox"
+                        }
+                    }
+                }
+            },
+            "Campaign": {
+                "type": "object",
+                "description": "An automated outreach workflow containing sequences of steps.",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "Unique campaign identifier"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Campaign name"
+                    },
+                    "labels": {
+                        "type": "array",
+                        "description": "Categorization labels",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Creation timestamp"
+                    },
+                    "createdBy": {
+                        "type": "string",
+                        "description": "Creator user ID"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Campaign status",
+                        "enum": [
+                            "running",
+                            "paused",
+                            "draft",
+                            "ended",
+                            "archived",
+                            "errors"
+                        ]
+                    },
+                    "sequenceId": {
+                        "type": "string",
+                        "description": "Main sequence ID"
+                    },
+                    "scheduleIds": {
+                        "type": "array",
+                        "description": "Associated schedule IDs",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "teamId": {
+                        "type": "string",
+                        "description": "ID of the team that owns this campaign"
+                    },
+                    "archived": {
+                        "type": "boolean",
+                        "description": "Whether the campaign is archived"
+                    },
+                    "isEnded": {
+                        "type": "boolean",
+                        "description": "Completion status"
+                    },
+                    "hasError": {
+                        "type": "boolean",
+                        "description": "Whether the campaign has errors"
+                    }
+                }
+            },
+            "Lead": {
+                "type": "object",
+                "description": "A prospect added to a campaign for outreach.",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "Unique lead identifier"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Lead email address"
+                    },
+                    "firstName": {
+                        "type": "string",
+                        "description": "First name"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "description": "Last name"
+                    },
+                    "companyName": {
+                        "type": "string",
+                        "description": "Company name"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "description": "Phone number"
+                    },
+                    "linkedinUrl": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "LinkedIn profile URL"
+                    },
+                    "picture": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "Profile picture URL"
+                    },
+                    "icebreaker": {
+                        "type": "string",
+                        "description": "Personalized icebreaker text"
+                    },
+                    "campaignId": {
+                        "type": "string",
+                        "description": "Campaign ID the lead belongs to"
+                    },
+                    "campaignName": {
+                        "type": "string",
+                        "description": "Campaign name the lead belongs to"
+                    },
+                    "isUnsubscribed": {
+                        "type": "boolean",
+                        "description": "Whether the lead is unsubscribed"
+                    }
+                }
+            },
+            "Activity": {
+                "type": "object",
+                "description": "A recorded action or event in a campaign sequence (email sent, opened, clicked, etc.).",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "Unique activity identifier"
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Activity type (emailOpened, emailClicked, emailReplied, etc.)"
+                    },
+                    "leadId": {
+                        "type": "string",
+                        "description": "Associated lead ID"
+                    },
+                    "campaignId": {
+                        "type": "string",
+                        "description": "Campaign ID"
+                    },
+                    "sequenceId": {
+                        "type": "string",
+                        "description": "Sequence ID"
+                    },
+                    "stepId": {
+                        "type": "string",
+                        "description": "Step ID"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the activity occurred"
+                    }
+                }
+            },
+            "Unsubscribe": {
+                "type": "object",
+                "description": "A record of someone opting out of receiving emails.",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "Unique unsubscribe identifier"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Unsubscribed email address"
+                    },
+                    "campaignId": {
+                        "type": "string",
+                        "description": "Campaign ID from which the person unsubscribed"
+                    },
+                    "campaignName": {
+                        "type": "string",
+                        "description": "Campaign name from which the person unsubscribed"
+                    },
+                    "unsubscribedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Unsubscribe timestamp"
+                    },
+                    "scope": {
+                        "type": "string",
+                        "description": "Unsubscribe scope",
+                        "enum": [
+                            "campaign",
+                            "team",
+                            "global"
+                        ]
+                    }
+                }
+            },
+            "Enrich": {
+                "type": "object",
+                "description": "Contact information discovered through data enrichment (emails, phone numbers, LinkedIn URLs).",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "Unique enrichment request identifier"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Enrichment status",
+                        "enum": [
+                            "pending",
+                            "completed",
+                            "failed"
+                        ]
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Found email address"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "description": "Found phone number"
+                    },
+                    "firstName": {
+                        "type": "string",
+                        "description": "Found first name"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "description": "Found last name"
+                    },
+                    "companyName": {
+                        "type": "string",
+                        "description": "Found company name"
+                    },
+                    "linkedinUrl": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "Found LinkedIn URL"
+                    },
+                    "credits": {
+                        "type": "integer",
+                        "description": "Credits consumed"
+                    }
+                }
+            },
+            "Task": {
+                "type": "object",
+                "description": "A manual action assigned to a user to complete.",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "Unique task identifier"
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Task type"
+                    },
+                    "leadId": {
+                        "type": "string",
+                        "description": "Associated lead ID"
+                    },
+                    "campaignId": {
+                        "type": "string",
+                        "description": "Campaign ID"
+                    },
+                    "userId": {
+                        "type": "string",
+                        "description": "Assigned user ID"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Task status",
+                        "enum": [
+                            "pending",
+                            "completed",
+                            "ignored"
+                        ]
+                    },
+                    "dueDate": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Due date timestamp"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Creation timestamp"
+                    },
+                    "completedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Completion timestamp"
+                    }
+                }
+            },
+            "Contact": {
+                "type": "object",
+                "description": "A contact is a lead who has engaged with your outreach (replied, opened, clicked, etc.).",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "Unique contact identifier"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Contact email address"
+                    },
+                    "firstName": {
+                        "type": "string",
+                        "description": "First name"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "description": "Last name"
+                    },
+                    "companyName": {
+                        "type": "string",
+                        "description": "Company name"
+                    },
+                    "campaigns": {
+                        "type": "array",
+                        "description": "Associated campaigns",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "campaignId": {
+                                    "type": "string"
+                                },
+                                "campaignName": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "lastInteractionDate": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Last interaction timestamp"
+                    }
+                }
+            },
+            "Company": {
+                "type": "object",
+                "description": "An organization record in your CRM.",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "Unique company identifier"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Company name"
+                    },
+                    "domain": {
+                        "type": "string",
+                        "description": "Website domain"
+                    },
+                    "industry": {
+                        "type": "string",
+                        "description": "Industry sector"
+                    },
+                    "size": {
+                        "type": "string",
+                        "description": "Company size"
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "Geographic location"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Creation timestamp"
+                    }
+                }
+            },
+            "DatabaseCompany": {
+                "type": "object",
+                "description": "A company record from lemlist's People database.",
+                "properties": {
+                    "company_id": {
+                        "type": "integer",
+                        "description": "Unique company identifier"
+                    },
+                    "company_name": {
+                        "type": "string",
+                        "description": "Company name"
+                    },
+                    "company_website_url": {
+                        "type": "string",
+                        "description": "Website URL"
+                    },
+                    "company_employee_count": {
+                        "type": "integer",
+                        "description": "Employee count"
+                    },
+                    "company_industry": {
+                        "type": "string",
+                        "description": "Industry sector"
+                    }
+                }
+            },
+            "CompanyNote": {
+                "type": "object",
+                "description": "A text note attached to a company record to store information.",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "Unique note identifier"
+                    },
+                    "companyId": {
+                        "type": "string",
+                        "description": "Parent company ID"
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "Note text content"
+                    },
+                    "createdBy": {
+                        "type": "string",
+                        "description": "Creator user ID"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Creation timestamp"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Last update timestamp"
+                    }
+                }
+            },
+            "Sequence": {
+                "type": "object",
+                "description": "An ordered series of steps within a campaign.",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "Unique sequence identifier"
+                    },
+                    "campaignId": {
+                        "type": "string",
+                        "description": "Parent campaign ID"
+                    },
+                    "steps": {
+                        "type": "array",
+                        "description": "Ordered list of steps",
+                        "items": {
+                            "$ref": "#/components/schemas/Step"
+                        }
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Creation timestamp"
+                    }
+                }
+            },
+            "Step": {
+                "type": "object",
+                "description": "A single action in a sequence (email, LinkedIn message, delay, task, etc.).",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "Unique step identifier"
+                    },
+                    "sequenceId": {
+                        "type": "string",
+                        "description": "Parent sequence ID"
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Action type",
+                        "enum": [
+                            "email",
+                            "linkedinInvite",
+                            "linkedinMessage",
+                            "linkedinVisit",
+                            "delay",
+                            "task",
+                            "api"
+                        ]
+                    },
+                    "order": {
+                        "type": "integer",
+                        "description": "Position in sequence"
+                    },
+                    "delay": {
+                        "type": "integer",
+                        "description": "Wait days before execution"
+                    },
+                    "subject": {
+                        "type": "string",
+                        "description": "Email subject line"
+                    },
+                    "body": {
+                        "type": "string",
+                        "description": "Message content"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Creation timestamp"
+                    }
+                }
+            },
+            "Schedule": {
+                "type": "object",
+                "description": "Sending time windows defining when campaigns can send messages (days and hours).",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "Unique schedule identifier"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Schedule name"
+                    },
+                    "secondsToWait": {
+                        "type": "integer",
+                        "description": "Seconds between sends"
+                    },
+                    "timezone": {
+                        "type": "string",
+                        "description": "Schedule timezone (e.g., 'Europe/Paris')"
+                    },
+                    "start": {
+                        "type": "string",
+                        "description": "Daily start time (HH:mm)",
+                        "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                    },
+                    "end": {
+                        "type": "string",
+                        "description": "Daily end time (HH:mm)",
+                        "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                    },
+                    "weekdays": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 7
+                        },
+                        "description": "Active weekdays (1=Monday, 7=Sunday)"
+                    },
+                    "public": {
+                        "type": "boolean",
+                        "description": "Available as template"
+                    }
+                }
+            },
+            "Webhook": {
+                "type": "object",
+                "description": "Webhooks send real-time HTTP notifications upon campaign events (opens, clicks, replies, etc.).",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "Unique webhook identifier"
+                    },
+                    "targetUrl": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "Destination URL for event notifications"
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Event type to listen for",
+                        "enum": [
+                            "emailsOpened",
+                            "emailsClicked",
+                            "emailsReplied",
+                            "emailsSent",
+                            "emailsBounced",
+                            "leadInterested",
+                            "leadNotInterested"
+                        ]
+                    },
+                    "campaignId": {
+                        "type": "string",
+                        "description": "The ID of the campaign the webhook is associated with (if any)"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Creation timestamp"
+                    },
+                    "zapId": {
+                        "type": "integer",
+                        "description": "Zapier integration ID (if the destination is a Zapier webhook)"
+                    }
+                }
+            },
+            "Report": {
+                "type": "object",
+                "description": "Aggregated campaign performance statistics (sent, opened, clicked, replied, etc.).",
+                "properties": {
+                    "campaignId": {
+                        "type": "string",
+                        "description": "Campaign ID"
+                    },
+                    "campaignName": {
+                        "type": "string",
+                        "description": "Campaign name"
+                    },
+                    "stats": {
+                        "type": "object",
+                        "description": "Performance metrics",
+                        "properties": {
+                            "sent": {
+                                "type": "integer",
+                                "description": "Emails sent count"
+                            },
+                            "opened": {
+                                "type": "integer",
+                                "description": "Emails opened count"
+                            },
+                            "clicked": {
+                                "type": "integer",
+                                "description": "Links clicked count"
+                            },
+                            "replied": {
+                                "type": "integer",
+                                "description": "Replies received count"
+                            },
+                            "bounced": {
+                                "type": "integer",
+                                "description": "Bounced emails count"
+                            },
+                            "interested": {
+                                "type": "integer",
+                                "description": "Interested leads count"
+                            }
+                        }
+                    },
+                    "exportStatus": {
+                        "type": "string",
+                        "description": "Export request status",
+                        "enum": [
+                            "pending",
+                            "done",
+                            "error"
+                        ]
+                    }
+                }
+            },
+            "Mailbox": {
+                "type": "object",
+                "description": "An email account connected to a user for sending campaigns.",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "Unique mailbox identifier"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Mailbox email address"
+                    },
+                    "provider": {
+                        "type": "string",
+                        "description": "Email provider (google, microsoft, etc.)"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Connection status",
+                        "enum": [
+                            "CONNECTED",
+                            "ERROR",
+                            "DISCONNECTED"
+                        ]
+                    },
+                    "lemlist": {
+                        "type": "object",
+                        "properties": {
+                            "emailLimit": {
+                                "type": "integer",
+                                "description": "Daily send limit"
+                            }
+                        }
+                    },
+                    "lemwarm": {
+                        "type": "object",
+                        "properties": {
+                            "active": {
+                                "type": "boolean",
+                                "description": "Lemwarm activation status"
+                            }
+                        }
+                    }
+                }
+            },
+            "ScheduleListResponse": {
+                "type": "object",
+                "description": "Paginated response containing multiple schedules.",
+                "properties": {
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Schedule"
+                        }
+                    },
+                    "page": {
+                        "type": "integer"
+                    },
+                    "total": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "LeadListResponse": {
+                "type": "object",
+                "description": "Paginated response containing multiple leads.",
+                "properties": {
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Lead"
+                        }
+                    },
+                    "page": {
+                        "type": "integer"
+                    },
+                    "total": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "CrmFilter": {
+                "type": "object",
+                "description": "A filter used in the CRM to segment leads or companies.",
+                "properties": {
+                    "_id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "criteria": {
+                        "type": "object",
+                        "additionalProperties": true
+                    }
+                }
+            },
+            "InboxConversation": {
+                "type": "object",
+                "description": "A message thread between a user and a contact in the inbox.",
+                "properties": {
+                    "_id": {
+                        "type": "string"
+                    },
+                    "leadId": {
+                        "type": "string"
+                    },
+                    "messages": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/InboxMessage"
+                        }
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "InboxConversationPagination": {
+                "type": "object",
+                "description": "Paginated response containing multiple inbox conversations.",
+                "properties": {
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/InboxConversation"
+                        }
+                    },
+                    "page": {
+                        "type": "integer"
+                    },
+                    "total": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "InboxMessage": {
+                "type": "object",
+                "description": "A single message within an inbox conversation.",
+                "properties": {
+                    "_id": {
+                        "type": "string"
+                    },
+                    "conversationId": {
+                        "type": "string"
+                    },
+                    "sender": {
+                        "type": "string"
+                    },
+                    "recipient": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "sentAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "InboxMessagePagination": {
+                "type": "object",
+                "description": "Paginated response containing multiple inbox messages.",
+                "properties": {
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/InboxMessage"
+                        }
+                    },
+                    "page": {
+                        "type": "integer"
+                    },
+                    "total": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "TaskListResponse": {
+                "type": "object",
+                "description": "Paginated response containing multiple tasks.",
+                "properties": {
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Task"
+                        }
+                    },
+                    "page": {
+                        "type": "integer"
+                    },
+                    "total": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "DatabaseFilter": {
+                "type": "object",
+                "description": "Saved search criteria for querying the People database.",
+                "properties": {
+                    "_id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "criteria": {
+                        "type": "object",
+                        "additionalProperties": true
+                    }
+                }
+            },
+            "PeopleSchema": {
+                "type": "object",
+                "description": "A person record from lemlist's People database.",
+                "properties": {
+                    "lead_id": {
+                        "type": "string"
+                    },
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "company_name": {
+                        "type": "string"
+                    },
+                    "location": {
+                        "type": "string"
+                    }
+                }
+            },
+            "LemwarmSettings": {
+                "type": "object",
+                "description": "Lemwarm configuration for a mailbox.",
+                "properties": {
+                    "active": {
+                        "type": "boolean"
+                    },
+                    "dailyLimit": {
+                        "type": "integer"
+                    },
+                    "warmupTemplate": {
+                        "type": "string"
+                    }
+                }
+            }
         }
     },
     "paths": {
@@ -55,94 +1133,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "_id": {
-                                            "type": "string"
-                                        },
-                                        "name": {
-                                            "type": "string"
-                                        },
-                                        "userIds": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "createdBy": {
-                                            "type": "string"
-                                        },
-                                        "createdAt": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        },
-                                        "hooks": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "_id": {
-                                                        "type": "string"
-                                                    },
-                                                    "targetUrl": {
-                                                        "type": "string",
-                                                        "format": "uri"
-                                                    },
-                                                    "createdAt": {
-                                                        "type": "string",
-                                                        "format": "date-time"
-                                                    },
-                                                    "zapId": {
-                                                        "type": "integer"
-                                                    },
-                                                    "type": {
-                                                        "type": "string"
-                                                    },
-                                                    "campaignId": {
-                                                        "type": "string"
-                                                    }
-                                                }
-                                            }
-                                        },
-                                        "beta": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "slackWebhook": {
-                                            "type": "string",
-                                            "format": "uri"
-                                        },
-                                        "invitedUsers": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "email": {
-                                                        "type": "string",
-                                                        "format": "email"
-                                                    },
-                                                    "role": {
-                                                        "type": "string"
-                                                    },
-                                                    "invitedBy": {
-                                                        "type": "string"
-                                                    },
-                                                    "invitedAt": {
-                                                        "type": "string",
-                                                        "format": "date-time"
-                                                    }
-                                                }
-                                            }
-                                        },
-                                        "agency": {
-                                            "type": "string"
-                                        },
-                                        "pictureId": {
-                                            "type": "string"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/Team"
                                 },
                                 "example": {
                                     "_id": "tea_c123fg5h8ijKL9noP",
@@ -453,37 +1444,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "credits": {
-                                            "type": "integer"
-                                        },
-                                        "details": {
-                                            "type": "object",
-                                            "properties": {
-                                                "remaining": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "total": {
-                                                            "type": "integer"
-                                                        },
-                                                        "freemium": {
-                                                            "type": "integer"
-                                                        },
-                                                        "subscription": {
-                                                            "type": "integer"
-                                                        },
-                                                        "gifted": {
-                                                            "type": "integer"
-                                                        },
-                                                        "paid": {
-                                                            "type": "integer"
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/Credits"
                                 },
                                 "example": {
                                     "credits": 100,
@@ -661,73 +1622,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "_id": {
-                                            "type": "string"
-                                        },
-                                        "email": {
-                                            "type": "string",
-                                            "format": "email"
-                                        },
-                                        "role": {
-                                            "type": "string"
-                                        },
-                                        "linkedIn": {
-                                            "type": "object",
-                                            "properties": {
-                                                "status": {
-                                                    "type": "boolean"
-                                                },
-                                                "inviteLimit": {
-                                                    "type": "integer"
-                                                },
-                                                "sendLimit": {
-                                                    "type": "integer"
-                                                },
-                                                "visitLimit": {
-                                                    "type": "integer"
-                                                }
-                                            }
-                                        },
-                                        "mailboxes": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "_id": {
-                                                        "type": "string"
-                                                    },
-                                                    "email": {
-                                                        "type": "string",
-                                                        "format": "email"
-                                                    },
-                                                    "provider": {
-                                                        "type": "string"
-                                                    },
-                                                    "status": {
-                                                        "type": "string"
-                                                    },
-                                                    "lemlist": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                            "emailLimit": {
-                                                                "type": "integer"
-                                                            }
-                                                        }
-                                                    },
-                                                    "lemwarm": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                            "active": {
-                                                                "type": "boolean"
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/User"
                                 },
                                 "example": {
                                     "_id": "usr_QAucgYReK6EmMB3Cz",
@@ -909,31 +1804,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "_id": {
-                                                "type": "string"
-                                            },
-                                            "name": {
-                                                "type": "string"
-                                            },
-                                            "labels": {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "createdAt": {
-                                                "type": "string",
-                                                "format": "date-time"
-                                            },
-                                            "createdBy": {
-                                                "type": "string"
-                                            },
-                                            "status": {
-                                                "type": "string"
-                                            }
-                                        }
+                                        "$ref": "#/components/schemas/Campaign"
                                     }
                                 },
                                 "example": [
@@ -1253,31 +2124,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "_id": {
-                                            "type": "string"
-                                        },
-                                        "name": {
-                                            "type": "string"
-                                        },
-                                        "labels": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "createdAt": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        },
-                                        "createdBy": {
-                                            "type": "string"
-                                        },
-                                        "status": {
-                                            "type": "string"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/Campaign"
                                 },
                                 "example": {
                                     "_id": "cam_A1B2C3D4E5F6G7H8I9",
@@ -1850,6 +2697,24 @@
                         "description": "Campaign or export not found",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "ok": {
+                                                    "type": "boolean"
+                                                },
+                                                "message": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
                                 "examples": {
                                     "exportNotFound": {
                                         "summary": "Export not found",
@@ -2865,8 +3730,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "additionalProperties": true
+                                    "$ref": "#/components/schemas/ScheduleListResponse"
                                 },
                                 "example": {
                                     "schedules": [
@@ -3016,58 +3880,7 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "properties": {
-                                        "_id": {
-                                            "type": "string"
-                                        },
-                                        "name": {
-                                            "type": "string"
-                                        },
-                                        "secondsToWait": {
-                                            "type": "integer"
-                                        },
-                                        "timezone": {
-                                            "type": "string"
-                                        },
-                                        "start": {
-                                            "type": "string"
-                                        },
-                                        "end": {
-                                            "type": "string"
-                                        },
-                                        "weekdays": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "integer"
-                                            }
-                                        },
-                                        "public": {
-                                            "type": "boolean"
-                                        },
-                                        "teamId": {
-                                            "type": "string"
-                                        },
-                                        "createdBy": {
-                                            "type": "string"
-                                        },
-                                        "createdAt": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        }
-                                    },
-                                    "required": [
-                                        "_id",
-                                        "name",
-                                        "secondsToWait",
-                                        "timezone",
-                                        "start",
-                                        "end",
-                                        "weekdays",
-                                        "public",
-                                        "teamId",
-                                        "createdBy",
-                                        "createdAt"
-                                    ]
+                                    "$ref": "#/components/schemas/Schedule"
                                 },
                                 "example": {
                                     "_id": "skd_JTb4gjdiizqPoYqzh",
@@ -3159,8 +3972,16 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "additionalProperties": true
+                                    "$ref": "#/components/schemas/Schedule",
+                                    "required": [
+                                        "_id",
+                                        "name",
+                                        "secondsToWait",
+                                        "timezone",
+                                        "start",
+                                        "end",
+                                        "weekdays"
+                                    ]
                                 },
                                 "example": {
                                     "_id": "skd_JTb4gjdiizqPoYqzh",
@@ -3408,7 +4229,11 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "_id": {
+                                            "type": "string"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "_id": "skd_L2sKZ3HMddtrfmHGr"
@@ -3459,7 +4284,73 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Schedule"
+                                    }
+                                },
+                                "example": [
+                                    {
+                                        "_id": "skd_Cyf3LZJuJamrmCMrv",
+                                        "name": "Test 2",
+                                        "secondsToWait": 1200,
+                                        "timezone": "Atlantic/Reykjavik",
+                                        "start": "08:00",
+                                        "end": "18:00",
+                                        "weekdays": [
+                                            1,
+                                            2,
+                                            3,
+                                            4,
+                                            5
+                                        ],
+                                        "teamId": "tea_b834id4r7skME8mfW",
+                                        "createdBy": "usr_F7iPChEQ3pSmuTiCe",
+                                        "createdAt": "2025-02-06T16:29:10.217Z"
+                                    },
+                                    {
+                                        "_id": "skd_hCG7J8K4EcLYM3GS9",
+                                        "name": "Default schedule",
+                                        "secondsToWait": 1200,
+                                        "timezone": "Africa/Ceuta",
+                                        "start": "09:00",
+                                        "end": "18:00",
+                                        "weekdays": [
+                                            1,
+                                            2,
+                                            3,
+                                            4,
+                                            5
+                                        ],
+                                        "teamId": "tea_b834id4r7skME8mfW",
+                                        "createdBy": "usr_cTWih7tcKWicFRiQj",
+                                        "createdAt": "2025-02-06T15:36:01.531Z"
+                                    },
+                                    {
+                                        "_id": "skd_sxKnxqQ9Qx9vMEyyZ",
+                                        "name": "Default schedule",
+                                        "secondsToWait": 1200,
+                                        "timezone": "Europe/Paris",
+                                        "start": "09:00",
+                                        "end": "18:00",
+                                        "weekdays": [
+                                            1,
+                                            2,
+                                            3,
+                                            4,
+                                            5
+                                        ],
+                                        "teamId": "tea_b834id4r7skME8mfW",
+                                        "createdBy": "usr_cTWih7tcKWicFRiQj",
+                                        "createdAt": "2025-02-06T15:35:52.079Z"
+                                    }
+                                ]
+                            }
+                        }
                     },
                     "400": {
                         "description": "Bad team",
@@ -3519,7 +4410,14 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "scheduleId": {
+                                            "type": "string"
+                                        },
+                                        "campaignId": {
+                                            "type": "string"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "scheduleId": "skd_CBHNKLZsZr3FFJHPK",
@@ -3604,7 +4502,37 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "email": {
+                                            "type": "string",
+                                            "format": "email",
+                                            "description": "Email address of the lead"
+                                        },
+                                        "firstName": {
+                                            "type": "string",
+                                            "description": "First name of the lead"
+                                        },
+                                        "lastName": {
+                                            "type": "string",
+                                            "description": "Last name of the lead"
+                                        },
+                                        "_id": {
+                                            "type": "string",
+                                            "description": "Unique identifier for the lead"
+                                        },
+                                        "isPaused": {
+                                            "type": "boolean",
+                                            "description": "Indicates if the lead is paused"
+                                        },
+                                        "campaignId": {
+                                            "type": "string",
+                                            "description": "ID of the campaign the lead is associated with"
+                                        },
+                                        "emailStatus": {
+                                            "type": "string",
+                                            "description": "Email status of the lead"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "email": "john.doe@domain.com",
@@ -3681,8 +4609,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "additionalProperties": true
+                                    "$ref": "#/components/schemas/Lead"
                                 },
                                 "example": {
                                     "email": "john.doe@domain.com",
@@ -3872,7 +4799,34 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "campaignId": {
+                                            "type": "string"
+                                        },
+                                        "campaignName": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "format": "email"
+                                        },
+                                        "firstName": {
+                                            "type": "string"
+                                        },
+                                        "lastName": {
+                                            "type": "string"
+                                        },
+                                        "_id": {
+                                            "type": "string"
+                                        },
+                                        "isPaused": {
+                                            "type": "boolean",
+                                            "description": "Whether the lead is paused in the campaign"
+                                        },
+                                        "leadUrl": {
+                                            "type": "string"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
@@ -3931,6 +4885,29 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "firstName": {
+                                            "type": "string"
+                                        },
+                                        "lastName": {
+                                            "type": "string"
+                                        },
+                                        "_id": {
+                                            "type": "string"
+                                        },
+                                        "isPaused": {
+                                            "type": "boolean"
+                                        },
+                                        "campaignId": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
                                 "example": {
                                     "email": "john.doe@domain.com",
                                     "firstName": "John",
@@ -4030,7 +5007,37 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "campaignId": {
+                                            "type": "string"
+                                        },
+                                        "campaignName": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "format": "email"
+                                        },
+                                        "firstName": {
+                                            "type": "string"
+                                        },
+                                        "lastName": {
+                                            "type": "string"
+                                        },
+                                        "preferredContactMethod": {
+                                            "type": "string"
+                                        },
+                                        "_id": {
+                                            "type": "string"
+                                        },
+                                        "isPaused": {
+                                            "type": "boolean",
+                                            "description": "Whether the lead is paused in the campaign"
+                                        },
+                                        "leadUrl": {
+                                            "type": "string"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
@@ -4093,6 +5100,20 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "_id": {
+                                            "type": "string"
+                                        },
+                                        "campaignId": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
                                 "example": {
                                     "email": "john.doe@domain.com",
                                     "_id": "lea_7kMNQwplxvvD2hf5z",
@@ -4150,7 +5171,27 @@
                                     "type": "array",
                                     "items": {
                                         "type": "object",
-                                        "additionalProperties": true
+                                        "properties": {
+                                            "email": {
+                                                "type": "string",
+                                                "format": "email"
+                                            },
+                                            "firstName": {
+                                                "type": "string"
+                                            },
+                                            "lastName": {
+                                                "type": "string"
+                                            },
+                                            "_id": {
+                                                "type": "string"
+                                            },
+                                            "isPaused": {
+                                                "type": "boolean"
+                                            },
+                                            "campaignId": {
+                                                "type": "string"
+                                            }
+                                        }
                                     }
                                 },
                                 "example": [
@@ -4223,7 +5264,26 @@
                                     "type": "array",
                                     "items": {
                                         "type": "object",
-                                        "additionalProperties": true
+                                        "properties": {
+                                            "email": {
+                                                "type": "string"
+                                            },
+                                            "firstName": {
+                                                "type": "string"
+                                            },
+                                            "lastName": {
+                                                "type": "string"
+                                            },
+                                            "_id": {
+                                                "type": "string"
+                                            },
+                                            "isPaused": {
+                                                "type": "boolean"
+                                            },
+                                            "campaignId": {
+                                                "type": "string"
+                                            }
+                                        }
                                     }
                                 },
                                 "example": [
@@ -4284,7 +5344,20 @@
                                     "type": "array",
                                     "items": {
                                         "type": "object",
-                                        "additionalProperties": true
+                                        "properties": {
+                                            "email": {
+                                                "type": "string"
+                                            },
+                                            "firstName": {
+                                                "type": "string"
+                                            },
+                                            "_id": {
+                                                "type": "string"
+                                            },
+                                            "campaignId": {
+                                                "type": "string"
+                                            }
+                                        }
                                     }
                                 },
                                 "example": [
@@ -4344,7 +5417,17 @@
                                     "type": "array",
                                     "items": {
                                         "type": "object",
-                                        "additionalProperties": true
+                                        "properties": {
+                                            "email": {
+                                                "type": "string"
+                                            },
+                                            "_id": {
+                                                "type": "string"
+                                            },
+                                            "campaignId": {
+                                                "type": "string"
+                                            }
+                                        }
                                     }
                                 },
                                 "example": [
@@ -4410,7 +5493,17 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "_id": {
+                                            "type": "string"
+                                        },
+                                        "campaignId": {
+                                            "type": "string"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "email": "john.doe@domain.com",
@@ -4468,7 +5561,29 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Lead"
+                                },
+                                "example": {
+                                    "email": "john.doe@domain.com",
+                                    "firstName": "John",
+                                    "lastName": "Doe",
+                                    "picture": "https://c.pxhere.com/images/55/a2/fc589d408bc4c00cf38f1aeaf3e3-1449557.jpg!d",
+                                    "phone": "+33 123456789",
+                                    "linkedinUrl": "https://www.linkedin.com/in/johndoe,",
+                                    "companyName": "lempire",
+                                    "companyDomain": "lempire.co",
+                                    "icebreaker": "Hello John, I came across your profile and your expertise in software development is remarkable!",
+                                    "jobTitle": "Developer",
+                                    "_id": "lea_7kMNQwplxvvD2hf5z",
+                                    "isPaused": false,
+                                    "campaignId": "cam_A1B2C3D4E5F6G7H8I9"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthorized"
@@ -4704,7 +5819,31 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "ok": {
+                                            "type": "boolean"
+                                        },
+                                        "status": {
+                                            "type": "object",
+                                            "properties": {
+                                                "url": {
+                                                    "type": "string"
+                                                },
+                                                "teamId": {
+                                                    "type": "string"
+                                                },
+                                                "campaignId": {
+                                                    "type": "string"
+                                                },
+                                                "leadId": {
+                                                    "type": "string"
+                                                },
+                                                "fileName": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "ok": true,
@@ -4784,8 +5923,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "type": "object",
-                                        "additionalProperties": true
+                                        "$ref": "#/components/schemas/CrmFilter"
                                     }
                                 },
                                 "example": [
@@ -4919,8 +6057,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "type": "object",
-                                        "additionalProperties": true
+                                        "$ref": "#/components/schemas/DatabaseFilter"
                                     }
                                 },
                                 "example": [
@@ -5023,14 +6160,51 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "results": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PeopleSchema"
+                                            }
+                                        },
+                                        "total": {
+                                            "type": "integer"
+                                        },
+                                        "took": {
+                                            "type": "integer"
+                                        },
+                                        "page": {
+                                            "type": "integer"
+                                        },
+                                        "size": {
+                                            "type": "integer"
+                                        },
+                                        "search": {
+                                            "type": "string"
+                                        },
+                                        "limitation": {
+                                            "type": "integer"
+                                        },
+                                        "team": {
+                                            "type": "string"
+                                        }
+                                    }
                                 },
                                 "example": {
-                                    "results": [],
+                                    "results": [
+                                        {
+                                            "lead_id": 231488528,
+                                            "full_name": "John Doe",
+                                            "email": "john.doe@example.com",
+                                            "title": "Senior Machine Learning Engineer",
+                                            "company_name": "TechCorp Inc.",
+                                            "location": "San Francisco Bay Area"
+                                        }
+                                    ],
                                     "total": 18540918,
                                     "took": 903,
                                     "page": 1,
-                                    "size": 100,
+                                    "size": 1,
                                     "search": "lsh_ENeC6oBSdwSArkywL",
                                     "limitation": 999,
                                     "team": "tea_MtScZ2GexXzHXRdTr"
@@ -5075,7 +6249,15 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "schema": {
+                                            "type": "object",
+                                            "$ref": "#/components/schemas/PeopleSchema"
+                                        },
+                                        "version": {
+                                            "type": "integer"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "schema": {
@@ -5176,13 +6358,38 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "results": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "$ref": "#/components/schemas/CompaniesSchema"
+                                            }
+                                        },
+                                        "total": {
+                                            "type": "integer"
+                                        },
+                                        "page": {
+                                            "type": "integer"
+                                        },
+                                        "size": {
+                                            "type": "integer"
+                                        }
+                                    }
                                 },
                                 "example": {
-                                    "results": [],
+                                    "results": [
+                                        {
+                                            "company_id": 7842391,
+                                            "company_name": "InnovateTech Solutions",
+                                            "company_website_url": "https://www.innovatetech.io",
+                                            "company_employee_count": 245,
+                                            "company_industry": "Information Technology"
+                                        }
+                                    ],
                                     "total": 18540918,
                                     "page": 1,
-                                    "size": 100
+                                    "size": 1
                                 }
                             }
                         }
@@ -5224,7 +6431,15 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "additionalProperties": true
+                                    "properties": {
+                                        "schema": {
+                                            "type": "object",
+                                            "$ref": "#/components/schemas/CompaniesSchema"
+                                        },
+                                        "version": {
+                                            "type": "integer"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "schema": {
@@ -5274,8 +6489,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "additionalProperties": true
+                                    "$ref": "#/components/schemas/TaskListResponse"
                                 },
                                 "example": {
                                     "results": [
@@ -5351,7 +6565,25 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Task"
+                                },
+                                "example": {
+                                    "_id": "opp_yTGDXCWPeiZL5n9GG",
+                                    "type": "phone",
+                                    "title": "this is my title",
+                                    "leadId": "lea_QerTQT4gtxsXpLHK3",
+                                    "campaignId": "cam_xD5RCYnk4WWGF7qoy",
+                                    "contactId": "ctc_h4Gs5LhihyCZgpgb8",
+                                    "dueDate": "2025-02-10T09:58:57.169Z",
+                                    "userId": "usr_6Y58qbtsYv2rCHQiJ",
+                                    "content": "this is my message"
+                                }
+                            }
+                        }
                     },
                     "400": {
                         "description": "Possible errors: Bad team / Bad method",
@@ -5401,7 +6633,25 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Task"
+                                },
+                                "example": {
+                                    "_id": "opp_AbkAqfvTJtdR7mdZ5",
+                                    "type": "phone",
+                                    "title": "My new title",
+                                    "leadId": "lea_QerTQT4gtxsXpLHK3",
+                                    "campaignId": "cam_xD5RCYnk4WWGF7qoy",
+                                    "contactId": "ctc_h4Gs5LhihyCZgpgb8",
+                                    "dueDate": "2025-02-10T09:58:57.169Z",
+                                    "userId": "usr_6Y58qbtsYv2rCHQiJ",
+                                    "content": "this is my message"
+                                }
+                            }
+                        }
                     },
                     "400": {
                         "description": "Possible errors: Bad team / Bad method",
@@ -5453,7 +6703,15 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {}
+                            }
+                        }
                     },
                     "400": {
                         "description": "Possible errors: Bad team / Error message from opportunitiesDone",
@@ -5529,8 +6787,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "additionalProperties": true
+                                    "$ref": "#/components/schemas/InboxConversationPagination"
                                 },
                                 "example": {
                                     "data": [
@@ -5641,8 +6898,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "additionalProperties": true
+                                    "$ref": "#/components/schemas/InboxMessagePagination"
                                 },
                                 "example": {
                                     "data": [
@@ -5847,6 +7103,14 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "ok": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                },
                                 "example": {
                                     "ok": true
                                 }
@@ -5968,8 +7232,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "type": "object",
-                                        "additionalProperties": true
+                                        "$ref": "#/components/schemas/Contact"
                                     }
                                 },
                                 "example": [
@@ -6044,8 +7307,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "additionalProperties": true
+                                    "$ref": "#/components/schemas/Contact"
                                 },
                                 "example": {
                                     "_id": "ctc_Ri5gMtaeDGufRQ3M2",
@@ -6230,8 +7492,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "additionalProperties": true
+                                    "$ref": "#/components/schemas/LemwarmSettings"
                                 },
                                 "example": {
                                     "warmEmailRampup": 5,
@@ -6300,6 +7561,14 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "ok": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                },
                                 "example": {
                                     "ok": true
                                 }
@@ -6408,6 +7677,12 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Company"
+                                    }
+                                },
                                 "example": [
                                     {
                                         "_id": "cmp_ABC123",
@@ -6514,6 +7789,12 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CompanyNote"
+                                    }
+                                },
                                 "example": [
                                     {
                                         "_id": "not_XYZ789",
@@ -6585,6 +7866,9 @@
                         "description": "Success",
                         "content": {
                             "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CompanyNote"
+                                },
                                 "example": {
                                     "_id": "not_XYZ789",
                                     "note": "Note created from the API!",
@@ -6720,7 +8004,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "type": "object"
+                                        "$ref": "#/components/schemas/Activity"
                                     }
                                 },
                                 "example": [
@@ -7029,7 +8313,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "type": "object"
+                                        "$ref": "#/components/schemas/Unsubscribe"
                                     }
                                 },
                                 "example": [
@@ -7097,7 +8381,12 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "text/csv": {
+                                "example": "value,source,createdAt\nwilliam.davis@fake.org,lead,2019-12-19T21:56:34.672Z\nemma.johnson@sample.com,abuse,2020-09-30T08:34:17.298Z\nmichael.brown@domain.net,api,2021-03-12T14:12:56.534Z\njane.smith@example.org,bounce,2022-11-23T18:23:45.890Z\njohn.doe@example.com,user,2023-06-15T10:45:21.367Z\nalice.brown@domainexample.com,lead,2023-07-21T09:14:25.521Z\nbob.smith@example.net,user,2023-08-01T17:34:43.679Z\ncharlie.doe@mockmail.com,api,2023-09-12T11:05:37.874Z\ndavid.jones@sampledomain.org,abuse,2023-10-05T15:23:54.129Z\neve.wilson@fakemail.com,bounce,2024-01-07T08:19:45.213Z"
+                            }
+                        }
                     },
                     "400": {
                         "description": "Bad team",
@@ -7147,7 +8436,26 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object"
+                                    "type": "object",
+                                    "properties": {
+                                        "_id": {
+                                            "type": "string",
+                                            "description": "Unique identifier for the unsubscribe entry"
+                                        },
+                                        "createdAt": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "description": "Timestamp when the unsubscribe entry was created"
+                                        },
+                                        "value": {
+                                            "type": "string",
+                                            "description": "The unsubscribed email address"
+                                        },
+                                        "source": {
+                                            "type": "string",
+                                            "description": "Source of the unsubscribe (e.g., user, lead, abuse, bounce, api)"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "_id": "uns_Y9Lf5R2mpNWs8x0cz",
@@ -7292,8 +8600,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "type": "object",
-                                        "additionalProperties": true
+                                        "$ref": "#/components/schemas/Webhook"
                                     }
                                 },
                                 "example": [
@@ -7385,7 +8692,34 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "_id": {
+                                            "type": "string",
+                                            "description": "Unique identifier for the webhook"
+                                        },
+                                        "targetUrl": {
+                                            "type": "string",
+                                            "description": "The URL where the webhook will send data"
+                                        },
+                                        "createdAt": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "description": "Timestamp when the webhook was created"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "_id": "hoo_dJt787EqeEmo7yxab",
+                                    "targetUrl": "https://webhook.site/*your-webhook-id*/",
+                                    "createdAt": "2024-07-11T13:51:44.918Z"
+                                }
+                            }
+                        }
                     },
                     "400": {
                         "description": "Bad team",
@@ -7438,7 +8772,44 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "_id": {
+                                            "type": "string",
+                                            "description": "Unique identifier for the webhook"
+                                        },
+                                        "targetUrl": {
+                                            "type": "string",
+                                            "description": "The URL where the webhook will send data"
+                                        },
+                                        "createdAt": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "description": "Timestamp when the webhook was created"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "description": "Type of webhook event"
+                                        },
+                                        "campaignId": {
+                                            "type": "string",
+                                            "description": "Associated campaign ID, if applicable"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "_id": "hoo_orQP33YrZgeKkswJK",
+                                    "targetUrl": "https://webhook.site/*your-webhook-id*/",
+                                    "createdAt": "2024-07-11T13:55:06.276Z",
+                                    "type": "linkedinInterested",
+                                    "campaignId": "cam_A1B2C3D4E5F6G7H8I9"
+                                }
+                            }
+                        }
                     },
                     "400": {
                         "description": "Bad team",
@@ -7491,7 +8862,31 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "enrichmentId": "enr_Peve9ExBG9XqwrmeM",
+                                    "enrichmentStatus": "done",
+                                    "input": {
+                                        "firstName": "John",
+                                        "lastName": "Lempire",
+                                        "linkedinUrl": "https://www.linkedin.com/in/lempire",
+                                        "companyName": "lempire",
+                                        "companyDomain": "lempire.com"
+                                    },
+                                    "data": {
+                                        "email": {
+                                            "email": "john@lempire.co",
+                                            "notFound": false
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     },
                     "202": {
                         "description": "In progress"
@@ -7650,7 +9045,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "id": "enr_pRSGEaMP7rrCfFPx5"
+                                }
+                            }
+                        }
                     },
                     "400": {
                         "description": "Possible errors: Bad team / Bad request / No enrichment requested (findEmail, findPhone, linkedinEnrichment or verifyEmail required) / Invalid webhookUrl",
@@ -7753,7 +9158,17 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "id": "enr_gLpC97CBdER2kpn7z"
+                                }
+                            }
+                        }
                     },
                     "400": {
                         "description": "Bad team",

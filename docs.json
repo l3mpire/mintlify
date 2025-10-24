@@ -249,18 +249,19 @@
                 "expanded": false,
                 "pages": [
                   "api-reference/endpoints/webhooks/add-webhook",
-                  "api-reference/endpoints/webhooks/delete-webhook"
+                  "api-reference/endpoints/webhooks/delete-webhook",
+                  "api-reference/endpoints/webhooks/get-many-webhooks"
                 ]
               },
               {
                 "group": "People database",
                 "expanded": false,
                 "pages": [
-                  "api-reference/endpoints/people-database/get-database-filters",
-                  "api-reference/endpoints/people-database/search-people-database",
                   "api-reference/endpoints/people-database/get-people-schema",
+                  "api-reference/endpoints/people-database/search-people-database",
+                  "api-reference/endpoints/people-database/get-companies-schema",
                   "api-reference/endpoints/people-database/search-companies-database",
-                  "api-reference/endpoints/people-database/get-companies-schema"
+                  "api-reference/endpoints/people-database/get-database-filters"
                 ]
               },
               {
@@ -285,8 +286,44 @@
             ]
           },
           {
-            "group": "Objects",
-            "pages": []
+            "group": "Objects & Definitions",
+            "pages": [
+              "api-reference/objects-definitions/team",
+              "api-reference/objects-definitions/credits",
+              "api-reference/objects-definitions/user",
+              "api-reference/objects-definitions/campaign",
+              "api-reference/objects-definitions/lead",
+              "api-reference/objects-definitions/activity",
+              "api-reference/objects-definitions/unsubscribe",
+              "api-reference/objects-definitions/enrich",
+              "api-reference/objects-definitions/task",
+              "api-reference/objects-definitions/inbox-conversation",
+              "api-reference/objects-definitions/inbox-message",
+              "api-reference/objects-definitions/contact",
+              {
+                "group": "People Database",
+                "expanded": false,
+                "pages": [
+                  "api-reference/objects-definitions/database",
+                  "api-reference/objects-definitions/people-database",
+                  "api-reference/objects-definitions/company-database",
+                  "api-reference/objects-definitions/database-filter"
+                ]
+              },
+              "api-reference/objects-definitions/crm-filter",
+              "api-reference/objects-definitions/company",
+              "api-reference/objects-definitions/lemwarm",
+              "api-reference/objects-definitions/campaign-status",
+              "api-reference/objects-definitions/channel",
+              "api-reference/objects-definitions/sequence",
+              "api-reference/objects-definitions/step",
+              "api-reference/objects-definitions/schedule",
+              "api-reference/objects-definitions/label",
+              "api-reference/objects-definitions/report",
+              "api-reference/objects-definitions/webhook",
+              "api-reference/objects-definitions/mailbox",
+              "api-reference/objects-definitions/company-note"
+            ]
           }
         ]
       }

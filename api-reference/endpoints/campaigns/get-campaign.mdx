@@ -1,6 +1,9 @@
 ---
 openapi: get /campaigns/{campaignId}
 ---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Campaign" objectPath="campaign" />
 
 <Note>
 The `labels` field in the returned object is optional and only included if there are labels on the campaign.
