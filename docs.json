@@ -202,8 +202,8 @@
                 "group": "Contacts",
                 "expanded": false,
                 "pages": [
-                  "api-reference/endpoints/contacts/get-many-contacts",
-                  "api-reference/endpoints/contacts/get-contact"
+                  "api-reference/endpoints/contacts/get-contact",
+                  "api-reference/endpoints/contacts/get-many-contacts"
                 ]
               },
               {
