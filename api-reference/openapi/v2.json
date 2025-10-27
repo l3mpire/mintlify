@@ -4035,18 +4035,13 @@
                         "application/json": {
                             "schema": {
                                 "type": "object",
+                                "required": [
+                                    "type"
+                                ],
                                 "properties": {
-                                    "delay": {
-                                        "type": "integer",
-                                        "description": "Delay in days before executing this step"
-                                    },
-                                    "message": {
-                                        "type": "string",
-                                        "description": "The message content for the step"
-                                    },
                                     "type": {
                                         "type": "string",
-                                        "description": "The type of step",
+                                        "description": "The type of step (required but cannot be changed - must match the existing step type)",
                                         "enum": [
                                             "email",
                                             "manual",
@@ -4059,12 +4054,143 @@
                                             "conditional",
                                             "whatsappMessage"
                                         ]
+                                    },
+                                    "delay": {
+                                        "type": "integer",
+                                        "description": "Delay in days before executing this step"
+                                    },
+                                    "subject": {
+                                        "type": "string",
+                                        "description": "Email subject line (for email steps)"
+                                    },
+                                    "message": {
+                                        "type": "string",
+                                        "description": "Content of the email or message (for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage steps)"
+                                    },
+                                    "altMessage": {
+                                        "type": "string",
+                                        "description": "Alternate message for linkedinSend steps"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "description": "Title or label for manual steps"
+                                    },
+                                    "method": {
+                                        "type": "string",
+                                        "description": "HTTP method for API steps",
+                                        "enum": [
+                                            "GET",
+                                            "POST",
+                                            "PUT",
+                                            "DELETE",
+                                            "PATCH"
+                                        ]
+                                    },
+                                    "url": {
+                                        "type": "string",
+                                        "description": "URL of the API endpoint to call (for api steps). Must start with http:// or https://"
+                                    },
+                                    "conditionKey": {
+                                        "type": "string",
+                                        "description": "Condition key for conditional steps",
+                                        "enum": [
+                                            "emailsOpened",
+                                            "emailsClicked",
+                                            "emailsUnsubscribed",
+                                            "meetingBooked",
+                                            "linkedinInviteAccepted",
+                                            "linkedinOpened",
+                                            "hasWhatsappAccount"
+                                        ]
+                                    },
+                                    "delayType": {
+                                        "type": "string",
+                                        "description": "Delay type for conditional steps",
+                                        "enum": [
+                                            "within",
+                                            "waitUntil"
+                                        ]
+                                    },
+                                    "campaignId": {
+                                        "type": "string",
+                                        "description": "Target campaign ID for sendToAnotherCampaign steps. The campaign must exist and not be archived"
                                     }
                                 }
                             },
-                            "example": {
-                                "delay": 0,
-                                "message": "Hello, I want to..."
+                            "examples": {
+                                "Update Email Step": {
+                                    "value": {
+                                        "type": "email",
+                                        "subject": "{{firstName}}, following up on our conversation",
+                                        "message": "<p>Hi {{firstName}},</p><p>Just wanted to circle back on our previous email. Have you had a chance to review it?</p><p>Best,<br>{{senderName}}</p>",
+                                        "delay": 2
+                                    }
+                                },
+                                "Update LinkedIn Invite": {
+                                    "value": {
+                                        "type": "linkedinInvite",
+                                        "message": "Hi {{firstName}}, I'd love to connect with you to discuss potential collaboration opportunities!",
+                                        "delay": 0
+                                    }
+                                },
+                                "Update LinkedIn Send": {
+                                    "value": {
+                                        "type": "linkedinSend",
+                                        "message": "Thanks for accepting my invite, {{firstName}}! I wanted to reach out about...",
+                                        "altMessage": "Alternative message if the main one fails",
+                                        "delay": 3
+                                    }
+                                },
+                                "Update Manual Task": {
+                                    "value": {
+                                        "type": "manual",
+                                        "title": "Schedule follow-up call",
+                                        "message": "Discuss pain points and propose next steps",
+                                        "delay": 2
+                                    }
+                                },
+                                "Update Phone Call": {
+                                    "value": {
+                                        "type": "phone",
+                                        "message": "Call to discuss the proposal sent via email",
+                                        "delay": 1
+                                    }
+                                },
+                                "Update API Call": {
+                                    "value": {
+                                        "type": "api",
+                                        "method": "PUT",
+                                        "url": "https://api.example.com/webhook/update",
+                                        "delay": 0
+                                    }
+                                },
+                                "Update LinkedIn Visit": {
+                                    "value": {
+                                        "type": "linkedinVisit",
+                                        "delay": 1
+                                    }
+                                },
+                                "Update Conditional Step": {
+                                    "value": {
+                                        "type": "conditional",
+                                        "conditionKey": "emailsOpened",
+                                        "delayType": "within",
+                                        "delay": 3
+                                    }
+                                },
+                                "Update Send to Another Campaign": {
+                                    "value": {
+                                        "type": "sendToAnotherCampaign",
+                                        "campaignId": "cam_XYZ789ABC123"
+                                    }
+                                },
+                                "Update WhatsApp Message": {
+                                    "value": {
+                                        "type": "whatsappMessage",
+                                        "message": "Hi {{firstName}}, just checking in to see if you received my previous messages.",
+                                        "delay": 2
+                                    }
+                                }
                             }
                         }
                     }
