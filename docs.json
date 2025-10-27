@@ -270,6 +270,7 @@
                 "expanded": false,
                 "pages": [
                   "api-reference/endpoints/enrich/enrich-data",
+                  "api-reference/endpoints/enrich/bulk-enrich-data",
                   "api-reference/endpoints/enrich/enrich-lead",
                   "api-reference/endpoints/enrich/get-enrichment-result"
                 ]
