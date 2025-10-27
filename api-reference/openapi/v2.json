@@ -9079,6 +9079,442 @@
                 }
             }
         },
+        "/enrich/bulk": {
+            "post": {
+                "summary": "Bulk Enrich Data",
+                "tags": [
+                    "Enrich"
+                ],
+                "description": "Send a batch of enrichment requests for multiple entities. Maximum 500 enrichment requests per call.",
+                "parameters": [
+                    {
+                        "name": "webhookUrl",
+                        "in": "query",
+                        "required": false,
+                        "description": "Webhook URL for enrichment events",
+                        "example": "https://webhook.site/c6de4ba1-0c3b-4d3a-8c2c-a49d7cb789de",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "Content-Type",
+                        "in": "header",
+                        "required": false,
+                        "example": "application/json",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "maxItems": 500,
+                                "items": {
+                                    "type": "object",
+                                    "required": [
+                                        "enrichmentRequests"
+                                    ],
+                                    "properties": {
+                                        "input": {
+                                            "type": "object",
+                                            "description": "Input data for enrichment. Required fields depend on enrichmentRequests.",
+                                            "properties": {
+                                                "linkedinUrl": {
+                                                    "type": "string",
+                                                    "description": "The LinkedIn URL of the person",
+                                                    "example": "https://www.linkedin.com/in/john-doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "description": "The email of the person",
+                                                    "example": "john.doe@example.com"
+                                                },
+                                                "companyName": {
+                                                    "type": "string",
+                                                    "description": "The name of the company associated with the person",
+                                                    "example": "Example Company"
+                                                },
+                                                "companyDomain": {
+                                                    "type": "string",
+                                                    "description": "The domain of the company associated with the person. Recommended for better find rate",
+                                                    "example": "example.com"
+                                                },
+                                                "firstName": {
+                                                    "type": "string",
+                                                    "description": "The first name of the person",
+                                                    "example": "John"
+                                                },
+                                                "lastName": {
+                                                    "type": "string",
+                                                    "description": "The last name of the person",
+                                                    "example": "Doe"
+                                                }
+                                            }
+                                        },
+                                        "enrichmentRequests": {
+                                            "type": "array",
+                                            "description": "Array of enrichment types to perform. Must contain at least one of: find_email, find_phone, verify, linkedin_enrichment",
+                                            "items": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "find_email",
+                                                    "find_phone",
+                                                    "verify",
+                                                    "linkedin_enrichment"
+                                                ]
+                                            },
+                                            "example": [
+                                                "find_email",
+                                                "verify"
+                                            ]
+                                        },
+                                        "metadata": {
+                                            "description": "Custom data to be returned in the response and webhook. Can be a string or an object",
+                                            "oneOf": [
+                                                {
+                                                    "type": "string"
+                                                },
+                                                {
+                                                    "type": "object"
+                                                }
+                                            ],
+                                            "example": {
+                                                "id": "some_id"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "find_email": {
+                                    "summary": "Find email enrichment",
+                                    "value": [
+                                        {
+                                            "input": {
+                                                "companyName": "Example Ets",
+                                                "companyDomain": "example.com",
+                                                "firstName": "John",
+                                                "lastName": "Doe"
+                                            },
+                                            "enrichmentRequests": [
+                                                "find_email"
+                                            ],
+                                            "metadata": {
+                                                "id": "some_id"
+                                            }
+                                        },
+                                        {
+                                            "input": {
+                                                "linkedinUrl": "https://www.linkedin.com/in/john-doe"
+                                            },
+                                            "enrichmentRequests": [
+                                                "find_email"
+                                            ],
+                                            "metadata": "some_id"
+                                        }
+                                    ]
+                                },
+                                "find_phone": {
+                                    "summary": "Find phone enrichment",
+                                    "value": [
+                                        {
+                                            "input": {
+                                                "linkedinUrl": "https://www.linkedin.com/in/john-doe"
+                                            },
+                                            "enrichmentRequests": [
+                                                "find_phone"
+                                            ],
+                                            "metadata": {
+                                                "id": "some_id"
+                                            }
+                                        }
+                                    ]
+                                },
+                                "verify": {
+                                    "summary": "Verify email",
+                                    "value": [
+                                        {
+                                            "input": {
+                                                "email": "john.doe@example.com"
+                                            },
+                                            "enrichmentRequests": [
+                                                "verify"
+                                            ],
+                                            "metadata": {
+                                                "id": "some_id"
+                                            }
+                                        }
+                                    ]
+                                },
+                                "linkedin_enrichment": {
+                                    "summary": "LinkedIn enrichment",
+                                    "value": [
+                                        {
+                                            "input": {
+                                                "linkedinUrl": "https://www.linkedin.com/in/john-doe"
+                                            },
+                                            "enrichmentRequests": [
+                                                "linkedin_enrichment"
+                                            ],
+                                            "metadata": {
+                                                "id": "some_id"
+                                            }
+                                        }
+                                    ]
+                                },
+                                "multiple": {
+                                    "summary": "Multiple enrichments",
+                                    "value": [
+                                        {
+                                            "input": {
+                                                "linkedinUrl": "https://www.linkedin.com/in/john-doe",
+                                                "email": "john.doe@example.com",
+                                                "companyName": "Example Company",
+                                                "companyDomain": "example.com",
+                                                "firstName": "John",
+                                                "lastName": "Doe"
+                                            },
+                                            "enrichmentRequests": [
+                                                "find_email",
+                                                "find_phone",
+                                                "verify",
+                                                "linkedin_enrichment"
+                                            ],
+                                            "metadata": {
+                                                "some_id": "some_id"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success - Returns enrichment IDs and metadata for each request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "oneOf": [
+                                            {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "description": "Enrichment ID",
+                                                        "example": "enr_cawQhM9N3pWkqw2Yt"
+                                                    },
+                                                    "metadata": {
+                                                        "description": "The metadata provided in the request",
+                                                        "oneOf": [
+                                                            {
+                                                                "type": "string"
+                                                            },
+                                                            {
+                                                                "type": "object"
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "type": "object",
+                                                "properties": {
+                                                    "error": {
+                                                        "type": "string",
+                                                        "description": "Error code for failed enrichment",
+                                                        "example": "MISSING_INPUTS"
+                                                    },
+                                                    "metadata": {
+                                                        "description": "The metadata provided in the request",
+                                                        "oneOf": [
+                                                            {
+                                                                "type": "string"
+                                                            },
+                                                            {
+                                                                "type": "object"
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
+                                "examples": {
+                                    "find_email": {
+                                        "summary": "Find email response",
+                                        "value": [
+                                            {
+                                                "id": "enr_7y2vszPS5F6C9qLEg",
+                                                "metadata": {
+                                                    "id": "some_id"
+                                                }
+                                            },
+                                            {
+                                                "id": "enr_4e1vEfOA3F7D9dJHd",
+                                                "metadata": "some_id"
+                                            },
+                                            {
+                                                "error": "MISSING_INPUTS",
+                                                "metadata": "some_id"
+                                            }
+                                        ]
+                                    },
+                                    "find_phone": {
+                                        "summary": "Find phone response",
+                                        "value": [
+                                            {
+                                                "id": "enr_5BJxyBn5MbZx9NSBp",
+                                                "metadata": {
+                                                    "id": "some_id"
+                                                }
+                                            },
+                                            {
+                                                "error": "MISSING_INPUTS",
+                                                "metadata": "some_id"
+                                            }
+                                        ]
+                                    },
+                                    "verify": {
+                                        "summary": "Verify email response",
+                                        "value": [
+                                            {
+                                                "id": "enr_mp7zdHiLLXEBWCkxX",
+                                                "metadata": {
+                                                    "id": "some_id"
+                                                }
+                                            },
+                                            {
+                                                "error": "MISSING_EMAIL",
+                                                "metadata": "some_id"
+                                            }
+                                        ]
+                                    },
+                                    "linkedin_enrichment": {
+                                        "summary": "LinkedIn enrichment response",
+                                        "value": [
+                                            {
+                                                "id": "enr_HanCDh8G4P3bjkksq",
+                                                "metadata": {
+                                                    "id": "some_id"
+                                                }
+                                            },
+                                            {
+                                                "error": "MISSING_LINKEDIN_URL",
+                                                "metadata": "some_id"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request - Invalid input format or parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "enum": [
+                                                "WRONG_INPUT_FORMAT",
+                                                "WRONG_METADATA_FORMAT",
+                                                "NO_WORKFLOW_REQUESTED",
+                                                "WRONG_ENRICHMENT_REQUEST_FORMAT",
+                                                "UNAUTHORIZED_WORKFLOW_REQUESTED",
+                                                "TOO_MANY_ENRICHMENTS_REQUESTED",
+                                                "NO_ENRICHMENTS_REQUESTED",
+                                                "WRONG_BODY_FORMAT"
+                                            ]
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "wrong_input_format": {
+                                        "summary": "Wrong input format",
+                                        "description": "The input of each enrichment must be an object containing at least one of the required fields",
+                                        "value": {
+                                            "error": "WRONG_INPUT_FORMAT"
+                                        }
+                                    },
+                                    "wrong_metadata_format": {
+                                        "summary": "Wrong metadata format",
+                                        "description": "The metadata field must be a string or an object",
+                                        "value": {
+                                            "error": "WRONG_METADATA_FORMAT"
+                                        }
+                                    },
+                                    "no_workflow_requested": {
+                                        "summary": "No workflow requested",
+                                        "description": "The enrichment request must contain at least one of the authorized workflows (find_email, find_phone, verify, linkedin_enrichment)",
+                                        "value": {
+                                            "error": "NO_WORKFLOW_REQUESTED"
+                                        }
+                                    },
+                                    "wrong_enrichment_request_format": {
+                                        "summary": "Wrong enrichment request format",
+                                        "description": "The enrichment request must be an array",
+                                        "value": {
+                                            "error": "WRONG_ENRICHMENT_REQUEST_FORMAT"
+                                        }
+                                    },
+                                    "unauthorized_workflow_requested": {
+                                        "summary": "Unauthorized workflow requested",
+                                        "description": "The enrichmentRequests contained invalid request types",
+                                        "value": {
+                                            "error": "UNAUTHORIZED_WORKFLOW_REQUESTED"
+                                        }
+                                    },
+                                    "too_many_enrichments_requested": {
+                                        "summary": "Too many enrichments requested",
+                                        "description": "There is a limit of 500 enrichments per request",
+                                        "value": {
+                                            "error": "TOO_MANY_ENRICHMENTS_REQUESTED"
+                                        }
+                                    },
+                                    "no_enrichments_requested": {
+                                        "summary": "No enrichments requested",
+                                        "description": "The body must contain at least one enrichment request",
+                                        "value": {
+                                            "error": "NO_ENRICHMENTS_REQUESTED"
+                                        }
+                                    },
+                                    "wrong_body_format": {
+                                        "summary": "Wrong body format",
+                                        "description": "The body must be a valid array",
+                                        "value": {
+                                            "error": "WRONG_BODY_FORMAT"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
+                    }
+                }
+            }
+        },
         "/leads/{leadId}/enrich": {
             "post": {
                 "summary": "Enrich Lead",
