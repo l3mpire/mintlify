@@ -3527,72 +3527,112 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
+                                    "description": "Object where each key is a sequence ID and each value is a sequence object",
                                     "additionalProperties": {
                                         "type": "object",
                                         "properties": {
                                             "_id": {
-                                                "type": "string"
+                                                "type": "string",
+                                                "description": "The unique identifier of the sequence"
                                             },
                                             "steps": {
                                                 "type": "array",
+                                                "description": "Array of steps in the sequence",
                                                 "items": {
-                                                    "type": "object"
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "_id": {
+                                                            "type": "string",
+                                                            "description": "The unique identifier of the step"
+                                                        },
+                                                        "delay": {
+                                                            "type": "integer",
+                                                            "description": "The delay in days before executing this step"
+                                                        },
+                                                        "emailTemplateId": {
+                                                            "type": "string",
+                                                            "description": "The unique identifier of the email template used for this step"
+                                                        },
+                                                        "type": {
+                                                            "type": "string",
+                                                            "description": "The type of step (e.g., email, linkedinSend, linkedinInvite, conditional)"
+                                                        },
+                                                        "index": {
+                                                            "type": "integer",
+                                                            "description": "The position of the step in the sequence"
+                                                        },
+                                                        "sequenceId": {
+                                                            "type": "string",
+                                                            "description": "The unique identifier of the parent sequence"
+                                                        },
+                                                        "sequenceStep": {
+                                                            "type": "integer",
+                                                            "description": "The step number in the sequence"
+                                                        },
+                                                        "message": {
+                                                            "type": "string",
+                                                            "description": "The message content for the step (plain text for LinkedIn, HTML for email)"
+                                                        },
+                                                        "subject": {
+                                                            "type": "string",
+                                                            "description": "The email subject line (only for email steps)"
+                                                        }
+                                                    }
                                                 }
                                             },
                                             "level": {
-                                                "type": "integer"
+                                                "type": "integer",
+                                                "description": "The nesting level of the sequence (0 for main sequence, 1+ for nested conditional sequences)"
+                                            },
+                                            "parentId": {
+                                                "type": "string",
+                                                "description": "The unique identifier of the parent sequence (only for conditional sequences)"
+                                            },
+                                            "conditionalStepIndex": {
+                                                "type": "integer",
+                                                "description": "The index of the conditional step that triggers this sequence (only for conditional sequences)"
                                             }
                                         }
                                     }
                                 },
                                 "example": {
-                                    "seq_p9qaCXrptS8XcPPNK": {
-                                        "_id": "seq_p9qaCXrptS8XcPPNK",
+                                    "seq_JiYPY37b43uJg2hfA": {
+                                        "_id": "seq_JiYPY37b43uJg2hfA",
                                         "steps": [
                                             {
-                                                "_id": "stp_wHzzFZntP2FvJbeb6",
-                                                "type": "linkedinInvite",
+                                                "_id": "stp_twj5hF8qD2TP3xx7v",
                                                 "delay": 0,
-                                                "emailTemplateId": "etp_5qsoi5kneNkakmPd5",
+                                                "emailTemplateId": "etp_SbuYw3hvrPHaCzkny",
+                                                "type": "linkedinSend",
                                                 "index": 1,
-                                                "message": "Test invite message"
+                                                "sequenceId": "seq_JiYPY37b43uJg2hfA",
+                                                "sequenceStep": 0,
+                                                "message": "Hey {{firstName}}, \n\nwe're launching an event, a place where people can regularly meet, network, and learn from each other. We would love it if you could join us for a drink & chat next week. What do you say? 😊"
                                             },
                                             {
-                                                "_id": "stp_EtKsaSW62vyFhMME4",
-                                                "type": "conditional",
-                                                "conditions": [
-                                                    {
-                                                        "sequenceId": "seq_jgBhmiQYyRd3gW8Sb",
-                                                        "label": "Accepted invite",
-                                                        "key": "linkedinInviteAccepted",
-                                                        "delay": 1,
-                                                        "delayType": "waitUntil"
-                                                    },
-                                                    {
-                                                        "sequenceId": "seq_ET4kSR3GAkcRqp2TE",
-                                                        "fallback": true
-                                                    }
-                                                ],
-                                                "index": 2
+                                                "_id": "stp_L6fcwoMWJcRMzi7Rp",
+                                                "delay": 1,
+                                                "emailTemplateId": "etp_46ExBhhrk8SzrvpZv",
+                                                "index": 2,
+                                                "sequenceId": "seq_JiYPY37b43uJg2hfA",
+                                                "sequenceStep": 1,
+                                                "subject": "{{firstName}}, do we count on you for the event?",
+                                                "message": "<p style=\"margin: 0px; box-sizing: border-box;\">Hey {{firstName}},<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">Do you have any plans for Thursday, 7pm?<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">What about spending the evening with cool people by our office?<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">We're launching an event, a place where people can regularly meet, network, and build connections that help them grow further 😊<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">It would be really nice if we could count on you for the event-&nbsp;<a target=\"_blank\" style=\"color: rgb(0, 123, 255); text-decoration: none; background-color: transparent; user-select: auto; box-sizing: border-box;\" rel=\"noopener noreferrer\" href=\"{{event_link_to_send}}\">here's your invite</a>&nbsp;🔥</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">Can you make it?<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">Sarah,</p><p style=\"margin: 0px; box-sizing: border-box;\">Head of Marketing</p>",
+                                                "type": "email"
+                                            },
+                                            {
+                                                "_id": "stp_2JyMQiTSvPrahoncJ",
+                                                "delay": 1,
+                                                "emailTemplateId": "etp_NZNcbz74ymBvJDM95",
+                                                "index": 3,
+                                                "sequenceId": "seq_JiYPY37b43uJg2hfA",
+                                                "sequenceStep": 2,
+                                                "subject": "{{firstName}}, do we count on you for the event?",
+                                                "message": "<p style=\"margin: 0px; box-sizing: border-box;\">So, should I add you to the list of attendees?<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">We'll meet around 7pm, have a drink and exchange with entrepreneurs, marketers, and salespeople.<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\"><a target=\"_blank\" style=\"color: rgb(0, 123, 255); text-decoration: none; background-color: transparent; user-select: auto; box-sizing: border-box;\" rel=\"noopener noreferrer\" href=\"{{event_link_to_send}}\">Here's the link</a> if you want to join!<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">We would love to have you with us for this event!<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">Sarah</p><p style=\"margin: 0px; box-sizing: border-box;\">Head of Marketing</p>",
+                                                "type": "email"
                                             }
                                         ],
                                         "level": 0
-                                    },
-                                    "seq_jgBhmiQYyRd3gW8Sb": {
-                                        "_id": "seq_jgBhmiQYyRd3gW8Sb",
-                                        "parentId": "seq_p9qaCXrptS8XcPPNK",
-                                        "conditionalStepIndex": 1,
-                                        "steps": [
-                                            {
-                                                "_id": "stp_vMqX4wgSmqMXd2env",
-                                                "type": "linkedinSend",
-                                                "delay": 1,
-                                                "emailTemplateId": "etp_DJqHmozZtYz4JWyyB",
-                                                "index": 3,
-                                                "message": "Test message"
-                                            }
-                                        ],
-                                        "level": 1
                                     }
                                 }
                             }
