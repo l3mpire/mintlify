@@ -793,7 +793,20 @@
                     },
                     "public": {
                         "type": "boolean",
-                        "description": "Available as template"
+                        "description": "Whether the schedule is available as a template for other users"
+                    },
+                    "teamId": {
+                        "type": "string",
+                        "description": "Unique identifier of the team that owns this schedule"
+                    },
+                    "createdBy": {
+                        "type": "string",
+                        "description": "Unique identifier of the user who created this schedule"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp when the schedule was created"
                     }
                 }
             },
@@ -941,17 +954,34 @@
                 "type": "object",
                 "description": "Paginated response containing multiple schedules.",
                 "properties": {
-                    "results": {
+                    "schedules": {
                         "type": "array",
+                        "description": "Array of schedule objects",
                         "items": {
                             "$ref": "#/components/schemas/Schedule"
                         }
                     },
-                    "page": {
-                        "type": "integer"
-                    },
-                    "total": {
-                        "type": "integer"
+                    "pagination": {
+                        "type": "object",
+                        "description": "Pagination information",
+                        "properties": {
+                            "totalRecords": {
+                                "type": "integer",
+                                "description": "Total number of schedules across all pages"
+                            },
+                            "currentPage": {
+                                "type": "integer",
+                                "description": "Current page number"
+                            },
+                            "nextPage": {
+                                "type": "integer",
+                                "description": "Next page number (null if on last page)"
+                            },
+                            "totalPage": {
+                                "type": "integer",
+                                "description": "Total number of pages"
+                            }
+                        }
                     }
                 }
             },
@@ -4345,11 +4375,29 @@
                                 "example": {
                                     "schedules": [
                                         {
-                                            "_id": "skd_Cyf3LZJuJamrmCMrv",
-                                            "name": "Test 2",
+                                            "_id": "skd_AEcaBR4KvwvFtFhyH",
+                                            "name": "Custom Schedule",
                                             "secondsToWait": 1200,
-                                            "timezone": "Atlantic/Reykjavik",
-                                            "start": "08:00",
+                                            "timezone": "Europe/Paris",
+                                            "start": "09:00",
+                                            "end": "18:00",
+                                            "weekdays": [
+                                                1,
+                                                2,
+                                                3,
+                                                4
+                                            ],
+                                            "public": true,
+                                            "teamId": "tea_b4rMsi2trB42WyuWP",
+                                            "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                                            "createdAt": "2025-10-27T09:41:11.187Z"
+                                        },
+                                        {
+                                            "_id": "skd_eb8Lm39mKoMW8mibE",
+                                            "name": "Default schedule",
+                                            "secondsToWait": 1200,
+                                            "timezone": "Europe/Paris",
+                                            "start": "09:00",
                                             "end": "18:00",
                                             "weekdays": [
                                                 1,
@@ -4358,16 +4406,70 @@
                                                 4,
                                                 5
                                             ],
-                                            "teamId": "tea_b834id4r7skME8mfW",
-                                            "createdBy": "usr_F7iPChEQ3pSmuTiCe",
-                                            "createdAt": "2025-02-06T16:29:10.217Z"
+                                            "teamId": "tea_b4rMsi2trB42WyuWP",
+                                            "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                                            "createdAt": "2025-10-27T07:01:04.041Z"
+                                        },
+                                        {
+                                            "_id": "skd_iNkGfQRHbzoS22hdA",
+                                            "name": "Default schedule",
+                                            "secondsToWait": 1200,
+                                            "timezone": "Asia/Seoul",
+                                            "start": "09:00",
+                                            "end": "18:00",
+                                            "weekdays": [
+                                                1,
+                                                2,
+                                                3,
+                                                4,
+                                                5
+                                            ],
+                                            "teamId": "tea_b4rMsi2trB42WyuWP",
+                                            "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                                            "createdAt": "2025-10-24T09:37:25.040Z"
+                                        },
+                                        {
+                                            "_id": "skd_8NyTiriwLFHXNiSTq",
+                                            "name": "Default schedule",
+                                            "secondsToWait": 1200,
+                                            "timezone": "Asia/Seoul",
+                                            "start": "09:00",
+                                            "end": "18:00",
+                                            "weekdays": [
+                                                1,
+                                                2,
+                                                3,
+                                                4,
+                                                5
+                                            ],
+                                            "teamId": "tea_b4rMsi2trB42WyuWP",
+                                            "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                                            "createdAt": "2025-10-24T07:24:44.785Z"
+                                        },
+                                        {
+                                            "_id": "skd_Qick3HJqsxiW5Bir7",
+                                            "name": "Default schedule",
+                                            "secondsToWait": 1200,
+                                            "timezone": "Europe/Sofia",
+                                            "start": "09:00",
+                                            "end": "18:00",
+                                            "weekdays": [
+                                                1,
+                                                2,
+                                                3,
+                                                4,
+                                                5
+                                            ],
+                                            "teamId": "tea_b4rMsi2trB42WyuWP",
+                                            "createdBy": "usr_dZKq4dpAnn8YQQMJm",
+                                            "createdAt": "2025-10-20T13:13:34.680Z"
                                         }
                                     ],
                                     "pagination": {
-                                        "totalRecords": 5780,
+                                        "totalRecords": 3039,
                                         "currentPage": 1,
                                         "nextPage": 2,
-                                        "totalPage": 1927
+                                        "totalPage": 608
                                     }
                                 }
                             }
