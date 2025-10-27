@@ -2686,7 +2686,7 @@
             ],
             "get": {
                 "summary": "Get Campaign Export Status",
-                "description": "Check the status of an asynchronous campaign export. Status are available for 2 hours only. An export that is still pending after 2 hours will be considered as failed and HTTP request will return 404. When you obtain the CSV file URL, you have to download the file within a 24 hours time frame. After that, the file will be deleted.",
+                "description": "Check the status of an asynchronous campaign export.",
                 "tags": [
                     "Campaigns"
                 ],
@@ -2715,6 +2715,10 @@
                                         "status": {
                                             "type": "object",
                                             "properties": {
+                                                "_id": {
+                                                    "type": "string",
+                                                    "description": "MongoDB identifier of the export"
+                                                },
                                                 "id": {
                                                     "type": "string",
                                                     "description": "The unique identifier of the export"
@@ -2774,6 +2778,10 @@
                                                     "type": "integer",
                                                     "description": "Total number of items to process"
                                                 },
+                                                "fileSize": {
+                                                    "type": "integer",
+                                                    "description": "Size of the exported CSV file in bytes (only present when done)"
+                                                },
                                                 "url": {
                                                     "type": "string",
                                                     "description": "Download URL for the CSV file (only present when status is done)"
@@ -2788,20 +2796,22 @@
                                         "value": {
                                             "ok": true,
                                             "status": {
-                                                "id": "axp_7dKLTwqpjxzR5vh2n",
-                                                "teamId": "tea_c123fg5h8ijKL9noP",
-                                                "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
-                                                "campaignName": "Insights Outreach 2024",
+                                                "_id": "axp_7guBefTBQGqFfps87",
+                                                "id": "axp_7guBefTBQGqFfps87",
+                                                "teamId": "tea_b4rMsi2trB42WyuWP",
+                                                "campaignId": "cam_DqHpWfjd67n2KTj2W",
+                                                "campaignName": "lemstage",
                                                 "status": "done",
-                                                "startedAt": "2020-01-01T00:00:00.000Z",
-                                                "endedAt": "2020-01-01T00:00:00.000Z",
+                                                "startedAt": "2025-10-27T07:53:16.267Z",
                                                 "progressIndex": 6,
-                                                "progressTime": 1639138959979,
-                                                "progressLastStepDuration": 476,
+                                                "progressTime": 1761551597286,
+                                                "progressLastStepDuration": 0,
                                                 "progressType": "done",
                                                 "progress": 0,
                                                 "total": 0,
-                                                "url": "https://api.lemlist.com/api/files/exports/fil_axp_7dKLTwqpjxzR5vh2n_insights_outreach_2024.csv"
+                                                "fileSize": 23654,
+                                                "endedAt": "2025-10-27T07:53:17.286Z",
+                                                "url": "https://api.lemlist.com/api/files/exports/fil_axp_7guBefhehehe.csv"
                                             }
                                         }
                                     },
@@ -8178,12 +8188,13 @@
                 }
             }
         },
-        "/stats/campaigns/{campaignId}": {
+        "/v2/campaigns/{campaignId}/stats": {
             "get": {
                 "summary": "Get Campaign Stats",
                 "tags": [
                     "Campaigns"
                 ],
+                "description": "Retrieve detailed statistics for a specific campaign, with filtering options by date, user, A/B testing, and communication channels.",
                 "parameters": [
                     {
                         "name": "campaignId",
@@ -8198,8 +8209,8 @@
                     {
                         "name": "startDate",
                         "in": "query",
-                        "required": false,
-                        "description": "Start date (ISO 8601)",
+                        "required": true,
+                        "description": "Start date in ISO 8601 format",
                         "example": "2024-01-07T22:00:00.000Z",
                         "schema": {
                             "type": "string",
@@ -8209,43 +8220,20 @@
                     {
                         "name": "endDate",
                         "in": "query",
-                        "required": false,
-                        "description": "End date (ISO 8601)",
-                        "example": "2024-07-10T21:59:59.999Z",
+                        "required": true,
+                        "description": "End date in ISO 8601 format",
+                        "example": "2025-07-10T21:59:59.999Z",
                         "schema": {
                             "type": "string",
                             "format": "date-time"
                         }
                     },
                     {
-                        "name": "timezone",
+                        "name": "sendUser",
                         "in": "query",
                         "required": false,
-                        "description": "Timezone for stats",
-                        "example": "Europe/Paris",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "version",
-                        "in": "query",
-                        "required": false,
-                        "description": "API version. Use 'v2' to access the enhanced stats endpoint with additional filtering options.",
-                        "example": "v2",
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "v2"
-                            ]
-                        }
-                    },
-                    {
-                        "name": "channels",
-                        "in": "query",
-                        "required": false,
-                        "description": "Filter stats by communication channels. Provide as a comma-separated list or array. Valid values: 'email', 'linkedin', 'others'. Only works with version=v2.",
-                        "example": "email,linkedin",
+                        "description": "Filter stats by send user. Format: `sendUserId|sendUserEmail`. The sendUserId should begin with 'usr_' and the sendUserEmail should be a valid sender email. If the param is specified, both sendUserId and sendUserEmail are mandatory.",
+                        "example": "usr_b62rnsjxu236ttSH3|email@example.com",
                         "schema": {
                             "type": "string"
                         }
@@ -8254,7 +8242,7 @@
                         "name": "ABSelected",
                         "in": "query",
                         "required": false,
-                        "description": "Filter stats by A/B test variant. Valid values: 'A' or 'B'. Only works with version=v2.",
+                        "description": "A/B version filter",
                         "example": "A",
                         "schema": {
                             "type": "string",
@@ -8265,11 +8253,11 @@
                         }
                     },
                     {
-                        "name": "sendUser",
+                        "name": "channels",
                         "in": "query",
                         "required": false,
-                        "description": "Filter stats by send user. Format: '<sendUserId>|<sendUserEmail>'. Only works with version=v2.",
-                        "example": "usr_abc123|john@example.com",
+                        "description": "JSON array of channels to include. Possible values: 'email', 'linkedin', 'others'",
+                        "example": "[\"others\", \"linkedin\", \"email\"]",
                         "schema": {
                             "type": "string"
                         }
@@ -8292,67 +8280,228 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "leadTotal": {
+                                        "nbLeads": {
                                             "type": "integer",
-                                            "description": "Total number of leads"
+                                            "description": "Total number of leads in the campaign"
                                         },
-                                        "sentCount": {
+                                        "nbLeadsLaunched": {
+                                            "type": "integer",
+                                            "description": "Number of leads launched in the campaign"
+                                        },
+                                        "nbLeadsReached": {
+                                            "type": "integer",
+                                            "description": "Number of leads that were successfully reached"
+                                        },
+                                        "nbLeadsOpened": {
+                                            "type": "integer",
+                                            "description": "Number of leads that opened messages"
+                                        },
+                                        "nbLeadsInteracted": {
+                                            "type": "integer",
+                                            "description": "Number of leads that interacted with messages (clicked, replied)"
+                                        },
+                                        "nbLeadsAnswered": {
+                                            "type": "integer",
+                                            "description": "Number of leads that answered"
+                                        },
+                                        "nbLeadsInterested": {
+                                            "type": "integer",
+                                            "description": "Number of leads marked as interested"
+                                        },
+                                        "nbLeadsNotInterested": {
+                                            "type": "integer",
+                                            "description": "Number of leads marked as not interested"
+                                        },
+                                        "nbLeadsUnsubscribed": {
+                                            "type": "integer",
+                                            "description": "Number of leads that unsubscribed"
+                                        },
+                                        "nbLeadsInterrupted": {
+                                            "type": "integer",
+                                            "description": "Number of leads with interrupted sequences"
+                                        },
+                                        "messagesSent": {
                                             "type": "integer",
                                             "description": "Total number of messages sent"
                                         },
-                                        "emailsSent": {
+                                        "messagesNotSent": {
                                             "type": "integer",
-                                            "description": "Number of emails sent (v2 only)"
+                                            "description": "Number of messages that failed to send"
                                         },
-                                        "emailsOpened": {
+                                        "messagesBounced": {
                                             "type": "integer",
-                                            "description": "Number of emails opened (v2 only)"
+                                            "description": "Number of messages that bounced"
                                         },
-                                        "emailsClicked": {
+                                        "delivered": {
                                             "type": "integer",
-                                            "description": "Number of emails clicked (v2 only)"
+                                            "description": "Number of messages successfully delivered"
                                         },
-                                        "emailsReplied": {
+                                        "opened": {
                                             "type": "integer",
-                                            "description": "Number of email replies (v2 only)"
+                                            "description": "Number of messages opened"
                                         },
-                                        "linkedinSent": {
+                                        "clicked": {
                                             "type": "integer",
-                                            "description": "Number of LinkedIn messages sent (v2 only)"
+                                            "description": "Number of messages with clicks"
                                         },
-                                        "linkedinOpened": {
+                                        "replied": {
                                             "type": "integer",
-                                            "description": "Number of LinkedIn messages opened (v2 only)"
+                                            "description": "Number of messages that received replies"
                                         },
-                                        "linkedinReplied": {
+                                        "invitationAccepted": {
                                             "type": "integer",
-                                            "description": "Number of LinkedIn replies (v2 only)"
+                                            "description": "Number of LinkedIn invitations accepted"
                                         },
-                                        "interested": {
+                                        "meetingBooked": {
                                             "type": "integer",
-                                            "description": "Number of interested leads (v2 only)"
+                                            "description": "Number of meetings booked"
                                         },
-                                        "notInterested": {
-                                            "type": "integer",
-                                            "description": "Number of not interested leads (v2 only)"
+                                        "steps": {
+                                            "type": "array",
+                                            "description": "Detailed metrics for each step in the campaign",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "index": {
+                                                        "type": "integer",
+                                                        "description": "Step index in the sequence"
+                                                    },
+                                                    "sequenceId": {
+                                                        "type": "string",
+                                                        "description": "ID of the sequence"
+                                                    },
+                                                    "sequenceStep": {
+                                                        "type": "integer",
+                                                        "description": "Step number within the sequence"
+                                                    },
+                                                    "abTest": {
+                                                        "type": "string",
+                                                        "description": "A/B test variant (if applicable)"
+                                                    },
+                                                    "taskType": {
+                                                        "type": "string",
+                                                        "description": "Type of task",
+                                                        "enum": [
+                                                            "email",
+                                                            "linkedinVisit",
+                                                            "linkedinInvite",
+                                                            "linkedinSend",
+                                                            "phone",
+                                                            "manual",
+                                                            "conditional"
+                                                        ]
+                                                    },
+                                                    "conditionLabel": {
+                                                        "type": "string",
+                                                        "description": "Label for conditional steps"
+                                                    },
+                                                    "invited": {
+                                                        "type": "integer",
+                                                        "description": "Number of LinkedIn invitations sent"
+                                                    },
+                                                    "sent": {
+                                                        "type": "integer",
+                                                        "description": "Number of messages sent"
+                                                    },
+                                                    "delivered": {
+                                                        "type": "integer",
+                                                        "description": "Number of messages delivered"
+                                                    },
+                                                    "opened": {
+                                                        "type": "integer",
+                                                        "description": "Number of messages opened"
+                                                    },
+                                                    "clicked": {
+                                                        "type": "integer",
+                                                        "description": "Number of clicks from a message from this step"
+                                                    },
+                                                    "replied": {
+                                                        "type": "integer",
+                                                        "description": "Number of replies"
+                                                    },
+                                                    "notDelivered": {
+                                                        "type": "integer",
+                                                        "description": "Number of messages not delivered"
+                                                    },
+                                                    "bounced": {
+                                                        "type": "integer",
+                                                        "description": "Number of messages bounced"
+                                                    },
+                                                    "unsubscribed": {
+                                                        "type": "integer",
+                                                        "description": "Number of unsubscribes from this step"
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 },
-                                "example": [
-                                    {
-                                        "leadTotal": 150,
-                                        "sentCount": 320,
-                                        "emailsSent": 250,
-                                        "emailsOpened": 180,
-                                        "emailsClicked": 45,
-                                        "emailsReplied": 32,
-                                        "linkedinSent": 70,
-                                        "linkedinOpened": 55,
-                                        "linkedinReplied": 12,
-                                        "interested": 28,
-                                        "notInterested": 5
-                                    }
-                                ]
+                                "example": {
+                                    "nbLeads": 32,
+                                    "nbLeadsLaunched": 32,
+                                    "nbLeadsReached": 32,
+                                    "nbLeadsOpened": 31,
+                                    "nbLeadsInteracted": 4,
+                                    "nbLeadsAnswered": 16,
+                                    "nbLeadsInterested": 1,
+                                    "nbLeadsNotInterested": 0,
+                                    "nbLeadsUnsubscribed": 1,
+                                    "nbLeadsInterrupted": 1,
+                                    "messagesSent": 72,
+                                    "messagesNotSent": 0,
+                                    "messagesBounced": 0,
+                                    "delivered": 72,
+                                    "opened": 47,
+                                    "clicked": 4,
+                                    "replied": 16,
+                                    "invitationAccepted": 0,
+                                    "meetingBooked": 0,
+                                    "steps": [
+                                        {
+                                            "index": 1,
+                                            "sequenceId": "seq_JiYPY37b43uJg2hfA",
+                                            "sequenceStep": 0,
+                                            "taskType": "linkedinSend",
+                                            "invited": 0,
+                                            "sent": 32,
+                                            "delivered": 32,
+                                            "opened": 15,
+                                            "clicked": 0,
+                                            "replied": 15,
+                                            "notDelivered": 0,
+                                            "bounced": 0,
+                                            "unsubscribed": 1
+                                        },
+                                        {
+                                            "index": 2,
+                                            "sequenceId": "seq_JiYPY37b43uJg2hfA",
+                                            "sequenceStep": 1,
+                                            "invited": 0,
+                                            "sent": 20,
+                                            "delivered": 20,
+                                            "opened": 17,
+                                            "clicked": 1,
+                                            "replied": 1,
+                                            "notDelivered": 0,
+                                            "bounced": 0,
+                                            "unsubscribed": 0
+                                        },
+                                        {
+                                            "index": 3,
+                                            "sequenceId": "seq_JiYPY37b43uJg2hfA",
+                                            "sequenceStep": 2,
+                                            "invited": 0,
+                                            "sent": 20,
+                                            "delivered": 20,
+                                            "opened": 15,
+                                            "clicked": 3,
+                                            "replied": 0,
+                                            "notDelivered": 0,
+                                            "bounced": 0,
+                                            "unsubscribed": 0
+                                        }
+                                    ]
+                                }
                             }
                         }
                     },
@@ -8366,7 +8515,7 @@
                                         "value": "Bad team"
                                     },
                                     "missingDates": {
-                                        "summary": "Missing dates (v2)",
+                                        "summary": "Missing dates",
                                         "value": "Bad params: startDate and endDate are required"
                                     },
                                     "invalidChannels": {
