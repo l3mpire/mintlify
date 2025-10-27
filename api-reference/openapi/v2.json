@@ -260,17 +260,53 @@
                         "type": "string",
                         "description": "ID of the team that owns this campaign"
                     },
-                    "archived": {
-                        "type": "boolean",
-                        "description": "Whether the campaign is archived"
-                    },
-                    "isEnded": {
-                        "type": "boolean",
-                        "description": "Completion status"
-                    },
                     "hasError": {
                         "type": "boolean",
                         "description": "Whether the campaign has errors"
+                    },
+                    "errors": {
+                        "type": "array",
+                        "description": "List of error messages if campaign has errors",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "creator": {
+                        "type": "object",
+                        "description": "Campaign creator information",
+                        "properties": {
+                            "userId": {
+                                "type": "string",
+                                "description": "Creator user ID"
+                            },
+                            "userEmail": {
+                                "type": "string",
+                                "format": "email",
+                                "description": "Creator email address"
+                            }
+                        }
+                    },
+                    "senders": {
+                        "type": "array",
+                        "description": "Campaign senders configuration",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "description": "Sender user ID"
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "format": "email",
+                                    "description": "Sender email address"
+                                },
+                                "sendUserMailboxId": {
+                                    "type": "string",
+                                    "description": "Mailbox ID used for sending"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -1770,8 +1806,8 @@
                         "example": "v2",
                         "schema": {
                             "type": "string",
+                            "default": "v2",
                             "enum": [
-                                "v1",
                                 "v2"
                             ]
                         }
@@ -1862,46 +1898,52 @@
                                 },
                                 "example": [
                                     {
-                                        "_id": "cam_A1B2C3D4E5F6G7H8I9",
-                                        "name": "Insights Outreach 2024",
+                                        "_id": "cam_KFsZWCvxY34fZjKpQ",
+                                        "name": "Product Launch Campaign",
+                                        "labels": [],
+                                        "createdAt": "2025-02-20T14:45:54.230Z",
+                                        "createdBy": "usr_PdR6Q7ZifnXYEXPJR",
+                                        "status": "running",
+                                        "hasError": true,
+                                        "errors": [
+                                            "Your campaign does not have sender."
+                                        ]
+                                    },
+                                    {
+                                        "_id": "cam_E7zXbH4n6n78TWdvX",
+                                        "name": "Sales Outreach 2025",
+                                        "labels": [],
+                                        "createdAt": "2025-02-05T09:00:07.541Z",
+                                        "createdBy": "usr_w7wBTtp3iTNbqQtGq",
+                                        "status": "running",
+                                        "hasError": true,
+                                        "errors": [
+                                            "One of your sender has no email provider.",
+                                            "Your campaign have an invalid sender mailbox"
+                                        ]
+                                    },
+                                    {
+                                        "_id": "cam_ohtpFfMbJ5vpDkLsm",
+                                        "name": "CRM Integration Test",
                                         "labels": [
-                                            "Insightful"
+                                            "CRM"
                                         ],
-                                        "createdAt": "2024-02-29T11:00:11.293Z",
-                                        "createdBy": "usr_T3dhQkG8xzCv4MU1e",
+                                        "createdAt": "2023-01-27T14:58:52.482Z",
+                                        "createdBy": "usr_ez9h9tXDLP9LqpYyp",
+                                        "status": "running",
+                                        "hasError": true,
+                                        "errors": [
+                                            "One of your sender has no email provider.",
+                                            "Your campaign have an invalid sender mailbox"
+                                        ]
+                                    },
+                                    {
+                                        "_id": "cam_rsoutbiF7uYK8Bz2C",
+                                        "name": "Customer Onboarding",
+                                        "labels": [],
+                                        "createdAt": "2022-06-14T13:32:57.880Z",
+                                        "createdBy": "usr_ez9h9tXDLP9LqpYyp",
                                         "status": "running"
-                                    },
-                                    {
-                                        "_id": "cam_K9L8M7N6O5P4Q3R2S1",
-                                        "name": "Discover Solutions Campaign",
-                                        "labels": [
-                                            "Solutions",
-                                            "Future-Ready"
-                                        ],
-                                        "createdAt": "2024-02-29T11:00:11.293Z",
-                                        "createdBy": "usr_T3dhQkG8xzCv4MU1e",
-                                        "archived": true,
-                                        "status": "ended",
-                                        "isEnded": true
-                                    },
-                                    {
-                                        "_id": "cam_M5N4O3P2Q1R9S8T7U6",
-                                        "name": "Future Innovations Outreach",
-                                        "createdAt": "2024-02-15T09:00:15.272Z",
-                                        "createdBy": "usr_T3dhQkG8xzCv4MU1e",
-                                        "status": "paused"
-                                    },
-                                    {
-                                        "_id": "cam_G6H7I8J9K0L1M2N3O4",
-                                        "name": "Insightful Solutions Drive",
-                                        "createdAt": "2024-01-25T13:00:11.293Z",
-                                        "createdBy": "usr_T3dhQkG8xzCv4MU1e",
-                                        "labels": [
-                                            "Insightful",
-                                            "Solutions"
-                                        ],
-                                        "status": "draft",
-                                        "hasError": true
                                     }
                                 ]
                             }
@@ -2180,14 +2222,21 @@
                                     "$ref": "#/components/schemas/Campaign"
                                 },
                                 "example": {
-                                    "_id": "cam_A1B2C3D4E5F6G7H8I9",
-                                    "name": "Insights Outreach 2024",
-                                    "labels": [
-                                        "Insightful"
-                                    ],
-                                    "createdAt": "2024-02-29T11:00:11.293Z",
-                                    "createdBy": "usr_T3dhQkG8xzCv4MU1e",
-                                    "status": "running"
+                                    "_id": "cam_9NsHPnykWESTncCW8",
+                                    "name": "Product Launch Campaign",
+                                    "createdAt": "2025-10-27T07:01:04.058Z",
+                                    "status": "draft",
+                                    "creator": {
+                                        "userId": "usr_gmHgNGRcGPSTJrDbT",
+                                        "userEmail": "bvelitchkine@gmail.com"
+                                    },
+                                    "senders": [
+                                        {
+                                            "id": "usr_AzyCDxe92WNSrGkPz",
+                                            "email": "bvelitchkine@gmail.com",
+                                            "sendUserMailboxId": "usm_JLtj28DpEdrwseTAc"
+                                        }
+                                    ]
                                 }
                             }
                         }
@@ -2246,16 +2295,61 @@
                                     "type": "object",
                                     "properties": {
                                         "name": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "description": "The campaign name"
                                         },
                                         "stopOnEmailReplied": {
-                                            "type": "boolean"
+                                            "type": "boolean",
+                                            "description": "Stop the campaign when a lead replies by email"
+                                        },
+                                        "stopOnMeetingBooked": {
+                                            "type": "boolean",
+                                            "description": "Stop the campaign when a meeting is booked"
+                                        },
+                                        "stopOnLinkClicked": {
+                                            "type": "boolean",
+                                            "description": "Stop the campaign when a link is clicked"
+                                        },
+                                        "leadsPausedByInterest": {
+                                            "type": "boolean",
+                                            "description": "Pause leads based on interest"
+                                        },
+                                        "opportunityReplied": {
+                                            "type": "boolean",
+                                            "description": "Create an opportunity when a lead replies"
+                                        },
+                                        "opportunityClicked": {
+                                            "type": "boolean",
+                                            "description": "Create an opportunity when a lead clicks a link"
+                                        },
+                                        "autoLeadInterest": {
+                                            "type": "boolean",
+                                            "description": "Automatically detect lead interest"
+                                        },
+                                        "disableTrackOpen": {
+                                            "type": "boolean",
+                                            "description": "Disable tracking of email opens"
+                                        },
+                                        "disableTrackClick": {
+                                            "type": "boolean",
+                                            "description": "Disable tracking of link clicks"
+                                        },
+                                        "disableTrackReply": {
+                                            "type": "boolean",
+                                            "description": "Disable tracking of email replies"
+                                        },
+                                        "stopOnLinkClickedFilter": {
+                                            "type": "string",
+                                            "description": "Filter for which link clicks should stop the campaign"
                                         }
                                     }
                                 },
                                 "example": {
-                                    "name": "New campaign name",
-                                    "stopOnEmailReplied": false
+                                    "name": "NEW TO DELETE",
+                                    "stopOnEmailReplied": true,
+                                    "stopOnMeetingBooked": true,
+                                    "stopOnLinkClicked": true,
+                                    "disableTrackReply": true
                                 }
                             }
                         }
