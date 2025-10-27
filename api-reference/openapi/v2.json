@@ -3304,87 +3304,168 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "ok": {
-                                            "type": "boolean"
-                                        },
-                                        "status": {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "type": "string"
-                                                },
-                                                "teamId": {
-                                                    "type": "string"
-                                                },
-                                                "campaignId": {
-                                                    "type": "string"
-                                                },
-                                                "campaignName": {
-                                                    "type": "string"
-                                                },
-                                                "status": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                        "pending",
-                                                        "done",
-                                                        "error"
-                                                    ]
-                                                },
-                                                "startedAt": {
-                                                    "type": "string",
-                                                    "format": "date-time"
-                                                },
-                                                "endedAt": {
-                                                    "type": "string",
-                                                    "format": "date-time"
-                                                },
-                                                "progressIndex": {
-                                                    "type": "integer"
-                                                },
-                                                "progressTime": {
-                                                    "type": "integer"
-                                                },
-                                                "progressLastStepDuration": {
-                                                    "type": "integer"
-                                                },
-                                                "progressType": {
-                                                    "type": "string"
-                                                },
-                                                "progress": {
-                                                    "type": "integer"
-                                                },
-                                                "total": {
-                                                    "type": "integer"
-                                                },
-                                                "url": {
-                                                    "type": "string",
-                                                    "description": "Download URL for the CSV file"
-                                                }
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "_id": {
+                                                "type": "string",
+                                                "description": "Campaign ID"
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "description": "Campaign name"
+                                            },
+                                            "creator": {
+                                                "type": "string",
+                                                "description": "Creator user ID and email in format 'userId|email'"
+                                            },
+                                            "createdAt": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "description": "Campaign creation date"
+                                            },
+                                            "createdBy": {
+                                                "type": "string",
+                                                "description": "Name of the user who created the campaign"
+                                            },
+                                            "labels": {
+                                                "type": "string",
+                                                "description": "Campaign labels"
+                                            },
+                                            "totalCount": {
+                                                "type": "integer",
+                                                "description": "Total number of leads"
+                                            },
+                                            "reviewedCount": {
+                                                "type": "integer",
+                                                "description": "Number of reviewed leads"
+                                            },
+                                            "inSequenceLeadCount": {
+                                                "type": "integer",
+                                                "description": "Number of leads in sequence"
+                                            },
+                                            "state": {
+                                                "type": "string",
+                                                "description": "Campaign state (running, paused, etc.)"
+                                            },
+                                            "status": {
+                                                "type": "string",
+                                                "description": "Campaign status (draft, ended, etc.)"
+                                            },
+                                            "senderNames": {
+                                                "type": "string",
+                                                "description": "Comma-separated list of sender email addresses"
+                                            },
+                                            "sendersUsers": {
+                                                "type": "string",
+                                                "description": "Comma-separated list of sender names and emails"
+                                            },
+                                            "reviewed": {
+                                                "type": "integer",
+                                                "description": "Number of reviewed leads"
+                                            },
+                                            "emailsSent": {
+                                                "type": "integer",
+                                                "description": "Number of emails sent"
+                                            },
+                                            "emailsOpened": {
+                                                "type": "integer",
+                                                "description": "Number of emails opened"
+                                            },
+                                            "emailsClicked": {
+                                                "type": "integer",
+                                                "description": "Number of emails with links clicked"
+                                            },
+                                            "emailsReplied": {
+                                                "type": "integer",
+                                                "description": "Number of email replies received"
+                                            },
+                                            "emailsUnsubscribed": {
+                                                "type": "integer",
+                                                "description": "Number of unsubscribes via email"
+                                            },
+                                            "emailsInterested": {
+                                                "type": "integer",
+                                                "description": "Number of interested responses via email"
+                                            },
+                                            "linkedinSent": {
+                                                "type": "integer",
+                                                "description": "Number of LinkedIn messages sent"
+                                            },
+                                            "linkedinOpened": {
+                                                "type": "integer",
+                                                "description": "Number of LinkedIn messages opened"
+                                            },
+                                            "linkedinReplied": {
+                                                "type": "integer",
+                                                "description": "Number of LinkedIn replies received"
+                                            },
+                                            "interested": {
+                                                "type": "integer",
+                                                "description": "Total number of interested leads"
+                                            },
+                                            "notInterested": {
+                                                "type": "integer",
+                                                "description": "Total number of not interested leads"
                                             }
                                         }
                                     }
                                 },
-                                "example": {
-                                    "ok": true,
-                                    "status": {
-                                        "id": "axp_7dKLTwqpjxzR5vh2n",
-                                        "teamId": "tea_c123fg5h8ijKL9noP",
-                                        "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
-                                        "campaignName": "Insights Outreach 2024",
-                                        "status": "done",
-                                        "startedAt": "2020-01-01T00:00:00.000Z",
-                                        "endedAt": "2020-01-01T00:00:00.000Z",
-                                        "progressIndex": 6,
-                                        "progressTime": 1639138959979,
-                                        "progressLastStepDuration": 476,
-                                        "progressType": "done",
-                                        "progress": 0,
-                                        "total": 0,
-                                        "url": "https://api.lemlist.com/api/files/exports/fil_axp_7dKLTwqpjxzR5vh2n_insights_outreach_2024.csv"
+                                "example": [
+                                    {
+                                        "_id": "cam_9NsHPnykWESTncCW8",
+                                        "name": "Product Launch Campaign",
+                                        "creator": "usr_gmHgNGRcGPSTJrDbT|user@example.com",
+                                        "createdAt": "2025-10-27T07:01:04.058Z",
+                                        "createdBy": "John Smith",
+                                        "labels": "",
+                                        "totalCount": 0,
+                                        "reviewedCount": 0,
+                                        "inSequenceLeadCount": 0,
+                                        "state": "running",
+                                        "status": "draft",
+                                        "senderNames": "sender@example.com",
+                                        "sendersUsers": "Jane Doe:sender@example.com",
+                                        "reviewed": 0,
+                                        "emailsSent": 0,
+                                        "emailsOpened": 0,
+                                        "emailsClicked": 0,
+                                        "emailsReplied": 0,
+                                        "emailsInterested": 0,
+                                        "linkedinSent": 0,
+                                        "linkedinReplied": 0,
+                                        "interested": 0,
+                                        "notInterested": 0
+                                    },
+                                    {
+                                        "_id": "cam_DqHpWfjd67n2KTj2W",
+                                        "name": "Event Outreach Campaign",
+                                        "creator": "usr_TPov3iJdqpjniMBDv|admin@example.co",
+                                        "createdAt": "2022-11-09T16:41:03.538Z",
+                                        "createdBy": "Sarah Johnson",
+                                        "labels": "",
+                                        "totalCount": 0,
+                                        "reviewedCount": 32,
+                                        "inSequenceLeadCount": 32,
+                                        "state": "paused",
+                                        "status": "ended",
+                                        "senderNames": "",
+                                        "sendersUsers": "",
+                                        "reviewed": 0,
+                                        "emailsSent": 20,
+                                        "emailsOpened": 18,
+                                        "emailsClicked": 4,
+                                        "emailsReplied": 1,
+                                        "emailsUnsubscribed": 1,
+                                        "emailsInterested": 1,
+                                        "linkedinSent": 32,
+                                        "linkedinOpened": 15,
+                                        "linkedinReplied": 15,
+                                        "interested": 0,
+                                        "notInterested": 0
                                     }
-                                }
+                                ]
                             }
                         }
                     },
