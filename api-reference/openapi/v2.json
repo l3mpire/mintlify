@@ -66,9 +66,19 @@
                         }
                     },
                     "slackWebhook": {
-                        "type": "string",
-                        "format": "uri",
-                        "description": "Slack webhook URL for notifications"
+                        "type": "object",
+                        "properties": {
+                            "url": {
+                                "type": "string",
+                                "format": "uri",
+                                "description": "Slack webhook URL for notifications"
+                            },
+                            "failCounter": {
+                                "type": "integer",
+                                "description": "Number of consecutive failed notifications"
+                            }
+                        },
+                        "description": "Slack webhooks configured for the team"
                     },
                     "invitedUsers": {
                         "type": "array",
@@ -100,6 +110,10 @@
                     "pictureId": {
                         "type": "string",
                         "description": "Team profile picture file ID"
+                    },
+                    "customDomain": {
+                        "type": "string",
+                        "description": "Custom domain for the team"
                     }
                 }
             },
@@ -1136,53 +1150,77 @@
                                     "$ref": "#/components/schemas/Team"
                                 },
                                 "example": {
-                                    "_id": "tea_c123fg5h8ijKL9noP",
-                                    "name": "lemlist-admin",
+                                    "_id": "tea_b4rMsi2trBhahaha",
+                                    "name": "lemlist",
                                     "userIds": [
-                                        "usr_V7dQtF3sBnOv6LY5w",
-                                        "usr_P5jMxR2yZhLt8BC4t",
-                                        "usr_K2gTwJ7vXpRs3NF8p"
+                                        "usr_4YGm9ez7gMdyhahaha",
+                                        "usr_5GdFEgSLCN4hahaha",
+                                        "usr_F7iPChEQ3phahaha"
                                     ],
-                                    "createdBy": "usr_H8wrBoV4mtQx2NP6k",
-                                    "createdAt": "2018-02-22T08:52:30.732Z",
+                                    "createdBy": "usr_4YGm9ez7gMdyhahaha",
+                                    "createdAt": "2018-02-22T08:52:30.926Z",
                                     "hooks": [
                                         {
-                                            "_id": "hoo_3JKlmnOp7qrStuvWx",
-                                            "targetUrl": "https://hooks.zapier.com/hooks/standard/*your-webhook-id*/",
-                                            "createdAt": "2020-04-07T09:12:34.674Z",
-                                            "zapId": 83355551,
-                                            "type": "emailsOpened",
-                                            "campaignId": "cam_A1B2C3D4E5F6G7H8I9"
+                                            "_id": "hoo_7bNbHKmFcpDiNACg6",
+                                            "targetUrl": "https://hooks.zapier.com/hooks/standard/946357/*some-id*/",
+                                            "createdAt": "2018-06-05T09:07:07.761Z",
+                                            "zapId": 123456789,
+                                            "type": "emailsReplied",
+                                            "campaignId": "cam_TgyErJghahaha",
+                                            "isFirst": true
                                         },
                                         {
-                                            "_id": "hoo_4LMnopQr8stUvWxYz",
-                                            "targetUrl": "https://hooks.zapier.com/hooks/standard/*your-webhook-id*/",
-                                            "createdAt": "2020-05-05T09:58:17.795Z",
-                                            "zapId": 86330503,
-                                            "type": "emailsOpened",
-                                            "campaignId": "cam_K9L8M7N6O5P4Q3R2S1"
+                                            "_id": "hoo_agftPLA7RovPXuvet",
+                                            "targetUrl": "https://hooks.zapier.com/hooks/standard/5078320/*some-other-id*/",
+                                            "createdAt": "2019-06-05T14:38:56.535Z",
+                                            "zapId": 987654321,
+                                            "type": "emailsReplied",
+                                            "campaignId": "cam_J2M3P9Z8whahaha"
+                                        },
+                                        {
+                                            "_id": "hoo_PN8TP9Ny9qEJRytrm",
+                                            "targetUrl": "https://hooks.zapier.com/hooks/standard/5078320/*some-id*/",
+                                            "createdAt": "2019-06-05T15:49:36.624Z",
+                                            "zapId": 59831776,
+                                            "type": "emailsReplied",
+                                            "campaignId": "cam_fdyDRgEwMiCJnj5Sx",
+                                            "isFirst": true
+                                        },
+                                        {
+                                            "_id": "hoo_GXALX6diEW5bovH7e",
+                                            "targetUrl": "https://subdomain.pipedream.net",
+                                            "createdAt": "2022-02-10T16:45:28.216Z",
+                                            "campaignId": "cam_i6Cy2zKTw5LZpu6K5"
                                         }
                                     ],
+                                    "slackWebhook": {
+                                        "url": "https://hooks.slack.com/services/T123456789/B123456789/*some-id*",
+                                        "failCounter": 1
+                                    },
                                     "beta": [
-                                        "scroll"
+                                        "outreachQueue",
+                                        "crmSyncApiSalesforce",
+                                        "voipWhitelist",
+                                        "lemrich_postLemrichKafka",
+                                        "computedFieldActiveCampaigns"
                                     ],
-                                    "slackWebhook": "https://hooks.slack.com/services/REDACTED/REDACTED/REDACTED",
+                                    "pictureId": "fil_3mwPqkGHvKbETiwmC.png",
                                     "invitedUsers": [
                                         {
-                                            "email": "emily.johnson@example.com",
-                                            "role": "admin",
-                                            "invitedBy": "usr_A1xPwN8zYkGt9JD3q",
-                                            "invitedAt": "2023-11-22T14:14:04.617Z"
+                                            "email": "bvelitchkine@gmail.com",
+                                            "role": "member",
+                                            "invitedBy": "usr_w7XoMXW37hahaha",
+                                            "invitedAt": "2023-03-04T20:06:29.585Z"
                                         },
                                         {
-                                            "email": "david.wilson@example.com",
-                                            "role": "member",
-                                            "invitedBy": "usr_L9mKrU5vWpHt2ZX1r",
-                                            "invitedAt": "2024-04-03T21:55:08.105Z"
+                                            "email": "jojo@lempire.co",
+                                            "role": "admin",
+                                            "invitedBy": "usr_tB8T7zgZEfxhahha",
+                                            "invitedAt": "2024-09-13T12:39:55.984Z"
                                         }
                                     ],
-                                    "agency": "usr_H8wrBoV4mtQx2NP6k",
-                                    "pictureId": "fil_AaBbCcDdEeFfGgHhI8.png"
+                                    "agency": "usr_4YGm9ez7gMd2123456",
+                                    "customDomain": "custom.domain.com"
                                 }
                             }
                         }
@@ -1306,83 +1344,96 @@
                                 },
                                 "example": [
                                     {
-                                        "userId": "usr_T3dhQkG8xzCv4MU1e",
+                                        "userId": "usr_5GdFEgSLCN4n9uaMY",
                                         "campaigns": [
                                             {
-                                                "_id": "cam_A1B2C3D4E5F6G7H8I9",
-                                                "name": "Insights Outreach 2024",
-                                                "status": "draft",
-                                                "sendingChannels": [
-                                                    "linkedinInvite",
-                                                    "linkedinVisit",
-                                                    "linkedinSend",
-                                                    "email"
-                                                ]
-                                            },
-                                            {
-                                                "_id": "cam_K9L8M7N6O5P4Q3R2S1",
-                                                "name": "Discover Solutions Campaign",
-                                                "status": "ended",
-                                                "sendingChannels": [
-                                                    "linkedinInvite",
-                                                    "email"
-                                                ]
-                                            },
-                                            {
-                                                "_id": "cam_T3U4V5W6X7Y8Z9A1B2",
-                                                "name": "Unlock Potential Initiative",
-                                                "status": "running",
-                                                "sendingChannels": [
-                                                    "linkedinInvite"
-                                                ]
-                                            },
-                                            {
-                                                "_id": "cam_M5N4O3P2Q1R9S8T7U6",
-                                                "name": "Future Innovations Outreach",
+                                                "_id": "cam_XeLi45vzbAAMcwE9w",
+                                                "name": "Onboarding",
                                                 "status": "paused",
                                                 "sendingChannels": [
-                                                    "linkedinInvite",
-                                                    "email"
+                                                    "email",
+                                                    "manual",
+                                                    "linkedinVisit"
                                                 ]
                                             },
                                             {
-                                                "_id": "cam_G6H7I8J9K0L1M2N3O4",
-                                                "name": "Insightful Solutions Drive",
+                                                "_id": "cam_jgQF6raCqZFpRhXic",
+                                                "name": "Community Launch",
+                                                "status": "running",
+                                                "sendingChannels": [
+                                                    "email",
+                                                    "manual",
+                                                    "linkedinVisit"
+                                                ]
+                                            },
+                                            {
+                                                "_id": "cam_uZN54wByB9fN4Egak",
+                                                "name": "Email Warmup Test",
                                                 "status": "ended",
                                                 "sendingChannels": [
-                                                    "linkedinInvite",
-                                                    "linkedinVisit",
-                                                    "linkedinSend",
-                                                    "email"
+                                                    "email",
+                                                    "manual",
+                                                    "linkedinVisit"
+                                                ]
+                                            },
+                                            {
+                                                "_id": "cam_gdFao7vTMuxwtsdzR",
+                                                "name": "Product Launch Campaign",
+                                                "status": "draft",
+                                                "sendingChannels": [
+                                                    "email",
+                                                    "manual",
+                                                    "linkedinVisit"
                                                 ]
                                             }
                                         ]
                                     },
                                     {
-                                        "userId": "usr_L7vsBnX5ykPw2TA9r",
+                                        "userId": "usr_5eQFBL8KgTjhbATT7",
                                         "campaigns": [
                                             {
-                                                "_id": "cam_K9L8M7N6O5P4Q3R2S1",
-                                                "name": "Discover Solutions Campaign",
+                                                "_id": "cam_inoaxzRkxC6RmFC7S",
+                                                "name": "WhatsApp Outreach",
+                                                "status": "draft",
+                                                "sendingChannels": [
+                                                    "email",
+                                                    "whatsappMessage"
+                                                ]
+                                            },
+                                            {
+                                                "_id": "cam_DkMxX9HCeWbv7jsYr",
+                                                "name": "WhatsApp Test Campaign",
                                                 "status": "ended",
                                                 "sendingChannels": [
-                                                    "email"
+                                                    "email",
+                                                    "whatsappMessage"
                                                 ]
-                                            },
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "userId": "usr_AzyCDxe92WNSrGkPz",
+                                        "campaigns": [
                                             {
-                                                "_id": "cam_T3U4V5W6X7Y8Z9A1B2",
-                                                "name": "Unlock Potential Initiative",
+                                                "_id": "cam_CSRnRHoZxe6b3Ste3",
+                                                "name": "Networking",
                                                 "status": "running",
                                                 "sendingChannels": [
-                                                    "linkedinVisit"
+                                                    "email",
+                                                    "linkedinSend",
+                                                    "linkedinVisit",
+                                                    "linkedinInvite"
                                                 ]
                                             },
                                             {
-                                                "_id": "cam_M5N4O3P2Q1R9S8T7U6",
-                                                "name": "Future Innovations Outreach",
+                                                "_id": "cam_j3TKRt2Mx5pmeMxAu",
+                                                "name": "Product Tools Campaign",
                                                 "status": "paused",
                                                 "sendingChannels": [
-                                                    "email"
+                                                    "email",
+                                                    "linkedinSend",
+                                                    "linkedinVisit",
+                                                    "linkedinInvite"
                                                 ]
                                             }
                                         ]
@@ -1535,10 +1586,12 @@
                                         "type": "object",
                                         "properties": {
                                             "userId": {
-                                                "type": "string"
+                                                "type": "string",
+                                                "description": "The lemlist ID of the user whose CRM account is integrated with lemlist"
                                             },
                                             "crm": {
-                                                "type": "string"
+                                                "type": "string",
+                                                "description": "The CRM integrated with lemlist (e.g., salesforce, hubspot, pipedrive)"
                                             }
                                         }
                                     }
