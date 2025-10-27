@@ -3105,7 +3105,53 @@
                         "description": "Filter to export only the specified lead's last states. Use 'all' to export all states. Can be a comma-separated list of states. **Global states**: imported, scanned, skipped, reviewed, contacted, hooked, attracted, warmed, interested, notInterested, emailsBounced, emailsUnsubscribed, failed, meetingBooked, paused. **Detailed states**: emailsSent, emailsOpened, emailsClicked, emailsReplied, emailsInterested, emailsNotInterested, emailsFailed, opportunitiesDone, aircallDone, aircallInterested, aircallNotInterested, apiDone, apiInterested, apiNotInterested, linkedinVisitDone, linkedinVisitFailed, linkedinInviteDone, linkedinInviteAccepted, linkedinInviteFailed, linkedinSent, linkedinOpened, linkedinReplied, linkedinInterested, linkedinNotInterested, linkedinSendFailed, manualInterested, manualNotInterested",
                         "example": "all",
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "all",
+                                "imported",
+                                "scanned",
+                                "skipped",
+                                "reviewed",
+                                "contacted",
+                                "hooked",
+                                "attracted",
+                                "warmed",
+                                "interested",
+                                "notInterested",
+                                "emailsBounced",
+                                "emailsUnsubscribed",
+                                "failed",
+                                "meetingBooked",
+                                "paused",
+                                "emailsSent",
+                                "emailsOpened",
+                                "emailsClicked",
+                                "emailsReplied",
+                                "emailsInterested",
+                                "emailsNotInterested",
+                                "emailsFailed",
+                                "opportunitiesDone",
+                                "aircallDone",
+                                "aircallInterested",
+                                "aircallNotInterested",
+                                "apiDone",
+                                "apiInterested",
+                                "apiNotInterested",
+                                "linkedinVisitDone",
+                                "linkedinVisitFailed",
+                                "linkedinInviteDone",
+                                "linkedinInviteAccepted",
+                                "linkedinInviteFailed",
+                                "linkedinSent",
+                                "linkedinOpened",
+                                "linkedinReplied",
+                                "linkedinInterested",
+                                "linkedinNotInterested",
+                                "linkedinSendFailed",
+                                "manualInterested",
+                                "manualNotInterested"
+                            ],
+                            "default": "all"
                         }
                     },
                     {
@@ -3137,7 +3183,7 @@
                         "description": "Leads exported successfully",
                         "content": {
                             "text/csv": {
-                                "example": "emailStatus,email,firstName,lastName,picture,phone,linkedinUrl,companyName,companyDomain,icebreaker,firstname,lastname,jobTitle,lastState,status\ndeliverable,john.doe@domain.com,,,,,https://www.linkedin.com/in/johndoe,lempire,,,John,Doe,Developer,emailsOpened,review\nrisky,bob.smith@example.com,,,,,https://www.linkedin.com/in/bobsmith,TechWave,,,Bob,Smith,Engineer,emailsClicked,scanning\nundeliverable,susan.jones@example.org,,,,,https://www.linkedin.com/in/susanjones,Innovatech,,,Susan,Jones,Product Manager,emailsFailed,unsubscribed\ndeliverable,alice.brown@fakemail.com,,,,,https://www.linkedin.com/in/alicebrown,CreativeWorks,,,Alice,Brown,Designer,emailsReplied,interested\nrisky,michael.johnson@mockmail.net,,,,,https://www.linkedin.com/in/michaeljohnson,AlphaCorp,,,Michael,Johnson,Data Scientist,emailsNotInterested,notInterested\ndeliverable,emma.williams@samplemail.com,,,,,https://www.linkedin.com/in/emmawilliams,BetaTech,,,Emma,Williams,Marketing Specialist,emailsInterested,interested\ndeliverable,william.brown@domainexample.com,,,,,https://www.linkedin.com/in/williambrown,GammaLabs,,,William,Brown,Sales Executive,emailsSent,running\nrisky,olivia.jones@sampledomain.org,,,,,https://www.linkedin.com/in/oliviajones,DeltaInnovations,,,Olivia,Jones,HR Manager,emailsOpened,review\nundeliverable,james.taylor@mockdomain.com,,,,,https://www.linkedin.com/in/jamestaylor,EpsilonTech,,,James,Taylor,Operations Manager,emailsFailed,unsubscribed\ndeliverable,patricia.miller@fakedomain.net,,,,,https://www.linkedin.com/in/patriciamiller,ZetaIndustries,,,Patricia,Miller,Customer Success Manager,emailsReplied,interested"
+                                "example": "emailStatus,email,firstName,lastName,picture,phone,linkedinUrl,timezone,companyName,companyDomain,icebreaker,Original event page,url extension,event_link_to_send,testFieldToDelete,naissance,lastState,status,_id\n,jeremy@example.com,Jeremy,Smith,,,https://www.linkedin.com/in/jeremysmith,,example.com,,,https://www.example.com/event-registration,?name=Jeremy&email=jeremy@example.com,https://www.example.com/event-registration?name=Jeremy&email=jeremy@example.com,,,linkedinReplied,done,lea_s3jmQcQt7Mb4QBtgb\n,frankie@example.org,Frankie,Johnson,,,https://www.linkedin.com/in/frankiejohnson,,example.org,,,https://www.example.com/event-registration,?name=Frankie&email=frankie@example.org,https://www.example.com/event-registration?name=Frankie&email=frankie@example.org,,,linkedinReplied,done,lea_2vDeEy8BAsB4qfkMT\n,louiza@example.io,Louiza,Brown,,,https://www.linkedin.com/in/louizabrown,,example.io,,,https://www.example.com/event-registration,?name=Louiza&email=louiza@example.io,https://www.example.com/event-registration?name=Louiza&email=louiza@example.io,,,emailsInterested,interested,lea_7aKJvPZKHL6LeQKug\n,benjamin@example.co,Benjamin,Williams,,,https://www.linkedin.com/in/benjaminwilliams,,example.co,,,https://www.example.com/event-registration,?name=Benjamin&email=benjamin@example.co,https://www.example.com/event-registration?name=Benjamin&email=benjamin@example.co,,,emailsUnsubscribed,unsubscribed,lea_JyRM9Tx9qh7bzA4n4\n,roxanne@example.net,Roxanne,Davis,,,https://www.linkedin.com/in/roxannedavis,,example.net,,,https://www.example.com/event-registration,?name=Roxanne&email=roxanne@example.net,https://www.example.com/event-registration?name=Roxanne&email=roxanne@example.net,,,emailsClicked,done,lea_WbYhcco3kpfFPYWNu\n,thomas@example.fr,Thomas,Miller,,,https://www.linkedin.com/in/thomasmiller,,example.fr,,,https://www.example.com/event-registration,?name=Thomas&email=thomas@example.fr,https://www.example.com/event-registration?name=Thomas&email=thomas@example.fr,,,emailsSent,done,lea_WyFSfFYJoYwbzQFPu"
                             },
                             "application/json": {
                                 "schema": {
@@ -3172,6 +3218,9 @@
                                             "linkedinUrl": {
                                                 "type": "string"
                                             },
+                                            "timezone": {
+                                                "type": "string"
+                                            },
                                             "companyName": {
                                                 "type": "string"
                                             },
@@ -3188,6 +3237,9 @@
                                                 "type": "string"
                                             },
                                             "status": {
+                                                "type": "string"
+                                            },
+                                            "_id": {
                                                 "type": "string"
                                             }
                                         }
