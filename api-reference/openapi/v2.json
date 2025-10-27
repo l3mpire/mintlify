@@ -3735,7 +3735,7 @@
                                     "type": "linkedinInvite",
                                     "delay": 2,
                                     "emailTemplateId": "etp_LWuaE5JG4Bm4riPf5",
-                                    "message": "Hello, I would like...."
+                                    "message": "Hello, I would like..."
                                 }
                             }
                         }
@@ -3768,22 +3768,160 @@
                                 "properties": {
                                     "type": {
                                         "type": "string",
-                                        "description": "The type of step (e.g., email, linkedinInvite, linkedinSend)"
+                                        "description": "The type of step to create",
+                                        "enum": [
+                                            "email",
+                                            "manual",
+                                            "phone",
+                                            "api",
+                                            "linkedinVisit",
+                                            "linkedinInvite",
+                                            "linkedinSend",
+                                            "sendToAnotherCampaign",
+                                            "conditional",
+                                            "whatsappMessage"
+                                        ]
+                                    },
+                                    "index": {
+                                        "type": "integer",
+                                        "description": "The position within the sequence to insert the new step (≥ -1). If omitted or greater than the number of steps, the new step is added to the end"
                                     },
                                     "delay": {
                                         "type": "integer",
-                                        "description": "Delay in days before executing this step"
+                                        "description": "Delay in days before executing this step. Defaults to 0 for the first step and 1 for subsequent steps"
+                                    },
+                                    "subject": {
+                                        "type": "string",
+                                        "description": "Email subject line (required for email steps)"
                                     },
                                     "message": {
                                         "type": "string",
-                                        "description": "The message content for the step"
+                                        "description": "Content of the email or message (used for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage steps)"
+                                    },
+                                    "altMessage": {
+                                        "type": "string",
+                                        "description": "Alternate message for linkedinSend steps"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "description": "Title or label for manual steps"
+                                    },
+                                    "method": {
+                                        "type": "string",
+                                        "description": "HTTP method for API steps",
+                                        "enum": [
+                                            "GET",
+                                            "POST",
+                                            "PUT",
+                                            "DELETE",
+                                            "PATCH"
+                                        ]
+                                    },
+                                    "url": {
+                                        "type": "string",
+                                        "description": "URL of the API endpoint to call (required for api steps). Must start with http:// or https://"
+                                    },
+                                    "conditionKey": {
+                                        "type": "string",
+                                        "description": "Condition key for conditional steps",
+                                        "enum": [
+                                            "emailsOpened",
+                                            "emailsClicked",
+                                            "emailsUnsubscribed",
+                                            "meetingBooked",
+                                            "linkedinInviteAccepted",
+                                            "hasWhatsappAccount"
+                                        ]
+                                    },
+                                    "delayType": {
+                                        "type": "string",
+                                        "description": "Delay type for conditional steps",
+                                        "enum": [
+                                            "within",
+                                            "waitUntil"
+                                        ]
+                                    },
+                                    "campaignId": {
+                                        "type": "string",
+                                        "description": "Target campaign ID for sendToAnotherCampaign steps. The campaign must exist and not be archived"
                                     }
                                 }
                             },
-                            "example": {
-                                "type": "linkedinInvite",
-                                "delay": 2,
-                                "message": "Hello, I would like...."
+                            "examples": {
+                                "Email Step": {
+                                    "value": {
+                                        "type": "email",
+                                        "subject": "{{firstName}}, quick question about {{companyName}}",
+                                        "message": "<p>Hi {{firstName}},</p><p>I noticed {{companyName}} is working on improving customer engagement. Would you be interested in discussing how we can help?</p><p>Best regards,<br>{{senderName}}</p>",
+                                        "delay": 1,
+                                        "index": 2
+                                    }
+                                },
+                                "LinkedIn Invite": {
+                                    "value": {
+                                        "type": "linkedinInvite",
+                                        "message": "Hi {{firstName}}, I'd love to connect and learn more about your work at {{companyName}}!",
+                                        "delay": 0
+                                    }
+                                },
+                                "LinkedIn Send": {
+                                    "value": {
+                                        "type": "linkedinSend",
+                                        "message": "Hey {{firstName}}, thanks for connecting! I wanted to reach out about...",
+                                        "delay": 2
+                                    }
+                                },
+                                "Manual Task": {
+                                    "value": {
+                                        "type": "manual",
+                                        "title": "Call prospect",
+                                        "message": "Discuss their pain points and schedule a demo",
+                                        "delay": 1
+                                    }
+                                },
+                                "Phone Call": {
+                                    "value": {
+                                        "type": "phone",
+                                        "message": "Follow up on the email sent yesterday",
+                                        "delay": 1
+                                    }
+                                },
+                                "API Call": {
+                                    "value": {
+                                        "type": "api",
+                                        "method": "POST",
+                                        "url": "https://api.example.com/webhook",
+                                        "delay": 0
+                                    }
+                                },
+                                "LinkedIn Visit": {
+                                    "value": {
+                                        "type": "linkedinVisit",
+                                        "delay": 0
+                                    }
+                                },
+                                "Conditional Step": {
+                                    "value": {
+                                        "type": "conditional",
+                                        "conditionKey": "linkedinInviteAccepted",
+                                        "delayType": "waitUntil",
+                                        "delay": 1
+                                    }
+                                },
+                                "Send to Another Campaign": {
+                                    "value": {
+                                        "type": "sendToAnotherCampaign",
+                                        "campaignId": "cam_ABC123XYZ456",
+                                        "delay": 0
+                                    }
+                                },
+                                "WhatsApp Message": {
+                                    "value": {
+                                        "type": "whatsappMessage",
+                                        "message": "Hi {{firstName}}, following up on our conversation...",
+                                        "delay": 1
+                                    }
+                                }
                             }
                         }
                     }
@@ -3867,7 +4005,7 @@
                                     "type": "linkedinInvite",
                                     "delay": 0,
                                     "emailTemplateId": "etp_xNieSJDTnd2YZ46LF",
-                                    "message": "Hello, I want to...."
+                                    "message": "Hello, I want to..."
                                 }
                             }
                         }
@@ -3905,12 +4043,28 @@
                                     "message": {
                                         "type": "string",
                                         "description": "The message content for the step"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "description": "The type of step",
+                                        "enum": [
+                                            "email",
+                                            "manual",
+                                            "phone",
+                                            "api",
+                                            "linkedinVisit",
+                                            "linkedinInvite",
+                                            "linkedinSend",
+                                            "sendToAnotherCampaign",
+                                            "conditional",
+                                            "whatsappMessage"
+                                        ]
                                     }
                                 }
                             },
                             "example": {
                                 "delay": 0,
-                                "message": "Hello, I want to...."
+                                "message": "Hello, I want to..."
                             }
                         }
                     }
