@@ -146,10 +146,10 @@
                 "group": "Sequences",
                 "expanded": false,
                 "pages": [
-                  "api-reference/endpoints/sequences/add-step-to-sequence",
-                  "api-reference/endpoints/sequences/delete-sequence-step",
                   "api-reference/endpoints/sequences/get-campaign-sequences",
-                  "api-reference/endpoints/sequences/update-sequence-step"
+                  "api-reference/endpoints/sequences/add-step-to-sequence",
+                  "api-reference/endpoints/sequences/update-sequence-step",
+                  "api-reference/endpoints/sequences/delete-sequence-step"
                 ]
               },
               {
