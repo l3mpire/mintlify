@@ -239,10 +239,10 @@
                 "expanded": false,
                 "pages": [
                   "api-reference/endpoints/unsubscribes/add-unsubscribe-email-or-domain",
-                  "api-reference/endpoints/unsubscribes/delete-unsubscribe-email",
-                  "api-reference/endpoints/unsubscribes/export-unsubscribes",
+                  "api-reference/endpoints/unsubscribes/get-unsubscribe-by-email",
                   "api-reference/endpoints/unsubscribes/get-many-unsubscribes",
-                  "api-reference/endpoints/unsubscribes/get-unsubscribe-by-email"
+                  "api-reference/endpoints/unsubscribes/delete-unsubscribe-email",
+                  "api-reference/endpoints/unsubscribes/export-unsubscribes"
                 ]
               },
               {
