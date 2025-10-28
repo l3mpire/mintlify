@@ -7728,8 +7728,31 @@
         "/tasks": {
             "get": {
                 "summary": "Get Many Tasks",
+                "description": "Retrieve tasks with optional filtering and pagination. Tasks marked as `done` are excluded from results.",
                 "tags": [
                     "Tasks"
+                ],
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for paginated results (0-indexed).",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0
+                        }
+                    },
+                    {
+                        "name": "filters",
+                        "in": "query",
+                        "description": "JSON array of filter objects. Each filter has a `filterId` and specific parameters.\n\n**Available Filters:**\n\n- `fullName`: Filter by contact's full name.\n  - Parameters: `value` (string) or `regex` (string)\n  - Example: `{\"filterId\":\"fullName\",\"value\":\"John Doe\"}`\n\n- `email`: Filter by contact's email address.\n  - Parameters: `value` (string) or `regex` (string)\n  - Example: `{\"filterId\":\"email\",\"value\":\"john@example.com\"}`\n\n- `phone`: Filter by contact's phone number.\n  - Parameters: `value` (string) or `regex` (string)\n  - Example: `{\"filterId\":\"phone\",\"value\":\"+1234567890\"}`\n\n- `linkedin`: Filter by LinkedIn profile URL.\n  - Parameters: `value` (string) or `regex` (string)\n  - Example: `{\"filterId\":\"linkedin\",\"value\":\"linkedin.com/in/johndoe\"}`\n\n- `campaignId`: Filter by campaign IDs (inclusion/exclusion).\n  - Parameters: `in` (array of strings) and/or `out` (array of strings)\n  - Example: `{\"filterId\":\"campaignId\",\"in\":[\"cam_123\"],\"out\":[\"cam_456\"]}`\n\n- `campaignState`: Filter by campaign states.\n  - Parameters: `in` (array of strings) and/or `out` (array of strings)\n  - Allowed values: `draft`, `running`, `ended`, `paused`, `errors`, `archived`\n  - Example: `{\"filterId\":\"campaignState\",\"in\":[\"running\",\"paused\"]}`\n\n- `type`: Filter by task type.\n  - Parameters: `in` (array of strings) and/or `out` (array of strings)\n  - Allowed values: `manual`, `phone`, `linkedinInvite`, `linkedinSend`, `linkedinVoiceNote`, `emailsReplied`, `opportunityReplied`, `linkedinReplied`, `opportunityClicked`, `email`, `whatsappMessage`\n  - Example: `{\"filterId\":\"type\",\"in\":[\"phone\",\"email\"]}`\n\n- `assignedTo`: Filter by assigned user IDs.\n  - Parameters: `in` (array of strings) and/or `out` (array of strings)\n  - Example: `{\"filterId\":\"assignedTo\",\"in\":[\"usr_123\",\"usr_456\"]}`\n\n- `dueDate`: Filter by due date range.\n  - Parameters: `from` (string, YYYY-MM-DD) and/or `to` (string, YYYY-MM-DD)\n  - Example: `{\"filterId\":\"dueDate\",\"from\":\"2025-01-01\",\"to\":\"2025-12-31\"}`\n\nMultiple filters can be combined in an array.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "[{\"filterId\":\"dueDate\",\"from\":\"2025-02-11\",\"to\":\"2025-02-28\"},{\"filterId\":\"type\",\"in\":[\"phone\",\"linkedinSend\"]}]"
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -7737,21 +7760,44 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/TaskListResponse"
+                                    "type": "object",
+                                    "properties": {
+                                        "results": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Task"
+                                            }
+                                        },
+                                        "page": {
+                                            "type": "string"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "results": [
                                         {
-                                            "_id": "opp_vDuwoqRopZ4ygeApq",
-                                            "type": "phone",
-                                            "leadId": "lea_4ZnGoytR5uoZs7Bod",
-                                            "campaignId": "cam_fX7SwMGyooxFLeeiM",
-                                            "contactId": "ctc_iSW6pi7AFnufvhgeS",
-                                            "dueDate": "2025-02-13T10:02:35.209Z",
-                                            "userId": "usr_6Y58qbtsYv2rCHQiJ"
+                                            "_id": "opp_ouYzdLYGs4RcrHTfm",
+                                            "type": "manual",
+                                            "title": "Keep an eye on him",
+                                            "priority": 1,
+                                            "leadId": "lea_mizMsAEkRrJuhouYe",
+                                            "campaignId": "cam_9NsHPnykWESTncCW8",
+                                            "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                                            "dueDate": "2025-11-10T09:58:57.169Z",
+                                            "userId": "usr_gmHgNGRcGPSTJrDbT",
+                                            "content": "does he have bandwidth to help us? would be grand"
+                                        },
+                                        {
+                                            "_id": "opp_muTZMDjKf7vtanEk9",
+                                            "type": "manual",
+                                            "title": "API Reference Illustration",
+                                            "priority": 2,
+                                            "dueDate": "2025-10-31T07:58:00.000Z",
+                                            "userId": "usr_gmHgNGRcGPSTJrDbT",
+                                            "content": ""
                                         }
                                     ],
-                                    "page": 0
+                                    "page": "0"
                                 }
                             }
                         }
@@ -7772,8 +7818,7 @@
                             }
                         }
                     }
-                },
-                "parameters": []
+                }
             },
             "post": {
                 "summary": "Create Task",
