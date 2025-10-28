@@ -5172,12 +5172,11 @@
                         "name": "version",
                         "in": "query",
                         "required": false,
-                        "description": "API version. Default: v1",
+                        "description": "API version. v2 is the only option",
                         "example": "v2",
                         "schema": {
                             "type": "string",
                             "enum": [
-                                "v1",
                                 "v2"
                             ]
                         }
@@ -5204,6 +5203,18 @@
                                             "type": "string",
                                             "description": "Last name of the lead"
                                         },
+                                        "companyName": {
+                                            "type": "string",
+                                            "description": "Company name"
+                                        },
+                                        "jobTitle": {
+                                            "type": "string",
+                                            "description": "Job title"
+                                        },
+                                        "companyDomain": {
+                                            "type": "string",
+                                            "description": "Company domain"
+                                        },
                                         "_id": {
                                             "type": "string",
                                             "description": "Unique identifier for the lead"
@@ -5216,6 +5227,10 @@
                                             "type": "string",
                                             "description": "ID of the campaign the lead is associated with"
                                         },
+                                        "contactId": {
+                                            "type": "string",
+                                            "description": "Associated contact ID (if any)"
+                                        },
                                         "emailStatus": {
                                             "type": "string",
                                             "description": "Email status of the lead"
@@ -5223,12 +5238,16 @@
                                     }
                                 },
                                 "example": {
-                                    "email": "john.doe@domain.com",
-                                    "firstName": "John",
-                                    "lastName": "Doe",
-                                    "_id": "lea_7kMNQwplxvvD2hf5z",
+                                    "firstName": "Bastien",
+                                    "lastName": "Velitchkine",
+                                    "companyName": "lempire",
+                                    "jobTitle": "GTM Engineer",
+                                    "companyDomain": "bvelitchkine.com",
+                                    "email": "bvelitchkine@gmail.com",
+                                    "_id": "lea_mizMsAEkRrJuhouYe",
                                     "isPaused": false,
-                                    "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
+                                    "campaignId": "cam_9NsHPnykWESTncCW8",
+                                    "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
                                     "emailStatus": "deliverable"
                                 }
                             }
@@ -5280,12 +5299,12 @@
                         "name": "version",
                         "in": "query",
                         "required": false,
-                        "description": "API version. Default: v1",
+                        "description": "API version. v2 is the only option",
                         "example": "v2",
                         "schema": {
                             "type": "string",
+                            "default": "v2",
                             "enum": [
-                                "v1",
                                 "v2"
                             ]
                         }
@@ -5297,24 +5316,113 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Lead"
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "_id": {
+                                                "type": "string",
+                                                "description": "Unique lead identifier"
+                                            },
+                                            "updatedAt": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "description": "Last update timestamp"
+                                            },
+                                            "isPaused": {
+                                                "type": "boolean",
+                                                "description": "Whether the lead is paused"
+                                            },
+                                            "state": {
+                                                "type": "string",
+                                                "description": "Current state of the lead (e.g., scanned, contacted)"
+                                            },
+                                            "status": {
+                                                "type": "string",
+                                                "description": "Current status (e.g., review, done)"
+                                            },
+                                            "personalized": {
+                                                "type": "boolean",
+                                                "description": "Whether the lead has personalized content"
+                                            },
+                                            "source": {
+                                                "type": "string",
+                                                "description": "Source of the lead (e.g., api, csv)"
+                                            },
+                                            "variables": {
+                                                "type": "object",
+                                                "description": "Custom variables associated with the lead",
+                                                "additionalProperties": true
+                                            },
+                                            "contactId": {
+                                                "type": "string",
+                                                "description": "Associated contact ID"
+                                            },
+                                            "enrichment": {
+                                                "type": "object",
+                                                "description": "Enrichment data",
+                                                "properties": {
+                                                    "emailStatus": {
+                                                        "type": "string",
+                                                        "description": "Email verification status"
+                                                    }
+                                                }
+                                            },
+                                            "campaign": {
+                                                "type": "object",
+                                                "description": "Campaign information",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "description": "Campaign ID"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "description": "Campaign name"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "description": "Campaign status"
+                                                    }
+                                                }
+                                            },
+                                            "sendingUser": {
+                                                "type": "object",
+                                                "description": "Sending user information",
+                                                "additionalProperties": true
+                                            }
+                                        }
+                                    }
                                 },
-                                "example": {
-                                    "email": "john.doe@domain.com",
-                                    "firstName": "John",
-                                    "lastName": "Doe",
-                                    "picture": "https://example.com/picture.jpg",
-                                    "phone": "+33 123456789",
-                                    "linkedinUrl": "https://www.linkedin.com/in/johndoe",
-                                    "companyName": "lempire",
-                                    "companyDomain": "lempire.co",
-                                    "icebreaker": "Hello John...",
-                                    "jobTitle": "Developer",
-                                    "_id": "lea_7kMNQwplxvvD2hf5z",
-                                    "isPaused": false,
-                                    "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
-                                    "emailStatus": "deliverable"
-                                }
+                                "example": [
+                                    {
+                                        "_id": "lea_mizMsAEkRrJuhouYe",
+                                        "updatedAt": "2025-10-28T00:40:39.230Z",
+                                        "isPaused": false,
+                                        "state": "scanned",
+                                        "status": "review",
+                                        "personalized": false,
+                                        "source": "api",
+                                        "variables": {
+                                            "firstName": "Bastien",
+                                            "lastName": "Velitchkine",
+                                            "companyName": "lempire",
+                                            "jobTitle": "GTM Engineer",
+                                            "companyDomain": "bvelitchkine.com",
+                                            "email": "bvelitchkine@gmail.com"
+                                        },
+                                        "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                                        "enrichment": {
+                                            "emailStatus": "deliverable"
+                                        },
+                                        "campaign": {
+                                            "id": "cam_9NsHPnykWESTncCW8",
+                                            "name": "NEW TO DELETE",
+                                            "status": "draft"
+                                        },
+                                        "sendingUser": {}
+                                    }
+                                ]
                             }
                         }
                     },
@@ -5504,6 +5612,15 @@
                                         "lastName": {
                                             "type": "string"
                                         },
+                                        "companyName": {
+                                            "type": "string"
+                                        },
+                                        "jobTitle": {
+                                            "type": "string"
+                                        },
+                                        "companyDomain": {
+                                            "type": "string"
+                                        },
                                         "_id": {
                                             "type": "string"
                                         },
@@ -5511,20 +5628,24 @@
                                             "type": "boolean",
                                             "description": "Whether the lead is paused in the campaign"
                                         },
-                                        "leadUrl": {
-                                            "type": "string"
+                                        "contactId": {
+                                            "type": "string",
+                                            "description": "Associated contact ID"
                                         }
                                     }
                                 },
                                 "example": {
-                                    "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
-                                    "campaignName": "Insights Outreach 2024",
-                                    "email": "john.doe@domain.com",
-                                    "firstName": "John",
-                                    "lastName": "Doe",
-                                    "_id": "lea_7kMNQwplxvvD2hf5z",
+                                    "campaignId": "cam_9NsHPnykWESTncCW8",
+                                    "campaignName": "NEW TO DELETE",
+                                    "firstName": "Bastien",
+                                    "lastName": "Velitchkine",
+                                    "companyName": "lempire",
+                                    "jobTitle": "GTM Engineer",
+                                    "companyDomain": "bvelitchkine.com",
+                                    "email": "bvelitchkine@gmail.com",
+                                    "_id": "lea_mizMsAEkRrJuhouYe",
                                     "isPaused": false,
-                                    "leadUrl": "https://api.lemlist.com/api/leads/john.doe%40domain.com"
+                                    "contactId": "ctc_Rofmb6uNGyaPNZ2ni"
                                 }
                             }
                         }
@@ -8668,7 +8789,7 @@
                         "name": "version",
                         "in": "query",
                         "required": false,
-                        "description": "API version. Default: v1",
+                        "description": "API version. v2 is mandatory",
                         "example": "v2",
                         "schema": {
                             "type": "string"
