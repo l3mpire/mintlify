@@ -4810,60 +4810,26 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "properties": {
-                                        "_id": {
-                                            "type": "string"
-                                        },
-                                        "name": {
-                                            "type": "string"
-                                        },
-                                        "secondsToWait": {
-                                            "type": "integer"
-                                        },
-                                        "timezone": {
-                                            "type": "string"
-                                        },
-                                        "start": {
-                                            "type": "string"
-                                        },
-                                        "end": {
-                                            "type": "string"
-                                        },
-                                        "weekdays": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "integer"
-                                            }
-                                        },
-                                        "public": {
-                                            "type": "boolean"
-                                        },
-                                        "teamId": {
-                                            "type": "string"
-                                        },
-                                        "updatedAt": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/Schedule"
                                 },
                                 "example": {
-                                    "_id": "skd_JTb4gjdiizqPoYqzh",
-                                    "name": "Schedule new name",
-                                    "secondsToWait": 120,
-                                    "timezone": "Europe/Paris",
-                                    "start": "09:00",
+                                    "_id": "skd_AEcaBR4KvwvFtFhyH",
+                                    "name": "Renamed Schedule",
+                                    "secondsToWait": 1000,
+                                    "timezone": "Europe/Berlin",
+                                    "start": "08:00",
                                     "end": "18:00",
                                     "weekdays": [
                                         1,
                                         2,
                                         3,
-                                        4,
+                                        2,
                                         5
                                     ],
-                                    "public": false,
-                                    "teamId": "tea_Lq4kN7R2pqEA4YFst",
-                                    "updatedAt": "2025-01-18T10:21:42.000Z"
+                                    "public": true,
+                                    "teamId": "tea_b4rMsi2trB42WyuWP",
+                                    "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                                    "createdAt": "2025-10-27T09:41:11.187Z"
                                 }
                             }
                         }
