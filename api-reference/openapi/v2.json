@@ -8055,14 +8055,17 @@
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "taskIds": {
+                                    "ids": {
                                         "type": "array",
                                         "items": {
                                             "type": "string"
                                         },
                                         "description": "Array of task IDs to ignore"
                                     }
-                                }
+                                },
+                                "required": [
+                                    "ids"
+                                ]
                             }
                         }
                     }
