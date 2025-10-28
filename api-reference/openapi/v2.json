@@ -540,48 +540,63 @@
             },
             "Contact": {
                 "type": "object",
-                "description": "A contact is a lead who has engaged with your outreach (replied, opened, clicked, etc.).",
+                "description": "A contact record in your CRM.",
                 "properties": {
                     "_id": {
                         "type": "string",
                         "description": "Unique contact identifier"
                     },
+                    "teamId": {
+                        "type": "string",
+                        "description": "Team identifier the contact belongs to"
+                    },
+                    "fullName": {
+                        "type": "string",
+                        "description": "Contact's calculated full name"
+                    },
                     "email": {
                         "type": "string",
                         "format": "email",
-                        "description": "Contact email address"
+                        "description": "Contact's primary email address"
                     },
-                    "firstName": {
-                        "type": "string",
-                        "description": "First name"
-                    },
-                    "lastName": {
-                        "type": "string",
-                        "description": "Last name"
-                    },
-                    "companyName": {
-                        "type": "string",
-                        "description": "Company name"
+                    "fields": {
+                        "type": "object",
+                        "description": "Custom fields associated with the contact",
+                        "additionalProperties": true
                     },
                     "campaigns": {
                         "type": "array",
-                        "description": "Associated campaigns",
+                        "description": "List of campaigns the contact is associated with",
                         "items": {
                             "type": "object",
                             "properties": {
                                 "campaignId": {
                                     "type": "string"
                                 },
-                                "campaignName": {
+                                "campaignState": {
+                                    "type": "string"
+                                },
+                                "leadState": {
+                                    "type": "string"
+                                },
+                                "leadId": {
                                     "type": "string"
                                 }
                             }
                         }
                     },
-                    "lastInteractionDate": {
+                    "ownerId": {
+                        "type": "string",
+                        "description": "ID of the user who owns this contact"
+                    },
+                    "createdAt": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "Last interaction timestamp"
+                        "description": "Contact creation timestamp"
+                    },
+                    "createdBy": {
+                        "type": "string",
+                        "description": "ID of the user who created the contact"
                     }
                 }
             },
@@ -8457,6 +8472,20 @@
                 "tags": [
                     "Contacts"
                 ],
+                "parameters": [
+                    {
+                        "name": "idsOrEmails",
+                        "in": "query",
+                        "required": true,
+                        "description": "A comma separated string of either valid contact IDs (MongoDB ObjectId) or valid email addresses",
+                        "example": "ctc_Rofmb6uNGyaPNZ2ni,chafik@lempire.co",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "style": "form",
+                        "explode": false
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -8470,24 +8499,70 @@
                                 },
                                 "example": [
                                     {
-                                        "_id": "ctc_Ri5gMtaeDGufRQ3M2",
-                                        "teamId": "tea_8GdMrBZ3gf4p2rj2h",
-                                        "email": "chafik@lempire.co",
-                                        "fullName": "Chafik Gharbi",
+                                        "_id": "ctc_Rofmb6uNGyaPNZ2ni",
+                                        "teamId": "tea_b4rMsi2trB42WyuWP",
+                                        "fullName": "Bastien Velitchkine",
+                                        "email": "bvelitchkine@gmail.com",
                                         "fields": {
-                                            "firstName": "Chafik",
-                                            "lastName": "Gharbi",
-                                            "company": "lempire"
+                                            "firstName": "Bastien",
+                                            "jobTitle": "Growth Engineer",
+                                            "lastName": "Velitchkine",
+                                            "industry": "Technology",
+                                            "isActiveInCampaigns": false,
+                                            "lastCampaign": "NEW TO DELETE",
+                                            "lastLeadMarkedAsInterestedDate": "2025-10-28T02:12:31.971Z",
+                                            "leadStatus": "Marked as not Interested by api"
                                         },
                                         "campaigns": [
                                             {
-                                                "campaignId": "cam_C7BW5Z5ycSiRRWef6",
+                                                "campaignId": "cam_9NsHPnykWESTncCW8",
                                                 "campaignState": "running",
-                                                "leadState": "review"
+                                                "leadState": "review",
+                                                "leadId": "lea_mizMsAEkRrJuhouYe"
                                             }
                                         ],
-                                        "ownerId": "usr_h47tiJr87Zn7XtQHi",
-                                        "createdAt": "2025-07-18T10:03:41.612Z"
+                                        "ownerId": "usr_gmHgNGRcGPSTJrDbT",
+                                        "createdAt": "2025-10-28T00:40:37.917Z",
+                                        "createdBy": "usr_gmHgNGRcGPSTJrDbT"
+                                    },
+                                    {
+                                        "_id": "ctc_8aECJTHfPfbMy6mSG",
+                                        "teamId": "tea_b4rMsi2trB42WyuWP",
+                                        "fullName": "Chafik",
+                                        "email": "chafik@lempire.co",
+                                        "fields": {
+                                            "firstName": "Chafik",
+                                            "isActiveInCampaigns": false
+                                        },
+                                        "campaigns": [
+                                            {
+                                                "campaignId": "cam_aMkkjon7Ggb86v4qk",
+                                                "campaignState": "running",
+                                                "leadState": "done",
+                                                "leadId": "lea_etnTnRnnGPzayGdMm"
+                                            },
+                                            {
+                                                "campaignId": "cam_HjAXkn4woJgvRgj7Q",
+                                                "campaignState": "running",
+                                                "leadState": "done",
+                                                "leadId": "lea_5KQh7BKpiCicxTZsG"
+                                            },
+                                            {
+                                                "campaignId": "cam_FYRAZMW5utAA7LXCN",
+                                                "campaignState": "running",
+                                                "leadState": "done",
+                                                "leadId": "lea_CG8KkGEKYMpZFREgp"
+                                            },
+                                            {
+                                                "campaignId": "cam_JnZqKnuSvoD4jsQuo",
+                                                "campaignState": "running",
+                                                "leadState": "review",
+                                                "leadId": "lea_K5Kcyg2vSN4PLZunL"
+                                            }
+                                        ],
+                                        "ownerId": "usr_4YGm9ez7gMd2okyRp",
+                                        "createdAt": "2024-10-01T09:00:13.831Z",
+                                        "createdBy": "usr_4YGm9ez7gMd2okyRp"
                                     }
                                 ]
                             }
@@ -8512,8 +8587,7 @@
                     "405": {
                         "description": "Method not allowed"
                     }
-                },
-                "parameters": []
+                }
             }
         },
         "/contacts/{idOrEmail}": {
@@ -8543,24 +8617,31 @@
                                     "$ref": "#/components/schemas/Contact"
                                 },
                                 "example": {
-                                    "_id": "ctc_Ri5gMtaeDGufRQ3M2",
-                                    "teamId": "tea_8GdMrBZ3gf4p2rj2h",
-                                    "email": "chafik@lempire.co",
-                                    "fullName": "Chafik Gharbi",
+                                    "_id": "ctc_Rofmb6uNGyaPNZ2ni",
+                                    "teamId": "tea_b4rMsi2trB42WyuWP",
+                                    "fullName": "Bastien Velitchkine",
+                                    "email": "bvelitchkine@gmail.com",
                                     "fields": {
-                                        "firstName": "Chafik",
-                                        "lastName": "Gharbi",
-                                        "company": "lempire"
+                                        "firstName": "Bastien",
+                                        "jobTitle": "Growth Engineer",
+                                        "lastName": "Velitchkine",
+                                        "industry": "Technology",
+                                        "isActiveInCampaigns": false,
+                                        "lastCampaign": "NEW TO DELETE",
+                                        "lastLeadMarkedAsInterestedDate": "2025-10-28T02:12:31.971Z",
+                                        "leadStatus": "Marked as not Interested by api"
                                     },
                                     "campaigns": [
                                         {
-                                            "campaignId": "cam_C7BW5Z5ycSiRRWef6",
+                                            "campaignId": "cam_9NsHPnykWESTncCW8",
                                             "campaignState": "running",
-                                            "leadState": "review"
+                                            "leadState": "review",
+                                            "leadId": "lea_mizMsAEkRrJuhouYe"
                                         }
                                     ],
-                                    "ownerId": "usr_h47tiJr87Zn7XtQHi",
-                                    "createdAt": "2025-07-18T10:03:41.612Z"
+                                    "ownerId": "usr_gmHgNGRcGPSTJrDbT",
+                                    "createdAt": "2025-10-28T00:40:37.917Z",
+                                    "createdBy": "usr_gmHgNGRcGPSTJrDbT"
                                 }
                             }
                         }
