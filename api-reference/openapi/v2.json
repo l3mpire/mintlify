@@ -5823,6 +5823,10 @@
                                         "campaignName": {
                                             "type": "string"
                                         },
+                                        "leadUrl": {
+                                            "type": "string",
+                                            "description": "URL to access the lead"
+                                        },
                                         "email": {
                                             "type": "string",
                                             "format": "email"
@@ -5831,6 +5835,15 @@
                                             "type": "string"
                                         },
                                         "lastName": {
+                                            "type": "string"
+                                        },
+                                        "companyName": {
+                                            "type": "string"
+                                        },
+                                        "jobTitle": {
+                                            "type": "string"
+                                        },
+                                        "companyDomain": {
                                             "type": "string"
                                         },
                                         "preferredContactMethod": {
@@ -5843,21 +5856,31 @@
                                             "type": "boolean",
                                             "description": "Whether the lead is paused in the campaign"
                                         },
-                                        "leadUrl": {
-                                            "type": "string"
+                                        "contactId": {
+                                            "type": "string",
+                                            "description": "Associated contact ID"
+                                        },
+                                        "emailStatus": {
+                                            "type": "string",
+                                            "description": "Email verification status"
                                         }
                                     }
                                 },
                                 "example": {
-                                    "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
-                                    "campaignName": "Insights Outreach 2024",
-                                    "email": "john.doe@domain.com",
-                                    "firstName": "John",
-                                    "lastName": "Doe",
-                                    "preferredContactMethod": "linkedIn",
-                                    "_id": "lea_7kMNQwplxvvD2hf5z",
+                                    "campaignId": "cam_9NsHPnykWESTncCW8",
+                                    "campaignName": "NEW TO DELETE",
+                                    "leadUrl": "https://api.lemlist.com/api/leads/bvelitchkine%40gmail.com",
+                                    "firstName": "Bastien",
+                                    "lastName": "Velitchkine",
+                                    "companyName": "Bastien VELITCHKINE EI",
+                                    "jobTitle": "Growth Engineer",
+                                    "companyDomain": "bvelitchkine.com",
+                                    "email": "bvelitchkine@gmail.com",
+                                    "preferredContactMethod": "email",
+                                    "_id": "lea_mizMsAEkRrJuhouYe",
                                     "isPaused": false,
-                                    "leadUrl": "https://api.lemlist.com/api/leads/john.doe%40domain.com"
+                                    "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                                    "emailStatus": "deliverable"
                                 }
                             }
                         }
