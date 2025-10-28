@@ -2,14 +2,16 @@
 openapi: post /leads/{leadId}/variables
 ---
 
-Add custom variables to a lead. Variables are passed as query parameters.
-
-<Note>
-By default, lemlist includes several variables related to leads: `email`, `firstName`, `lastName`, `picture`, `phone`, `linkedinUrl`, `companyName`, `companyDomain`, and `icebreaker`.
-
-These variables can be used to personalize and enhance your outreach campaigns effectively.
-</Note>
+This endpoint lets you add new variables to a lead. To do so, you can add as many custom fields as you want in the body of your request with the desired value for these **new** fields.
 
 <Warning>
-You cannot add a new variable with the same name as an existing default variable.
+ The purpose of this endpoint is only to create new variables, even though we have to give them specific values on a specific lead. That's why you'll get errors if you give variable names that already exist on a lead.
+
+ By default, lemlist includes several variables related to leads: `email`, `firstName`, `lastName`, `picture`, `phone`, `linkedinUrl`, `companyName`, `companyDomain`, and `icebreaker`.
+ 
+ Beware, you **cannot** add a new variable with the same name as an existing (default) variable either.
 </Warning>
+
+<Info>
+    Then, if you want to modify the values **within** these new custom variables, simply use the [Update Lead](./update-lead) endpoint.
+</Info>

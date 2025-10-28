@@ -6456,11 +6456,31 @@
                 "description": "Add custom variables to a lead. Variables are passed as query parameters.",
                 "parameters": [
                     {
-                        "name": "company",
+                        "name": "customField1",
                         "in": "query",
                         "required": false,
-                        "description": "Example variable - any custom variable name can be used",
+                        "description": "Example custom variable",
                         "example": "Lemlist",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "customField2",
+                        "in": "query",
+                        "required": false,
+                        "description": "Example custom variable",
+                        "example": "Will Rule",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "customField3",
+                        "in": "query",
+                        "required": false,
+                        "description": "Example custom variable",
+                        "example": "The World",
                         "schema": {
                             "type": "string"
                         }
@@ -6485,7 +6505,7 @@
                         "description": "Bad team",
                         "content": {
                             "text/plain": {
-                                "example": "Bad team"
+                                "example": "Variable not found"
                             }
                         }
                     },
@@ -6510,11 +6530,31 @@
                 "description": "Update custom variables for a lead. Variables are passed as query parameters.",
                 "parameters": [
                     {
-                        "name": "company",
+                        "name": "customField1",
                         "in": "query",
                         "required": false,
-                        "description": "Example variable - any custom variable name can be used",
+                        "description": "Example custom variable",
                         "example": "Lemlist",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "customField2",
+                        "in": "query",
+                        "required": false,
+                        "description": "Example custom variable",
+                        "example": "Will Rule",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "customField3",
+                        "in": "query",
+                        "required": false,
+                        "description": "Example custom variable",
+                        "example": "The World",
                         "schema": {
                             "type": "string"
                         }
@@ -6564,11 +6604,31 @@
                 "description": "Delete custom variables from a lead. Variables are passed as query parameters.",
                 "parameters": [
                     {
-                        "name": "company",
+                        "name": "customField1",
                         "in": "query",
                         "required": false,
-                        "description": "Example variable - any custom variable name to delete",
+                        "description": "Example custom variable",
                         "example": "Lemlist",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "customField2",
+                        "in": "query",
+                        "required": false,
+                        "description": "Example custom variable",
+                        "example": "Will Rule",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "customField3",
+                        "in": "query",
+                        "required": false,
+                        "description": "Example custom variable",
+                        "example": "The World",
                         "schema": {
                             "type": "string"
                         }
