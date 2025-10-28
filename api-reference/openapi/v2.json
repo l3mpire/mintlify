@@ -8021,7 +8021,10 @@
                                         "type": "string",
                                         "description": "Filter by user ID"
                                     }
-                                }
+                                },
+                                "required": [
+                                    "userId"
+                                ]
                             },
                             "example": {
                                 "userId": "usr_vvv9vehz2Ghvgbedv"
@@ -8035,20 +8038,172 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/InboxConversationPagination"
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/InboxConversation"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "type": "object",
+                                            "properties": {
+                                                "totalItems": {
+                                                    "type": "integer"
+                                                },
+                                                "currentPage": {
+                                                    "type": "integer"
+                                                },
+                                                "nextPage": {
+                                                    "type": "integer",
+                                                    "nullable": true
+                                                },
+                                                "previousPage": {
+                                                    "type": "integer",
+                                                    "nullable": true
+                                                },
+                                                "perPage": {
+                                                    "type": "integer"
+                                                },
+                                                "totalPages": {
+                                                    "type": "integer"
+                                                }
+                                            }
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "data": [
                                         {
-                                            "_id": "ibx_rvuPJaMgtYHKxaLbZ",
-                                            "lastActivityAt": "2025-03-27T13:28:53.499Z",
-                                            "contactId": "ctc_yHXD3NWjPg7Z9MuWZ",
+                                            "_id": "ibx_gpcNQfmQx6CAjgXqA",
+                                            "opportunities": [],
+                                            "lastActivityAt": "2024-12-17T09:42:32.971Z",
+                                            "createdBy": "act_mjdoySn9mkfbcMS5e",
+                                            "channels": [
+                                                "email"
+                                            ],
+                                            "teamId": "tea_b4rMsi2trB42WyuWP",
+                                            "contactId": "ctc_wfKeM8EmiTikud7QE",
+                                            "users": [
+                                                {
+                                                    "userId": "usr_t2KCwPen66NrrqGtQ",
+                                                    "sender": true,
+                                                    "read": true
+                                                },
+                                                {
+                                                    "userId": "usr_7RCLS4LdYP2oc8jmE",
+                                                    "sender": true,
+                                                    "read": true
+                                                }
+                                            ],
+                                            "createdAt": "2024-12-03T09:52:55.466Z",
                                             "haveReplies": true,
-                                            "lastRepliedAt": "2025-03-25T14:18:05.000Z"
+                                            "lastRepliedAt": "2024-12-03T10:12:20.620Z",
+                                            "lastRepliedChannel": "email",
+                                            "contact": {
+                                                "_id": "ctc_wfKeM8EmiTikud7QE",
+                                                "fullName": "Victoire",
+                                                "email": "victoire@lempire.co"
+                                            }
+                                        },
+                                        {
+                                            "_id": "ibx_6MFTZSkNxYDG8cEBt",
+                                            "opportunities": [],
+                                            "lastActivityAt": "2024-12-17T09:42:30.430Z",
+                                            "createdBy": "act_otgjsMTZFLXc3t344",
+                                            "channels": [
+                                                "email"
+                                            ],
+                                            "teamId": "tea_b4rMsi2trB42WyuWP",
+                                            "contactId": "ctc_miqxedLWeYvaZJGmj",
+                                            "users": [
+                                                {
+                                                    "userId": "usr_t2KCwPen66NrrqGtQ",
+                                                    "sender": true,
+                                                    "read": false
+                                                },
+                                                {
+                                                    "userId": "usr_7RCLS4LdYP2oc8jmE",
+                                                    "sender": true,
+                                                    "read": true
+                                                }
+                                            ],
+                                            "createdAt": "2024-12-03T14:01:15.873Z",
+                                            "haveReplies": true,
+                                            "lastRepliedAt": "2024-12-03T14:14:00.848Z",
+                                            "lastRepliedChannel": "email",
+                                            "contact": {
+                                                "_id": "ctc_miqxedLWeYvaZJGmj",
+                                                "email": "ahmed@lempire.co"
+                                            }
+                                        },
+                                        {
+                                            "_id": "ibx_NyELBcEGyqw8p63WR",
+                                            "opportunities": [],
+                                            "lastActivityAt": "2024-12-17T09:42:17.682Z",
+                                            "createdBy": "act_Xwdkdj3RLeE3ubf6P",
+                                            "channels": [
+                                                "email"
+                                            ],
+                                            "teamId": "tea_b4rMsi2trB42WyuWP",
+                                            "contactId": "ctc_pywvuxsduA3T22NGR",
+                                            "users": [
+                                                {
+                                                    "userId": "usr_t2KCwPen66NrrqGtQ",
+                                                    "sender": true,
+                                                    "read": true
+                                                },
+                                                {
+                                                    "userId": "usr_7RCLS4LdYP2oc8jmE",
+                                                    "sender": true,
+                                                    "read": true
+                                                }
+                                            ],
+                                            "createdAt": "2024-12-02T16:27:50.927Z",
+                                            "haveReplies": true,
+                                            "lastRepliedAt": "2024-12-02T16:38:35.875Z",
+                                            "lastRepliedChannel": "email",
+                                            "contact": {
+                                                "_id": "ctc_pywvuxsduA3T22NGR",
+                                                "email": "ariadne@lempire.co"
+                                            }
+                                        },
+                                        {
+                                            "_id": "ibx_LB58k3Fy6y6rhvfS9",
+                                            "opportunities": [],
+                                            "lastActivityAt": "2024-12-04T16:58:53.629Z",
+                                            "createdBy": "act_iEfKLEB93nf7a5P9t",
+                                            "channels": [
+                                                "email"
+                                            ],
+                                            "teamId": "tea_b4rMsi2trB42WyuWP",
+                                            "contactId": "ctc_FdjS5TF5v47H53YPh",
+                                            "users": [
+                                                {
+                                                    "userId": "usr_t2KCwPen66NrrqGtQ",
+                                                    "sender": true,
+                                                    "read": true
+                                                },
+                                                {
+                                                    "userId": "usr_7RCLS4LdYP2oc8jmE",
+                                                    "sender": true,
+                                                    "read": true
+                                                }
+                                            ],
+                                            "createdAt": "2024-11-29T11:40:17.918Z",
+                                            "haveReplies": true,
+                                            "lastRepliedAt": "2024-12-04T15:47:00.816Z",
+                                            "lastRepliedChannel": "email",
+                                            "contact": {
+                                                "_id": "ctc_FdjS5TF5v47H53YPh",
+                                                "fullName": "Mickael",
+                                                "email": "mickael@lempire.co"
+                                            }
                                         }
                                     ],
                                     "pagination": {
-                                        "totalItems": 1,
+                                        "totalItems": 4,
                                         "currentPage": 1,
                                         "nextPage": null,
                                         "previousPage": null,
