@@ -114,8 +114,7 @@
                 "pages": [
                   "api-reference/endpoints/team/get-team",
                   "api-reference/endpoints/team/get-team-senders",
-                  "api-reference/endpoints/team/get-team-credits",
-                  "api-reference/endpoints/team/get-team-crm-users"
+                  "api-reference/endpoints/team/get-team-credits"
                 ]
               },
               {
@@ -232,6 +231,14 @@
                 "expanded": false,
                 "pages": [
                   "api-reference/endpoints/activities/get-many-activities"
+                ]
+              },
+              {
+                "group": "CRMs",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/crm/get-team-crm-users",
+                  "api-reference/endpoints/crm/get-crm-filters"
                 ]
               },
               {
