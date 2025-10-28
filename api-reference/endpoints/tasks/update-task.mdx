@@ -5,4 +5,33 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Task" objectPath="task" />
 
-This endpoint updates an existing task.
+Modify any aspect of an existing task including reassignment, rescheduling, or marking as complete.
+
+## Updatable Fields
+
+All fields are optional except `id`:
+
+- **Assignment**: Change the assigned team member with `assignedTo`
+- **Schedule**: Update the `dueDate` 
+- **Details**: Modify `title` or `message` content
+- **Priority**: Set priority level (0=low, 1=medium, 2=high, ""=none)
+- **Status**: Mark as complete with `done: true`
+
+Examples:
+
+<CodeGroup>
+```json mark as done
+{
+    "id": "opp_abc123",
+    "done": true
+}
+```
+
+```json reassign and reschedule:
+{
+    "id": "opp_abc123",
+    "assignedTo": "usr_xyz789",
+    "dueDate": "2025-03-15T10:00:00.000Z"
+}
+```
+</CodeGroup>
