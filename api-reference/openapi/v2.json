@@ -9676,6 +9676,19 @@
                 ],
                 "parameters": [
                     {
+                        "name": "version",
+                        "in": "query",
+                        "required": true,
+                        "description": "API version. v2 is mandatory",
+                        "example": "v2",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "v2"
+                            ]
+                        }
+                    },
+                    {
                         "name": "type",
                         "in": "query",
                         "required": false,
@@ -9736,16 +9749,6 @@
                         }
                     },
                     {
-                        "name": "version",
-                        "in": "query",
-                        "required": false,
-                        "description": "API version. v2 is mandatory",
-                        "example": "v2",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
                         "name": "Content-Type",
                         "in": "header",
                         "required": false,
@@ -9768,9 +9771,254 @@
                                 },
                                 "example": [
                                     {
-                                        "_id": "act_xXR99r2dyRedXb8pc",
-                                        "type": "emailsSent",
-                                        "createdAt": "2024-07-22T15:25:13.610Z"
+                                        "_id": "act_6AgzAuEtMzTF7X8Yf",
+                                        "type": "manualDone",
+                                        "userId": "usr_4YGm9ez7gMd2okyRp",
+                                        "userName": "Guillaume Moubeche",
+                                        "bot": false,
+                                        "createdAt": "2025-10-28T08:07:38.375Z",
+                                        "leadFirstName": "Bastien",
+                                        "leadLastName": "Velitchkine",
+                                        "leadEmail": "bvelitchkine@gmail.com",
+                                        "leadCompanyName": "Bastien VELITCHKINE EI",
+                                        "leadId": "lea_mizMsAEkRrJuhouYe",
+                                        "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                                        "campaignId": "cam_9NsHPnykWESTncCW8",
+                                        "teamId": "tea_b4rMsi2trB42WyuWP",
+                                        "opportunityId": "opp_ouYzdLYGs4RcrHTfm",
+                                        "metaData": {
+                                            "teamId": "tea_b4rMsi2trB42WyuWP",
+                                            "campaignId": "cam_9NsHPnykWESTncCW8",
+                                            "leadId": "lea_mizMsAEkRrJuhouYe",
+                                            "type": "manualDone"
+                                        },
+                                        "lead": {
+                                            "_id": "lea_mizMsAEkRrJuhouYe",
+                                            "isPaused": false,
+                                            "state": "manualNotInterested",
+                                            "personalized": false,
+                                            "source": "api",
+                                            "variables": {
+                                                "firstName": "Bastien",
+                                                "lastName": "Velitchkine",
+                                                "companyName": "Bastien VELITCHKINE EI",
+                                                "jobTitle": "Growth Engineer",
+                                                "companyDomain": "bvelitchkine.com",
+                                                "email": "bvelitchkine@gmail.com",
+                                                "preferredContactMethod": "email",
+                                                "industry": "Technology",
+                                                "Company name": "Bastien Velitchkine"
+                                            },
+                                            "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                                            "enrichment": {
+                                                "emailStatus": "deliverable"
+                                            }
+                                        },
+                                        "campaignName": "NEW TO DELETE",
+                                        "sequenceTested": "B"
+                                    },
+                                    {
+                                        "_id": "act_42k26Chi3iya8rfjX",
+                                        "teamId": "tea_b4rMsi2trB42WyuWP",
+                                        "companyId": "cpn_9Q9wjZR9R7rs3HE53",
+                                        "type": "annotated",
+                                        "createdAt": "2025-10-28T04:25:00.653Z",
+                                        "note": "could help our GTM team be more productive",
+                                        "sendUserId": "usr_gmHgNGRcGPSTJrDbT",
+                                        "userId": "usr_gmHgNGRcGPSTJrDbT"
+                                    },
+                                    {
+                                        "_id": "act_kWM8HEhSBK6RumfFi",
+                                        "type": "manualNotInterested",
+                                        "teamId": "tea_b4rMsi2trB42WyuWP",
+                                        "userName": "api",
+                                        "isFirst": false,
+                                        "bot": false,
+                                        "createdAt": "2025-10-28T02:14:34.834Z",
+                                        "name": "NEW TO DELETE",
+                                        "leadFirstName": "Bastien",
+                                        "leadLastName": "Velitchkine",
+                                        "leadEmail": "bvelitchkine@gmail.com",
+                                        "leadCompanyName": "Bastien VELITCHKINE EI",
+                                        "leadId": "lea_mizMsAEkRrJuhouYe",
+                                        "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                                        "campaignId": "cam_9NsHPnykWESTncCW8",
+                                        "metaData": {
+                                            "teamId": "tea_b4rMsi2trB42WyuWP",
+                                            "campaignId": "cam_9NsHPnykWESTncCW8",
+                                            "leadId": "lea_mizMsAEkRrJuhouYe",
+                                            "type": "manualNotInterested"
+                                        },
+                                        "lead": {
+                                            "_id": "lea_mizMsAEkRrJuhouYe",
+                                            "isPaused": false,
+                                            "state": "manualNotInterested",
+                                            "personalized": false,
+                                            "source": "api",
+                                            "variables": {
+                                                "firstName": "Bastien",
+                                                "lastName": "Velitchkine",
+                                                "companyName": "Bastien VELITCHKINE EI",
+                                                "jobTitle": "Growth Engineer",
+                                                "companyDomain": "bvelitchkine.com",
+                                                "email": "bvelitchkine@gmail.com",
+                                                "preferredContactMethod": "email",
+                                                "industry": "Technology",
+                                                "Company name": "Bastien Velitchkine"
+                                            },
+                                            "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                                            "enrichment": {
+                                                "emailStatus": "deliverable"
+                                            }
+                                        },
+                                        "campaignName": "NEW TO DELETE",
+                                        "sequenceTested": "B"
+                                    },
+                                    {
+                                        "_id": "act_REyJHTd9Qmv7ToEap",
+                                        "type": "paused",
+                                        "userName": "api",
+                                        "bot": false,
+                                        "createdAt": "2025-10-28T01:54:56.099Z",
+                                        "name": "NEW TO DELETE",
+                                        "leadFirstName": "Bastien",
+                                        "leadLastName": "Velitchkine",
+                                        "leadEmail": "bvelitchkine@gmail.com",
+                                        "leadCompanyName": "Bastien VELITCHKINE EI",
+                                        "leadId": "lea_mizMsAEkRrJuhouYe",
+                                        "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                                        "campaignId": "cam_9NsHPnykWESTncCW8",
+                                        "teamId": "tea_b4rMsi2trB42WyuWP",
+                                        "metaData": {
+                                            "teamId": "tea_b4rMsi2trB42WyuWP",
+                                            "campaignId": "cam_9NsHPnykWESTncCW8",
+                                            "leadId": "lea_mizMsAEkRrJuhouYe",
+                                            "type": "paused"
+                                        },
+                                        "lead": {
+                                            "_id": "lea_mizMsAEkRrJuhouYe",
+                                            "isPaused": false,
+                                            "state": "manualNotInterested",
+                                            "personalized": false,
+                                            "source": "api",
+                                            "variables": {
+                                                "firstName": "Bastien",
+                                                "lastName": "Velitchkine",
+                                                "companyName": "Bastien VELITCHKINE EI",
+                                                "jobTitle": "Growth Engineer",
+                                                "companyDomain": "bvelitchkine.com",
+                                                "email": "bvelitchkine@gmail.com",
+                                                "preferredContactMethod": "email",
+                                                "industry": "Technology",
+                                                "Company name": "Bastien Velitchkine"
+                                            },
+                                            "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                                            "enrichment": {
+                                                "emailStatus": "deliverable"
+                                            }
+                                        },
+                                        "campaignName": "NEW TO DELETE",
+                                        "sequenceTested": "B"
+                                    },
+                                    {
+                                        "_id": "act_cKQJPK2gPSgk43tMq",
+                                        "type": "emailsOpened",
+                                        "isFirst": false,
+                                        "stopped": false,
+                                        "createdAt": "2025-10-27T20:20:59.696Z",
+                                        "bot": false,
+                                        "teamId": "tea_b4rMsi2trB42WyuWP",
+                                        "leadId": "lea_3J63e27CjNMBmSgzb",
+                                        "campaignId": "cam_qmMMRtncnJMGwsfQD",
+                                        "sequenceId": "seq_orKX7zmrfcei54SMf",
+                                        "sequenceStep": 1,
+                                        "emailTemplateId": "etp_WDmCaPfpeqNf4Sus9",
+                                        "createdBy": "usr_AWTf5MbJvH9QA34Yy",
+                                        "sendUserId": "usr_AWTf5MbJvH9QA34Yy",
+                                        "name": "Unicorn campaign",
+                                        "leadFirstName": "Ilya",
+                                        "leadLastName": "Azovtsev",
+                                        "leadEmail": "ilya@lemlist.com",
+                                        "leadCompanyName": "lemlist",
+                                        "contactId": "ctc_MXGusaii6F8rDXDeS",
+                                        "relatedSentAt": "2020-12-07T11:49:14.830Z",
+                                        "metaData": {
+                                            "teamId": "tea_b4rMsi2trB42WyuWP",
+                                            "campaignId": "cam_qmMMRtncnJMGwsfQD",
+                                            "leadId": "lea_3J63e27CjNMBmSgzb",
+                                            "type": "emailsOpened",
+                                            "createdBy": "usr_AWTf5MbJvH9QA34Yy",
+                                            "taskId": "tsk_mtWFoseksGFzxRvyZ"
+                                        },
+                                        "lead": {
+                                            "_id": "lea_3J63e27CjNMBmSgzb",
+                                            "isPaused": false,
+                                            "state": "emailsUnsubscribed",
+                                            "personalized": false,
+                                            "source": "manually",
+                                            "variables": {
+                                                "firstName": "Ilya ",
+                                                "lastName": "Azovtsev",
+                                                "email": "ilya@lemlist.com",
+                                                "companyName": "lemlist",
+                                                "linkedinUrl": "https://www.linkedin.com/in/ilya-azovtsev"
+                                            },
+                                            "contactId": "ctc_MXGusaii6F8rDXDeS",
+                                            "enrichment": {}
+                                        },
+                                        "campaignName": "Unicorn campaign",
+                                        "sequenceTested": "A",
+                                        "emailTemplateName": "Blank"
+                                    },
+                                    {
+                                        "_id": "act_vwBugHpPwLhnDJpMG",
+                                        "type": "emailsOpened",
+                                        "isFirst": false,
+                                        "stopped": false,
+                                        "createdAt": "2025-10-27T20:17:24.119Z",
+                                        "bot": false,
+                                        "teamId": "tea_b4rMsi2trB42WyuWP",
+                                        "leadId": "lea_3J63e27CjNMBmSgzb",
+                                        "campaignId": "cam_qmMMRtncnJMGwsfQD",
+                                        "sequenceId": "seq_orKX7zmrfcei54SMf",
+                                        "sequenceStep": 1,
+                                        "emailTemplateId": "etp_WDmCaPfpeqNf4Sus9",
+                                        "createdBy": "usr_AWTf5MbJvH9QA34Yy",
+                                        "sendUserId": "usr_AWTf5MbJvH9QA34Yy",
+                                        "name": "Unicorn campaign",
+                                        "leadFirstName": "Ilya",
+                                        "leadLastName": "Azovtsev",
+                                        "leadEmail": "ilya@lemlist.com",
+                                        "leadCompanyName": "lemlist",
+                                        "contactId": "ctc_MXGusaii6F8rDXDeS",
+                                        "relatedSentAt": "2020-12-07T11:49:14.830Z",
+                                        "metaData": {
+                                            "teamId": "tea_b4rMsi2trB42WyuWP",
+                                            "campaignId": "cam_qmMMRtncnJMGwsfQD",
+                                            "leadId": "lea_3J63e27CjNMBmSgzb",
+                                            "type": "emailsOpened",
+                                            "createdBy": "usr_AWTf5MbJvH9QA34Yy",
+                                            "taskId": "tsk_mtWFoseksGFzxRvyZ"
+                                        },
+                                        "lead": {
+                                            "_id": "lea_3J63e27CjNMBmSgzb",
+                                            "isPaused": false,
+                                            "state": "emailsUnsubscribed",
+                                            "personalized": false,
+                                            "source": "manually",
+                                            "variables": {
+                                                "firstName": "Ilya ",
+                                                "lastName": "Azovtsev",
+                                                "email": "ilya@lemlist.com",
+                                                "companyName": "lemlist",
+                                                "linkedinUrl": "https://www.linkedin.com/in/ilya-azovtsev"
+                                            },
+                                            "contactId": "ctc_MXGusaii6F8rDXDeS",
+                                            "enrichment": {}
+                                        },
+                                        "campaignName": "Unicorn campaign",
+                                        "sequenceTested": "A",
+                                        "emailTemplateName": "Blank"
                                     }
                                 ]
                             }
