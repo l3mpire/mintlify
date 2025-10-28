@@ -5775,7 +5775,7 @@
                 }
             ],
             "patch": {
-                "summary": "Update Lead",
+                "summary": "Update Lead in a Campaign",
                 "tags": [
                     "Leads"
                 ],
@@ -6449,11 +6449,11 @@
                 }
             ],
             "post": {
-                "summary": "Add Lead Variables",
+                "summary": "Add Custom Variables on Leads",
                 "tags": [
                     "Leads"
                 ],
-                "description": "Add custom variables to a lead. Variables are passed as query parameters.",
+                "description": "Add custom variables to a lead and sets values for that specific lead.",
                 "parameters": [
                     {
                         "name": "customField1",
@@ -6523,11 +6523,11 @@
                 }
             },
             "patch": {
-                "summary": "Update Lead Variables",
+                "summary": "Update Values of Custom Variables of a Lead",
                 "tags": [
                     "Leads"
                 ],
-                "description": "Update custom variables for a lead. Variables are passed as query parameters.",
+                "description": "Update values of custom variables for a lead.",
                 "parameters": [
                     {
                         "name": "customField1",
@@ -6597,18 +6597,17 @@
                 }
             },
             "delete": {
-                "summary": "Delete Lead Variables",
+                "summary": "Erase Values of Custom Variables on a Lead",
                 "tags": [
                     "Leads"
                 ],
-                "description": "Delete custom variables from a lead. Variables are passed as query parameters.",
+                "description": "Erases the values of custom variables on a lead.",
                 "parameters": [
                     {
                         "name": "customField1",
                         "in": "query",
                         "required": false,
                         "description": "Example custom variable",
-                        "example": "Lemlist",
                         "schema": {
                             "type": "string"
                         }
@@ -6618,7 +6617,6 @@
                         "in": "query",
                         "required": false,
                         "description": "Example custom variable",
-                        "example": "Will Rule",
                         "schema": {
                             "type": "string"
                         }
@@ -6628,7 +6626,6 @@
                         "in": "query",
                         "required": false,
                         "description": "Example custom variable",
-                        "example": "The World",
                         "schema": {
                             "type": "string"
                         }
@@ -6636,7 +6633,18 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                },
+                                "example": {
+                                    "ok": true
+                                }
+                            }
+                        }
                     },
                     "400": {
                         "description": "Bad team",
