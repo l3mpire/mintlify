@@ -7777,6 +7777,7 @@
             },
             "post": {
                 "summary": "Create Task",
+                "description": "Create a manual task (opportunity) associated with a lead.",
                 "tags": [
                     "Tasks"
                 ],
@@ -7788,25 +7789,63 @@
                                 "properties": {
                                     "leadId": {
                                         "type": "string",
-                                        "description": "The unique identifier of the lead"
+                                        "description": "The ID of the lead associated with the task."
                                     },
                                     "type": {
                                         "type": "string",
-                                        "description": "Task type (e.g., phone, email, manual)"
+                                        "description": "The type of task.",
+                                        "enum": [
+                                            "email",
+                                            "manual",
+                                            "phone",
+                                            "linkedin"
+                                        ]
+                                    },
+                                    "assignedTo": {
+                                        "type": "string",
+                                        "description": "The ID of the team member assigned to the task (userId)."
                                     },
                                     "dueDate": {
                                         "type": "string",
                                         "format": "date-time",
-                                        "description": "Due date for the task"
+                                        "description": "The due date in ISO 8601 format (e.g., 2025-02-12T00:00:00.000Z)."
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "description": "Optional title of the task. Defaults to an empty string if omitted.",
+                                        "default": ""
+                                    },
+                                    "message": {
+                                        "type": "string",
+                                        "description": "Optional message/description of the task. Defaults to an empty string if omitted.",
+                                        "default": ""
+                                    },
+                                    "priority": {
+                                        "type": "string",
+                                        "description": "Priority level of the task.",
+                                        "enum": [
+                                            "",
+                                            "0",
+                                            "1",
+                                            "2"
+                                        ],
+                                        "default": ""
                                     }
                                 },
                                 "required": [
-                                    "leadId"
+                                    "leadId",
+                                    "type",
+                                    "assignedTo",
+                                    "dueDate"
                                 ]
                             },
                             "example": {
-                                "leadId": "lea_sMsXBnXd7mG2XdxFR",
-                                "type": "phone"
+                                "type": "phone",
+                                "assignedTo": "usr_6Y58qbtsYv2rCHQiJ",
+                                "dueDate": "2025-02-10T09:58:57.169Z",
+                                "message": "this is my message",
+                                "title": "this is my title",
+                                "leadId": "lea_QerTQT4gtxsXpLHK3"
                             }
                         }
                     }
@@ -7820,15 +7859,16 @@
                                     "$ref": "#/components/schemas/Task"
                                 },
                                 "example": {
-                                    "_id": "opp_yTGDXCWPeiZL5n9GG",
-                                    "type": "phone",
-                                    "title": "this is my title",
-                                    "leadId": "lea_QerTQT4gtxsXpLHK3",
-                                    "campaignId": "cam_xD5RCYnk4WWGF7qoy",
-                                    "contactId": "ctc_h4Gs5LhihyCZgpgb8",
-                                    "dueDate": "2025-02-10T09:58:57.169Z",
-                                    "userId": "usr_6Y58qbtsYv2rCHQiJ",
-                                    "content": "this is my message"
+                                    "_id": "opp_ouYzdLYGs4RcrHTfm",
+                                    "type": "manual",
+                                    "title": "Keep an eye on him",
+                                    "priority": 1,
+                                    "leadId": "lea_mizMsAEkRrJuhouYe",
+                                    "campaignId": "cam_9NsHPnykWESTncCW8",
+                                    "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                                    "dueDate": "2025-11-10T09:58:57.169Z",
+                                    "userId": "usr_gmHgNGRcGPSTJrDbT",
+                                    "content": "does he have bandwidth to help us? would be grand"
                                 }
                             }
                         }
