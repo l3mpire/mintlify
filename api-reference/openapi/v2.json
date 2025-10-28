@@ -807,6 +807,15 @@
                         "type": "string",
                         "format": "date-time",
                         "description": "Timestamp when the schedule was created"
+                    },
+                    "deletedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Timestamp when the schedule was deleted (only present if deleted)"
+                    },
+                    "deletedBy": {
+                        "type": "string",
+                        "description": "Unique identifier of the user who deleted this schedule (only present if deleted)"
                     }
                 }
             },
@@ -4696,22 +4705,23 @@
                                     ]
                                 },
                                 "example": {
-                                    "_id": "skd_JTb4gjdiizqPoYqzh",
-                                    "name": "Default schedule",
-                                    "secondsToWait": 120,
-                                    "timezone": "Europe/Paris",
-                                    "start": "09:00",
+                                    "_id": "skd_AEcaBR4KvwvFtFhyH",
+                                    "name": "Renamed Schedule",
+                                    "secondsToWait": 1000,
+                                    "timezone": "Europe/Berlin",
+                                    "start": "08:00",
                                     "end": "18:00",
                                     "weekdays": [
                                         1,
                                         2,
                                         3,
-                                        4,
+                                        2,
                                         5
                                     ],
-                                    "teamId": "tea_Lq4kN7R2pqEA4YFst",
-                                    "createdBy": "usr_n2PG5aHnsGErYS2Yg",
-                                    "createdAt": "2025-01-17T15:17:59.207Z"
+                                    "public": true,
+                                    "teamId": "tea_b4rMsi2trB42WyuWP",
+                                    "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                                    "createdAt": "2025-10-27T09:41:11.187Z"
                                 }
                             }
                         }
