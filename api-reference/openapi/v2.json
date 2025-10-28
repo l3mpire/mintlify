@@ -9076,19 +9076,44 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/CompanyNote"
-                                    }
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CompanyNote"
+                                            }
+                                        },
+                                        "total": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "total"
+                                    ]
                                 },
-                                "example": [
-                                    {
-                                        "_id": "not_XYZ789",
-                                        "note": "Great company to work with",
-                                        "createdAt": "2025-01-15T10:00:00.000Z",
-                                        "createdBy": "usr_h47tiJr87Zn7XtQHi"
-                                    }
-                                ]
+                                "example": {
+                                    "data": [
+                                        {
+                                            "_id": "act_42k26Chi3iya8rfjX",
+                                            "teamId": "tea_b4rMsi2trB42WyuWP",
+                                            "companyId": "cpn_9Q9wjZR9R7rs3HE53",
+                                            "createdAt": "2025-10-28T04:25:00.653Z",
+                                            "note": "could help our GTM team be more productive",
+                                            "userId": "usr_gmHgNGRcGPSTJrDbT"
+                                        },
+                                        {
+                                            "_id": "act_QTehBr844jD2a72hn",
+                                            "teamId": "tea_b4rMsi2trB42WyuWP",
+                                            "companyId": "cpn_9Q9wjZR9R7rs3HE53",
+                                            "createdAt": "2025-10-24T12:42:40.605Z",
+                                            "note": "Note created from the API!",
+                                            "userId": "usr_gmHgNGRcGPSTJrDbT"
+                                        }
+                                    ],
+                                    "total": 2
+                                }
                             }
                         }
                     },
