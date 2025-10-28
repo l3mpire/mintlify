@@ -7942,6 +7942,7 @@
             },
             "patch": {
                 "summary": "Update Task",
+                "description": "Update task details such as assignment, due date, title, message, priority, or completion status.",
                 "tags": [
                     "Tasks"
                 ],
@@ -7951,15 +7952,49 @@
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "taskId": {
+                                    "id": {
                                         "type": "string",
-                                        "description": "The unique identifier of the task"
+                                        "description": "The unique identifier of the task to update"
+                                    },
+                                    "assignedTo": {
+                                        "type": "string",
+                                        "description": "The ID of the team member to assign the task to (userId)"
+                                    },
+                                    "dueDate": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "Updated due date in ISO 8601 format"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "description": "Updated task title"
+                                    },
+                                    "message": {
+                                        "type": "string",
+                                        "description": "Updated task message/description"
+                                    },
+                                    "priority": {
+                                        "type": "string",
+                                        "description": "Priority level of the task",
+                                        "enum": [
+                                            "",
+                                            "0",
+                                            "1",
+                                            "2"
+                                        ]
                                     },
                                     "done": {
                                         "type": "boolean",
-                                        "description": "Mark task as done"
+                                        "description": "Mark task as completed"
                                     }
-                                }
+                                },
+                                "required": [
+                                    "id"
+                                ]
+                            },
+                            "example": {
+                                "id": "opp_AbkAqfvTJtdR7mdZ5",
+                                "title": "My new title"
                             }
                         }
                     }
@@ -7973,15 +8008,13 @@
                                     "$ref": "#/components/schemas/Task"
                                 },
                                 "example": {
-                                    "_id": "opp_AbkAqfvTJtdR7mdZ5",
-                                    "type": "phone",
-                                    "title": "My new title",
-                                    "leadId": "lea_QerTQT4gtxsXpLHK3",
-                                    "campaignId": "cam_xD5RCYnk4WWGF7qoy",
-                                    "contactId": "ctc_h4Gs5LhihyCZgpgb8",
-                                    "dueDate": "2025-02-10T09:58:57.169Z",
-                                    "userId": "usr_6Y58qbtsYv2rCHQiJ",
-                                    "content": "this is my message"
+                                    "_id": "opp_muTZMDjKf7vtanEk9",
+                                    "type": "manual",
+                                    "title": "Check him out",
+                                    "priority": 2,
+                                    "dueDate": "2025-10-31T07:58:00.000Z",
+                                    "userId": "usr_gmHgNGRcGPSTJrDbT",
+                                    "content": "Really glad we started using lemlist"
                                 }
                             }
                         }
