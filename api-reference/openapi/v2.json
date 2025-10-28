@@ -6413,23 +6413,71 @@
                                     "items": {
                                         "type": "object",
                                         "properties": {
+                                            "firstName": {
+                                                "type": "string"
+                                            },
+                                            "lastName": {
+                                                "type": "string"
+                                            },
+                                            "companyName": {
+                                                "type": "string"
+                                            },
+                                            "jobTitle": {
+                                                "type": "string"
+                                            },
+                                            "companyDomain": {
+                                                "type": "string"
+                                            },
                                             "email": {
+                                                "type": "string",
+                                                "format": "email"
+                                            },
+                                            "preferredContactMethod": {
+                                                "type": "string"
+                                            },
+                                            "industry": {
+                                                "type": "string"
+                                            },
+                                            "Company name": {
                                                 "type": "string"
                                             },
                                             "_id": {
                                                 "type": "string"
                                             },
+                                            "isPaused": {
+                                                "type": "boolean"
+                                            },
                                             "campaignId": {
                                                 "type": "string"
+                                            },
+                                            "contactId": {
+                                                "type": "string"
+                                            },
+                                            "emailStatus": {
+                                                "type": "string"
                                             }
+                                        },
+                                        "additionalProperties": {
+                                            "type": "string"
                                         }
                                     }
                                 },
                                 "example": [
                                     {
-                                        "email": "john.doe@domain.com",
-                                        "_id": "lea_7kMNQwplxvvD2hf5z",
-                                        "campaignId": "cam_A1B2C3D4E5F6G7H8I9"
+                                        "firstName": "Bastien",
+                                        "lastName": "Velitchkine",
+                                        "companyName": "Bastien VELITCHKINE EI",
+                                        "jobTitle": "Growth Engineer",
+                                        "companyDomain": "bvelitchkine.com",
+                                        "email": "bvelitchkine@gmail.com",
+                                        "preferredContactMethod": "email",
+                                        "industry": "Technology",
+                                        "Company name": "Bastien Velitchkine",
+                                        "_id": "lea_mizMsAEkRrJuhouYe",
+                                        "isPaused": false,
+                                        "campaignId": "cam_9NsHPnykWESTncCW8",
+                                        "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                                        "emailStatus": "deliverable"
                                     }
                                 ]
                             }
@@ -6560,22 +6608,71 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Lead"
+                                    "type": "object",
+                                    "properties": {
+                                        "firstName": {
+                                            "type": "string"
+                                        },
+                                        "lastName": {
+                                            "type": "string"
+                                        },
+                                        "companyName": {
+                                            "type": "string"
+                                        },
+                                        "jobTitle": {
+                                            "type": "string"
+                                        },
+                                        "companyDomain": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "format": "email"
+                                        },
+                                        "preferredContactMethod": {
+                                            "type": "string"
+                                        },
+                                        "industry": {
+                                            "type": "string"
+                                        },
+                                        "Company name": {
+                                            "type": "string"
+                                        },
+                                        "_id": {
+                                            "type": "string"
+                                        },
+                                        "isPaused": {
+                                            "type": "boolean"
+                                        },
+                                        "campaignId": {
+                                            "type": "string"
+                                        },
+                                        "contactId": {
+                                            "type": "string"
+                                        },
+                                        "emailStatus": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    }
                                 },
                                 "example": {
-                                    "email": "john.doe@domain.com",
-                                    "firstName": "John",
-                                    "lastName": "Doe",
-                                    "picture": "https://c.pxhere.com/images/55/a2/fc589d408bc4c00cf38f1aeaf3e3-1449557.jpg!d",
-                                    "phone": "+33 123456789",
-                                    "linkedinUrl": "https://www.linkedin.com/in/johndoe,",
-                                    "companyName": "lempire",
-                                    "companyDomain": "lempire.co",
-                                    "icebreaker": "Hello John, I came across your profile and your expertise in software development is remarkable!",
-                                    "jobTitle": "Developer",
-                                    "_id": "lea_7kMNQwplxvvD2hf5z",
+                                    "firstName": "Bastien",
+                                    "lastName": "Velitchkine",
+                                    "companyName": "Bastien VELITCHKINE EI",
+                                    "jobTitle": "Growth Engineer",
+                                    "companyDomain": "bvelitchkine.com",
+                                    "email": "bvelitchkine@gmail.com",
+                                    "preferredContactMethod": "email",
+                                    "industry": "Technology",
+                                    "Company name": "Bastien Velitchkine",
+                                    "_id": "lea_mizMsAEkRrJuhouYe",
                                     "isPaused": false,
-                                    "campaignId": "cam_A1B2C3D4E5F6G7H8I9"
+                                    "campaignId": "cam_9NsHPnykWESTncCW8",
+                                    "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                                    "emailStatus": "deliverable"
                                 }
                             }
                         }
