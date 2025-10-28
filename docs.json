@@ -183,7 +183,6 @@
                   "api-reference/endpoints/leads/mark-lead-as-not-interested",
                   "api-reference/endpoints/leads/mark-lead-as-interested-in-campaign",
                   "api-reference/endpoints/leads/mark-lead-as-not-interested-in-campaign",
-                  "api-reference/endpoints/leads/get-crm-filters",
                   "api-reference/endpoints/leads/import-leads-from-crm",
                   "api-reference/endpoints/leads/upload-audio-for-voice-message-step"
                 ]
