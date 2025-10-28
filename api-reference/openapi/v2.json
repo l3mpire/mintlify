@@ -595,7 +595,7 @@
                     },
                     "name": {
                         "type": "string",
-                        "description": "Company name"
+                        "description": "Company name (may also be present under fields.name)"
                     },
                     "domain": {
                         "type": "string",
@@ -612,6 +612,19 @@
                     "location": {
                         "type": "string",
                         "description": "Geographic location"
+                    },
+                    "fields": {
+                        "type": "object",
+                        "description": "Flexible key/value fields of the company (e.g., name, picture, industry, location, size, foundedOn)",
+                        "additionalProperties": true
+                    },
+                    "createdBy": {
+                        "type": "string",
+                        "description": "User ID who created the company"
+                    },
+                    "ownerId": {
+                        "type": "string",
+                        "description": "User ID of the owner of the company"
                     },
                     "createdAt": {
                         "type": "string",
@@ -8886,20 +8899,73 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Company"
-                                    }
-                                },
-                                "example": [
-                                    {
-                                        "_id": "cmp_ABC123",
-                                        "fields": {
-                                            "name": "lemlist"
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Company"
+                                            }
                                         },
-                                        "domain": "lemlist.com"
-                                    }
-                                ]
+                                        "total": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "total"
+                                    ]
+                                },
+                                "example": {
+                                    "data": [
+                                        {
+                                            "_id": "cpn_8H6uDPbNcNfZjkcSP",
+                                            "createdAt": "2025-10-26T11:54:27.387Z",
+                                            "createdBy": "usr_69Fdorq5viufKjmaC",
+                                            "domain": "persana.ai",
+                                            "fields": {
+                                                "name": "Persana AI",
+                                                "picture": "https://na1.hubspot-logos.com/5ebdfc36-78f7-4b08-807b-a9ad16bedffe"
+                                            },
+                                            "ownerId": "usr_69Fdorq5viufKjmaC"
+                                        },
+                                        {
+                                            "_id": "cpn_SsDjkMjBGcWuSwfY9",
+                                            "createdAt": "2025-10-26T11:45:18.773Z",
+                                            "createdBy": "usr_69Fdorq5viufKjmaC",
+                                            "domain": "duno.ai",
+                                            "fields": {
+                                                "industry": "IT Services and IT Consulting",
+                                                "name": "Duno.ai",
+                                                "picture": "https://na1.hubspot-logos.com/ff51951b-e4f7-4690-9064-7a5b3b869b03"
+                                            },
+                                            "ownerId": "usr_69Fdorq5viufKjmaC"
+                                        },
+                                        {
+                                            "_id": "cpn_7EhAXrxYotchvscLZ",
+                                            "createdAt": "2025-10-25T21:37:45.741Z",
+                                            "createdBy": "usr_69Fdorq5viufKjmaC",
+                                            "domain": "tally.so",
+                                            "fields": {
+                                                "industry": "Computer Software",
+                                                "name": "lemlist family",
+                                                "picture": "https://media.licdn.com/dms/image/v2/C4E0BAQHp6ggzmz_Fww/company-logo_400_400/company-logo_400_400/0/1669824907832/lemlist_family_logo?e=1758758400&v=beta&t=NA5CZv7ZovCDRmlp4VR6GGU88VO9VJPCGbqDf2nANSI"
+                                            },
+                                            "ownerId": "usr_69Fdorq5viufKjmaC"
+                                        },
+                                        {
+                                            "_id": "cpn_9Q9wjZR9R7rs3HE53",
+                                            "createdAt": "2025-10-24T07:26:34.956Z",
+                                            "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                                            "domain": "bvelitchkine.com",
+                                            "fields": {
+                                                "name": "Growth & GTM Engineering"
+                                            },
+                                            "ownerId": "usr_gmHgNGRcGPSTJrDbT"
+                                        }
+                                    ],
+                                    "total": 59310
+                                }
                             }
                         }
                     },
