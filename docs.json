@@ -191,8 +191,8 @@
                 "group": "Companies",
                 "expanded": false,
                 "pages": [
-                  "api-reference/endpoints/companies/create-company-note",
                   "api-reference/endpoints/companies/get-many-companies",
+                  "api-reference/endpoints/companies/create-company-note",
                   "api-reference/endpoints/companies/get-company-notes"
                 ]
               },
