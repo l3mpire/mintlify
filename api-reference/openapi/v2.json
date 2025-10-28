@@ -667,17 +667,29 @@
                         "type": "string",
                         "description": "Unique note identifier"
                     },
+                    "teamId": {
+                        "type": "string",
+                        "description": "Team ID that owns the company"
+                    },
                     "companyId": {
                         "type": "string",
                         "description": "Parent company ID"
                     },
-                    "content": {
+                    "note": {
                         "type": "string",
                         "description": "Note text content"
                     },
-                    "createdBy": {
+                    "type": {
                         "type": "string",
-                        "description": "Creator user ID"
+                        "description": "Type of note or activity (e.g., 'annotated')"
+                    },
+                    "userId": {
+                        "type": "string",
+                        "description": "ID of the user who created the note"
+                    },
+                    "sendUserId": {
+                        "type": "string",
+                        "description": "ID of the sending user if applicable"
                     },
                     "createdAt": {
                         "type": "string",
@@ -9144,10 +9156,14 @@
                                     "$ref": "#/components/schemas/CompanyNote"
                                 },
                                 "example": {
-                                    "_id": "not_XYZ789",
-                                    "note": "Note created from the API!",
-                                    "createdAt": "2025-01-15T10:00:00.000Z",
-                                    "createdBy": "usr_h47tiJr87Zn7XtQHi"
+                                    "_id": "act_42k26Chi3iya8rfjX",
+                                    "teamId": "tea_b4rMsi2trB42WyuWP",
+                                    "companyId": "cpn_9Q9wjZR9R7rs3HE53",
+                                    "type": "annotated",
+                                    "createdAt": "2025-10-28T04:25:00.653Z",
+                                    "note": "could help our GTM team be more productive",
+                                    "sendUserId": "usr_gmHgNGRcGPSTJrDbT",
+                                    "userId": "usr_gmHgNGRcGPSTJrDbT"
                                 }
                             }
                         }
