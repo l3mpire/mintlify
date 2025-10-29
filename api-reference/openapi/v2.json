@@ -10565,15 +10565,6 @@
                             "type": "string",
                             "format": "email"
                         }
-                    },
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
