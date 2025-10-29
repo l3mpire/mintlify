@@ -208,7 +208,7 @@
                 "group": "Inbox",
                 "expanded": false,
                 "pages": [
-                  "api-reference/endpoints/inbox/get-many-inbox-conversations",
+                  "api-reference/endpoints/inbox/get-many-inboxes",
                   "api-reference/endpoints/inbox/get-contact-messages",
                   "api-reference/endpoints/inbox/send-email",
                   "api-reference/endpoints/inbox/send-linkedin-message",
