@@ -60,12 +60,6 @@
       "versions": [
         {
           "version": "v2",
-          "default": true,
-          "hidden": false,
-          "href": "https://localhost:3000/"
-        },
-        {
-          "version": "v1",
           "default": false,
           "hidden": false,
           "href": "https://developer.lemlist.com/"
