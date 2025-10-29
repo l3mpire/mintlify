@@ -10508,7 +10508,7 @@
                 }
             }
         },
-        "/unsubscribes/export": {
+        "/unsubs/export": {
             "get": {
                 "summary": "Export Unsubscribes",
                 "tags": [
