@@ -10647,18 +10647,52 @@
                 ],
                 "parameters": [
                     {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
+                        "name": "email",
+                        "in": "path",
+                        "required": true,
+                        "description": "Email address to add to the unsubscribes",
+                        "example": "john.doe@domain.com",
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "format": "email"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "_id": {
+                                            "type": "string",
+                                            "description": "Unique identifier for the unsubscribe entry"
+                                        },
+                                        "value": {
+                                            "type": "string",
+                                            "format": "email",
+                                            "description": "The unsubscribed email address or domain"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "format": "email",
+                                            "description": "The unsubscribed email address"
+                                        }
+                                    },
+                                    "required": [
+                                        "_id",
+                                        "value"
+                                    ]
+                                },
+                                "example": {
+                                    "_id": "uns_QB3xQGhw6qJCyWXF9",
+                                    "value": "user@domain.com",
+                                    "email": "user@domain.com"
+                                }
+                            }
+                        }
                     },
                     "400": {
                         "description": "Bad team",
@@ -10688,18 +10722,46 @@
                 ],
                 "parameters": [
                     {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
+                        "name": "email",
+                        "in": "path",
+                        "required": true,
+                        "description": "Email address to remove from the unsubscribes",
+                        "example": "john.doe@domain.com",
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "format": "email"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "_id": {
+                                            "type": "string",
+                                            "description": "Unique identifier for the unsubscribe entry"
+                                        },
+                                        "value": {
+                                            "type": "string",
+                                            "format": "email",
+                                            "description": "The unsubscribed email address"
+                                        }
+                                    },
+                                    "required": [
+                                        "_id",
+                                        "value"
+                                    ]
+                                },
+                                "example": {
+                                    "_id": "uns_NiaRzPzj6nB8sAGFD",
+                                    "value": "john.doe@example.com"
+                                }
+                            }
+                        }
                     },
                     "400": {
                         "description": "Bad team",
