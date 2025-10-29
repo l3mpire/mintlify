@@ -7610,10 +7610,13 @@
         "/database/people": {
             "post": {
                 "summary": "Search People Database",
+                "description": "Search the lemlist People database using structured filters and optional free-text, with pagination support. Use GET /database/filters to discover available filterIds and their expected value formats.",
+                "operationId": "searchPeopleDatabase",
                 "tags": [
                     "People Database"
                 ],
                 "requestBody": {
+                    "description": "Search criteria. Provide one or more filters and optionally control pagination with page/size and a free-text search.",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -7644,6 +7647,21 @@
                                                 }
                                             }
                                         }
+                                    },
+                                    "page": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "description": "Page number (1-indexed). Default: 1"
+                                    },
+                                    "size": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "maximum": 100,
+                                        "description": "Number of results per page (max 100). Default: 25"
+                                    },
+                                    "search": {
+                                        "type": "string",
+                                        "description": "Free-text query across common people fields (e.g., name, title, company, location)"
                                     }
                                 }
                             },
@@ -7657,7 +7675,8 @@
                                         "out": []
                                     }
                                 ],
-                                "page": 1
+                                "page": 1,
+                                "size": 25
                             }
                         }
                     }
@@ -7702,21 +7721,66 @@
                                 "example": {
                                     "results": [
                                         {
-                                            "lead_id": 231488528,
-                                            "full_name": "John Doe",
-                                            "email": "john.doe@example.com",
-                                            "title": "Senior Machine Learning Engineer",
-                                            "company_name": "TechCorp Inc.",
-                                            "location": "San Francisco Bay Area"
+                                            "lead_id": 434482354,
+                                            "canonical_shorthand_name": "gabrielcianelli",
+                                            "connections_count": 500,
+                                            "country": "France",
+                                            "full_name": "Gabriel Cianelli",
+                                            "education": [],
+                                            "experience_count": 3,
+                                            "experiences": [
+                                                {
+                                                    "company_shorthand_name": "lemlist",
+                                                    "company_id": 11750398,
+                                                    "company_name": "lemlist",
+                                                    "company_website_url": "https://www.lemlist.com",
+                                                    "company_linkedin_url": "https://www.linkedin.com/company/lemlist",
+                                                    "company_employee_count": 151,
+                                                    "company_size": "51-200",
+                                                    "company_domain": "lemlist.com",
+                                                    "company_industry": "Technology, Information and Media",
+                                                    "title": "Account Executive",
+                                                    "title_normalized": "Account Executive",
+                                                    "date_from": "September 2025",
+                                                    "duration": "1 month",
+                                                    "location": "Ville de Paris, Île-de-France, France",
+                                                    "current_exp_bucket": "Less than 6 months"
+                                                }
+                                            ],
+                                            "interests": [],
+                                            "languages": [
+                                                {
+                                                    "language": "Français",
+                                                    "proficiency": "Native or bilingual proficiency"
+                                                },
+                                                {
+                                                    "language": "Anglais",
+                                                    "proficiency": "Professional working proficiency"
+                                                }
+                                            ],
+                                            "lead_linkedin_url": "https://www.linkedin.com/in/gabriel-cianelli-16447612b",
+                                            "linkedin_short": "gabriel-cianelli-16447612b",
+                                            "skills": [],
+                                            "summary": "Passionate about helping sales teams book more meetings @lemlist",
+                                            "headline": "Helping RevOps scale outbound @lemlist",
+                                            "lead_quality_score": 3,
+                                            "department": "Sales",
+                                            "connections_count_bucket": "500+",
+                                            "years_of_exp_bucket": "2 to 5 years",
+                                            "location": "Paris, Ile-de-France, France",
+                                            "state": "Ile-de-France",
+                                            "current_exp_company_name": "lemlist",
+                                            "_score": 21.294434,
+                                            "_id": "434482354"
                                         }
                                     ],
-                                    "total": 18540918,
-                                    "took": 903,
+                                    "total": 91,
+                                    "took": 24,
                                     "page": 1,
                                     "size": 1,
-                                    "search": "lsh_ENeC6oBSdwSArkywL",
-                                    "limitation": 999,
-                                    "team": "tea_MtScZ2GexXzHXRdTr"
+                                    "search": "lsh_62r7ZDq9xJcKiAcjK",
+                                    "limitation": 1999,
+                                    "team": "tea_b4rMsi2trB42WyuWP"
                                 }
                             }
                         }
