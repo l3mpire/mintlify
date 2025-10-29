@@ -1618,17 +1618,7 @@
                 "tags": [
                     "Team"
                 ],
-                "parameters": [
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "headers": {
@@ -1779,15 +1769,6 @@
                                 "archived",
                                 "errors"
                             ]
-                        }
-                    },
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
                         }
                     }
                 ],
@@ -1966,17 +1947,7 @@
                 "tags": [
                     "Team"
                 ],
-                "parameters": [
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "headers": {
@@ -2052,17 +2023,7 @@
                 "tags": [
                     "Team"
                 ],
-                "parameters": [
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "headers": {
@@ -2146,17 +2107,7 @@
                 "tags": [
                     "Users"
                 ],
-                "parameters": [
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "headers": {
@@ -2326,15 +2277,6 @@
                                 "errors"
                             ]
                         }
-                    },
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -2448,17 +2390,7 @@
                 "tags": [
                     "Campaigns"
                 ],
-                "parameters": [
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "headers": {
@@ -2654,17 +2586,7 @@
                 "tags": [
                     "Campaigns"
                 ],
-                "parameters": [
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "headers": {
@@ -2727,17 +2649,7 @@
                 "tags": [
                     "Campaigns"
                 ],
-                "parameters": [
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "headers": {
@@ -2919,17 +2831,7 @@
                 "tags": [
                     "Campaigns"
                 ],
-                "parameters": [
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "headers": {
@@ -3002,17 +2904,7 @@
                 "tags": [
                     "Campaigns"
                 ],
-                "parameters": [
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "Export started successfully",
@@ -3150,17 +3042,7 @@
                 "tags": [
                     "Campaigns"
                 ],
-                "parameters": [
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "Export status retrieved successfully",
@@ -3391,17 +3273,7 @@
                 "tags": [
                     "Campaigns"
                 ],
-                "parameters": [
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "Email notification set successfully",
@@ -3627,15 +3499,6 @@
                                 "csv"
                             ]
                         }
-                    },
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -3744,15 +3607,6 @@
                         "required": true,
                         "description": "Comma-separated list of campaign IDs to retrieve reports for",
                         "example": "cam_A1B2C3D4E5F6G7H8I9,cam_B2C3D4E5F6G7H8I9J0",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
                         "schema": {
                             "type": "string"
                         }
@@ -3961,17 +3815,7 @@
                 "tags": [
                     "Sequences"
                 ],
-                "parameters": [
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "headers": {
@@ -4146,17 +3990,7 @@
                 "tags": [
                     "Sequences"
                 ],
-                "parameters": [
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "headers": {
@@ -4416,17 +4250,7 @@
                 "tags": [
                     "Sequences"
                 ],
-                "parameters": [
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "headers": {
@@ -4661,17 +4485,7 @@
                 "tags": [
                     "Sequences"
                 ],
-                "parameters": [
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "headers": {
@@ -10470,15 +10284,6 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -10834,15 +10639,6 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -11163,15 +10959,6 @@
                         "schema": {
                             "type": "integer"
                         }
-                    },
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -11237,17 +11024,7 @@
                 "tags": [
                     "Unsubscribes"
                 ],
-                "parameters": [
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -11287,15 +11064,6 @@
                         "schema": {
                             "type": "string",
                             "format": "email"
-                        }
-                    },
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
                         }
                     }
                 ],
@@ -11908,15 +11676,6 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -12088,15 +11847,6 @@
                         "required": false,
                         "description": "Webhook URL for enrichment events",
                         "example": "https://webhook.site/*your-webhook-id*/",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
                         "schema": {
                             "type": "string"
                         }
