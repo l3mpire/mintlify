@@ -5,4 +5,31 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Task" objectPath="task" />
 
-This endpoint retrieves a list of all tasks.
+Retrieve all pending tasks assigned to your team members.
+
+<Note>
+Tasks marked as done are automatically excluded from results.
+</Note>
+
+## Filtering
+
+Use the `filters` query parameter to narrow results by:
+
+- **Lead attributes**: `fullName`, `email`, `phone`, `linkedin` (supports `value` or `regex`)
+- **Campaign**: `campaignId` (supports `in`/`out` arrays), `campaignState` (draft, running, ended, paused, errors, archived)
+- **Task properties**: `type` (manual, phone, email, linkedin, etc.), `assignedTo` (userId)
+- **Date range**: `dueDate` (supports `from`/`to` in YYYY-MM-DD format)
+
+Examples:
+<CodeGroup>
+    ```json by date and type
+    [
+    {"filterId": "dueDate", "from": "2025-02-11", "to": "2025-02-28"},
+    {"filterId": "type", "in": ["phone", "linkedinSend"]}
+    ]
+    ```
+
+    ```json by user
+    [{"filterId": "assignedTo", "in": ["usr_abc123", "usr_def456"]}]
+    ```
+</CodeGroup>

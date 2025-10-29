@@ -1,8 +1,11 @@
 ---
+title: Enrich Data
 openapi: post /enrich
 ---
 
 This endpoint allows you to [enrich](/api-reference/objects-definitions/enrich) data by providing inputs such as email, LinkedIn URL, or other information.
+
+## Using the endpoint
 
 The enrichment API provides the ability to request data (email, phone number, LinkedIn information) in multiple ways:
 
@@ -13,3 +16,405 @@ All enrichment APIs are asynchronous. There are two ways to retrieve your enrich
 
 1. Call the GET endpoint with the `enrichmentId` that was provided
 2. Use webhooks to receive notifications when enrichment is complete
+
+## Result
+
+<Accordion title="Sample response">
+    ```json bvelitchkine
+    {
+        "data": [
+            {
+                "id": "enr_9gf5NKQCaFHJCPyDh",
+                "data": {
+                    "find_email": {
+                    "email": "bastien@morpho.xyz",
+                    "status": "deliverable"
+                    },
+                    "find_phone": {
+                    "phone": "+33760769872"
+                    },
+                    "linkedin_enrichment": {
+                    "positionGroups": [
+                        {
+                        "company": {
+                            "id": 79870097,
+                            "name": "Morpho",
+                            "linkedinUrl": "https://www.linkedin.com/company/morpho-association/",
+                            "linkedinUrlSalesNav": "https://www.linkedin.com/sales/company/79870097/",
+                            "logo": "https://media.licdn.com/dms/image/v2/D4E0BAQFKH8A5S0o0sA/company-logo_400_400/B4EZcYWYEPHkAY-/0/1748460208900/morpho_labs_logo?e=1763596800&v=beta&t=bqadzzdM6yZ74Fi3AfQ4oFKkHtXFsuE7fQC7aWGn5xE",
+                            "domain": "morpho.org",
+                            "website": "http://morpho.org",
+                            "industry": "Software Development",
+                            "description": "Morpho is the most trusted onchain lending network with $10B+ in deposits. \n\nBusinesses can connect to Morpho's open infrastructure to power any lending or borrowing use case at scale, including embedded crypto-backed loans and custom yield solutions.",
+                            "employeesOnLinkedin": 200,
+                            "foundedOn": 2021,
+                            "headQuarter": "PARIS, FR",
+                            "size": "51-200",
+                            "type": "Privately Held"
+                        },
+                        "date": {
+                            "start": {
+                            "month": 3,
+                            "year": 2024
+                            },
+                            "end": {}
+                        },
+                        "profilePositions": [
+                            {
+                            "title": "Part-Time Growth Engineer",
+                            "description": "I develop tools and automations for Morpho Labs' outbound growth team (data warehouse, intent signals, analytics, retool pre-crm, ...).",
+                            "companyName": "Morpho Labs",
+                            "date": {
+                                "start": {
+                                "month": 3,
+                                "year": 2024
+                                },
+                                "end": {}
+                            }
+                            }
+                        ]
+                        },
+                        {
+                        "company": {
+                            "id": 99966471,
+                            "name": "Bastien Vélitchkine",
+                            "linkedinUrl": "https://www.linkedin.com/company/bvelitchkine/",
+                            "linkedinUrlSalesNav": "https://www.linkedin.com/sales/company/99966471/",
+                            "logo": "https://media.licdn.com/dms/image/v2/D4D0BAQErfjnUVVgadg/company-logo_400_400/company-logo_400_400/0/1727336158240/bvelitchkine_logo?e=1763596800&v=beta&t=Tz-5kUta2m6sX1hXUTNggEjIV7z-502kMXjM5iSiWfg"
+                        },
+                        "date": {
+                            "start": {
+                            "month": 9,
+                            "year": 2023
+                            },
+                            "end": {}
+                        },
+                        "profilePositions": [
+                            {
+                            "title": "Growth Engineer",
+                            "description": "I code and automate for growth, marketing and sales teams.",
+                            "companyName": "Bastien Vélitchkine",
+                            "date": {
+                                "start": {
+                                "month": 9,
+                                "year": 2023
+                                },
+                                "end": {}
+                            }
+                            }
+                        ]
+                        },
+                        {
+                        "company": {
+                            "id": 74995178,
+                            "name": "Bulldozer",
+                            "linkedinUrl": "https://www.linkedin.com/company/bulldozer-collective/",
+                            "linkedinUrlSalesNav": "https://www.linkedin.com/sales/company/74995178/",
+                            "logo": "https://media.licdn.com/dms/image/v2/D560BAQEqNfme3YnQxQ/company-logo_400_400/company-logo_400_400/0/1709226778326/bulldozer_collective_logo?e=1763596800&v=beta&t=UoinoxH06tMdtbAHFay8GFV9p2gH_AyK7c6DoEJn8s4",
+                            "domain": "bulldozer-collective.com"
+                        },
+                        "date": {
+                            "start": {
+                            "month": 4,
+                            "year": 2024
+                            },
+                            "end": {}
+                        },
+                        "profilePositions": [
+                            {
+                            "title": "Growth Engineer",
+                            "description": "I started to feel alone a bit. I wanted:\n\n1. To partake in a collective adventure\n2. Without letting go of my independence\n3. And keep learning alongside the best growth professionals\n\nThanks to Bulldozer, I've worked for iBanFirst and Captain Data. At the moment, I'm still helping Bulldozer build its own outbound machine (with getcargo.io).",
+                            "companyName": "Bulldozer",
+                            "date": {
+                                "start": {
+                                "month": 4,
+                                "year": 2024
+                                },
+                                "end": {}
+                            }
+                            }
+                        ]
+                        },
+                        {
+                        "company": {
+                            "id": 5285846,
+                            "name": "Malt",
+                            "linkedinUrl": "https://www.linkedin.com/company/maltcommunity/",
+                            "linkedinUrlSalesNav": "https://www.linkedin.com/sales/company/5285846/",
+                            "logo": "https://media.licdn.com/dms/image/v2/D4D0BAQHrVAkbNHrUUw/company-logo_400_400/B4DZnjGNMZKoAc-/0/1760451679628/maltcommunity_logo?e=1763596800&v=beta&t=K6aN4bsK5x_ZEZCtwvUUJrq20NPBKdp1R1iMRYP9zjk",
+                            "domain": "malt.fr"
+                        },
+                        "date": {
+                            "start": {
+                            "month": 10,
+                            "year": 2021
+                            },
+                            "end": {}
+                        },
+                        "profilePositions": [
+                            {
+                            "title": "Freelancer",
+                            "description": "Right after my PayFit internship, I came back to CentraleSupélec to finish my studies.\n\nHowever, to keep accumulating skills and money, I kickstarted my growth freelancing activities.\n\nI've worked on:\n- Buying Intents for outbound\n- CRM configuration and automation (Close, Pipedrive, Zoho, Hubspot)\n- A very first chrome extension",
+                            "companyName": "Malt",
+                            "date": {
+                                "start": {
+                                "month": 10,
+                                "year": 2021
+                                },
+                                "end": {}
+                            }
+                            }
+                        ]
+                        },
+                        {
+                        "company": {
+                            "id": 89362201,
+                            "name": "Recruitivity",
+                            "linkedinUrl": "https://www.linkedin.com/company/recruitivity-co/",
+                            "linkedinUrlSalesNav": "https://www.linkedin.com/sales/company/89362201/",
+                            "logo": "https://media.licdn.com/dms/image/v2/C4E0BAQEdMNmDlgSC8Q/company-logo_400_400/company-logo_400_400/0/1676560205356/recruitivity_co_logo?e=1763596800&v=beta&t=J-FFHABMahlCyOcbMmqu-iapCk6UZKTzMQneObWw5j0",
+                            "domain": "recruitivity.co"
+                        },
+                        "date": {
+                            "start": {
+                            "month": 11,
+                            "year": 2022
+                            },
+                            "end": {
+                            "month": 9,
+                            "year": 2023
+                            }
+                        },
+                        "profilePositions": [
+                            {
+                            "title": "Founder",
+                            "description": "I tried to kickstart an agency, at a crossroads between groth and hiring.\n\nSpoiler: didn't work. But we're on LinkedIn, so it's where I should say that I've learned a ton (sad but true).\n\nProof: https://bvelitchkine.notion.site/Recruitivity-Anthologie-ff3801c8e5f248048bfcae1a1888cd7b",
+                            "companyName": "Recruitivity",
+                            "date": {
+                                "start": {
+                                "month": 11,
+                                "year": 2022
+                                },
+                                "end": {
+                                "month": 9,
+                                "year": 2023
+                                }
+                            }
+                            }
+                        ]
+                        },
+                        {
+                        "company": {
+                            "id": 6436622,
+                            "name": "PayFit",
+                            "linkedinUrl": "https://www.linkedin.com/company/payfit/",
+                            "linkedinUrlSalesNav": "https://www.linkedin.com/sales/company/6436622/",
+                            "logo": "https://media.licdn.com/dms/image/v2/C560BAQG8enVUlIaAwA/company-logo_400_400/company-logo_400_400/0/1630584148492/payfit_logo?e=1763596800&v=beta&t=AJMqcgVjLPGctbxXzqb4tA_53QUcJqL7NZ5wXE4__9c",
+                            "domain": "payfit.com"
+                        },
+                        "date": {
+                            "start": {
+                            "month": 2,
+                            "year": 2021
+                            },
+                            "end": {
+                            "month": 8,
+                            "year": 2021
+                            }
+                        },
+                        "profilePositions": [
+                            {
+                            "title": "Growth Intern",
+                            "description": "I strive to be T-shaped: https://en.wikipedia.org/wiki/T-shaped_skills\n\nAt Reveal, I've broadened the horizontal bar of my \"T\", whereas at PayFit, I've stretched the vertical one: growth. Here are 3 of the projects I've worked on and that I'm most proud of:\n\n1. Buying intent detection (e.g a lead became a partner's client)\n2. The PayFit Enrichment Tool (saving 100h+ hours a month to outbound teams)\n3. Lots of Data Viz on Looker",
+                            "companyName": "PayFit",
+                            "date": {
+                                "start": {
+                                "month": 2,
+                                "year": 2021
+                                },
+                                "end": {
+                                "month": 8,
+                                "year": 2021
+                                }
+                            }
+                            }
+                        ]
+                        },
+                        {
+                        "company": {
+                            "id": 11563963,
+                            "name": "Reveal",
+                            "linkedinUrl": "https://www.linkedin.com/company/ecosystemledgrowth/",
+                            "linkedinUrlSalesNav": "https://www.linkedin.com/sales/company/11563963/",
+                            "logo": "https://media.licdn.com/dms/image/v2/C4E0BAQE5vdzMWjoOoQ/company-logo_400_400/company-logo_400_400/0/1630646332432/revealcollaborativegrowth_logo?e=1763596800&v=beta&t=w42NtsmNJbVsq0zMiiBqRVdrHwz4U0J4xg2uibKlgbg",
+                            "domain": "reveal.co"
+                        },
+                        "date": {
+                            "start": {
+                            "month": 8,
+                            "year": 2020
+                            },
+                            "end": {
+                            "month": 2,
+                            "year": 2021
+                            }
+                        },
+                        "profilePositions": [
+                            {
+                            "title": "Operations Intern",
+                            "description": "That's where the real stuff started. Hitherto, I was a bit full of myself and thought I had all lived and seen. I've been proven and the founders gave me the opportunity of a lifetime: developing some of the skills that matter most when one wants to launch a company:\n\n- Recruitment (280 interviews + contributed to 6 recruitments during my 6-month stay)\n- Growth (lead generation and automation)\n- Financial modeling\n- Admin (invoices, subsidies, office management, ...)",
+                            "companyName": "Reveal",
+                            "date": {
+                                "start": {
+                                "month": 8,
+                                "year": 2020
+                                },
+                                "end": {
+                                "month": 2,
+                                "year": 2021
+                                }
+                            }
+                            }
+                        ]
+                        },
+                        {
+                        "company": {
+                            "id": 11263249,
+                            "name": "Genius CentraleSupélec",
+                            "linkedinUrl": "https://www.linkedin.com/company/genius-centralesup%C3%A9lec/",
+                            "linkedinUrlSalesNav": "https://www.linkedin.com/sales/company/11263249/",
+                            "logo": "https://media.licdn.com/dms/image/v2/C560BAQG6FYkrvvoOAQ/company-logo_400_400/company-logo_400_400/0/1630583281224/genius_centralesuplec_logo?e=1763596800&v=beta&t=BgoaqtlOmLQiT9JkFnHZMDG78Ac6funvqId1PIZW6YA",
+                            "domain": "facebook.com"
+                        },
+                        "date": {
+                            "start": {
+                            "month": 1,
+                            "year": 2019
+                            },
+                            "end": {
+                            "month": 1,
+                            "year": 2020
+                            }
+                        },
+                        "profilePositions": [
+                            {
+                            "title": "Vice chairman",
+                            "description": "I was VP of the association tasked with promoting entrepreneurship on the campus of CentraleSupélec. I regret not having been more invested than I did.",
+                            "companyName": "Genius CentraleSupélec",
+                            "date": {
+                                "start": {
+                                "month": 1,
+                                "year": 2019
+                                },
+                                "end": {
+                                "month": 1,
+                                "year": 2020
+                                }
+                            }
+                            }
+                        ]
+                        },
+                        {
+                        "company": {
+                            "id": 5040169,
+                            "name": "NextAlim",
+                            "linkedinUrl": "https://www.linkedin.com/company/nextalim/",
+                            "linkedinUrlSalesNav": "https://www.linkedin.com/sales/company/5040169/",
+                            "logo": "https://media.licdn.com/dms/image/v2/C560BAQGsYziTX_pKCQ/company-logo_400_400/company-logo_400_400/0/1631334950055?e=1763596800&v=beta&t=mszWTLPMwtAg98x_NP_fAty-fayDh2IoVAMwcWJ1yEk",
+                            "domain": "nextalim.com"
+                        },
+                        "date": {
+                            "start": {
+                            "month": 7,
+                            "year": 2019
+                            },
+                            "end": {
+                            "month": 8,
+                            "year": 2019
+                            }
+                        },
+                        "profilePositions": [
+                            {
+                            "title": "R&D intern",
+                            "description": "The black soldier fly larva story was not completely ended. I interned at NextAlim, a company that recycles supermarkets organic trash with our favorite fly. I spent 1 week in the factory and 3 others on a computer vision algorithm.",
+                            "companyName": "NextAlim",
+                            "date": {
+                                "start": {
+                                "month": 7,
+                                "year": 2019
+                                },
+                                "end": {
+                                "month": 8,
+                                "year": 2019
+                                }
+                            }
+                            }
+                        ]
+                        },
+                        {
+                        "company": {
+                            "name": "MUD"
+                        },
+                        "date": {
+                            "start": {
+                            "month": 10,
+                            "year": 2018
+                            },
+                            "end": {
+                            "month": 6,
+                            "year": 2019
+                            }
+                        },
+                        "profilePositions": [
+                            {
+                            "title": "Co-founder",
+                            "description": "A 4-step entrepreneurial fiasco:\n\n🤡 Wanted to feed black soldier fly larvae with organic trash and sell their poop to farmers as a fertilizer\n\n🤡🤡 Started harvesting/taming our larvae (in the school buildings)\n\n🤡🤡🤡 Larvae start running away. We spend our breaks circling the buildings to pick them up\n\n🤡🤡🤡🤡 Summer is coming, CentraleSupélec got tired of our endeavors. We kickstarted a big camp fire and burnt them all to a crisp.",
+                            "companyName": "MUD",
+                            "date": {
+                                "start": {
+                                "month": 10,
+                                "year": 2018
+                                },
+                                "end": {
+                                "month": 6,
+                                "year": 2019
+                                }
+                            }
+                            }
+                        ]
+                        }
+                    ],
+                    "linkedinUrl": "https://www.linkedin.com/in/bvelitchkine",
+                    "linkedinMemberId": 689978933,
+                    "linkedinClassicId": "ACoAACkgPjUB7DlgnIaFSwNn6QJzRuQ4JbiHqFQ",
+                    "firstName": "Bastien",
+                    "lastName": "Velitchkine",
+                    "picture": "https://media.licdn.com/dms/image/v2/D4D03AQFqYuoo_oyxZQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1694100374368?e=1763596800&v=beta&t=qt9kAWHuFxdNcTM5sSKXC42svvqAEVNul6JUj8EOTbI",
+                    "locationName": "Paris, Île-de-France, France",
+                    "tagline": "Growth Engineer",
+                    "industry": "Computer Software",
+                    "summary": "1. I'm a freelance growth engineer (https://bvelitchkine.notion.site/)\n2. I write a newsletter (https://bvelitchkine.com)\n3. I develop side-projects",
+                    "languages": "Anglais",
+                    "skills": "Retool, Looker, Postman",
+                    "companyName": "Morpho",
+                    "companyLinkedinUrl": "https://www.linkedin.com/company/morpho-association",
+                    "occupation": "Part-Time Growth Engineer",
+                    "companyDomain": "morpho.org",
+                    "companyId": 79870097,
+                    "companyWebsite": "http://morpho.org",
+                    "companyDescription": "Morpho is the most trusted onchain lending network with $10B+ in deposits. \n\nBusinesses can connect to Morpho's open infrastructure to power any lending or borrowing use case at scale, including embedded crypto-backed loans and custom yield solutions.",
+                    "companyFoundedOn": 2021,
+                    "companyEmployeesOnLinkedin": 200,
+                    "companyIndustry": "Software Development",
+                    "companyLogo": "https://media.licdn.com/dms/image/v2/D4E0BAQFKH8A5S0o0sA/company-logo_400_400/B4EZcYWYEPHkAY-/0/1748460208900/morpho_labs_logo?e=1763596800&v=beta&t=bqadzzdM6yZ74Fi3AfQ4oFKkHtXFsuE7fQC7aWGn5xE",
+                    "companyType": "Privately Held",
+                    "companyHeadQuarter": "PARIS, FR",
+                    "companySize": "51-200"
+                    }
+                }
+            }
+        ],
+        "type": "enrichmentDone"
+    }
+    ```
+</Accordion>

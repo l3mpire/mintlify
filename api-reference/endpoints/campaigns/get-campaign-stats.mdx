@@ -1,37 +1,9 @@
 ---
-openapi: get /stats/campaigns/{campaignId}
+openapi: get /v2/campaigns/{campaignId}/stats
 ---
 
-<Note>
-Beware, the route starts with `/stats/` and not `/campaigns/` like other campaign-related endpoints.
-</Note>
-
-This endpoint retrieves statistics for a specific campaign. There are two versions available:
-
 <Warning>
-You must add `version=v2` as a query parameter. This version provides detailed statistics with advanced filtering options.
+  Careful, the route starts with `/v2/`. Make sure to include the version in the path.
 </Warning>
 
-## A few examples
-
-<CodeGroup>
-
-```bash V2 - Detailed stats
-curl --request GET \
-  --url 'https://api.lemlist.com/api/stats/campaigns/cam_123?version=v2&startDate=2024-01-01T00:00:00.000Z&endDate=2024-12-31T23:59:59.999Z' \
-  --header 'Authorization: Basic <encoded-value>'
-```
-
-```bash V2 - Filter by email channel
-curl --request GET \
-  --url 'https://api.lemlist.com/api/stats/campaigns/cam_123?version=v2&channels=email' \
-  --header 'Authorization: Basic <encoded-value>'
-```
-
-```bash V2 - Filter by A/B variant and sender
-curl --request GET \
-  --url 'https://api.lemlist.com/api/stats/campaigns/cam_123?version=v2&ABSelected=A&sendUser=usr_abc\|john@example.com' \
-  --header 'Authorization: Basic <encoded-value>'
-```
-
-</CodeGroup>
+This endpoint retrieves statistics for a specific campaign. 

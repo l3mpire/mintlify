@@ -6,3 +6,41 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <SnippetObjectReference objectName="People Database Company" objectPath="company-database" />
 
 This endpoint searches the companies database using specified filters and criteria.
+
+## Request body
+
+- filters: Array of filter objects
+	- filterId: String identifier for the filter (use [Get Database Filters](/api-reference/endpoints/people-database/get-database-filters) to discover available filters)
+	- in: Array of values to include
+	- out: Array of values to exclude
+- page: Integer, page number (1-indexed). Default: 1
+- size: Integer, results per page (max 100). Default: 25
+- search: String, free-text query across common fields (e.g., name, title, company, location)
+
+Example
+
+```json
+{
+	"filters": [
+		{
+			"filterId": "country",
+			"in": ["France"],
+			"out": ["Germany"]
+		},
+        {
+            "filterId": "keywordInCompany",
+            "in": ["outreach"],
+            "out": [""]
+        }
+	],
+	"page": 1,
+	"size": 25
+}
+```
+
+
+
+## Related
+
+- [Get Database Filters](/api-reference/endpoints/people-database/get-database-filters) — discover available filterIds and usage
+- [Get People Schema](/api-reference/endpoints/people-database/get-companies-schema) — see the full Companies schema

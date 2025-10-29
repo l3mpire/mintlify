@@ -1,8 +1,12 @@
 ---
-openapi: get /unsubscribes/export
+openapi: get /unsubs/export
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Unsubscribe" objectPath="unsubscribe" />
+
+<Warning>
+    Beware, contrary to other endpoints, the path uses "unsubs" instead of "unsubscribes".
+</Warning>
 
 This endpoint exports all unsubscribes to a CSV file.
