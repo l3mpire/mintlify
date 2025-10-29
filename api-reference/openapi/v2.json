@@ -1191,24 +1191,285 @@
             "PeopleSchema": {
                 "type": "object",
                 "description": "A person record from lemlist's People database.",
+                "additionalProperties": true,
                 "properties": {
                     "lead_id": {
+                        "type": "integer",
+                        "description": "Numeric identifier for the person in the People database"
+                    },
+                    "canonical_shorthand_name": {
+                        "type": "string"
+                    },
+                    "connections_count": {
+                        "type": "integer"
+                    },
+                    "country": {
                         "type": "string"
                     },
                     "full_name": {
                         "type": "string"
                     },
-                    "email": {
+                    "education": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "properties": {
+                                "activities_and_societies": {
+                                    "type": "string"
+                                },
+                                "created": {
+                                    "type": "string"
+                                },
+                                "date_from": {
+                                    "type": "string"
+                                },
+                                "date_to": {
+                                    "type": "string"
+                                },
+                                "deleted": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "type": "string"
+                                },
+                                "id": {
+                                    "type": "string"
+                                },
+                                "last_updated": {
+                                    "type": "string"
+                                },
+                                "member_id": {
+                                    "type": "string"
+                                },
+                                "school_url": {
+                                    "type": "string",
+                                    "format": "uri"
+                                },
+                                "subtitle": {
+                                    "type": "string"
+                                },
+                                "title": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "experience_count": {
+                        "type": "integer"
+                    },
+                    "experiences": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "properties": {
+                                "company_id": {
+                                    "type": "integer"
+                                },
+                                "company_description": {
+                                    "type": "string"
+                                },
+                                "company_employee_count": {
+                                    "type": "integer"
+                                },
+                                "company_followers_count": {
+                                    "type": "integer"
+                                },
+                                "company_founded": {
+                                    "type": "integer"
+                                },
+                                "company_headquarters_city": {
+                                    "type": "string"
+                                },
+                                "company_headquarters_country": {
+                                    "type": "string"
+                                },
+                                "company_industry": {
+                                    "type": "string"
+                                },
+                                "company_linkedin_url": {
+                                    "type": "string",
+                                    "format": "uri"
+                                },
+                                "company_logo_url": {
+                                    "type": "string",
+                                    "format": "uri"
+                                },
+                                "company_name": {
+                                    "type": "string"
+                                },
+                                "company_size": {
+                                    "type": "string"
+                                },
+                                "company_type": {
+                                    "type": "string"
+                                },
+                                "company_url": {
+                                    "type": "string"
+                                },
+                                "company_website_url": {
+                                    "type": "string",
+                                    "format": "uri"
+                                },
+                                "revenue_bucket": {
+                                    "type": "string"
+                                },
+                                "company_domain": {
+                                    "type": "string"
+                                },
+                                "employees_count_growth": {
+                                    "type": "integer"
+                                },
+                                "last_funding_round_at": {
+                                    "type": "string"
+                                },
+                                "business_business_customer": {
+                                    "type": "string"
+                                },
+                                "current_exp_bucket": {
+                                    "type": "string"
+                                },
+                                "created": {
+                                    "type": "string"
+                                },
+                                "date_from": {
+                                    "type": "string"
+                                },
+                                "date_to": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "type": "string"
+                                },
+                                "duration": {
+                                    "type": "string"
+                                },
+                                "id": {
+                                    "type": "string"
+                                },
+                                "last_updated": {
+                                    "type": "string"
+                                },
+                                "location": {
+                                    "type": "string"
+                                },
+                                "member_id": {
+                                    "type": "string"
+                                },
+                                "order_in_profile": {
+                                    "type": "integer"
+                                },
+                                "title": {
+                                    "type": "string"
+                                },
+                                "title_normalized": {
+                                    "type": "string"
+                                },
+                                "main_in_profile": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "interests": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "interest": {
+                                    "type": "string"
+                                },
+                                "interest_id": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "languages": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "language": {
+                                    "type": "string"
+                                },
+                                "proficiency": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "last_updated": {
+                        "type": "string"
+                    },
+                    "lead_industry": {
+                        "type": "string"
+                    },
+                    "lead_linkedin_url": {
                         "type": "string",
-                        "format": "email"
+                        "format": "uri"
+                    },
+                    "lead_logo_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "linkedin_short": {
+                        "type": "string"
+                    },
+                    "location": {
+                        "type": "string"
+                    },
+                    "skills": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "skill": {
+                                    "type": "string"
+                                },
+                                "skill_id": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "summary": {
+                        "type": "string"
                     },
                     "title": {
                         "type": "string"
                     },
-                    "company_name": {
+                    "lead_quality_score": {
+                        "type": "integer"
+                    },
+                    "seniority": {
                         "type": "string"
                     },
-                    "location": {
+                    "department": {
+                        "type": "string"
+                    },
+                    "connections_count_bucket": {
+                        "type": "string"
+                    },
+                    "years_of_exp_bucket": {
+                        "type": "string"
+                    },
+                    "current_exp_company_name": {
+                        "type": "string"
+                    },
+                    "geopoint": {
+                        "type": "array",
+                        "items": {
+                            "type": "number"
+                        },
+                        "minItems": 2,
+                        "maxItems": 2
+                    },
+                    "_score": {
+                        "type": "number"
+                    },
+                    "_id": {
                         "type": "string"
                     }
                 }
@@ -7499,24 +7760,226 @@
                                     "type": "object",
                                     "properties": {
                                         "schema": {
-                                            "type": "object",
                                             "$ref": "#/components/schemas/PeopleSchema"
                                         },
                                         "version": {
-                                            "type": "integer"
+                                            "type": "object",
+                                            "properties": {
+                                                "since": {
+                                                    "type": "integer",
+                                                    "description": "Version date in YYYYMMDD"
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "date"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "since",
+                                                "type"
+                                            ]
+                                        },
+                                        "properties": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
                                         }
-                                    }
+                                    },
+                                    "required": [
+                                        "schema",
+                                        "version"
+                                    ]
                                 },
                                 "example": {
                                     "schema": {
                                         "lead_id": 231488528,
+                                        "canonical_shorthand_name": "john-doe",
+                                        "connections_count": 500,
+                                        "country": "United States",
                                         "full_name": "John Doe",
-                                        "email": "john.doe@example.com",
+                                        "education": [
+                                            {
+                                                "activities_and_societies": "ACM, AI Club",
+                                                "created": "2020-08-15T00:00:00.000Z",
+                                                "date_from": "2016-09-01",
+                                                "date_to": "2020-06-01",
+                                                "deleted": "",
+                                                "description": "BSc in Computer Science",
+                                                "id": "edu_1",
+                                                "last_updated": "2021-08-15T00:00:00.000Z",
+                                                "member_id": "mem_123",
+                                                "school_url": "https://www.stanford.edu/",
+                                                "subtitle": "School of Engineering",
+                                                "title": "Stanford University"
+                                            }
+                                        ],
+                                        "experience_count": 2,
+                                        "experiences": [
+                                            {
+                                                "company_id": 123456,
+                                                "company_description": "AI-powered customer engagement platform",
+                                                "company_employee_count": 250,
+                                                "company_followers_count": 5000,
+                                                "company_founded": 2015,
+                                                "company_headquarters_city": "San Francisco",
+                                                "company_headquarters_country": "United States",
+                                                "company_industry": "Computer Software",
+                                                "company_linkedin_url": "https://www.linkedin.com/company/techcorp/",
+                                                "company_logo_url": "https://example.com/logo.png",
+                                                "company_name": "TechCorp Inc.",
+                                                "company_size": "201-500 employees",
+                                                "company_type": "Privately Held",
+                                                "company_url": "https://www.techcorp.com",
+                                                "company_website_url": "https://www.techcorp.com",
+                                                "revenue_bucket": "$50M - $100M",
+                                                "company_domain": "techcorp.com",
+                                                "employees_count_growth": 18,
+                                                "last_funding_round_at": "2022-06-01",
+                                                "business_business_customer": "B2B",
+                                                "current_exp_bucket": "3-5 years",
+                                                "created": "2021-01-10T00:00:00.000Z",
+                                                "date_from": "2020-02-01",
+                                                "date_to": "",
+                                                "description": "Leading ML feature teams and MLOps initiatives",
+                                                "duration": "4 yrs",
+                                                "id": "exp_1",
+                                                "last_updated": "2024-09-01T00:00:00.000Z",
+                                                "location": "San Francisco Bay Area",
+                                                "member_id": "mem_123",
+                                                "order_in_profile": 0,
+                                                "title": "Senior Machine Learning Engineer",
+                                                "title_normalized": "Machine Learning Engineer",
+                                                "main_in_profile": true
+                                            },
+                                            {
+                                                "company_id": 98765,
+                                                "company_description": "Cloud infrastructure and developer tools",
+                                                "company_employee_count": 1500,
+                                                "company_followers_count": 20000,
+                                                "company_founded": 2010,
+                                                "company_headquarters_city": "Seattle",
+                                                "company_headquarters_country": "United States",
+                                                "company_industry": "Information Technology",
+                                                "company_linkedin_url": "https://www.linkedin.com/company/cloudco/",
+                                                "company_logo_url": "https://example.com/logo2.png",
+                                                "company_name": "CloudCo",
+                                                "company_size": "1001-5000 employees",
+                                                "company_type": "Public Company",
+                                                "company_url": "https://www.cloudco.com",
+                                                "company_website_url": "https://www.cloudco.com",
+                                                "revenue_bucket": ">$1B",
+                                                "company_domain": "cloudco.com",
+                                                "employees_count_growth": 25,
+                                                "last_funding_round_at": "2019-05-01",
+                                                "business_business_customer": "B2B",
+                                                "current_exp_bucket": "1-2 years",
+                                                "created": "2018-07-10T00:00:00.000Z",
+                                                "date_from": "2018-07-01",
+                                                "date_to": "2020-01-01",
+                                                "description": "Worked on distributed systems and observability",
+                                                "duration": "1 yr 6 mos",
+                                                "id": "exp_2",
+                                                "last_updated": "2020-01-10T00:00:00.000Z",
+                                                "location": "Seattle, WA",
+                                                "member_id": "mem_123",
+                                                "order_in_profile": 1,
+                                                "title": "Software Engineer",
+                                                "title_normalized": "Software Engineer",
+                                                "main_in_profile": false
+                                            }
+                                        ],
+                                        "interests": [
+                                            {
+                                                "interest": "Artificial Intelligence",
+                                                "interest_id": "int_ai"
+                                            },
+                                            {
+                                                "interest": "Open Source",
+                                                "interest_id": "int_oss"
+                                            }
+                                        ],
+                                        "languages": [
+                                            {
+                                                "language": "English",
+                                                "proficiency": "native"
+                                            },
+                                            {
+                                                "language": "French",
+                                                "proficiency": "professional"
+                                            }
+                                        ],
+                                        "last_updated": "2024-10-31T12:00:00.000Z",
+                                        "lead_industry": "Computer Software",
+                                        "lead_linkedin_url": "https://www.linkedin.com/in/john-doe/",
+                                        "lead_logo_url": "https://example.com/john.png",
+                                        "linkedin_short": "john-doe",
+                                        "location": "San Francisco Bay Area",
+                                        "skills": [
+                                            {
+                                                "skill": "Machine Learning",
+                                                "skill_id": "sk_ml"
+                                            },
+                                            {
+                                                "skill": "Python",
+                                                "skill_id": "sk_py"
+                                            },
+                                            {
+                                                "skill": "MLOps",
+                                                "skill_id": "sk_mlops"
+                                            }
+                                        ],
+                                        "summary": "Engineer focused on building ML systems that ship to production.",
                                         "title": "Senior Machine Learning Engineer",
-                                        "company_name": "TechCorp Inc.",
-                                        "location": "San Francisco Bay Area"
+                                        "lead_quality_score": 87,
+                                        "seniority": "senior",
+                                        "department": "engineering",
+                                        "connections_count_bucket": "500+",
+                                        "years_of_exp_bucket": "6-10 years",
+                                        "current_exp_company_name": "TechCorp Inc.",
+                                        "geopoint": [
+                                            37.7749,
+                                            -122.4194
+                                        ],
+                                        "_score": 0.98123,
+                                        "_id": "people_abc123"
                                     },
-                                    "version": 18
+                                    "version": {
+                                        "since": 20241031,
+                                        "type": "date"
+                                    },
+                                    "properties": [
+                                        "lead_id",
+                                        "canonical_shorthand_name",
+                                        "connections_count",
+                                        "country",
+                                        "full_name",
+                                        "education",
+                                        "experience_count",
+                                        "experiences",
+                                        "interests",
+                                        "languages",
+                                        "last_updated",
+                                        "lead_industry",
+                                        "lead_linkedin_url",
+                                        "lead_logo_url",
+                                        "linkedin_short",
+                                        "location",
+                                        "skills",
+                                        "summary",
+                                        "title",
+                                        "lead_quality_score",
+                                        "seniority",
+                                        "department",
+                                        "connections_count_bucket",
+                                        "years_of_exp_bucket",
+                                        "current_exp_company_name",
+                                        "geopoint",
+                                        "_score",
+                                        "_id"
+                                    ]
                                 }
                             }
                         }
