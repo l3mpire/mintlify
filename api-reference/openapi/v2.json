@@ -1593,6 +1593,19 @@
                     },
                     "warmupTemplate": {
                         "type": "string"
+                    },
+                    "deliverability": {
+                        "type": "object",
+                        "properties": {
+                            "score": {
+                                "type": "integer"
+                            },
+                            "lastAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Timestamp of last deliverability check"
+                            }
+                        }
                     }
                 }
             }
