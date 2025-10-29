@@ -5,4 +5,34 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Webhook" objectPath="webhook" />
 
-This endpoint creates a new webhook to receive real-time notifications about campaign events.
+Create a webhook that receives real-time POST callbacks at your URL when selected events occur.
+
+## What you can subscribe to
+
+- Activities by type (e.g., emailsSent, emailsOpened, emailsReplied, linkedinInterested). See the full list in the API reference for this endpoint’s request body.
+- Operational alerts (e.g., customDomainErrors, connectionIssue, sendLimitReached, lemwarmPaused, campaignComplete).
+
+Optionally, you can scope a webhook to a single campaign and/or only trigger it the first time an event happens.
+
+## Examples
+
+<CodeGroup>
+```json all events
+{
+	"targetUrl": "https://webhook.site/your-id"
+}
+```
+
+```json specific event and campaign
+{
+	"targetUrl": "https://webhook.site/your-id",
+	"type": "linkedinInterested",
+	"campaignId": "cam_A1B2C3D4E5F6G7H8I9",
+	"isFirst": true
+}
+```
+</CodeGroup>
+
+<Note>
+Tip: You can include an optional `zapId` if you use Zapier to track the webhook mapping on your side.
+</Note>

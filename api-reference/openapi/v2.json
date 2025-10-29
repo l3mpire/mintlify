@@ -10565,6 +10565,15 @@
                             "type": "string",
                             "format": "email"
                         }
+                    },
+                    {
+                        "name": "Content-Type",
+                        "in": "header",
+                        "required": false,
+                        "example": "application/json",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -10869,22 +10878,86 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object"
+                                "type": "object",
+                                "properties": {
+                                    "targetUrl": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "description": "The URL that will receive webhook POST requests."
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "description": "Optional event type to subscribe to. When omitted, all events are sent.",
+                                        "enum": [
+                                            "contacted",
+                                            "hooked",
+                                            "attracted",
+                                            "warmed",
+                                            "interested",
+                                            "skipped",
+                                            "notInterested",
+                                            "emailsSent",
+                                            "emailsOpened",
+                                            "emailsClicked",
+                                            "emailsReplied",
+                                            "emailsBounced",
+                                            "emailsSendFailed",
+                                            "emailsFailed",
+                                            "emailsUnsubscribed",
+                                            "emailsInterested",
+                                            "emailsNotInterested",
+                                            "opportunitiesDone",
+                                            "aircallCreated",
+                                            "aircallEnded",
+                                            "aircallDone",
+                                            "aircallInterested",
+                                            "aircallNotInterested",
+                                            "apiDone",
+                                            "apiInterested",
+                                            "apiNotInterested",
+                                            "apiFailed",
+                                            "linkedinVisitDone",
+                                            "linkedinVisitFailed",
+                                            "linkedinInviteDone",
+                                            "linkedinInviteFailed",
+                                            "linkedinInviteAccepted",
+                                            "linkedinReplied",
+                                            "linkedinSent",
+                                            "linkedinVoiceNoteDone",
+                                            "linkedinVoiceNoteFailed",
+                                            "linkedinInterested",
+                                            "linkedinNotInterested",
+                                            "linkedinSendFailed",
+                                            "manualInterested",
+                                            "manualNotInterested",
+                                            "paused",
+                                            "resumed",
+                                            "customDomainErrors",
+                                            "connectionIssue",
+                                            "sendLimitReached",
+                                            "lemwarmPaused",
+                                            "campaignComplete",
+                                            "annotated",
+                                            "enrichmentDone",
+                                            "enrichmentError",
+                                            "callRecordingDone",
+                                            "callTranscriptDone"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "targetUrl"
+                                ]
+                            },
+                            "example": {
+                                "targetUrl": "https://webhook.site/1d50ac35-2755-42cc-964c-9acbb4ebca30",
+                                "type": "linkedinInterested"
                             }
                         }
                     }
@@ -10909,13 +10982,18 @@
                                             "type": "string",
                                             "format": "date-time",
                                             "description": "Timestamp when the webhook was created"
+                                        },
+                                        "type": {
+                                            "type": "string",
+                                            "description": "Type of webhook event"
                                         }
                                     }
                                 },
                                 "example": {
-                                    "_id": "hoo_dJt787EqeEmo7yxab",
-                                    "targetUrl": "https://webhook.site/*your-webhook-id*/",
-                                    "createdAt": "2024-07-11T13:51:44.918Z"
+                                    "_id": "hoo_ekxJgaAx32Garv2uJ",
+                                    "targetUrl": "https://n8n.bvelitchkine.com/webhook/lemlist-webhook-surprise",
+                                    "createdAt": "2025-10-29T00:47:42.035Z",
+                                    "type": "linkedinInterested"
                                 }
                             }
                         }
