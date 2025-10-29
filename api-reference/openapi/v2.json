@@ -12606,16 +12606,7 @@
                         "in": "query",
                         "required": false,
                         "description": "Webhook URL for enrichment events",
-                        "example": "https://webhook.site/*your-webhook-id*/",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
+                        "example": "https://n8n.bvelitchkine.com/webhook/lemlist-webhook-surprise",
                         "schema": {
                             "type": "string"
                         }
@@ -12627,7 +12618,13 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object"
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string",
+                                            "description": "Enrichment ID"
+                                        }
+                                    }
                                 },
                                 "example": {
                                     "id": "enr_gLpC97CBdER2kpn7z"
