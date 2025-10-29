@@ -1474,6 +1474,113 @@
                     }
                 }
             },
+            "CompaniesSchema": {
+                "type": "object",
+                "description": "A company record from lemlist's Companies database.",
+                "additionalProperties": true,
+                "properties": {
+                    "company_id": {
+                        "type": "integer",
+                        "description": "Unique company identifier"
+                    },
+                    "company_website_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "Official company website URL"
+                    },
+                    "company_name": {
+                        "type": "string",
+                        "description": "Company name"
+                    },
+                    "company_linkedin_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "LinkedIn company profile URL"
+                    },
+                    "last_updated": {
+                        "type": "string",
+                        "description": "Last update timestamp (UTC)"
+                    },
+                    "company_headquarters_city": {
+                        "type": "string",
+                        "description": "Headquarters city"
+                    },
+                    "company_headquarters_country": {
+                        "type": "string",
+                        "description": "Headquarters country"
+                    },
+                    "company_logo_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "Company logo image URL"
+                    },
+                    "company_description": {
+                        "type": "string",
+                        "description": "Long company description"
+                    },
+                    "company_employee_count": {
+                        "type": "integer",
+                        "description": "Employee count"
+                    },
+                    "company_type": {
+                        "type": "string",
+                        "description": "Company type (e.g., Privately Held, Public Company)"
+                    },
+                    "company_founded": {
+                        "type": "integer",
+                        "description": "Year founded"
+                    },
+                    "company_size": {
+                        "type": "string",
+                        "description": "Company size bucket"
+                    },
+                    "company_followers_count": {
+                        "type": "integer",
+                        "description": "LinkedIn followers count"
+                    },
+                    "revenue_bucket": {
+                        "type": "string",
+                        "description": "Revenue range bucket"
+                    },
+                    "company_domain": {
+                        "type": "string",
+                        "description": "Company web domain"
+                    },
+                    "employees_count_growth": {
+                        "type": "integer",
+                        "description": "Employee count growth (percentage)"
+                    },
+                    "last_funding_round_at": {
+                        "type": "string",
+                        "description": "Date of last funding round"
+                    },
+                    "business_business_customer": {
+                        "type": "string",
+                        "description": "Customer type",
+                        "enum": [
+                            "B2B",
+                            "B2C",
+                            "B2B2C"
+                        ]
+                    },
+                    "company_quality_score": {
+                        "type": "integer",
+                        "description": "Quality score (0-100)"
+                    },
+                    "company_industry": {
+                        "type": "string",
+                        "description": "Primary industry"
+                    },
+                    "company_sub_industry": {
+                        "type": "string",
+                        "description": "Sub-industry"
+                    },
+                    "company_location": {
+                        "type": "string",
+                        "description": "Full formatted location"
+                    }
+                }
+            },
             "LemwarmSettings": {
                 "type": "object",
                 "description": "Lemwarm configuration for a mailbox.",
@@ -8212,19 +8319,87 @@
                                             "$ref": "#/components/schemas/CompaniesSchema"
                                         },
                                         "version": {
-                                            "type": "integer"
+                                            "type": "object",
+                                            "properties": {
+                                                "since": {
+                                                    "type": "integer",
+                                                    "description": "Version date in YYYYMMDD"
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "date"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "since",
+                                                "type"
+                                            ]
+                                        },
+                                        "properties": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
                                         }
                                     }
                                 },
                                 "example": {
                                     "schema": {
                                         "company_id": 7842391,
-                                        "company_name": "InnovateTech Solutions",
                                         "company_website_url": "https://www.innovatetech.io",
+                                        "company_name": "InnovateTech Solutions",
+                                        "company_linkedin_url": "https://www.linkedin.com/company/innovatetech-solutions",
+                                        "last_updated": "2024-03-15 09:30:22 UTC",
+                                        "company_headquarters_city": "Austin",
+                                        "company_headquarters_country": "United States",
+                                        "company_logo_url": "https://media.linkedin.com/companies/innovatetech/logo_200_200.png",
+                                        "company_description": "InnovateTech Solutions is a leading provider of AI-powered enterprise software solutions. We specialize in developing cutting-edge machine learning applications that help businesses automate their workflows and make data-driven decisions. Our team of experts combines deep technical knowledge with industry expertise to deliver transformative solutions.",
                                         "company_employee_count": 245,
-                                        "company_industry": "Information Technology"
+                                        "company_type": "Privately Held",
+                                        "company_founded": 2018,
+                                        "company_size": "201-500",
+                                        "company_followers_count": 15000,
+                                        "revenue_bucket": "$50M - $100M",
+                                        "company_domain": "innovatetech.io",
+                                        "employees_count_growth": 35,
+                                        "last_funding_round_at": "2023-11-15",
+                                        "business_business_customer": "B2B",
+                                        "company_quality_score": 85,
+                                        "company_industry": "Information Technology",
+                                        "company_sub_industry": "Enterprise Software",
+                                        "company_location": "Austin, Texas, United States"
                                     },
-                                    "version": 2
+                                    "version": {
+                                        "since": 20251020,
+                                        "type": "date"
+                                    },
+                                    "properties": [
+                                        "company_id",
+                                        "company_website_url",
+                                        "company_name",
+                                        "company_linkedin_url",
+                                        "last_updated",
+                                        "company_headquarters_city",
+                                        "company_headquarters_country",
+                                        "company_logo_url",
+                                        "company_description",
+                                        "company_employee_count",
+                                        "company_type",
+                                        "company_founded",
+                                        "company_size",
+                                        "company_followers_count",
+                                        "revenue_bucket",
+                                        "company_domain",
+                                        "employees_count_growth",
+                                        "last_funding_round_at",
+                                        "business_business_customer",
+                                        "company_quality_score",
+                                        "company_industry",
+                                        "company_sub_industry",
+                                        "company_location"
+                                    ]
                                 }
                             }
                         }
