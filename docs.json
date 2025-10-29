@@ -85,7 +85,6 @@
           {
             "group": "User Guides",
             "pages": [
-              "guides/index",
               "guides/add-lead-with-auto-review"
             ]
           }
