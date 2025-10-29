@@ -1,10 +1,14 @@
 ---
-openapi: post /enrich/bulk
+openapi: post /v2/enrichments/bulk
 ---
 
 This endpoint allows you to send a batch of enrichment requests for multiple entities, processing up to 500 enrichments in a single API call.
 
-## Use Cases
+<Warning>
+ Unlike other endpoints, this one starts with `/v2/enrichments`.
+</Warning>
+
+## How to use the endpoint
 
 The bulk enrichment API is ideal for:
 - Processing large lists of prospects efficiently
@@ -12,22 +16,6 @@ The bulk enrichment API is ideal for:
 - Finding and verifying multiple contacts simultaneously
 - Automating data enrichment workflows at scale
 
-## Request Body
-
-The request body must be a JSON array of enrichment objects. Each object can contain:
-
-### Input Fields
-
-All input fields are optional, but specific combinations are required depending on the enrichment type requested:
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `input.linkedinUrl` | string | The LinkedIn URL of the person |
-| `input.email` | string | The email of the person |
-| `input.firstName` | string | The first name of the person |
-| `input.lastName` | string | The last name of the person |
-| `input.companyName` | string | The name of the company associated with the person |
-| `input.companyDomain` | string | The domain of the company (recommended for better find rate) |
 
 ### Enrichment Types
 
@@ -46,25 +34,29 @@ The `metadata` field can be a string or an object. This data will be returned in
 
 The API returns an array where each element corresponds to a request in the input array. Successful requests return an enrichment ID, while failed requests return an error code.
 
-### Success Response
-```json
-{
-  "id": "enr_cawQhM9N3pWkqw2Yt",
-  "metadata": {
-    "some_id": "some_id"
+<CodeGroup>
+  ```json success
+  {
+    "id": "enr_cawQhM9N3pWkqw2Yt",
+    "metadata": {
+      "some_id": "some_id"
+    }
   }
-}
-```
+  ```
 
-### Error Response
-```json
-{
-  "error": "MISSING_INPUTS",
-  "metadata": "some_id"
-}
-```
+  ```json error
+  {
+    "error": "MISSING_INPUTS",
+    "metadata": "some_id"
+  }
+  ```
+</CodeGroup>
 
-## Retrieving Results
+## Getting Results
+
+<Note>
+Check [Enrich Data](/api-reference/endpoints/enrich/enrich-data) for details on the enrichment result structure.
+</Note>
 
 Since enrichment is asynchronous, you can retrieve results in two ways:
 
