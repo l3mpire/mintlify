@@ -114,8 +114,7 @@
                 "pages": [
                   "api-reference/endpoints/team/get-team",
                   "api-reference/endpoints/team/get-team-senders",
-                  "api-reference/endpoints/team/get-team-credits",
-                  "api-reference/endpoints/team/get-team-crm-users"
+                  "api-reference/endpoints/team/get-team-credits"
                 ]
               },
               {
@@ -146,10 +145,10 @@
                 "group": "Sequences",
                 "expanded": false,
                 "pages": [
-                  "api-reference/endpoints/sequences/add-step-to-sequence",
-                  "api-reference/endpoints/sequences/delete-sequence-step",
                   "api-reference/endpoints/sequences/get-campaign-sequences",
-                  "api-reference/endpoints/sequences/update-sequence-step"
+                  "api-reference/endpoints/sequences/add-step-to-sequence",
+                  "api-reference/endpoints/sequences/update-sequence-step",
+                  "api-reference/endpoints/sequences/delete-sequence-step"
                 ]
               },
               {
@@ -184,7 +183,6 @@
                   "api-reference/endpoints/leads/mark-lead-as-not-interested",
                   "api-reference/endpoints/leads/mark-lead-as-interested-in-campaign",
                   "api-reference/endpoints/leads/mark-lead-as-not-interested-in-campaign",
-                  "api-reference/endpoints/leads/get-crm-filters",
                   "api-reference/endpoints/leads/import-leads-from-crm",
                   "api-reference/endpoints/leads/upload-audio-for-voice-message-step"
                 ]
@@ -193,8 +191,8 @@
                 "group": "Companies",
                 "expanded": false,
                 "pages": [
-                  "api-reference/endpoints/companies/create-company-note",
                   "api-reference/endpoints/companies/get-many-companies",
+                  "api-reference/endpoints/companies/create-company-note",
                   "api-reference/endpoints/companies/get-company-notes"
                 ]
               },
@@ -202,15 +200,15 @@
                 "group": "Contacts",
                 "expanded": false,
                 "pages": [
-                  "api-reference/endpoints/contacts/get-many-contacts",
-                  "api-reference/endpoints/contacts/get-contact"
+                  "api-reference/endpoints/contacts/get-contact",
+                  "api-reference/endpoints/contacts/get-many-contacts"
                 ]
               },
               {
                 "group": "Inbox",
                 "expanded": false,
                 "pages": [
-                  "api-reference/endpoints/inbox/get-many-inbox-conversations",
+                  "api-reference/endpoints/inbox/get-many-inboxes",
                   "api-reference/endpoints/inbox/get-contact-messages",
                   "api-reference/endpoints/inbox/send-email",
                   "api-reference/endpoints/inbox/send-linkedin-message",
@@ -235,14 +233,22 @@
                 ]
               },
               {
+                "group": "CRMs",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/crm/get-team-crm-users",
+                  "api-reference/endpoints/crm/get-crm-filters"
+                ]
+              },
+              {
                 "group": "Unsubscribes",
                 "expanded": false,
                 "pages": [
                   "api-reference/endpoints/unsubscribes/add-unsubscribe-email-or-domain",
-                  "api-reference/endpoints/unsubscribes/delete-unsubscribe-email",
-                  "api-reference/endpoints/unsubscribes/export-unsubscribes",
+                  "api-reference/endpoints/unsubscribes/get-unsubscribe-by-email",
                   "api-reference/endpoints/unsubscribes/get-many-unsubscribes",
-                  "api-reference/endpoints/unsubscribes/get-unsubscribe-by-email"
+                  "api-reference/endpoints/unsubscribes/delete-unsubscribe-email",
+                  "api-reference/endpoints/unsubscribes/export-unsubscribes"
                 ]
               },
               {
@@ -270,6 +276,7 @@
                 "expanded": false,
                 "pages": [
                   "api-reference/endpoints/enrich/enrich-data",
+                  "api-reference/endpoints/enrich/bulk-enrich-data",
                   "api-reference/endpoints/enrich/enrich-lead",
                   "api-reference/endpoints/enrich/get-enrichment-result"
                 ]

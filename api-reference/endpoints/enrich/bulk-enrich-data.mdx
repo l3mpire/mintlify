@@ -1,0 +1,90 @@
+---
+openapi: post /v2/enrichments/bulk
+---
+
+This endpoint allows you to send a batch of enrichment requests for multiple entities, processing up to 500 enrichments in a single API call.
+
+<Warning>
+ Unlike other endpoints, this one starts with `/v2/enrichments`.
+</Warning>
+
+## How to use the endpoint
+
+The bulk enrichment API is ideal for:
+- Processing large lists of prospects efficiently
+- Enriching CRM data in batches
+- Finding and verifying multiple contacts simultaneously
+- Automating data enrichment workflows at scale
+
+
+### Enrichment Types
+
+| Type | Required Input | Description |
+|------|---------------|-------------|
+| `find_email` | `linkedinUrl` OR (`firstName` + `lastName` + `companyName` + `companyDomain`) | Find and verify email addresses |
+| `find_phone` | `linkedinUrl` | Find phone numbers |
+| `verify` | `email` | Verify email deliverability |
+| `linkedin_enrichment` | `linkedinUrl` OR `email` OR (`firstName` + `lastName` + (`companyName` OR `companyDomain`)) | Enrich with LinkedIn profile data |
+
+### Metadata
+
+The `metadata` field can be a string or an object. This data will be returned in both the API response and webhook notifications, allowing you to track and correlate enrichment requests.
+
+## Response
+
+The API returns an array where each element corresponds to a request in the input array. Successful requests return an enrichment ID, while failed requests return an error code.
+
+<CodeGroup>
+  ```json success
+  {
+    "id": "enr_cawQhM9N3pWkqw2Yt",
+    "metadata": {
+      "some_id": "some_id"
+    }
+  }
+  ```
+
+  ```json error
+  {
+    "error": "MISSING_INPUTS",
+    "metadata": "some_id"
+  }
+  ```
+</CodeGroup>
+
+## Getting Results
+
+<Note>
+Check [Enrich Data](/api-reference/endpoints/enrich/enrich-data) for details on the enrichment result structure.
+</Note>
+
+Since enrichment is asynchronous, you can retrieve results in two ways:
+
+1. **Polling**: Use the [Get Enrichment Result](/api-reference/endpoints/enrich/get-enrichment-result) endpoint with the returned enrichment ID
+2. **Webhooks**: Provide a `webhookUrl` query parameter to receive notifications when enrichments complete
+
+Learn more about webhooks in the [Enrich object definition](/api-reference/objects-definitions/enrich#webhooks).
+
+## Error Codes
+
+| Error Code | Description |
+|-----------|-------------|
+| `WRONG_INPUT_FORMAT` | The input must be an object containing at least one valid field |
+| `WRONG_METADATA_FORMAT` | The metadata field must be a string or an object |
+| `NO_WORKFLOW_REQUESTED` | At least one enrichment type must be specified |
+| `WRONG_ENRICHMENT_REQUEST_FORMAT` | The enrichmentRequests field must be an array |
+| `UNAUTHORIZED_WORKFLOW_REQUESTED` | Invalid enrichment type specified |
+| `TOO_MANY_ENRICHMENTS_REQUESTED` | Maximum 500 enrichments per request |
+| `NO_ENRICHMENTS_REQUESTED` | The body must contain at least one enrichment |
+| `WRONG_BODY_FORMAT` | The body must be a valid JSON array |
+| `MISSING_INPUTS` | Required input fields are missing for the requested enrichment type |
+| `MISSING_EMAIL` | Email is required for verify enrichment |
+| `MISSING_LINKEDIN_URL` | LinkedIn URL is required for this enrichment type |
+
+## Limits
+
+- **Maximum requests per call**: 500 enrichments
+- **Rate limits**: Standard API rate limits apply (20 requests per 2 seconds)
+- **Credits**: Each enrichment type consumes credits from your team's balance
+
+See [Credits](/api-reference/objects-definitions/credits) for more information about credit consumption.
