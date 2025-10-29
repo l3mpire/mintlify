@@ -80,17 +80,6 @@
     },
     "tabs": [
       {
-        "tab": "Guides",
-        "groups": [
-          {
-            "group": "User Guides",
-            "pages": [
-              "guides/add-lead-with-auto-review"
-            ]
-          }
-        ]
-      },
-      {
         "tab": "API Reference",
         "groups": [
           {
@@ -330,6 +319,17 @@
               "api-reference/objects-definitions/webhook",
               "api-reference/objects-definitions/mailbox",
               "api-reference/objects-definitions/company-note"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "User Guides",
+            "pages": [
+              "guides/add-lead-with-auto-review"
             ]
           }
         ]
