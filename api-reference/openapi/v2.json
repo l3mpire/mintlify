@@ -8808,7 +8808,7 @@
         },
         "/inbox": {
             "get": {
-                "summary": "Get Many Inbox Conversations",
+                "summary": "Get Many Inboxes",
                 "tags": [
                     "Inbox"
                 ],
