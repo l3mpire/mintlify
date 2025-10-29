@@ -12117,7 +12117,7 @@
                 }
             }
         },
-        "/enrich/bulk": {
+        "/v2/enrichments/bulk": {
             "post": {
                 "summary": "Bulk Enrich Data",
                 "tags": [
@@ -12130,16 +12130,7 @@
                         "in": "query",
                         "required": false,
                         "description": "Webhook URL for enrichment events",
-                        "example": "https://webhook.site/c6de4ba1-0c3b-4d3a-8c2c-a49d7cb789de",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
+                        "example": "https://n8n.bvelitchkine.com/webhook/lemlist-webhook-surprise",
                         "schema": {
                             "type": "string"
                         }
