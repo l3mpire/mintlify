@@ -374,8 +374,29 @@
   },
   "seo": {
     "metatags": {
-      "facebook": "to replace",
-      "twitter": "to replace"
+      "robots": "index",
+      "charset": "UTF-8",
+      "viewport": "width=device-width, initial-scale=1.0",
+      "description": "lemlist API helps you to automate your outreach, build powerful workflows, subscribe to alerts, enrich your database and much more. It is easy to integrate, try it out!",
+      "keywords": "outbound, outreach, sales, automation",
+      "googlebot": "index, follow",
+      "google-site-verification": "verification_token",
+      "generator": "Mintlify",
+      "theme-color": "#000000",
+      "color-scheme": "light dark",
+      "format-detection": "telephone=no",
+      "referrer": "origin",
+      "refresh": "30",
+      "rating": "general",
+      "revisit-after": "7 days",
+      "language": "en",
+      "og:title": "Lemlist Developer Docs",
+      "og:type": "website",
+      "og:url": "https://developer.lemlist.com",
+      "og:image": "https://developer.lemlist.com/thumbnails/dark.jpg",
+      "og:description": "lemlist API helps you to automate your outreach, build powerful workflows, subscribe to alerts, enrich your database and much more. It is easy to integrate, try it out!",
+      "og:site_name": "Lemlist Developer Docs",
+      "og:locale": "en_US"
     },
     "indexing": "all"
   },
