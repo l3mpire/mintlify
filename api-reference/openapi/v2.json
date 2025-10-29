@@ -10813,9 +10813,77 @@
                                 },
                                 "example": [
                                     {
-                                        "_id": "hoo_3JKlmnOp7qrStuvWx",
-                                        "targetUrl": "https://hooks.zapier.com/hooks/standard/*your-webhook-id*/",
-                                        "createdAt": "2018-08-09T07:45:56.789Z"
+                                        "_id": "hoo_7bNbHKmFcpDiNACg6",
+                                        "targetUrl": "https://hooks.zapier.com/hooks/standard/{accountId}/{webhookId}/",
+                                        "createdAt": "2018-06-05T09:07:07.761Z",
+                                        "zapId": 37709957,
+                                        "type": "emailsReplied",
+                                        "campaignId": "cam_TgyErJgFcvAebRsE6",
+                                        "isFirst": true
+                                    },
+                                    {
+                                        "_id": "hoo_agftPLA7RovPXuvet",
+                                        "targetUrl": "https://hooks.zapier.com/hooks/standard/{accountId}/{webhookId}/",
+                                        "createdAt": "2019-06-05T14:38:56.535Z",
+                                        "zapId": 59825555,
+                                        "type": "emailsReplied",
+                                        "campaignId": "cam_J2M3P9Z8wKFKRWeeE"
+                                    },
+                                    {
+                                        "_id": "hoo_PN8TP9Ny9qEJRytrm",
+                                        "targetUrl": "https://hooks.zapier.com/hooks/standard/{accountId}/{webhookId}/",
+                                        "createdAt": "2019-06-05T15:49:36.624Z",
+                                        "zapId": 59831776,
+                                        "type": "emailsReplied",
+                                        "campaignId": "cam_fdyDRgEwMiCJnj5Sx",
+                                        "isFirst": true
+                                    },
+                                    {
+                                        "_id": "hoo_G9kFf7syYHJiCZTu7",
+                                        "targetUrl": "https://hooks.zapier.com/hooks/standard/{accountId}/{webhookId}/",
+                                        "createdAt": "2019-06-05T19:28:49.130Z",
+                                        "zapId": 59852716,
+                                        "type": "emailsReplied",
+                                        "campaignId": "cam_CfqoHNx2c6WfbZnY6",
+                                        "isFirst": true
+                                    },
+                                    {
+                                        "_id": "hoo_YJ7A6yAZvtAMXWBou",
+                                        "targetUrl": "https://hooks.zapier.com/hooks/standard/{accountId}/{webhookId}/",
+                                        "createdAt": "2019-10-15T09:53:50.839Z",
+                                        "zapId": 47004696,
+                                        "type": "emailsOpened",
+                                        "campaignId": "cam_a34tYDyt8qootnhFT"
+                                    },
+                                    {
+                                        "_id": "hoo_Y3KPKKNYoKJE3NT45",
+                                        "targetUrl": "https://hooks.zapier.com/hooks/standard/{accountId}/{webhookId}/",
+                                        "createdAt": "2019-10-15T09:56:24.197Z",
+                                        "zapId": 47004696,
+                                        "type": "emailsOpened",
+                                        "campaignId": "cam_a34tYDyt8qootnhFT"
+                                    },
+                                    {
+                                        "_id": "hoo_N3xFk92zZ8MNkcJBw",
+                                        "targetUrl": "https://hooks.zapier.com/hooks/standard/{accountId}/{webhookId}/",
+                                        "createdAt": "2020-04-27T14:04:33.424Z",
+                                        "zapId": 85466371,
+                                        "type": "emailsReplied",
+                                        "campaignId": "cam_v4Rr87ixxAtqStEPJ"
+                                    },
+                                    {
+                                        "_id": "hoo_7oNJxuvJubxPyLN5E",
+                                        "targetUrl": "https://hooks.zapier.com/hooks/standard/{accountId}/{webhookId}/",
+                                        "createdAt": "2020-04-27T14:06:38.375Z",
+                                        "zapId": 85466371,
+                                        "type": "emailsReplied",
+                                        "campaignId": "cam_v4Rr87ixxAtqStEPJ"
+                                    },
+                                    {
+                                        "_id": "hoo_GXALX6diEW5bovH7e",
+                                        "targetUrl": "https://example.com/webhooks/{id}",
+                                        "createdAt": "2022-02-10T16:45:28.216Z",
+                                        "campaignId": "cam_i6Cy2zKTw5LZpu6K5"
                                     }
                                 ]
                             }
