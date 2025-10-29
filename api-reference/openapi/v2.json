@@ -11036,15 +11036,6 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "name": "Content-Type",
-                        "in": "header",
-                        "required": false,
-                        "example": "application/json",
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
                 "responses": {
@@ -11080,7 +11071,7 @@
                                 },
                                 "example": {
                                     "_id": "hoo_orQP33YrZgeKkswJK",
-                                    "targetUrl": "https://webhook.site/*your-webhook-id*/",
+                                    "targetUrl": "https://n8n.bvelitchkine.com/webhook/lemlist-webhook-surprise",
                                     "createdAt": "2024-07-11T13:55:06.276Z",
                                     "type": "linkedinInterested",
                                     "campaignId": "cam_A1B2C3D4E5F6G7H8I9"
