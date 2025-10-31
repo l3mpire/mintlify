@@ -1723,13 +1723,13 @@
                                     "pictureId": "fil_3mwPqkGHvKbETiwmC.png",
                                     "invitedUsers": [
                                         {
-                                            "email": "bvelitchkine@gmail.com",
+                                            "email": "support@lemlist.com",
                                             "role": "member",
                                             "invitedBy": "usr_w7XoMXW37hahaha",
                                             "invitedAt": "2023-03-04T20:06:29.585Z"
                                         },
                                         {
-                                            "email": "jojo@lempire.co",
+                                            "email": "jojo@lemlist.co",
                                             "role": "admin",
                                             "invitedBy": "usr_tB8T7zgZEfxhahha",
                                             "invitedAt": "2024-09-13T12:39:55.984Z"
@@ -2156,7 +2156,7 @@
                                 },
                                 "example": {
                                     "_id": "usr_QAucgYReK6EmMB3Cz",
-                                    "email": "example@lempire.co",
+                                    "email": "example@lemlist.co",
                                     "role": "admin",
                                     "linkedIn": {
                                         "status": true,
@@ -2640,12 +2640,12 @@
                                     "status": "draft",
                                     "creator": {
                                         "userId": "usr_gmHgNGRcGPSTJrDbT",
-                                        "userEmail": "bvelitchkine@gmail.com"
+                                        "userEmail": "support@lemlist.com"
                                     },
                                     "senders": [
                                         {
                                             "id": "usr_AzyCDxe92WNSrGkPz",
-                                            "email": "bvelitchkine@gmail.com",
+                                            "email": "support@lemlist.com",
                                             "sendUserMailboxId": "usm_JLtj28DpEdrwseTAc"
                                         }
                                     ]
@@ -5505,10 +5505,10 @@
                                 "example": {
                                     "firstName": "Bastien",
                                     "lastName": "Velitchkine",
-                                    "companyName": "lempire",
+                                    "companyName": "lemlist",
                                     "jobTitle": "GTM Engineer",
                                     "companyDomain": "bvelitchkine.com",
-                                    "email": "bvelitchkine@gmail.com",
+                                    "email": "support@lemlist.com",
                                     "_id": "lea_mizMsAEkRrJuhouYe",
                                     "isPaused": false,
                                     "campaignId": "cam_9NsHPnykWESTncCW8",
@@ -5671,10 +5671,10 @@
                                         "variables": {
                                             "firstName": "Bastien",
                                             "lastName": "Velitchkine",
-                                            "companyName": "lempire",
+                                            "companyName": "lemlist",
                                             "jobTitle": "GTM Engineer",
                                             "companyDomain": "bvelitchkine.com",
-                                            "email": "bvelitchkine@gmail.com"
+                                            "email": "support@lemlist.com"
                                         },
                                         "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
                                         "enrichment": {
@@ -5845,7 +5845,7 @@
                             "example": {
                                 "firstName": "John",
                                 "lastName": "Doe",
-                                "companyName": "lempire",
+                                "companyName": "lemlist",
                                 "jobTitle": "Developer",
                                 "linkedinUrl": "https://www.linkedin.com/in/johndoe",
                                 "phone": "+33 123456789"
@@ -5904,10 +5904,10 @@
                                     "campaignName": "NEW TO DELETE",
                                     "firstName": "Bastien",
                                     "lastName": "Velitchkine",
-                                    "companyName": "lempire",
+                                    "companyName": "lemlist",
                                     "jobTitle": "GTM Engineer",
                                     "companyDomain": "bvelitchkine.com",
-                                    "email": "bvelitchkine@gmail.com",
+                                    "email": "support@lemlist.com",
                                     "_id": "lea_mizMsAEkRrJuhouYe",
                                     "isPaused": false,
                                     "contactId": "ctc_Rofmb6uNGyaPNZ2ni"
@@ -6140,7 +6140,7 @@
                                     "companyName": "Bastien VELITCHKINE EI",
                                     "jobTitle": "Growth Engineer",
                                     "companyDomain": "bvelitchkine.com",
-                                    "email": "bvelitchkine@gmail.com",
+                                    "email": "support@lemlist.com",
                                     "preferredContactMethod": "email",
                                     "_id": "lea_mizMsAEkRrJuhouYe",
                                     "isPaused": false,
@@ -6254,7 +6254,7 @@
                                     "companyName": "Bastien VELITCHKINE EI",
                                     "jobTitle": "Growth Engineer",
                                     "companyDomain": "bvelitchkine.com",
-                                    "email": "bvelitchkine@gmail.com",
+                                    "email": "support@lemlist.com",
                                     "preferredContactMethod": "email",
                                     "industry": "Technology",
                                     "Company name": "Bastien Velitchkine",
@@ -6373,7 +6373,7 @@
                                         "companyName": "Bastien VELITCHKINE EI",
                                         "jobTitle": "Growth Engineer",
                                         "companyDomain": "bvelitchkine.com",
-                                        "email": "bvelitchkine@gmail.com",
+                                        "email": "support@lemlist.com",
                                         "preferredContactMethod": "email",
                                         "industry": "Technology",
                                         "Company name": "Bastien Velitchkine",
@@ -6501,7 +6501,7 @@
                                         "companyName": "Bastien VELITCHKINE EI",
                                         "jobTitle": "Growth Engineer",
                                         "companyDomain": "bvelitchkine.com",
-                                        "email": "bvelitchkine@gmail.com",
+                                        "email": "support@lemlist.com",
                                         "preferredContactMethod": "email",
                                         "industry": "Technology",
                                         "Company name": "Bastien Velitchkine",
@@ -6617,7 +6617,7 @@
                                         "companyName": "Bastien VELITCHKINE EI",
                                         "jobTitle": "Growth Engineer",
                                         "companyDomain": "bvelitchkine.com",
-                                        "email": "bvelitchkine@gmail.com",
+                                        "email": "support@lemlist.com",
                                         "preferredContactMethod": "email",
                                         "industry": "Technology",
                                         "Company name": "Bastien Velitchkine",
@@ -6734,7 +6734,7 @@
                                         "companyName": "Bastien VELITCHKINE EI",
                                         "jobTitle": "Growth Engineer",
                                         "companyDomain": "bvelitchkine.com",
-                                        "email": "bvelitchkine@gmail.com",
+                                        "email": "support@lemlist.com",
                                         "preferredContactMethod": "email",
                                         "industry": "Technology",
                                         "Company name": "Bastien Velitchkine",
@@ -6856,7 +6856,7 @@
                                     "companyName": "Bastien VELITCHKINE EI",
                                     "jobTitle": "Growth Engineer",
                                     "companyDomain": "bvelitchkine.com",
-                                    "email": "bvelitchkine@gmail.com",
+                                    "email": "support@lemlist.com",
                                     "preferredContactMethod": "email",
                                     "industry": "Technology",
                                     "Company name": "Bastien Velitchkine",
@@ -6977,7 +6977,7 @@
                                     "companyName": "Bastien VELITCHKINE EI",
                                     "jobTitle": "Growth Engineer",
                                     "companyDomain": "bvelitchkine.com",
-                                    "email": "bvelitchkine@gmail.com",
+                                    "email": "support@lemlist.com",
                                     "preferredContactMethod": "email",
                                     "industry": "Technology",
                                     "Company name": "Bastien Velitchkine",
@@ -9043,7 +9043,7 @@
                                             "contact": {
                                                 "_id": "ctc_wfKeM8EmiTikud7QE",
                                                 "fullName": "Victoire",
-                                                "email": "victoire@lempire.co"
+                                                "email": "victoire@lemlist.co"
                                             }
                                         },
                                         {
@@ -9074,7 +9074,7 @@
                                             "lastRepliedChannel": "email",
                                             "contact": {
                                                 "_id": "ctc_miqxedLWeYvaZJGmj",
-                                                "email": "ahmed@lempire.co"
+                                                "email": "ahmed@lemlist.co"
                                             }
                                         },
                                         {
@@ -9105,7 +9105,7 @@
                                             "lastRepliedChannel": "email",
                                             "contact": {
                                                 "_id": "ctc_pywvuxsduA3T22NGR",
-                                                "email": "ariadne@lempire.co"
+                                                "email": "ariadne@lemlist.co"
                                             }
                                         },
                                         {
@@ -9137,7 +9137,7 @@
                                             "contact": {
                                                 "_id": "ctc_FdjS5TF5v47H53YPh",
                                                 "fullName": "Mickael",
-                                                "email": "mickael@lempire.co"
+                                                "email": "mickael@lemlist.co"
                                             }
                                         }
                                     ],
@@ -9291,9 +9291,9 @@
                                             "sendUserName": "Camille INGOUF",
                                             "sendUserEmail": "camille@lemtest.com",
                                             "sendUserMailboxId": "usm_bn6KxhSrHZEak2NM6",
-                                            "leadEmail": "victoire@lempire.co",
+                                            "leadEmail": "victoire@lemlist.co",
                                             "contactId": "ctc_wfKeM8EmiTikud7QE",
-                                            "message": "<html><div style=\"min-width: 360px\"></div><div dir=\"ltr\">\n    <div>Hello lempire Team! 😎<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">I joined lempire last Monday, and I am humbly offering you the chance to meet me (and probably my cat, Megatron 😽🤖) through a 15-minute call at your convenience! You can book it <span style=\"cursor: pointer; background: var(--tertiary2-color-100); color: var(--alert); box-sizing: border-box;\" data-error=\"true\">[here]</span>(https://app.lemcal.com/@camille-ingouf/reunion-de-15-minute?leadId=lea_jcw2hneu7qs7iYKBr).<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">See you soon!<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">Camille INGOUF</div>\n    <div class=\"gmail_extra\">\n      <div class=\"gmail_signature\" data-smartmail=\"gmail_signature\"><div dir=\"ltr\"><div><div dir=\"ltr\"></div></div></div></div>\n      \n    </div>\n    </div>\n<span summary=\"/api/reply/data-ll-tsk_ke6Bo8Az5E68mzhbS\"></span>\n<img alt=\"logo\" src=\"https://zr0.lemlst.org/api/track/open/usr_7RCLS4LdYP2oc8jmE/tsk_ke6Bo8Az5E68mzhbS\" height=\"1\" width=\"1\"></html>",
+                                            "message": "<html><div style=\"min-width: 360px\"></div><div dir=\"ltr\">\n    <div>Hello lemlist Team! 😎<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">I joined lemlist last Monday, and I am humbly offering you the chance to meet me (and probably my cat, Megatron 😽🤖) through a 15-minute call at your convenience! You can book it <span style=\"cursor: pointer; background: var(--tertiary2-color-100); color: var(--alert); box-sizing: border-box;\" data-error=\"true\">[here]</span>(https://app.lemcal.com/@camille-ingouf/reunion-de-15-minute?leadId=lea_jcw2hneu7qs7iYKBr).<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">See you soon!<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">Camille INGOUF</div>\n    <div class=\"gmail_extra\">\n      <div class=\"gmail_signature\" data-smartmail=\"gmail_signature\"><div dir=\"ltr\"><div><div dir=\"ltr\"></div></div></div></div>\n      \n    </div>\n    </div>\n<span summary=\"/api/reply/data-ll-tsk_ke6Bo8Az5E68mzhbS\"></span>\n<img alt=\"logo\" src=\"https://zr0.lemlst.org/api/track/open/usr_7RCLS4LdYP2oc8jmE/tsk_ke6Bo8Az5E68mzhbS\" height=\"1\" width=\"1\"></html>",
                                             "subject": "Meet me !",
                                             "attachments": []
                                         },
@@ -9302,7 +9302,7 @@
                                             "type": "emailsReplied",
                                             "messageId": "<CAKs+3EYjH0POGz0H-rS1XHH1YnG9LtN2m4y8LocddFWWMm8HBw@mail.gmail.com>",
                                             "createdAt": "2024-12-03T10:10:45.000Z",
-                                            "fromEmail": "victoire@lempire.co",
+                                            "fromEmail": "victoire@lemlist.co",
                                             "teamId": "tea_b4rMsi2trB42WyuWP",
                                             "leadId": "lea_WoeA2FAw8jemE2Mex",
                                             "campaignId": "cam_FYRAZMW5utAA7LXCN",
@@ -9312,7 +9312,7 @@
                                             "sendUserName": "Christophe OPOIX",
                                             "sendUserEmail": "christophe.o@lemtest.com",
                                             "sendUserMailboxId": "usm_zs86Mc8ZbHXfkLBAC",
-                                            "leadEmail": "victoire@lempire.co",
+                                            "leadEmail": "victoire@lemlist.co",
                                             "contactId": "ctc_wfKeM8EmiTikud7QE",
                                             "message": "<div dir=\"ltr\">Haha Welcome Christophe, j&#39;adore cette campagne ! <br><br>A très vite, <div>Victoire </div></div><br><div class=\"gmail_quote gmail_quote_container\"><div dir=\"ltr\" class=\"gmail_attr\">On Tue, Dec 3, 2024 at 10:52 AM Christophe OPOIX &lt;<a href=\"mailto:christophe.o@lemtest.com\">christophe.o@lemtest.com</a>&gt; wrote:<br></div><blockquote class=\"gmail_quote\" style=\"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex\"><div style=\"min-width:360px\"></div><div dir=\"ltr\">\n    <div><p style=\"margin:0px;box-sizing:border-box\">Hey Victoire  , </p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">I hope this email finds you well!</p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">Have you ever heard about Christophe Opoix? <br> <br>🇫🇷 He was a member of the French Parliament during the French Revolution, <br>🏘️ He has a street named after him<br><strong style=\"font-weight:700;box-sizing:border-box\">📙 </strong>He authored the famous &quot;Beurre frais épuré, et conservant longtemps ses bonnes qualités, sans devenir rance&quot;.<br style=\"box-sizing:border-box\"><br style=\"box-sizing:border-box\"><img width=\"134\" style=\"width: 134px; display: block; vertical-align: top; margin: 5px auto; text-align: center; border-style: none; padding: 0px 1px; box-sizing: border-box;\" src=\"https://zr0.lemlst.org/api/files/Files/fil_gGjMMAcLNwc7q654u.png\"></p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">Unfortunately, this brilliant man died ages ago...</p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">But wait, there&#39;s another Christophe Opoix you might be interested in meeting—one who is very much alive and well! Yes, that&#39;s me. I&#39;ve just joined Lemlist, and I&#39;m looking forward to meeting everyone for a quick chat.</p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">☑️ Book an appointment on 📅 <a style=\"color:rgb(51,138,241);text-decoration:none;background-color:transparent;box-sizing:border-box;font-weight:500\" href=\"https://app.lemcal.com/@christophe-opoix/15-min-chat?leadId=lea_WoeA2FAw8jemE2Mex\" target=\"_blank\">my lemcal</a> !</p><p style=\"margin:0px;box-sizing:border-box\"><br></p><p style=\"margin:0px;box-sizing:border-box\">Feel free to reach out and get to know me better. I'm excited to be part of the team and eager to contribute to our collective success.</p><p style=\"margin:0px;box-sizing:border-box\">Looking forward to seeing you all soon!<br style=\"box-sizing:border-box\"><br style=\"box-sizing:border-box\">Best regards, as your contemporary, Christophe Opoix</p></div>\n    <div class=\"gmail_extra\">\n      <div class=\"gmail_signature\"><div dir=\"ltr\"><div><div dir=\"ltr\"></div></div></div></div>\n      \n    </div>\n    </div>\n<span summary=\"/api/reply/data-ll-tsk_FvpBdB4NwuyG7GGTf\"></span>\n<img alt=\"logo\" src=\"https://zr0.lemlst.org/api/track/open/usr_t2KCwPen66NrrqGtQ/tsk_FvpBdB4NwuyG7GGTf\" height=\"1\" width=\"1\">\n</blockquote></div>\n",
                                             "subject": "Re: Have you heard about Christophe Opoix ?",
@@ -9332,7 +9332,7 @@
                                             "sendUserName": "Christophe OPOIX",
                                             "sendUserEmail": "christophe.o@lemtest.com",
                                             "sendUserMailboxId": "usm_zs86Mc8ZbHXfkLBAC",
-                                            "leadEmail": "victoire@lempire.co",
+                                            "leadEmail": "victoire@lemlist.co",
                                             "contactId": "ctc_wfKeM8EmiTikud7QE",
                                             "message": "<html><div style=\"min-width: 360px\"></div><div dir=\"ltr\">\n    <div><p style=\"margin: 0px; box-sizing: border-box;\">Hey Victoire  ,&nbsp;</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">I hope this email finds you well!</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">Have you ever heard about Christophe Opoix? <br> <br>🇫🇷 He was a member of the French Parliament during the French Revolution, <br>🏘️ He has a street named after him<br><strong style=\"font-weight: 700; box-sizing: border-box;\">📙&nbsp;</strong>He authored the famous \"Beurre frais épuré, et conservant longtemps ses bonnes qualités, sans devenir rance\".<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"><img  width=\"134\" style=\"width: 134px; display: block; vertical-align: top; margin: 5px auto; text-align: center; border-style: none; cursor: pointer; padding: 0px 1px; box-sizing: border-box;\" src=\"https://zr0.lemlst.org/api/files/Files/fil_gGjMMAcLNwc7q654u.png\"></p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">Unfortunately, this brilliant man died ages ago...</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">But wait, there's another Christophe Opoix you might be interested in meeting—one who is very much alive and well! Yes, that's me. I've just joined Lemlist, and I'm looking forward to meeting everyone for a quick chat.</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">☑️ Book an appointment on 📅 <a style=\"color: rgb(51, 138, 241); text-decoration: none; background-color: transparent; user-select: auto; box-sizing: border-box; font-weight: 500;\" href=\"https://app.lemcal.com/@christophe-opoix/15-min-chat?leadId=lea_WoeA2FAw8jemE2Mex\">my lemcal</a> !</p><p style=\"margin: 0px; box-sizing: border-box;\"><br></p><p style=\"margin: 0px; box-sizing: border-box;\">Feel free to reach out and get to know me better. I'm excited to be part of the team and eager to contribute to our collective success.</p><p style=\"margin: 0px; box-sizing: border-box;\">Looking forward to seeing you all soon!<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">Best regards, as your contemporary, Christophe Opoix</p></div>\n    <div class=\"gmail_extra\">\n      <div class=\"gmail_signature\" data-smartmail=\"gmail_signature\"><div dir=\"ltr\"><div><div dir=\"ltr\"></div></div></div></div>\n      \n    </div>\n    </div>\n<span summary=\"/api/reply/data-ll-tsk_FvpBdB4NwuyG7GGTf\"></span>\n<img alt=\"logo\" src=\"https://zr0.lemlst.org/api/track/open/usr_t2KCwPen66NrrqGtQ/tsk_FvpBdB4NwuyG7GGTf\" height=\"1\" width=\"1\"></html>",
                                             "subject": "Have you heard about Christophe Opoix  ?",
@@ -9659,7 +9659,7 @@
                         "in": "query",
                         "required": true,
                         "description": "A comma separated string of either valid contact IDs (MongoDB ObjectId) or valid email addresses",
-                        "example": "ctc_Rofmb6uNGyaPNZ2ni,chafik@lempire.co",
+                        "example": "ctc_Rofmb6uNGyaPNZ2ni,chafik@lemlist.co",
                         "schema": {
                             "type": "string"
                         },
@@ -9683,7 +9683,7 @@
                                         "_id": "ctc_Rofmb6uNGyaPNZ2ni",
                                         "teamId": "tea_b4rMsi2trB42WyuWP",
                                         "fullName": "Bastien Velitchkine",
-                                        "email": "bvelitchkine@gmail.com",
+                                        "email": "support@lemlist.com",
                                         "fields": {
                                             "firstName": "Bastien",
                                             "jobTitle": "Growth Engineer",
@@ -9710,7 +9710,7 @@
                                         "_id": "ctc_8aECJTHfPfbMy6mSG",
                                         "teamId": "tea_b4rMsi2trB42WyuWP",
                                         "fullName": "Chafik",
-                                        "email": "chafik@lempire.co",
+                                        "email": "chafik@lemlist.co",
                                         "fields": {
                                             "firstName": "Chafik",
                                             "isActiveInCampaigns": false
@@ -9801,7 +9801,7 @@
                                     "_id": "ctc_Rofmb6uNGyaPNZ2ni",
                                     "teamId": "tea_b4rMsi2trB42WyuWP",
                                     "fullName": "Bastien Velitchkine",
-                                    "email": "bvelitchkine@gmail.com",
+                                    "email": "support@lemlist.com",
                                     "fields": {
                                         "firstName": "Bastien",
                                         "jobTitle": "Growth Engineer",
@@ -10596,7 +10596,7 @@
                                         "createdAt": "2025-10-28T08:07:38.375Z",
                                         "leadFirstName": "Bastien",
                                         "leadLastName": "Velitchkine",
-                                        "leadEmail": "bvelitchkine@gmail.com",
+                                        "leadEmail": "support@lemlist.com",
                                         "leadCompanyName": "Bastien VELITCHKINE EI",
                                         "leadId": "lea_mizMsAEkRrJuhouYe",
                                         "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
@@ -10621,7 +10621,7 @@
                                                 "companyName": "Bastien VELITCHKINE EI",
                                                 "jobTitle": "Growth Engineer",
                                                 "companyDomain": "bvelitchkine.com",
-                                                "email": "bvelitchkine@gmail.com",
+                                                "email": "support@lemlist.com",
                                                 "preferredContactMethod": "email",
                                                 "industry": "Technology",
                                                 "Company name": "Bastien Velitchkine"
@@ -10655,7 +10655,7 @@
                                         "name": "NEW TO DELETE",
                                         "leadFirstName": "Bastien",
                                         "leadLastName": "Velitchkine",
-                                        "leadEmail": "bvelitchkine@gmail.com",
+                                        "leadEmail": "support@lemlist.com",
                                         "leadCompanyName": "Bastien VELITCHKINE EI",
                                         "leadId": "lea_mizMsAEkRrJuhouYe",
                                         "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
@@ -10678,7 +10678,7 @@
                                                 "companyName": "Bastien VELITCHKINE EI",
                                                 "jobTitle": "Growth Engineer",
                                                 "companyDomain": "bvelitchkine.com",
-                                                "email": "bvelitchkine@gmail.com",
+                                                "email": "support@lemlist.com",
                                                 "preferredContactMethod": "email",
                                                 "industry": "Technology",
                                                 "Company name": "Bastien Velitchkine"
@@ -10700,7 +10700,7 @@
                                         "name": "NEW TO DELETE",
                                         "leadFirstName": "Bastien",
                                         "leadLastName": "Velitchkine",
-                                        "leadEmail": "bvelitchkine@gmail.com",
+                                        "leadEmail": "support@lemlist.com",
                                         "leadCompanyName": "Bastien VELITCHKINE EI",
                                         "leadId": "lea_mizMsAEkRrJuhouYe",
                                         "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
@@ -10724,7 +10724,7 @@
                                                 "companyName": "Bastien VELITCHKINE EI",
                                                 "jobTitle": "Growth Engineer",
                                                 "companyDomain": "bvelitchkine.com",
-                                                "email": "bvelitchkine@gmail.com",
+                                                "email": "support@lemlist.com",
                                                 "preferredContactMethod": "email",
                                                 "industry": "Technology",
                                                 "Company name": "Bastien Velitchkine"
@@ -11980,14 +11980,14 @@
                                     "enrichmentStatus": "done",
                                     "input": {
                                         "firstName": "John",
-                                        "lastName": "Lempire",
-                                        "linkedinUrl": "https://www.linkedin.com/in/lempire",
-                                        "companyName": "lempire",
-                                        "companyDomain": "lempire.com"
+                                        "lastName": "lemlist",
+                                        "linkedinUrl": "https://www.linkedin.com/in/lemlist",
+                                        "companyName": "lemlist",
+                                        "companyDomain": "lemlist.com"
                                     },
                                     "data": {
                                         "email": {
-                                            "email": "john@lempire.co",
+                                            "email": "john@lemlist.co",
                                             "notFound": false
                                         }
                                     }
