@@ -1480,7 +1480,7 @@
                 "additionalProperties": true,
                 "properties": {
                     "company_id": {
-                        "type": "integer",
+                        "type": "string",
                         "description": "Unique company identifier"
                     },
                     "company_website_url": {
@@ -1519,24 +1519,24 @@
                         "description": "Long company description"
                     },
                     "company_employee_count": {
-                        "type": "integer",
-                        "description": "Employee count"
+                        "type": "string",
+                        "description": "Employee count as string"
                     },
                     "company_type": {
                         "type": "string",
                         "description": "Company type (e.g., Privately Held, Public Company)"
                     },
                     "company_founded": {
-                        "type": "integer",
-                        "description": "Year founded"
+                        "type": "string",
+                        "description": "Year founded as string"
+                    },
+                    "company_followers_count": {
+                        "type": "string",
+                        "description": "LinkedIn followers count as string"
                     },
                     "company_size": {
                         "type": "string",
                         "description": "Company size bucket"
-                    },
-                    "company_followers_count": {
-                        "type": "integer",
-                        "description": "LinkedIn followers count"
                     },
                     "revenue_bucket": {
                         "type": "string",
@@ -1548,11 +1548,18 @@
                     },
                     "employees_count_growth": {
                         "type": "integer",
-                        "description": "Employee count growth (percentage)"
+                        "description": "Employee count growth number"
                     },
                     "last_funding_round_at": {
                         "type": "string",
                         "description": "Date of last funding round"
+                    },
+                    "techno_used_array": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Array of technologies used by the company"
                     },
                     "business_business_customer": {
                         "type": "string",
@@ -1564,20 +1571,43 @@
                         ]
                     },
                     "company_quality_score": {
-                        "type": "integer",
-                        "description": "Quality score (0-100)"
+                        "type": "string",
+                        "description": "Quality score as string"
                     },
                     "company_industry": {
                         "type": "string",
                         "description": "Primary industry"
                     },
-                    "company_sub_industry": {
+                    "company_subindustry": {
                         "type": "string",
                         "description": "Sub-industry"
+                    },
+                    "company_subsubindustry": {
+                        "type": "string",
+                        "description": "Sub-sub-industry"
                     },
                     "company_location": {
                         "type": "string",
                         "description": "Full formatted location"
+                    },
+                    "company_location_geopoint_array": {
+                        "type": "array",
+                        "items": {
+                            "type": "number"
+                        },
+                        "description": "Geopoint coordinates [longitude, latitude]"
+                    },
+                    "company_occ_lead": {
+                        "type": "string",
+                        "description": "Occupational lead count as string"
+                    },
+                    "_score": {
+                        "type": "number",
+                        "description": "Search relevance score"
+                    },
+                    "_id": {
+                        "type": "string",
+                        "description": "Internal document ID"
                     }
                 }
             },
@@ -8008,6 +8038,7 @@
         "/database/companies": {
             "post": {
                 "summary": "Search Companies Database",
+                "description": "Search the lemlist Companies database using structured filters with pagination support. Returns comprehensive company data including technologies used, location, employee count, and other business intelligence.",
                 "tags": [
                     "People Database"
                 ],
@@ -8019,20 +8050,24 @@
                                 "properties": {
                                     "filters": {
                                         "type": "array",
+                                        "description": "Array of filter objects to narrow down search results. Each filter has a filterId and inclusion/exclusion criteria.",
                                         "items": {
                                             "type": "object",
                                             "properties": {
                                                 "filterId": {
-                                                    "type": "string"
+                                                    "type": "string",
+                                                    "description": "The identifier of the filter to apply (e.g., 'currentCompanyTechnologies', 'companySize', 'industry')"
                                                 },
                                                 "in": {
                                                     "type": "array",
+                                                    "description": "Array of values to include in the filter",
                                                     "items": {
                                                         "type": "string"
                                                     }
                                                 },
                                                 "out": {
                                                     "type": "array",
+                                                    "description": "Array of values to exclude from the filter",
                                                     "items": {
                                                         "type": "string"
                                                     }
@@ -8041,7 +8076,12 @@
                                         }
                                     },
                                     "page": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "description": "Page number for pagination (default: 1)"
+                                    },
+                                    "size": {
+                                        "type": "integer",
+                                        "description": "Number of results per page (default: 100, max: 500)"
                                     }
                                 }
                             },
@@ -8055,7 +8095,8 @@
                                         "out": []
                                     }
                                 ],
-                                "page": 1
+                                "page": 1,
+                                "size": 2
                             }
                         }
                     }
@@ -8076,29 +8117,253 @@
                                             }
                                         },
                                         "total": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "description": "Total number of companies matching the search criteria"
+                                        },
+                                        "took": {
+                                            "type": "integer",
+                                            "description": "Time taken for the search in milliseconds"
                                         },
                                         "page": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "description": "Current page number"
                                         },
                                         "size": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "description": "Number of results per page"
+                                        },
+                                        "search": {
+                                            "type": "string",
+                                            "description": "Search session identifier"
+                                        },
+                                        "limitation": {
+                                            "type": "integer",
+                                            "description": "Result limitation applied"
+                                        },
+                                        "team": {
+                                            "type": "string",
+                                            "description": "Team identifier"
                                         }
                                     }
                                 },
                                 "example": {
                                     "results": [
                                         {
-                                            "company_id": 7842391,
-                                            "company_name": "InnovateTech Solutions",
-                                            "company_website_url": "https://www.innovatetech.io",
-                                            "company_employee_count": 245,
-                                            "company_industry": "Information Technology"
+                                            "company_id": "88945664",
+                                            "company_website_url": "http://codetentaclestechnologies.com",
+                                            "company_name": "Codetentacles Technologies",
+                                            "company_linkedin_url": "https://www.linkedin.com/company/codetentacles-technologies",
+                                            "last_updated": "2025-09-07 02:11:32 UTC",
+                                            "company_headquarters_city": "Pune, Maharashtra",
+                                            "company_headquarters_country": "India",
+                                            "company_logo_url": "https://media.licdn.com/dms/image/v2/D560BAQH70W3TXccPPA/company-logo_200_200/company-logo_200_200/0/1719993740432/codetentacles_technologies_logo?e=2147483647&v=beta&t=Eehfy0lIdDuBL17dzRAYAFu4LdLHb6cUaLjeuBGBUic",
+                                            "company_description": "CodeTentacles, established on Aug-2015 with the idea \"Make Your Imagination Come True\". Which means anyone who came up with their idea, we will give a closely realistic solutions to them. \nCodeTentacles Technologies is a new Generation Software Company, with young people with creative mind and immersive energy. We are a team of dedicated and highly skilled software professionals focused on providing world class IT solutions. We offer a variety of services in the area of:\nWebsite Designing & Development, Web Maintenance, E-Business Solutions, Android & iOS app, Blockchain Development, Software Development, Hosting Services.",
+                                            "company_employee_count": "31",
+                                            "company_type": "Public Company",
+                                            "company_founded": "2015",
+                                            "company_followers_count": "3958",
+                                            "company_size": "11-50",
+                                            "company_domain": "codetentaclestechnologies.com",
+                                            "employees_count_growth": -3,
+                                            "techno_used_array": [
+                                                "Apache HTTP Server",
+                                                "Lightbox",
+                                                "LinkedIn Sales Navigator",
+                                                "Atlassian Jira",
+                                                "LiteSpeed Cache",
+                                                "Underscore.js",
+                                                "Remix",
+                                                "jsDelivr",
+                                                "jQuery",
+                                                "Google Fonts API",
+                                                "Google Tag Manager",
+                                                "X-Content-Type-Options",
+                                                "Facebook",
+                                                "PWA",
+                                                "jQuery CDN",
+                                                "ZURB Foundation",
+                                                "HSTS",
+                                                "WhatsApp Business",
+                                                "X-XSS-Protection",
+                                                "Google Analytics",
+                                                "Flickity",
+                                                "HTML",
+                                                "LiteSpeed",
+                                                "Ethereum",
+                                                "Cloudinary",
+                                                "OceanWP",
+                                                "Goober",
+                                                "jQuery Migrate",
+                                                "Tailwind CSS",
+                                                "Postman",
+                                                "LinkedIn",
+                                                "Webpack",
+                                                "GSAP",
+                                                "Essential Addons for Elementor",
+                                                "Font Awesome",
+                                                "Android",
+                                                "PixelYourSite",
+                                                "jQuery UI",
+                                                "MUI",
+                                                "IPFS",
+                                                "Upwork",
+                                                "cdnjs",
+                                                "FlexSlider",
+                                                "Elementor",
+                                                "ZoomInfo",
+                                                "Swiper",
+                                                "Microsoft IIS",
+                                                "Node.js",
+                                                "Ethers",
+                                                "Solidity",
+                                                "React",
+                                                "Priority Hints",
+                                                "iOS",
+                                                "OWL Carousel",
+                                                "MySQL",
+                                                "Facebook Pixel",
+                                                "Open Graph",
+                                                "Laravel",
+                                                "Emotion",
+                                                "Lucide",
+                                                "PHP",
+                                                "Blockchain",
+                                                "Next.js",
+                                                "RSS",
+                                                "Google Maps",
+                                                "Windows Server",
+                                                "WordPress",
+                                                "WPForms",
+                                                "JavaScript",
+                                                "Chainlink",
+                                                "Apache",
+                                                "Bootstrap"
+                                            ],
+                                            "business_business_customer": "B2B",
+                                            "company_quality_score": "3",
+                                            "company_industry": "Technology, Information and Media",
+                                            "company_subindustry": "Technology, Information and Internet",
+                                            "company_subsubindustry": "Software Development",
+                                            "company_location": "Office no.704 , 7th floor , City Avenue , Wakad - Pune , Maharashtra - 411057; Pune, Maharashtra 411057, IN",
+                                            "company_location_geopoint_array": [
+                                                73.92,
+                                                18.64
+                                            ],
+                                            "company_occ_lead": "60",
+                                            "_score": 10.002095,
+                                            "_id": "88945664"
+                                        },
+                                        {
+                                            "company_id": "9903838",
+                                            "company_website_url": "http://www.welkinhealth.com",
+                                            "company_name": "Welkin Health",
+                                            "company_linkedin_url": "https://www.linkedin.com/company/welkin-health",
+                                            "last_updated": "2025-09-04 14:24:45 UTC",
+                                            "company_headquarters_city": "San Francisco, California",
+                                            "company_headquarters_country": "United States",
+                                            "company_logo_url": "https://media.licdn.com/dms/image/v2/C560BAQFer8fNEEjF0g/company-logo_200_200/company-logo_200_200/0/1630650291916/welkin_health_logo?e=2147483647&v=beta&t=UxMa3A4iEELS9VwczFLyANlOgqjpaKtsXtZ6WncExR8",
+                                            "company_description": "Welkin Health is an automated care management platform that facilitates a team based approach to care for those who treat and manage preventative, follow-up and chronic conditions. To learn more, write us at contact@welkinhealth.com.",
+                                            "company_employee_count": "33",
+                                            "company_type": "Privately Held",
+                                            "company_founded": "2013",
+                                            "company_followers_count": "2651",
+                                            "company_size": "11-50",
+                                            "revenue_bucket": "$5M - $10M",
+                                            "company_domain": "welkinhealth.com",
+                                            "employees_count_growth": 6,
+                                            "last_funding_round_at": "More than 6 months",
+                                            "techno_used_array": [
+                                                "Google Cloud",
+                                                "Heap",
+                                                "Envoy",
+                                                "Google Cloud CDN",
+                                                "X-Content-Type-Options",
+                                                "Piwik",
+                                                "WP Engine",
+                                                "React",
+                                                "cdnjs",
+                                                "Fullstory",
+                                                "Cloudflare Bot Management",
+                                                "Twitter",
+                                                "JSON-LD",
+                                                "C3.js",
+                                                "Python",
+                                                "Google Analytics",
+                                                "MediaElement.js",
+                                                "SafeBase",
+                                                "Emotion",
+                                                "Nginx",
+                                                "Atlassian Jira",
+                                                "PayPal",
+                                                "MUI",
+                                                "Gravity Forms",
+                                                "Zendesk",
+                                                "MySQL",
+                                                "Webpack",
+                                                "PHP",
+                                                "Facebook Pixel",
+                                                "Google Fonts API",
+                                                "OneTrust",
+                                                "jQuery",
+                                                "Gravatar",
+                                                "Google Hosted Libraries",
+                                                "Yoast SEO",
+                                                "Jamf",
+                                                "Cloudflare CDN",
+                                                "Angular",
+                                                "Postman",
+                                                "Cloudflare",
+                                                "HubSpot",
+                                                "Java",
+                                                "HTTP/3",
+                                                "Moment.js",
+                                                "X-XSS-Protection",
+                                                "Open Graph",
+                                                "JazzHR",
+                                                "Workramp",
+                                                "Algolia",
+                                                "SSL.com",
+                                                "Autoptimize",
+                                                "Font Awesome",
+                                                "oEmbed",
+                                                "Bootstrap",
+                                                "Facebook",
+                                                "HSTS",
+                                                "Ruby",
+                                                "Twemoji",
+                                                "WordPress",
+                                                "Lightbox",
+                                                "Adobe Fonts",
+                                                "RequireJS",
+                                                "Ruby on Rails",
+                                                "Lodash",
+                                                "reCAPTCHA",
+                                                "LinkedIn Ads",
+                                                "Hotjar",
+                                                "Google Tag Manager"
+                                            ],
+                                            "business_business_customer": "B2B",
+                                            "company_quality_score": "3",
+                                            "company_industry": "Technology, Information and Media",
+                                            "company_subindustry": "Technology, Information and Internet",
+                                            "company_subsubindustry": "Software Development",
+                                            "company_location": "San Francisco, California 94104, US",
+                                            "company_location_geopoint_array": [
+                                                -122.42,
+                                                37.78
+                                            ],
+                                            "company_occ_lead": "117",
+                                            "_score": 9.972561,
+                                            "_id": "9903838"
                                         }
                                     ],
-                                    "total": 18540918,
+                                    "total": 12102,
+                                    "took": 17,
                                     "page": 1,
-                                    "size": 1
+                                    "size": 2,
+                                    "search": "lsh_pDkyi3YizHKLHvEPK",
+                                    "limitation": 1998,
+                                    "team": "tea_b4rMsi2trB42WyuWP"
                                 }
                             }
                         }
@@ -8174,32 +8439,50 @@
                                 },
                                 "example": {
                                     "schema": {
-                                        "company_id": 7842391,
-                                        "company_website_url": "https://www.innovatetech.io",
-                                        "company_name": "InnovateTech Solutions",
-                                        "company_linkedin_url": "https://www.linkedin.com/company/innovatetech-solutions",
-                                        "last_updated": "2024-03-15 09:30:22 UTC",
-                                        "company_headquarters_city": "Austin",
-                                        "company_headquarters_country": "United States",
-                                        "company_logo_url": "https://media.linkedin.com/companies/innovatetech/logo_200_200.png",
-                                        "company_description": "InnovateTech Solutions is a leading provider of AI-powered enterprise software solutions. We specialize in developing cutting-edge machine learning applications that help businesses automate their workflows and make data-driven decisions. Our team of experts combines deep technical knowledge with industry expertise to deliver transformative solutions.",
-                                        "company_employee_count": 245,
-                                        "company_type": "Privately Held",
-                                        "company_founded": 2018,
-                                        "company_size": "201-500",
-                                        "company_followers_count": 15000,
-                                        "revenue_bucket": "$50M - $100M",
-                                        "company_domain": "innovatetech.io",
-                                        "employees_count_growth": 35,
-                                        "last_funding_round_at": "2023-11-15",
+                                        "company_id": "88945664",
+                                        "company_website_url": "http://codetentaclestechnologies.com",
+                                        "company_name": "Codetentacles Technologies",
+                                        "company_linkedin_url": "https://www.linkedin.com/company/codetentacles-technologies",
+                                        "last_updated": "2025-09-07 02:11:32 UTC",
+                                        "company_headquarters_city": "Pune, Maharashtra",
+                                        "company_headquarters_country": "India",
+                                        "company_logo_url": "https://media.licdn.com/dms/image/v2/D560BAQH70W3TXccPPA/company-logo_200_200/company-logo_200_200/0/1719993740432/codetentacles_technologies_logo?e=2147483647&v=beta&t=Eehfy0lIdDuBL17dzRAYAFu4LdLHb6cUaLjeuBGBUic",
+                                        "company_description": "CodeTentacles, established on Aug-2015 with the idea \"Make Your Imagination Come True\". Which means anyone who came up with their idea, we will give a closely realistic solutions to them.",
+                                        "company_employee_count": "31",
+                                        "company_type": "Public Company",
+                                        "company_founded": "2015",
+                                        "company_size": "11-50",
+                                        "company_followers_count": "3958",
+                                        "revenue_bucket": "$5M - $10M",
+                                        "company_domain": "codetentaclestechnologies.com",
+                                        "employees_count_growth": -3,
+                                        "last_funding_round_at": "More than 6 months",
+                                        "techno_used_array": [
+                                            "Apache HTTP Server",
+                                            "Lightbox",
+                                            "LinkedIn Sales Navigator",
+                                            "Postman",
+                                            "React",
+                                            "Node.js",
+                                            "WordPress",
+                                            "JavaScript"
+                                        ],
                                         "business_business_customer": "B2B",
-                                        "company_quality_score": 85,
-                                        "company_industry": "Information Technology",
-                                        "company_sub_industry": "Enterprise Software",
-                                        "company_location": "Austin, Texas, United States"
+                                        "company_quality_score": "3",
+                                        "company_industry": "Technology, Information and Media",
+                                        "company_subindustry": "Technology, Information and Internet",
+                                        "company_subsubindustry": "Software Development",
+                                        "company_location": "Office no.704 , 7th floor , City Avenue , Wakad - Pune , Maharashtra - 411057; Pune, Maharashtra 411057, IN",
+                                        "company_location_geopoint_array": [
+                                            73.92,
+                                            18.64
+                                        ],
+                                        "company_occ_lead": "60",
+                                        "_score": 10.002095,
+                                        "_id": "88945664"
                                     },
                                     "version": {
-                                        "since": 20251020,
+                                        "since": 20251031,
                                         "type": "date"
                                     },
                                     "properties": [
@@ -8221,11 +8504,17 @@
                                         "company_domain",
                                         "employees_count_growth",
                                         "last_funding_round_at",
+                                        "techno_used_array",
                                         "business_business_customer",
                                         "company_quality_score",
                                         "company_industry",
-                                        "company_sub_industry",
-                                        "company_location"
+                                        "company_subindustry",
+                                        "company_subsubindustry",
+                                        "company_location",
+                                        "company_location_geopoint_array",
+                                        "company_occ_lead",
+                                        "_score",
+                                        "_id"
                                     ]
                                 }
                             }
