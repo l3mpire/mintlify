@@ -67,14 +67,14 @@
       ],
       "anchors": [
         {
-          "anchor": "Academy",
-          "href": "https://www.lemlist.com/academy?r=0",
-          "icon": "graduation-cap"
+          "anchor": "start lemlist free trial",
+          "href": "https://app.lemlist.com/create-account",
+          "icon": "play"
         },
         {
-          "anchor": "Blog",
-          "href": "https://www.lemlist.com/blog?r=0",
-          "icon": "newspaper"
+          "anchor": "Talk to a human",
+          "href": "https://www.lemlist.com/contact-sales?r=0",
+          "icon": "headphones"
         }
       ]
     },
