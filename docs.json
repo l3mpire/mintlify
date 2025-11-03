@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Lemlist Developer Docs",
+  "name": "lemlist Developer Docs",
   "colors": {
     "primary": "#316bff",
     "light": "#316bff",
@@ -11,7 +11,7 @@
     "light": "/favicon.ico",
     "dark": "/favicon.ico"
   },
-  "description": "Lemlist API documentation to help you integrate and automate your email outreach.",
+  "description": "lemlist API documentation to help you integrate and automate your email outreach.",
   "logo": {
     "light": "/logo/light.svg",
     "dark": "/logo/dark.svg"
