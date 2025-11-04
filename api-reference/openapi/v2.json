@@ -8948,29 +8948,18 @@
                         "schema": {
                             "type": "integer"
                         }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "userId": {
-                                        "type": "string",
-                                        "description": "Filter by user ID"
-                                    }
-                                },
-                                "required": [
-                                    "userId"
-                                ]
-                            },
-                            "example": {
-                                "userId": "usr_vvv9vehz2Ghvgbedv"
-                            }
+                    },
+                    {
+                        "name": "userId",
+                        "in": "query",
+                        "required": true,
+                        "description": "Filter by user ID",
+                        "example": "usr_vvv9vehz2Ghvgbedv",
+                        "schema": {
+                            "type": "string"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
                         "description": "Success",
