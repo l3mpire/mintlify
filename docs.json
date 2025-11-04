@@ -45,7 +45,7 @@
   "navbar": {
     "links": [
       {
-        "label": "Support",
+        "label": "Send your feedback",
         "href": "https://lemlist.typeform.com/to/mfVlkyGf"
       }
     ],
@@ -427,17 +427,6 @@
     "socials": {
       "linkedin": "https://www.linkedin.com/company/lemlist/",
       "youtube": "https://www.youtube.com/c/lemlist"
-    },
-    "links": [
-      {
-        "header": "TikTok",
-        "items": [
-          {
-            "label": "Follow us on TikTok",
-            "href": "https://www.tiktok.com/@lemlist"
-          }
-        ]
-      }
-    ]
+    }
   }
 }
