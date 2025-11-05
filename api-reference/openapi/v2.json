@@ -5718,7 +5718,7 @@
                 {
                     "name": "campaignId",
                     "in": "path",
-                    "required": false,
+                    "required": true,
                     "description": "The unique identifier of the campaign",
                     "example": "cam_A1B2C3D4E5F6G7H8I9",
                     "schema": {
@@ -5728,7 +5728,7 @@
                 {
                     "name": "email",
                     "in": "path",
-                    "required": true,
+                    "required": false,
                     "description": "The email address of the lead",
                     "example": "john.doe@domain.com",
                     "schema": {
