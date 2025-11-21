@@ -5882,6 +5882,7 @@
                                 }
                             },
                             "example": {
+                                "email":"support@lemlist.com",
                                 "firstName": "John",
                                 "lastName": "Doe",
                                 "companyName": "lemlist",
