@@ -331,7 +331,8 @@
             "pages": [
               "guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode",
               "guides/send-slack-notification-upon-lead-positive-reply",
-              "guides/refresh-your-crm-contacts-with-the-lemlist-api"
+              "guides/refresh-your-crm-contacts-with-the-lemlist-api",
+              "guides/syncing-your-lemlist-campaign-stats-with-a-google-sheet"
             ]
           }
         ]
