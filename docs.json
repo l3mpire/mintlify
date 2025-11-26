@@ -329,7 +329,8 @@
           {
             "group": "User Guides",
             "pages": [
-              "guides/add-lead-with-auto-review"
+              "guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode",
+              "guides/send-slack-notification-upon-lead-positive-reply"
             ]
           }
         ]

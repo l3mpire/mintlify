@@ -1,0 +1,170 @@
+---
+title: "Adding leads in a lemlist campaign in auto launch mode"
+description: "Learn how to add leads to your lemlist campaign automatically when they fill out a form, with auto launch mode enabled"
+---
+
+import SnippetLemlistN8nIntegration from '/snippets/snippet-lemlist-n8n-integration.mdx';
+import SnippetDownloadWorkflows from '/snippets/snippet-download-n8n-workflows.mdx';
+
+# What you’ll learn in this guide
+
+How to send email sequences automatically, to leads who submitted your form, without having to review them manually. More specifically, you’ll learn:
+
+1. how to create a lemlist campaign in “auto launch” mode
+2. how to **automatically**:
+    1. enrich the leads who submitted your form to find their phone numbers
+    2. and then add them to the campaign
+
+# Imagine…
+
+You organised an event and you plan to submit a form to participants during that very event. Upon submission, you’d like to send them a series of emails, and the first email to be sent a couple of hours after the event — no later.
+
+But here’s the thing, there are too many leads to manually send emails, keep track of who replied, follow-up, etc. This is why you want to use a lemlist campaign.
+
+But still, even with an automated campaign:
+
+- there will be too many form submissions for you to add leads manually to that campaign
+- and too many leads for you to review them all manually, especially since:
+    - you want the first emails sent immediately after the event
+    - and you already trust form respondents to submit the right info (the form isn’t mandatory and people were present at your event)
+
+---
+
+If only there was a way to add leads who submitted the form to a lemlist campaign automatically, without having to review them…
+
+> well… there is :)
+
+# Automatically add leads to a campaign in auto launch mode
+
+If you leverage the lemlist API, this is all fairly easy, you’ll have to:
+
+1. create a lemlist campaign **with “auto launch” mode on**
+2. create the form you were thinking about
+3. create a workflow to bridge the gap between the form and the campaign (that’s where the API comes into play → [look](https://developer.lemlist.com/api-reference/endpoints/leads/create-lead-in-campaign)!)
+
+## Create a lemlist campaign in auto launch mode
+
+1. Head over to lemlist, create a new campaign and activate the “auto launch” mode
+    <Frame caption="That’s how you’ll skip reviewing every single lead catapulted in your campaign">
+        <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/createAutoLaunchCampaign.gif" alt="creating a campaign in auto launch mode in lemlist" />
+    </Frame>
+    <Warning>
+        Be extra cautious though, if you activate “auto launch”, you must make sure that the leads you add to your campaign are meant to receive your emails.
+        
+        Otherwise, you might end up spamming people who didn’t agree to receive your emails, which could lead to your lemlist account being suspended.
+    </Warning>
+2. Now, copy the lemlist campaign id and store it somewhere, because you’ll need it later
+    <Frame caption="It looks like this: cam_eMZnxqs9Z9nqGxzwT">
+        <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/copyCampaignId.gif" alt="copying the campaign id in lemlist" />
+    </Frame>
+
+## Create a form on a builder like Tally
+
+There are two requirements for the form itself and its builder:
+
+1. the form **must** ask participants for their emails (obviously)
+2. the builder must include features to send form submissions to external tools
+
+On that last requirement, i find [tally.so](http://tally.so) to be a pretty good option: gorgeous UI, various input types, and, most importantly…
+
+<Frame caption="…integrations/automation features!">
+    <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/tallyIntegrations.png" alt="available integrations in Tally" />
+</Frame>
+
+As you can see, Tally lets you send form data to the webhook of your choice upon form submission (exactly what we’re trying to do here).
+
+<Info>
+    A webhook is some kind of “antenna” in a tool like Zapier, that listens for “signals” coming from ~~aliens~~ other tools like Tally. When it receives a signal (i.e. data), it can then trigger automations (i.e. workflows) in that tool.
+</Info>
+
+Head over to [Tally](https://tally.so/) and create your form:
+<Frame caption="Make sure it has a mandatory email input.">
+    <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/createTallyForm.gif" alt="creating a form in Tally" />
+</Frame>
+
+## Connect the form builder to lemlist with n8n
+
+Now, it’s the time to connect the form to your lemlist campaign.
+
+Like i said, the form will send form data to a webhook of your choice upon submission. Then, you’ll use that data to create a new lead in your lemlist campaign.
+
+At this point, the only thing we’re missing is a solution to bridge the gap between Tally and lemlist. An automation is perfectly warranted in our case.
+
+And when it comes to automation tools, i LOVE [n8n](http://n8n.io/):
+
+- extremely powerful
+- well-maintained
+- cost-efficient (especially when self-hosted)
+- and — most-importantly — **including webhooks to trigger its workflows**.
+
+Said differently, you can have n8n automations run when its webhooks receive data coming from Tally for instance. So, n8n it is :)
+
+### Configure the webhook in n8n
+
+1. Head over to n8n
+2. Create a new workflow
+3. Pick a webhook trigger and:
+    a. set its slug to something readable
+    b. set the method to POST
+
+<Frame caption="Again, pay special attention to the HTTP method (POST)">
+    <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/createWebhookAsWorkflowTrigger.gif" alt="adding webhook trigger to n8n workflow" />
+</Frame>
+
+
+### Have Tally send the form data to the n8n webhook
+
+1. Copy the webhook **TEST** url in n8n
+2. Head over to tally and publish your form (you can always edit it later)
+3. Put the **TEST** url in the integrations section of the form
+    <Frame>
+        <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/sendTallyFormDataToN8nWebhook.gif" alt="setting a webhook url in Tally" />
+    </Frame>    
+4. Switch to n8n and click on “execute workflow”
+5. Switch back to your form and submit it with your own email address (not someone else’s; not a fake one — we’ll use it later)
+6. Make sure that n8n got the form data and **pin it**!
+    <Frame>
+        <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/testWebhook.gif" alt="triggering n8n webhook with Tally submission" />
+    </Frame>
+    
+
+### Have n8n create the lead in the lemlist campaign
+
+1. Head back to your n8n workflow and search for the “Create a lead” lemlist node
+2. Select the lemlist credentials that correspond to the lemlist account with your campaign
+    <SnippetLemlistN8nIntegration />
+3. Paste the lemlist campaign id copied at the beginning of this guide
+4. Fill the email input with the data coming from Tally, like so:
+    <Frame>
+        <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/createAndSetLemlistNode.gif" alt="adding a create lead in lemlist campaign n8n node" />
+    </Frame>
+    <Frame caption="Even with a valid lemlist campaign id, you might see this error. Ignore it!">
+        <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/lemlistCampaignIdError.png" alt="n8n displays error on lemlist campaign id" />
+    </Frame>
+5. Last, but not least, activate the Find Phone option on your Create lead node
+    <Frame caption="This way, lemlist will automatically try to find a phone number for your leads upon addition in a campaign.">
+        <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/activateFindPhoneOption.gif" alt="activating Find Phone option in n8n lemlist node" />
+    </Frame>
+    
+
+# Give it a try ;)
+
+1. Copy the **PRODUCTION** url of your webhook
+2. Head back to Tally and delete any previous submissions (for the sake of cleanliness)
+3. **Change the url of the webhook to the production url**
+    <Frame>
+        <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/switchTallyWebhookUrlToProduction.gif" alt="switching Tally webhook URL to production" />
+    </Frame>
+4. Now, publish the n8n workflow
+5. Submit the form again with, say, your personal email address
+6. And head over to the lemlist campaign and ensure that a new lead has been created
+    <Frame caption="Beware, you won't get the email instantaneously if you submitted the form outside your schedule's slots.">
+        <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/finalFormSubmissionTest.gif" alt="final form submission test" />
+    </Frame>
+    
+
+# That’s all folks!
+
+<SnippetDownloadWorkflows />
+
+Anyway, if you found that guide easy to follow, i suggest you move on to this one: <a href="/guides/send-slack-notification-upon-lead-positive-reply">**Send Slack notification upon lead positive reply**</a>. It’s a nice addition to what you just built honestly.
