@@ -1,0 +1,437 @@
+---
+title: "Send Slack notification upon lead positive reply"
+description: "Learn how to automatically classify lead replies using AI and notify your SDRs in Slack when a lead shows interest"
+---
+
+import SnippetLemlistN8nIntegration from '/snippets/snippet-lemlist-n8n-integration.mdx';
+import SnippetDownloadWorkflows from '/snippets/snippet-download-n8n-workflows.mdx';
+import { SnippetVideoFrame } from '/snippets/snippet-video-frame.jsx';
+
+# What you'll learn in this guide
+
+How to:
+
+- build a mini AI agent to classify lead replies either as positive or negative
+- detect such replies and classify them automatically with your agent
+- mark leads as interested or not in lemlist automatically to refresh your campaign stats
+- manufacture highly customized and SDR-friendly notifications in Slack
+- warn your SDRs in Slack within 2 minutes of positive replies with such notifications
+
+# Imagine…
+
+Outbound is front and center in your acquisition; you have tens of hyper-segmented campaigns running all year round on lemlist; and you’ve been going at it for years. So much so, that you get a few tens of replies to your emails every day.
+
+Unfortunately, by waiting for SDRs to log into lemlist and check for replies, leads have already had time to cool down 10 times.
+
+> Your conversion rates are not as high as they should be.
+
+**The faster SDRs reply to interested leads, the higher their chances of converting them**. Which is why they need to know about positive replies as soon as possible.
+
+If only there was a way to:
+
+- automatically categorize lead replies
+- and warn SDRs no later than 2 minutes after someone interested replied…
+
+:)
+
+# Warn SDRs in Slack when a lead seems interested
+
+## Overview: connect lemlist to Slack with OpenAI and n8n
+
+> Why Slack?
+
+Well, that’s the one place where you can find SDRs throughout the day. So if there’s a place to warn them about interested leads, this is the one.
+
+> Why OpenAI?
+
+Deducing from an email (natural language) whether someone is interested about something is EXACTLY what LLMs (large language models) are good at. Also, OpenAI has a lot of APIs to enable automation use cases like ours.
+
+(but to be fair, there are plenty LLM options to choose from — not only OpenAI)
+
+> Why n8n? 
+
+We need to:
+
+- *automatically* read a lead’s response to our campaign, **with minimal latency**
+- *automatically* send the text of that email to OpenAI and have it reply with `true` or `false` depending on whether the lead is interested or not
+- from the answer, we must *automatically*:
+    - [mark the lead as interested](../../api-reference/endpoints/leads/mark-lead-as-interested) or [not interested](../../api-reference/endpoints/leads/mark-lead-as-not-interested) in lemlist (to *automatically* refresh campaign analytics)
+    - *automatically* send a slack notification when a lead is interested
+
+So yeah, we need to *automate*. Hence n8n — my favorite automation tool.
+
+So, without further ado, let’s build!
+
+## Detect lead replies in lemlist instantaneously with n8n
+
+1. Head over to n8n and create a new workflow
+2. Search through the list of lemlist triggers for "On emails replied", add it to your wf and make sure that the `isFirst` parameter is set to `true` (otherwise, the workflow will get triggered multiple times if you send emails back and forth with a lead).
+    <SnippetVideoFrame
+        src="/images/guides/send-slack-notification-upon-lead-positive-reply/onEmailRepliedTrigger.mp4"
+        caption="adding on emails replied trigger in n8n"
+    />
+    Now your workflow will start each time a lead replies by email to your campaigns, **with the content of their reply as input**. Exactly what we wanted!
+    <SnippetLemlistN8nIntegration />
+3. Activate your workflow and activate the option **to save production executions**
+    <SnippetVideoFrame
+        src="/images/guides/send-slack-notification-upon-lead-positive-reply/activateSendNotificationWorkflow.mp4"
+        caption="activating workflow and saving production executions"
+    />
+4. We still need some input data to develop the rest of our workflow, which is why i had you activate the workflow and save production executions at step 3. Now, you can either:
+    - wait for a lead to actually reply to one of your campaigns (could be long)
+    - create a test campaign, send an email to yourself and reply to it like a lead would
+    - **or just use the sample data below and use it as mock data in your node**
+    <Accordion title="sample data">
+        ```json
+        [
+            {
+            "_id": "act_9kwPs4aQkehRNx878",
+            "type": "emailsReplied",
+            "emailId": "eml_txgGWZj3keB6z9Wew",
+            "messageId": "<CADhdMOY2ovqWh-Wc7XvuDttkOTL=T9ZfTMR9AA-ZtKSXmQqn8Q@mail.gmail.com>",
+            "createdBy": "usr_AzyCDxe92WNSrGkPz",
+            "createdAt": "2025-11-18T23:11:26.000Z",
+            "fromEmail": "bastien.velitchkine@gmail.com",
+            "isFirst": true,
+            "stopped": true,
+            "subject": "Re: revops opportunity",
+            "messagePreview": "Hey Lucas, i’ve heard only good things about lemlist, let’s talk! Here’s my",
+            "bot": false,
+            "teamId": "tea_b4rMsi2trB42WyuWP",
+            "leadId": "lea_o3uCcHsibhy9id8qD",
+            "campaignId": "cam_eMZnxqs9Z9nqGxzwT",
+            "sequenceId": "seq_GPRQmr4Y5iTi4WYwL",
+            "sequenceStep": 0,
+            "emailTemplateId": "etp_6PNqhHqZyXeAydJyb",
+            "sendUserId": "usr_AzyCDxe92WNSrGkPz",
+            "totalSequenceStep": 0,
+            "name": "NEW TO DELETE",
+            "sendUserName": "Lucille Rabaux",
+            "sendUserEmail": "lucille@chooselemlist.com",
+            "sendUserMailboxId": "usm_JLtj28DpEdrwseTAc",
+            "sendUserMailboxProviderId": "lucille@chooselemlist.com",
+            "leadEmail": "bastien.velitchkine@gmail.com",
+            "contactId": "ctc_ARyApP88xS286tgsY",
+            "relatedSentAt": "2025-11-17T07:16:14.309Z",
+            "metaData": {
+                "teamId": "tea_b4rMsi2trB42WyuWP",
+                "campaignId": "cam_eMZnxqs9Z9nqGxzwT",
+                "leadId": "lea_o3uCcHsibhy9id8qD",
+                "type": "emailsReplied",
+                "createdBy": "usr_AzyCDxe92WNSrGkPz",
+                "s3ready": false,
+                "taskId": "tsk_AN9LqpP8AEWs2LH4D"
+            },
+            "campaignName": "NEW TO DELETE",
+            "html": "<div dir=\"ltr\"><div>Hey Lucas, i’ve heard only good things about lemlist, let’s talk! Here’s my calendar: <a href=\"https://calendar.notion.so/meet/bvelitchkine/growth-eng\" style=\"color:inherit;text-decoration:inherit\" class=\"gmail-notion-link-token gmail-notion-focusable-token gmail-notion-enable-hover\" rel=\"noopener noreferrer\" tabindex=\"0\"><span style=\"text-decoration-line:underline;text-decoration-color:rgba(55,53,47,0.4);opacity:0.7\" class=\"gmail-link-annotation-unknown-block-id-1871970138\">https://calendar.notion.so/meet/bvelitchkine/growth-eng</span></a>. Cheers <span style=\"font-size:1em;font-family:&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;\">✌️</span></div><div><span style=\"font-size:1em;font-family:&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;\"><br></span></div><div><span style=\"font-size:1em;font-family:&quot;Apple Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,&quot;Segoe UI Symbol&quot;\"><br></span></div><div><br></div></div><br><div class=\"gmail_quote gmail_quote_container\"><div dir=\"ltr\" class=\"gmail_attr\">On Mon, Nov 17, 2025 at 4:16 PM Lucille Rabaux &lt;<a href=\"mailto:lucille@chooselemlist.com\">lucille@chooselemlist.com</a>&gt; wrote:<br></div><blockquote class=\"gmail_quote\" style=\"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex\"><div style=\"min-width:360px\"></div><div dir=\"ltr\"><div dir=\"ltr\">\n    <div><div style=\"box-sizing:border-box\">hey, if you&#39;re a revops or gtm engineer, you should really checkout lemlist mate</div></div>\n    <div class=\"gmail_extra\">\n      <div class=\"gmail_signature\"><div dir=\"ltr\"><div><div dir=\"ltr\"></div></div></div></div>\n      \n    </div>\n    </div>\n<span summary=\"/api/reply/data-ll-tsk_AN9LqpP8AEWs2LH4D\"></span>\n<img alt=\"logo\" src=\"https://trail.joinlempire.com/api/track/open/usr_gmHgNGRcGPSTJrDbT/tsk_AN9LqpP8AEWs2LH4D\" height=\"1\" width=\"1\"></div><br>\n</blockquote></div>\n",
+            "text": "Hey Lucas, i’ve heard only good things about lemlist, let’s talk! Here’s my\ncalendar: https://calendar.notion.so/meet/bvelitchkine/growth-eng. Cheers ✌️\n\n\nOn Mon, Nov 17, 2025 at 4:16 PM Lucille Rabaux <lucille@chooselemlist.com>\nwrote:\n\n> hey, if you're a revops or gtm engineer, you should really checkout\n> lemlist mate\n> [image: logo]\n>\n>\n",
+            "email": "bastien.velitchkine@gmail.com",
+            "emailTemplateName": "Blank"
+            }
+        ]
+        ```
+    </Accordion>
+    <Warning>
+        Don't forget to deactivate your workflow while developing, now that you have sample data!
+    </Warning>
+        
+
+## Send the email content to OpenAI for sentiment analysis
+
+This is where things get interesting: let’s create a tiny AI agent (based on an OpenAI) to classify leads’ replies!
+
+1. Start by chaining the AI agent node with your lemlist trigger, selecting the "Define Below" option for your prompt, toggling the "Require Specific Output Format" option, and, finally, adding a "System Message" option to the node:
+    <SnippetVideoFrame
+        src="/images/guides/send-slack-notification-upon-lead-positive-reply/createAiAgent.mp4"
+        caption="creating AI agent node in n8n"
+    />
+    
+2. Fine-tune the AI agent basic configuration, to be similar to this:
+    <Frame>
+        <img src="/images/guides/send-slack-notification-upon-lead-positive-reply/finalAgentConfig.png" alt="AI agent configuration" />
+    </Frame>
+    
+    **Prompt:**
+    ```
+    A BDR at Lemlist received that response from a lead:
+    
+    {{ $json.text }}
+    
+    Is the lead interested or not?
+    ```
+    
+    **System Message:**
+    ```
+    You're a SDR manager at Lemlist, a sales outreach SaaS that makes XDRs more productive.
+    ```
+    
+3. From there, you have two things left to tell the agent:
+    1. what LLM to use (e.g. the least expensive ones from OpenAI because the task at hand is fairly easy)
+        <SnippetVideoFrame
+            src="/images/guides/send-slack-notification-upon-lead-positive-reply/chooseOpenAI.mp4"
+            caption="selecting OpenAI model"
+        />
+        
+    2. that we're expecting a response in json format with a single "interested" key and a boolean value (`true` if the lead is interested, and `false` otherwise) by:
+        1. using the "Structured Output Parser"
+        2. selecting the "Define using JSON schema" option
+        3. and actually defining the response schema
+        <SnippetVideoFrame
+            src="/images/guides/send-slack-notification-upon-lead-positive-reply/defineOutputSchema.mp4"
+            caption="defining output schema" />
+        ```json
+        {
+        	"type": "object",
+        	"properties": {
+        		"interested": {
+        			"type": "boolean"
+        		}
+        	}
+        }
+        ```
+4. Now:
+    1. add a manual trigger node
+    2. use the pinned data from the previous section as mock data in that node
+    3. connect it to your agent
+    4. execute the whole thing
+    5. make sure that you get the desired JSON output with a boolean that makes sense with the email reply (`true` if the email indicated interest, or `false` otherwise)
+        <SnippetVideoFrame
+            src="/images/guides/send-slack-notification-upon-lead-positive-reply/testAiAgent.mp4"
+            caption="testing AI agent"
+        />
+        Good?
+        **Pin the agent output** and move on.
+    
+
+## Mark the lead as interest or not in lemlist
+
+> “Wait, why even bother? We only want to send a notification in Slack right?”
+
+Well, yes, but:
+
+- first, marking leads as (not) interested in lemlist is essential to analyse your campaign performances within lemlist
+    <Frame caption="Someone (or something) needs to mark leads as interested or not to get these kinds of metrics and methodically improve your campaign">
+        <img src="/images/guides/send-slack-notification-upon-lead-positive-reply/interestedStats.png" alt="lemlist campaign metrics" />
+    </Frame>
+- and, second, since we have already done the heavy lifting (classifying the replies as interested or not), we might as well mark them accordingly in lemlist — it’s an API call away: [this endpoint to mark lead as interested](../../api-reference/endpoints/leads/mark-lead-as-interested) or [this one to mark them as not interested](../../api-reference/endpoints/leads/mark-lead-as-not-interested).
+
+So, here's what you'll do:
+1. make your workflow branch out depending on the agent's response:
+    1. one branch for interested leads
+    2. another for non interested leads
+    <SnippetVideoFrame
+        src="/images/guides/send-slack-notification-upon-lead-positive-reply/branchOutOnAiResponse.mp4"
+        caption="branching workflow based on AI response" />
+2. In the first branch, you'll add a new http node to make a [custom api call to the first endpoint](../../api-reference/endpoints/leads/mark-lead-as-interested)
+    <SnippetVideoFrame
+        src="/images/guides/send-slack-notification-upon-lead-positive-reply/markLeadAsInterested.mp4"
+        caption="Use the API reference playground to copy the curl of the request and paste it in the n8n node"
+    />
+3. Same thing in the second branch, with the endpoint [to mark leads as not interested](../../api-reference/endpoints/leads/mark-lead-as-not-interested).
+4. Finally, execute the workflow, check the results, pin the new output and move on.
+    <SnippetVideoFrame
+        src="/images/guides/send-slack-notification-upon-lead-positive-reply/markLeadAsInterestedInLemlist.mp4"
+        caption="executing workflow to mark lead in lemlist"
+    />
+    
+
+## Build a SDR-friendly notification and send it in a Slack channel
+
+Here we are, last step of this tutorial! We’ll do two things:
+1. manufacture a beautiful notification using [Slack’s Block Kit Builder](https://app.slack.com/block-kit-builder)
+2. send it in the dedicated channel in your slack workspace
+
+### Craft a SDR-friendly notification
+
+1. Use <a href="https://app.slack.com/block-kit-builder/T0671GBHXC2#%7B%22blocks%22:%5B%7B%22type%22:%22header%22,%22text%22:%7B%22type%22:%22plain_text%22,%22text%22:%22%F0%9F%92%99%20New%20interested%20lead%20in%20lemlist!%22,%22emoji%22:true%7D%7D,%7B%22type%22:%22divider%22%7D,%7B%22type%22:%22section%22,%22fields%22:%5B%7B%22type%22:%22mrkdwn%22,%22text%22:%22*Campaign:*%5Cn%3Chttps://app.lemlist.com/teams/team-id/campaigns-next/campaign-id/sequences/sequence-id/overview%7CEMEA%20RevOps%20Engage%3E%22%7D,%7B%22type%22:%22mrkdwn%22,%22text%22:%22*Sender:*%5Cnlucas-perret@on-linkedin.com%20;)%22%7D%5D%7D,%7B%22type%22:%22section%22,%22fields%22:%5B%7B%22type%22:%22mrkdwn%22,%22text%22:%22*Lead%20Email:*%5Cn%3Cmailto:bastien@bvelitchkine.com%7Cbastien@bvelitchkine.com%3E%22%7D,%7B%22type%22:%22mrkdwn%22,%22text%22:%22*LinkedIn%20URL:*%5Cn%3Chttps://www.linkedin.com/in/bvelitchkine%7Chttps://www.linkedin.com/in/bvelitchkine%3E%22%7D%5D%7D,%7B%22type%22:%22section%22,%22text%22:%7B%22type%22:%22mrkdwn%22,%22text%22:%22*Reply%20preview:*%5Cn%3E%20Hey%20Lucas,%20i've%20hear%20only%20good%20things%20about%20lemlist,%20let's%20talk!%20Here's%20my%20calendar:%20https://calendar.notion.so/meet/bvelitchkine/growth-eng.%20Cheers%20%E2%9C%8C%EF%B8%8F%22%7D%7D,%7B%22type%22:%22actions%22,%22elements%22:%5B%7B%22type%22:%22button%22,%22text%22:%7B%22type%22:%22plain_text%22,%22text%22:%22Open%20in%20Inbox%22%7D,%22url%22:%22https://app.lemlist.com/teams/*your-team-id*/inbox/list/myConversations/contacts/*the-contact-id*%22,%22style%22:%22primary%22,%22value%22:%22open_inbox%22%7D%5D%7D%5D%7D">the block builder</a> to iterate on the notification and reach the desired result
+    <Frame caption="Here's a SDR-friendly notification suggestion">
+        <img src="/images/guides/send-slack-notification-upon-lead-positive-reply/notificationPreview.png" alt="Slack notification example" />
+    </Frame>
+    
+    <Accordion title="And here's the JSON for that friendly suggestion">
+        
+        ```json
+        {
+        	"blocks": [
+        		{
+        			"type": "header",
+        			"text": {
+        				"type": "plain_text",
+        				"text": "💙 New interested lead in lemlist!",
+        				"emoji": true
+        			}
+        		},
+        		{
+        			"type": "divider"
+        		},
+        		{
+        			"type": "section",
+        			"fields": [
+        				{
+        					"type": "mrkdwn",
+        					"text": "*Campaign:*\n<https://app.lemlist.com/teams/team-id/campaigns-next/campaign-id/sequences/sequence-id/overview|EMEA RevOps Engage>"
+        				},
+        				{
+        					"type": "mrkdwn",
+        					"text": "*Sender:*\nlucas-perret@on-linkedin.com ;)"
+        				}
+        			]
+        		},
+        		{
+        			"type": "section",
+        			"fields": [
+        				{
+        					"type": "mrkdwn",
+        					"text": "*Lead Email:*\n<mailto:bastien@bvelitchkine.com|bastien@bvelitchkine.com>"
+        				},
+        				{
+        					"type": "mrkdwn",
+        					"text": "*LinkedIn URL:*\n<https://www.linkedin.com/in/bvelitchkine|https://www.linkedin.com/in/bvelitchkine>"
+        				}
+        			]
+        		},
+        		{
+        			"type": "section",
+        			"text": {
+        				"type": "mrkdwn",
+        				"text": "*Reply preview:*\n> Hey Lucas, i've hear only good things about lemlist, let's talk! Here's my calendar: https://calendar.notion.so/meet/bvelitchkine/growth-eng. Cheers ✌️"
+        			}
+        		},
+        		{
+        			"type": "actions",
+        			"elements": [
+        				{
+        					"type": "button",
+        					"text": {
+        						"type": "plain_text",
+        						"text": "Open in Inbox"
+        					},
+        					"url": "https://app.lemlist.com/teams/*your-team-id*/inbox/list/myConversations/contacts/*the-contact-id*",
+        					"style": "primary",
+        					"value": "open_inbox"
+        				}
+        			]
+        		}
+        	]
+        }
+        ```
+    </Accordion>
+    And <a href="https://app.slack.com/block-kit-builder/T0671GBHXC2#%7B%22blocks%22:%5B%7B%22type%22:%22header%22,%22text%22:%7B%22type%22:%22plain_text%22,%22text%22:%22%F0%9F%92%99%20New%20interested%20lead%20in%20lemlist!%22,%22emoji%22:true%7D%7D,%7B%22type%22:%22divider%22%7D,%7B%22type%22:%22section%22,%22fields%22:%5B%7B%22type%22:%22mrkdwn%22,%22text%22:%22*Campaign:*%5Cn%3Chttps://app.lemlist.com/teams/team-id/campaigns-next/campaign-id/sequences/sequence-id/overview%7CEMEA%20RevOps%20Engage%3E%22%7D,%7B%22type%22:%22mrkdwn%22,%22text%22:%22*Sender:*%5Cn%3C@U03EY179K0S%3E%22%7D%5D%7D,%7B%22type%22:%22section%22,%22fields%22:%5B%7B%22type%22:%22mrkdwn%22,%22text%22:%22*Lead%20Email:*%5Cn%3Cmailto:bastien@bvelitchkine.com%7Cbastien@bvelitchkine.com%3E%22%7D,%7B%22type%22:%22mrkdwn%22,%22text%22:%22*LinkedIn%20URL:*%5Cn%3Chttps://www.linkedin.com/in/bvelitchkine%7Chttps://www.linkedin.com/in/bvelitchkine%3E%22%7D%5D%7D,%7B%22type%22:%22section%22,%22text%22:%7B%22type%22:%22mrkdwn%22,%22text%22:%22*Reply%20preview:*%5Cn%3E%20Hey%20Lucas,%20i've%20hear%20only%20good%20things%20about%20lemlist,%20let's%20talk!%20Here's%20my%20calendar:%20https://calendar.notion.so/meet/bvelitchkine/growth-eng.%20Cheers%20%E2%9C%8C%EF%B8%8F%22%7D%7D,%7B%22type%22:%22actions%22,%22elements%22:%5B%7B%22type%22:%22button%22,%22text%22:%7B%22type%22:%22plain_text%22,%22text%22:%22Open%20in%20Inbox%22%7D,%22url%22:%22https://app.lemlist.com/teams/*your-team-id*/inbox/list/myConversations/contacts/*the-contact-id*%22,%22style%22:%22primary%22,%22value%22:%22open_inbox%22%7D%5D%7D%5D%7D">here’s where you must go</a> first, should you want to modify that notification ;)
+        
+2. Once you’re happy, add a “Edit Fields (Set)” node in your n8n workflow to extract all the variables required by above notification, namely:
+    - lemlist_team_id
+    - lemlist_campaign_id
+    - lemlist_campaign_name
+    - lemlist_lead_id
+    - lemlist_contact_id_of_the_lead
+    - lead_email
+    - lead_linkedin_url
+    - sender_email
+    - reply_preview
+    - lemlist_sequence_id
+    <SnippetVideoFrame
+        src="/images/guides/send-slack-notification-upon-lead-positive-reply/extractVariablesOfInterest.mp4"
+        caption="Obviously do the same for all other variables (and change 'item' to 'first()' when needed)." />
+    
+3. Again, execute the node and **pin the data**.
+
+### Send that notification in Slack
+
+1. Finally drop a "send message" Slack node in the n8n workflow, and configure it to send a message to yourself, as blocks:
+    <SnippetVideoFrame
+        src="/images/guides/send-slack-notification-upon-lead-positive-reply/configureSlackNode.mp4"
+        caption="configuring Slack node"
+    />
+2. Then, add the JSON blocks manufactured in the previous section in the dedicated area of the node, wrapped in a `JSON.stringify()` expression.
+    <SnippetVideoFrame
+        src="/images/guides/send-slack-notification-upon-lead-positive-reply/blocksWrappedInJSONStringify.mp4"
+        caption="wrapping blocks in JSON.stringify"
+    />
+3. And then inject variables where needed (you will need to use [javascript template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals)):
+    <Accordion title="Here’s the final n8n expression">
+        > Pay attention to `JSON.stringify()` and all the template litterals!
+        
+        ```jsx
+        {{ JSON.stringify({
+        	"blocks": [
+        		{
+        			"type": "header",
+        			"text": {
+        				"type": "plain_text",
+        				"text": "💙 New interested lead in lemlist!",
+        				"emoji": true
+        			}
+        		},
+        		{
+        			"type": "divider"
+        		},
+        		{
+        			"type": "section",
+        			"fields": [
+        				{
+        					"type": "mrkdwn",
+        					"text": `*Campaign:*\n<https://app.lemlist.com/teams/${$json.lemlist_team_id}/campaigns-next/${$json.lemlist_campaign_id}/sequences/${$json.lemlist_sequence_id}/overview|${$json.lemlist_campaign_name}>`
+        				},
+        				{
+        					"type": "mrkdwn",
+        					"text": `*Sender:*\n${$json.sender_email}`
+        				}
+        			]
+        		},
+        		{
+        			"type": "section",
+        			"fields": [
+        				{
+        					"type": "mrkdwn",
+        					"text": `*Lead Email:*\n<mailto:${$json.lead_email}|${$json.lead_email}>`
+        				},
+        				{
+        					"type": "mrkdwn",
+        					"text": `*LinkedIn URL:*\n<${$json.lead_linkedin_url}|${$json.lead_linkedin_url}>`
+        				}
+        			]
+        		},
+        		{
+        			"type": "section",
+        			"text": {
+        				"type": "mrkdwn",
+        				"text": `*Reply preview:*\n> ${$json.reply_preview}`
+        			}
+        		},
+        		{
+        			"type": "actions",
+        			"elements": [
+        				{
+        					"type": "button",
+        					"text": {
+        						"type": "plain_text",
+        						"text": "Open in Inbox"
+        					},
+        					"url": `https://app.lemlist.com/teams/${$json.lemlist_team_id}/inbox/list/myConversations/contacts/${$json.lemlist_contact_id_of_the_lead}`,
+        					"style": "primary",
+        					"value": "open_inbox"
+        				}
+        			]
+        		}
+        	]
+        }) }}
+        ```
+    </Accordion>
+4. Now, send the notification first to yourself, and once satisfied, change the node parameters so that future notifications are sent to the dedicated channel
+5. Don’t forget to activate the workflow!
+
+<Accordion title="BONUS 👀">
+    
+    See how we're injecting the sender's email in the notification? Well, ideally, we'd like to **tag** the corresponding Slack user so that they're specifically notified in Slack.
+    
+    So here's your home assignment ;) try and tag that slack user, with a notification that looks slightly different:
+    <Frame>
+        <img src="/images/guides/send-slack-notification-upon-lead-positive-reply/notificationWithUserTag.png" alt="Slack notification with user tag" />
+    </Frame>
+</Accordion>
+
+# That's all folks!
+
+<SnippetDownloadWorkflows />
+
+Anyway, if you found that guide easy to follow, i suggest you move on to this one: <a href="/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode">**Adding leads in a lemlist campaign in auto launch mode**</a>. It's a nice complement to what you just built honestly.

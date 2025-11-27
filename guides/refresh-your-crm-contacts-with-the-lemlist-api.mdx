@@ -1,0 +1,297 @@
+---
+title: "Refresh your CRM contacts with the lemlist API"
+description: "Learn how to automatically enrich your CRM contacts every 6 months using lemlist's enrichment API and track career changes"
+---
+
+import SnippetLemlistN8nIntegration from '/snippets/snippet-lemlist-n8n-integration.mdx';
+import SnippetDownloadWorkflows from '/snippets/snippet-download-n8n-workflows.mdx';
+import { SnippetVideoFrame } from '/snippets/snippet-video-frame.jsx';
+
+# What you'll learn in this guide
+
+How to:
+
+- prepare your CRM for repeated automatic enrichments
+- query your CRM to always refresh the most relevant contact first
+- enrich relevant contacts with lemlist's enrichment API
+- update your CRM records depending on whether the contact changed positions or not
+
+# Imagine…
+
+Imagine if you knew when contacts working at client companies started working for a company that’s not your client yet ;) it would definitely warrant an outreach like:
+
+> Hey `firstName`, i hope you’re doing ok. I just went on LinkedIn and realized you weren’t working for `companyName` anymore. Why did you leave?
+
+The crux of the matter now, is to refresh your CRM contacts on a regular basis to know when such a career change occurs.
+
+# Refresh your CRM Contacts automatically every 6 months
+
+## Overview
+
+We want to:
+
+- refresh the LinkedIn information of CRM contacts with [this endpoint from the lemlist API](../../api-reference/endpoints/enrich/enrich-data) (every 6 months for instance — enough time for them to have changed jobs or companies). We could even look for contacts' phone numbers and emails if we don't have them already.
+- update their information, based on the result of the LinkedIn enrichment, and **update the date of the last enrichment** (which will help us make sure that we always refresh the contacts that have not been enriched for the longest time)
+- and then, if the contact changed companies (judging by the company domain), we want to:
+    - insert the company in the CRM (if it’s not there yet)
+    - associate the contact to its new company
+
+I’ll write this guide assuming that:
+
+1. you’re using HubSpot CRM
+2. that you’re saving the LinkedIn profile URLs of a significant portion of your contacts
+
+Of course, not all of you use HubSpot, but the underlying principles remain the same, no matter the CRM. Read your CRM platform’s developer docs to adapt this user guide to your particular case.
+
+Here are the developer docs of a few common CRMs:
+
+- [HubSpot](https://developers.hubspot.com/docs/api-reference/overview)
+- [Salesforce](https://developer.salesforce.com/docs/apis)
+- [Pipedrive](https://developers.pipedrive.com/docs/api/v1)
+- [Attio](https://docs.attio.com/rest-api/overview)
+- [Close](http://developer.close.com/)
+- [Folk](https://developer.folk.app/)
+
+Finally, this is yet another case of automation where we have to connect multiple APIs (HubSpot’s and lemlist’s). So, once again, to bootstrap all these APIs we’ll use my favourite automation tool: n8n!
+
+## Create a new date field in your CRM
+
+If we want to refresh contacts every 6 months, and always enrich the contact that has not been refreshed for the longest time, then **we need to keep track of the enrichment date** somewhere.
+
+Which is why, we need to create a `Last Enrichment Date` field in HubSpot to… keep track of the last enrichment date with the lemlist API 🙃
+
+<SnippetVideoFrame
+    src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/createLastEnrichmentDateFieldsInHubSpot.mp4"
+    caption="creating Last Enrichment Date field in HubSpot"
+/>
+
+<Columns cols={2}>
+    <Frame caption="The final settings">
+        <img src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/finalHubSpotPropertySetting.png" alt="final HubSpot property settings" />
+    </Frame>
+
+    <Frame caption="Don't forget to set the field type">
+        <img src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/finalHubSpotPropertySettingType.png" alt="HubSpot property field type" />
+    </Frame>
+</Columns>
+
+<Warning>
+    Note that our enrichment dates will be null at first, so **we might have to set them all to a date very far in the past** to make sure that *contacts* that have **never** been enriched are refreshed first — before those that have already been enriched once.
+</Warning>
+
+## Query the first contact up for refresh in HubSpot
+
+> Who’s the contact “up for refresh”?
+
+It’s the contact that:
+1. has a LinkedIn Profile URL
+2. has not been refreshed the past 6 months
+3. has not been refreshed for the longest time
+
+Now let us:
+1. Go to n8n and create a new workflow with a Schedule node as trigger.
+    Let’s assume that we have 2 196 contacts (because why not 🌝). We said that we wanted to refresh them all every 6 months i.e. (3 * 30 + 3 * 31) * 24 hours = 4 392 hours.
+    Since 4 392 / 2 196 = 2, it means that we should schedule the trigger to launch every 2 hours BUT the number of contacts in the CRM with a LinkedIn URL might grow in the next few months, so let’s add a buffer by **launching once an hour**.
+    It will take 3 months to refresh everyone right now, but it could take more time as the number of contacts increases.
+    <SnippetVideoFrame
+        src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/addScheduleTrigger.mp4"
+        caption="adding schedule trigger in n8n"
+    />
+2. Chain a HTTP node to your trigger to perform [a custom API call to HubSpot](https://developers.hubspot.com/docs/api-reference/search/guide#filter-search-results). If you’re connecting n8n to HubSpot for the first time, read [this doc](https://docs.n8n.io/integrations/builtin/credentials/hubspot/?utm_source=n8n_app&utm_medium=credential_settings&utm_campaign=create_new_credentials_modal#related-resources) to authenticate properly (in the future, i’ll assume that you’re using App Token auth)
+    > Why not use the default Search Contacts HubSpot node in n8n?
+    Because it does not allow to filter on our newly created Last Enrichment Date unfortunately.
+    <Accordion title="HubSpot search curl example">
+    ```jsx
+    curl https://api.hubapi.com/crm/v3/objects/contacts/search \
+    --request POST \
+    --header "Content-Type: application/json" \
+    --header "authorization: Bearer YOUR_ACCESS_TOKEN" \
+    --data '{
+    "filterGroups": [
+        {
+        "filters": [
+            {
+            "propertyName": "firstname",
+            "operator": "EQ",
+            "value": "Alice"
+            },
+            {
+            "propertyName": "lastname",
+            "operator": "NEQ",
+            "value": "Smith"
+            }
+        ]
+        },
+        {
+        "filters": [
+            {
+            "propertyName": "email",
+            "operator": "NOT_HAS_PROPERTY"
+            }
+        ]
+        }
+    ]
+    }'
+    ```
+    </Accordion>
+    <SnippetVideoFrame
+        src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/importCurlInHTTPNode.mp4"
+        caption="importing curl in HTTP node"
+    />
+3. Let's adapt the filters to our specific case.
+    We want:
+    1. profiles with a LinkedIn URL that have never been refreshed
+    2. or profiles with a LinkedIn URL that have been refreshed more than 6mo ago
+    And we want:
+    1. results sorted by ascending order of refresh date (if any)
+    2. limited to the first result only
+    Which translates into the following **expression** in our HTTP node:
+    <Accordion title="n8n HTTP node expression">
+        ```jsx
+        {{
+        	JSON.stringify({
+        	  "filterGroups": [
+        	      {
+        	        "filters": [
+        	          {
+        	            "propertyName": "last_enrichment_date",
+        	            "operator": "LTE",
+        	            "value": $now.minus({month: 6}).toISO()
+        	          },
+        	          {
+        	            "propertyName": "linkedin_account",
+        	            "operator": "HAS_PROPERTY"
+        	          }
+        	        ]
+        	      },
+        	      {
+        	        "filters": [
+        	          {
+        	            "propertyName": "last_enrichment_date",
+        	            "operator": "NOT_HAS_PROPERTY"
+        	          },
+        	          {
+        	            "propertyName": "linkedin_account",
+        	            "operator": "HAS_PROPERTY"
+        	          }
+        	        ]
+        	      }
+        	    ],
+        		"sorts": [
+        		{
+        	      "propertyName": "last_enrichment_date",
+        	      "direction": "ASCENDING"
+        	  }
+        	  ],
+        	  "properties": ["name", "firstname", "lastname", "email", "jobtitle", "linkedin_account", "company"],
+        	  "limit": 1
+        	})
+        }}
+        ```
+    </Accordion>
+    <SnippetVideoFrame
+        src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/updateContactSearchFilters.mp4"
+        caption="Finish by executing the node and pinning results."
+    />
+
+
+## Get associated company data
+
+We just reached a big milestone, but we’re not done. You’ll notice that, by default, HubSpot’s search endpoint returns little data on the company associated to the contact.
+
+> Why do we need company data anyway?
+
+Because, ultimately, we want to enrich the contact and check if they’ve changed companies by comparing their website domains. Soooo… we need the associated company’s website domain.
+
+Here's how to fall back on our feet:
+1. Chain a "Get Contact" HubSpot node to the our existing workflow. This time, the default n8n node will do just fine:
+    <SnippetVideoFrame
+        src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/getContactsAssociatedCompany.mp4"
+        caption="It will give us the ID of the associated company. Make sure to test the node and pin its result."
+    />
+2. Which is why we'll also chain a "Get Company" node to the "Get Contact" one. And this one will finally give us the company's domain.
+    <SnippetVideoFrame
+        src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/getAssociatedCompanyDetails.mp4"
+        caption="Make sure to test that node too and pin its result before moving on."
+    />
+
+## Enrich the contact with the lemlist API
+
+As i said during the introduction, i’m trying to “LinkedIn-enrich” my CRM contacts. That’s why i specifically queried a CRM contact with a LinkedIn URL — knowing that LinkedIn is the best enrichment source for job changes.
+
+It’s time to use [the lemlist enrichment endpoint](../../api-reference/endpoints/enrich/enrich-data?playground=open) to get that data. Here’s the thing though: data enrichment is asynchronous, meaning that by default, the endpoint won’t return the enrichment result. It will return an id that you can use later on to query [this other endpoint](../../api-reference/endpoints/enrich/get-enrichment-result?playground=open).
+
+Alternatively, **in the first endpoint**, you can send a webhook url in your query so that lemlist returns the enrichment results automatically upon completion. That’s what we’ll do here. It will save us a lot of time and complexity.
+
+That being said, the lemlist default node won’t let you set a webhook url, which is why we’ll have to use a custom API call again. So:
+
+1. [Go to the playground](../../api-reference/endpoints/enrich/enrich-data), set random parameters (including a webhook URL), copy the curl and, again, import it in a HTTP node chained at the end of your workflow:
+    <SnippetVideoFrame
+        src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/customLemlistEnrichDataRequest.mp4"
+        caption="Replace your makeshift variables with the data from your 'Contact Search' node but **do NOT execute that node yet**."
+    />
+2. Then — and **that's the trick** — add a "Wait" node to the workflow and select the "Resume on webhook call" option. You get the gist: the workflow won't resume until the lemlist enrichment is done and the workflow received enrichment results! How convenient 😌
+    <SnippetVideoFrame
+        src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/addWaitForWebhookCallNode.mp4"
+        caption="adding wait for webhook call node"
+    />
+3. Once the wait node added, go back to the HTTP Node, and set the webhook url parameter to the following expression: `{{ $execution.resumeUrl }}`
+4. Finally, execute the whole workflow (with pinned data in the first nodes) and let magic happen. It shouldn’t take long for lemlist to send back the enriched data ;) Don’t forget to pin the enrichment data!
+
+## Compare old and new company
+
+Chain an "if" node to the workflow, configured as such to check whether the contact has changed companies or not:
+<Frame>
+    <img src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/ifNewCompanyNodeConfig.png" alt="if node configuration" />
+</Frame>
+
+We're basically making sure that:
+1. the company domain found by lemlist is not empty
+2. **and** that the domain recorded in HubSpot is different from the one we just go
+
+We will branch out depending on the result of that test.
+
+## Update CRM records accordingly
+
+### If the contact changed companies
+
+1. Let's first check if that company exists in the CRM or not with the default "Search company by domain" HubSpot node:
+    <Frame hint="Don't forget to set the node to 'always output data'" caption="This way, even if no result is found in HubSpot, the workflow won't stop.">
+        <img src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/alwaysOutputData.png" alt="always output data setting" />
+    </Frame>
+2. Chain a new "if" node to check whether the input is empty or not
+    <Frame>
+        <img src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/ifEmptyOutput.png" alt="if empty output configuration" />
+    </Frame>
+3. Then, if:
+    1. the output is empty (meaning that the new company isn't in the CRM yet), then create that new company and update the contact association to be associated to that new company
+        <SnippetVideoFrame
+            src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/createCompanyUpdateAssociation.mp4"
+            caption="It should look like this once configured."
+        />        
+    2. the output is not empty, meaning that the company was found in the CRM, and in that case, simply update the contact association to that existing company.
+        <SnippetVideoFrame
+            src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/companyFound.mp4"
+            caption="And look, there's just a small change to operate in our workflow, thanks to the consistent schemas of HubSpot's endpoints."
+        />        
+4. Finally, add another node to update the contact's `Last Enrichment Date`.
+    <SnippetVideoFrame
+        src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/updateLastEnrichmentDate.mp4"
+        caption="You'll understand in the next section why we didn't do it in the same node as the one created at step 3 ;)"
+    /> 
+
+### If the contact didn’t change companies
+
+Then, it couldn't be any simpler, we just need to update the `Last Enrichment Date` on the contact, and that's how:
+<SnippetVideoFrame
+    src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/ifNoCompanyChange.mp4"
+    caption="updating contact when no company change"
+/>
+
+Now you understand why we use a separate node, it's just to not duplicate nodes uselessly in our workflow. Cheers to that! Don't forget to test your workflow and activate it!
+
+# That's all folks!
+
+<SnippetDownloadWorkflows />
+
+Anyway, if you found that guide easy to follow, i suggest you move on to this one: <a href="/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode">**Adding leads in a lemlist campaign in auto launch mode**</a>. It's a nice addition to what we did today.
