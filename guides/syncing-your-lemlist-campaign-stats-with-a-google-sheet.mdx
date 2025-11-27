@@ -5,6 +5,7 @@ description: "Learn how to automatically fetch filtered campaigns and sync their
 
 import SnippetLemlistN8nIntegration from '/snippets/snippet-lemlist-n8n-integration.mdx';
 import SnippetDownloadWorkflows from '/snippets/snippet-download-n8n-workflows.mdx';
+import { SnippetVideoFrame } from '/snippets/snippet-video-frame.jsx';
 
 # What you'll learn in this guide
 
@@ -56,9 +57,9 @@ Here’s how:
         <img src="/images/guides/syncing-your-lemlist-campaign-stats-with-a-google-sheet/scheduleTrigger.png" alt="schedule trigger configuration" />
     </Frame>
 2. Then add the lemlist node "Get many campaigns" to fetch literally **all** campaigns in your workspace (we'll filter them afterwards), like so:
-    <Frame caption="Click on 'execute the node' and pin the results.">
-        <img src="/images/guides/syncing-your-lemlist-campaign-stats-with-a-google-sheet/fetchAllCampaigns.gif" alt="fetching all campaigns" />
-    </Frame>
+    <SnippetVideoFrame
+        src="/images/guides/syncing-your-lemlist-campaign-stats-with-a-google-sheet/fetchAllCampaigns.mp4"
+        caption="Click on 'execute the node' and pin the results." />
 3. Chain a "Filter" node to your workflow and apply all the filters that make sense for your use case. Here are mine for instance:
     <Frame caption="I want un-archived campaigns, without errors, that have finished and that have been created in the past three years. That's how.">
         <img src="/images/guides/syncing-your-lemlist-campaign-stats-with-a-google-sheet/filterCampaignsNode.png" alt="filter node configuration" />
@@ -69,18 +70,18 @@ Here’s how:
 At the previous step, we fetched relevant campaigns, now it’s time to get their stats:
 
 1. Chain the lemlist node "Get campaign stats" and configure it to retrieve the stats of the input campaigns from their creation dates to today:
-    <Frame>
-        <img src="/images/guides/syncing-your-lemlist-campaign-stats-with-a-google-sheet/getCampaignStatsNode.gif" alt="get campaign stats node configuration" />
-    </Frame>
+    <SnippetVideoFrame
+        src="/images/guides/syncing-your-lemlist-campaign-stats-with-a-google-sheet/getCampaignStatsNode.mp4"
+        caption="get campaign stats node configuration" />
 2. Once configured, execute the node and pin the results. Ultimately, the node should look like this:
     <Frame>
         <img src="/images/guides/syncing-your-lemlist-campaign-stats-with-a-google-sheet/campaignStatsOutput.png" alt="campaign stats node result" />
     </Frame>
     However, with just the results of the node, we lost the info about the corresponding campaign. Which is why we are not done just yet…
 3. Chain a "Merge" node to the workflow like so:
-    <Frame caption="Configure it to merge items based on position.">
-        <img src="/images/guides/syncing-your-lemlist-campaign-stats-with-a-google-sheet/mergeInputAndOutput.gif" alt="merge node configuration" />
-    </Frame>
+    <SnippetVideoFrame
+        src="/images/guides/syncing-your-lemlist-campaign-stats-with-a-google-sheet/mergeInputAndOutput.mp4"
+        caption="Configure it to merge items based on position." />
     <Frame caption="And you'll see in the output that the stats have been merged with the input campaign details.">
         <img src="/images/guides/syncing-your-lemlist-campaign-stats-with-a-google-sheet/mergedOutput.png" alt="merged stats output" />
     </Frame>
@@ -90,16 +91,18 @@ At the previous step, we fetched relevant campaigns, now it’s time to get thei
 ## Drop results in the Google Sheet
 
 1. First, create a blank Google Sheet somewhere in Google Drive and make sure n8n has access to it (here's [the doc](https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.googlesheets/?utm_source=n8n_app&utm_medium=node_settings_modal-credential_link&utm_campaign=n8n-nodes-base.googleSheets) if not) and add headers to the sheet. You need to add them manually beforehand, like this:
-    <Frame caption="cmd+shit+v to paste without formatting, then copy and then special paste the transposed array.">
-        <img src="/images/guides/syncing-your-lemlist-campaign-stats-with-a-google-sheet/copyPasteHeaders.gif" alt="copying and pasting headers in Google Sheet" />
-    </Frame>
+    <SnippetVideoFrame
+        src="/images/guides/syncing-your-lemlist-campaign-stats-with-a-google-sheet/copyPasteHeaders.mp4"
+        caption="cmd+shit+v to paste without formatting, then copy and then special paste the transposed array." />
 2. Then, add a "Append or update Sheet" Google Sheet node to the workflow.
     > “Wait, why *update*?”
-    Because, i’m assuming that you only want the most up-to-date stats in your Google Sheet. If not though, you would simply append results to your Google Sheet and timestamp them.
+    Because, i'm assuming that you only want the most up-to-date stats in your Google Sheet. If not though, you would simply append results to your Google Sheet and timestamp them.
     It's up to you, but from there, i'll assume that you only want the most recent data and hence, need to update rows in your spreadsheet (that's why i had you enter sheet headers manually beforehand by the way).
-    <Frame>
-        <img src="/images/guides/syncing-your-lemlist-campaign-stats-with-a-google-sheet/upsertRowInSheet.gif" alt="upsert row in Google Sheet" />
-    </Frame>
+    
+    <SnippetVideoFrame
+        src="/images/guides/syncing-your-lemlist-campaign-stats-with-a-google-sheet/upsertRowInSheet.mp4"
+        caption="upsert row in Google Sheet" />
+
     Ultimately, this is what your node configuration looks like (when you map columns automatically, which i suggest you do, thanks to the preparation of your spreadsheet at the previous step):
     <Frame caption="The matching column is obviously 'id_' i.e. your campaign id.">
         <img src="/images/guides/syncing-your-lemlist-campaign-stats-with-a-google-sheet/updateRowsInSheetConfig.png" alt="node configuration with matching column" />

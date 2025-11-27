@@ -5,6 +5,7 @@ description: "Learn how to automatically classify lead replies using AI and noti
 
 import SnippetLemlistN8nIntegration from '/snippets/snippet-lemlist-n8n-integration.mdx';
 import SnippetDownloadWorkflows from '/snippets/snippet-download-n8n-workflows.mdx';
+import { SnippetVideoFrame } from '/snippets/snippet-video-frame.jsx';
 
 # What you'll learn in this guide
 
@@ -65,15 +66,17 @@ So, without further ado, let’s build!
 
 1. Head over to n8n and create a new workflow
 2. Search through the list of lemlist triggers for "On emails replied", add it to your wf and make sure that the `isFirst` parameter is set to `true` (otherwise, the workflow will get triggered multiple times if you send emails back and forth with a lead).
-    <Frame>
-        <img src="/images/guides/send-slack-notification-upon-lead-positive-reply/onEmailRepliedTrigger.gif" alt="adding on emails replied trigger in n8n" />
-    </Frame>
+    <SnippetVideoFrame
+        src="/images/guides/send-slack-notification-upon-lead-positive-reply/onEmailRepliedTrigger.mp4"
+        caption="adding on emails replied trigger in n8n"
+    />
     Now your workflow will start each time a lead replies by email to your campaigns, **with the content of their reply as input**. Exactly what we wanted!
     <SnippetLemlistN8nIntegration />
 3. Activate your workflow and activate the option **to save production executions**
-    <Frame>
-        <img src="/images/guides/send-slack-notification-upon-lead-positive-reply/activateSendNotificationWorkflow.gif" alt="activating workflow and saving production executions" />
-    </Frame>
+    <SnippetVideoFrame
+        src="/images/guides/send-slack-notification-upon-lead-positive-reply/activateSendNotificationWorkflow.mp4"
+        caption="activating workflow and saving production executions"
+    />
 4. We still need some input data to develop the rest of our workflow, which is why i had you activate the workflow and save production executions at step 3. Now, you can either:
     - wait for a lead to actually reply to one of your campaigns (could be long)
     - create a test campaign, send an email to yourself and reply to it like a lead would
@@ -138,9 +141,10 @@ So, without further ado, let’s build!
 This is where things get interesting: let’s create a tiny AI agent (based on an OpenAI) to classify leads’ replies!
 
 1. Start by chaining the AI agent node with your lemlist trigger, selecting the "Define Below" option for your prompt, toggling the "Require Specific Output Format" option, and, finally, adding a "System Message" option to the node:
-    <Frame>
-        <img src="/images/guides/send-slack-notification-upon-lead-positive-reply/createAiAgent.gif" alt="creating AI agent node in n8n" />
-    </Frame>
+    <SnippetVideoFrame
+        src="/images/guides/send-slack-notification-upon-lead-positive-reply/createAiAgent.mp4"
+        caption="creating AI agent node in n8n"
+    />
     
 2. Fine-tune the AI agent basic configuration, to be similar to this:
     <Frame>
@@ -163,17 +167,18 @@ This is where things get interesting: let’s create a tiny AI agent (based on a
     
 3. From there, you have two things left to tell the agent:
     1. what LLM to use (e.g. the least expensive ones from OpenAI because the task at hand is fairly easy)
-        <Frame>
-            <img src="/images/guides/send-slack-notification-upon-lead-positive-reply/chooseOpenAI.gif" alt="selecting OpenAI model" />
-        </Frame>
+        <SnippetVideoFrame
+            src="/images/guides/send-slack-notification-upon-lead-positive-reply/chooseOpenAI.mp4"
+            caption="selecting OpenAI model"
+        />
         
     2. that we're expecting a response in json format with a single "interested" key and a boolean value (`true` if the lead is interested, and `false` otherwise) by:
         1. using the "Structured Output Parser"
         2. selecting the "Define using JSON schema" option
         3. and actually defining the response schema
-        <Frame>
-            <img src="/images/guides/send-slack-notification-upon-lead-positive-reply/defineOutputSchema.gif" alt="defining output schema" />
-        </Frame>
+        <SnippetVideoFrame
+            src="/images/guides/send-slack-notification-upon-lead-positive-reply/defineOutputSchema.mp4"
+            caption="defining output schema" />
         ```json
         {
         	"type": "object",
@@ -190,9 +195,10 @@ This is where things get interesting: let’s create a tiny AI agent (based on a
     3. connect it to your agent
     4. execute the whole thing
     5. make sure that you get the desired JSON output with a boolean that makes sense with the email reply (`true` if the email indicated interest, or `false` otherwise)
-        <Frame>
-            <img src="/images/guides/send-slack-notification-upon-lead-positive-reply/testAiAgent.gif" alt="testing AI agent" />
-        </Frame>
+        <SnippetVideoFrame
+            src="/images/guides/send-slack-notification-upon-lead-positive-reply/testAiAgent.mp4"
+            caption="testing AI agent"
+        />
         Good?
         **Pin the agent output** and move on.
     
@@ -209,22 +215,24 @@ Well, yes, but:
     </Frame>
 - and, second, since we have already done the heavy lifting (classifying the replies as interested or not), we might as well mark them accordingly in lemlist — it’s an API call away: [this endpoint to mark lead as interested](../../api-reference/endpoints/leads/mark-lead-as-interested) or [this one to mark them as not interested](../../api-reference/endpoints/leads/mark-lead-as-not-interested).
 
-So, here’s what you’ll do:
+So, here's what you'll do:
 1. make your workflow branch out depending on the agent's response:
     1. one branch for interested leads
     2. another for non interested leads
-    <Frame>
-        <img src="/images/guides/send-slack-notification-upon-lead-positive-reply/branchOutOnAiResponse.gif" alt="branching workflow based on AI response" />
-    </Frame>
+    <SnippetVideoFrame
+        src="/images/guides/send-slack-notification-upon-lead-positive-reply/branchOutOnAiResponse.mp4"
+        caption="branching workflow based on AI response" />
 2. In the first branch, you'll add a new http node to make a [custom api call to the first endpoint](../../api-reference/endpoints/leads/mark-lead-as-interested)
-    <Frame caption="Use the API reference playground to copy the curl of the request and paste it in the n8n node">
-        <img src="/images/guides/send-slack-notification-upon-lead-positive-reply/markLeadAsInterested.gif" alt="marking lead as interested" />
-    </Frame>
+    <SnippetVideoFrame
+        src="/images/guides/send-slack-notification-upon-lead-positive-reply/markLeadAsInterested.mp4"
+        caption="Use the API reference playground to copy the curl of the request and paste it in the n8n node"
+    />
 3. Same thing in the second branch, with the endpoint [to mark leads as not interested](../../api-reference/endpoints/leads/mark-lead-as-not-interested).
 4. Finally, execute the workflow, check the results, pin the new output and move on.
-    <Frame>
-        <img src="/images/guides/send-slack-notification-upon-lead-positive-reply/markLeadAsInterestedInLemlist.gif" alt="executing workflow to mark lead in lemlist" />
-    </Frame>
+    <SnippetVideoFrame
+        src="/images/guides/send-slack-notification-upon-lead-positive-reply/markLeadAsInterestedInLemlist.mp4"
+        caption="executing workflow to mark lead in lemlist"
+    />
     
 
 ## Build a SDR-friendly notification and send it in a Slack channel
@@ -321,22 +329,24 @@ Here we are, last step of this tutorial! We’ll do two things:
     - sender_email
     - reply_preview
     - lemlist_sequence_id
-    <Frame caption="Obviously do the same for all other variables (and change 'item' to 'first()' when needed).">
-        <img src="/images/guides/send-slack-notification-upon-lead-positive-reply/extractVariablesOfInterest.gif" alt="extracting variables of interest" />
-    </Frame>
+    <SnippetVideoFrame
+        src="/images/guides/send-slack-notification-upon-lead-positive-reply/extractVariablesOfInterest.mp4"
+        caption="Obviously do the same for all other variables (and change 'item' to 'first()' when needed)." />
     
 3. Again, execute the node and **pin the data**.
 
 ### Send that notification in Slack
 
 1. Finally drop a "send message" Slack node in the n8n workflow, and configure it to send a message to yourself, as blocks:
-    <Frame>
-        <img src="/images/guides/send-slack-notification-upon-lead-positive-reply/configureSlackNode.gif" alt="configuring Slack node" />
-    </Frame>
+    <SnippetVideoFrame
+        src="/images/guides/send-slack-notification-upon-lead-positive-reply/configureSlackNode.mp4"
+        caption="configuring Slack node"
+    />
 2. Then, add the JSON blocks manufactured in the previous section in the dedicated area of the node, wrapped in a `JSON.stringify()` expression.
-    <Frame>
-        <img src="/images/guides/send-slack-notification-upon-lead-positive-reply/blocksWrappedInJSONStringify.gif" alt="wrapping blocks in JSON.stringify" />
-    </Frame>
+    <SnippetVideoFrame
+        src="/images/guides/send-slack-notification-upon-lead-positive-reply/blocksWrappedInJSONStringify.mp4"
+        caption="wrapping blocks in JSON.stringify"
+    />
 3. And then inject variables where needed (you will need to use [javascript template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals)):
     <Accordion title="Here’s the final n8n expression">
         > Pay attention to `JSON.stringify()` and all the template litterals!

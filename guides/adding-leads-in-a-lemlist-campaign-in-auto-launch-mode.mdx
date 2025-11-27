@@ -5,6 +5,7 @@ description: "Learn how to add leads to your lemlist campaign automatically when
 
 import SnippetLemlistN8nIntegration from '/snippets/snippet-lemlist-n8n-integration.mdx';
 import SnippetDownloadWorkflows from '/snippets/snippet-download-n8n-workflows.mdx';
+import { SnippetVideoFrame } from '/snippets/snippet-video-frame.jsx';
 
 # What you’ll learn in this guide
 
@@ -45,18 +46,21 @@ If you leverage the lemlist API, this is all fairly easy, you’ll have to:
 ## Create a lemlist campaign in auto launch mode
 
 1. Head over to lemlist, create a new campaign and activate the “auto launch” mode
-    <Frame caption="That’s how you’ll skip reviewing every single lead catapulted in your campaign">
-        <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/createAutoLaunchCampaign.gif" alt="creating a campaign in auto launch mode in lemlist" />
-    </Frame>
+    <SnippetVideoFrame
+        caption="That’s how you’ll skip reviewing every single lead catapulted in your campaign"
+        alt="creating a campaign in auto launch mode in lemlist"
+        src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/createAutoLaunchCampaign.mp4"
+    />
     <Warning>
-        Be extra cautious though, if you activate “auto launch”, you must make sure that the leads you add to your campaign are meant to receive your emails.
+        Be extra cautious though, if you activate "auto launch", you must make sure that the leads you add to your campaign are meant to receive your emails.
         
-        Otherwise, you might end up spamming people who didn’t agree to receive your emails, which could lead to your lemlist account being suspended.
+        Otherwise, you might end up spamming people who didn't agree to receive your emails, which could lead to your lemlist account being suspended.
     </Warning>
-2. Now, copy the lemlist campaign id and store it somewhere, because you’ll need it later
-    <Frame caption="It looks like this: cam_eMZnxqs9Z9nqGxzwT">
-        <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/copyCampaignId.gif" alt="copying the campaign id in lemlist" />
-    </Frame>
+2. Now, copy the lemlist campaign id and store it somewhere, because you'll need it later
+    <SnippetVideoFrame
+        src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/copyCampaignId.mp4"
+        caption="It looks like this: cam_eMZnxqs9Z9nqGxzwT"
+    />
 
 ## Create a form on a builder like Tally
 
@@ -78,9 +82,10 @@ As you can see, Tally lets you send form data to the webhook of your choice upon
 </Info>
 
 Head over to [Tally](https://tally.so/) and create your form:
-<Frame caption="Make sure it has a mandatory email input.">
-    <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/createTallyForm.gif" alt="creating a form in Tally" />
-</Frame>
+<SnippetVideoFrame
+    src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/createTallyForm.mp4"
+    caption="Make sure it has a mandatory email input."
+/>
 
 ## Connect the form builder to lemlist with n8n
 
@@ -107,9 +112,10 @@ Said differently, you can have n8n automations run when its webhooks receive dat
     a. set its slug to something readable
     b. set the method to POST
 
-<Frame caption="Again, pay special attention to the HTTP method (POST)">
-    <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/createWebhookAsWorkflowTrigger.gif" alt="adding webhook trigger to n8n workflow" />
-</Frame>
+<SnippetVideoFrame
+    src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/createWebhookAsWorkflowTrigger.mp4"
+    caption="Again, pay special attention to the HTTP method (POST)"
+/>
 
 
 ### Have Tally send the form data to the n8n webhook
@@ -117,15 +123,17 @@ Said differently, you can have n8n automations run when its webhooks receive dat
 1. Copy the webhook **TEST** url in n8n
 2. Head over to tally and publish your form (you can always edit it later)
 3. Put the **TEST** url in the integrations section of the form
-    <Frame>
-        <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/sendTallyFormDataToN8nWebhook.gif" alt="setting a webhook url in Tally" />
-    </Frame>    
+    <SnippetVideoFrame
+        src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/sendTallyFormDataToN8nWebhook.mp4"
+        caption="setting a webhook url in Tally"
+    />    
 4. Switch to n8n and click on “execute workflow”
 5. Switch back to your form and submit it with your own email address (not someone else’s; not a fake one — we’ll use it later)
 6. Make sure that n8n got the form data and **pin it**!
-    <Frame>
-        <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/testWebhook.gif" alt="triggering n8n webhook with Tally submission" />
-    </Frame>
+    <SnippetVideoFrame
+        src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/testWebhook.mp4"
+        caption="triggering n8n webhook with Tally submission"
+    />
     
 
 ### Have n8n create the lead in the lemlist campaign
@@ -135,16 +143,18 @@ Said differently, you can have n8n automations run when its webhooks receive dat
     <SnippetLemlistN8nIntegration />
 3. Paste the lemlist campaign id copied at the beginning of this guide
 4. Fill the email input with the data coming from Tally, like so:
-    <Frame>
-        <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/createAndSetLemlistNode.gif" alt="adding a create lead in lemlist campaign n8n node" />
-    </Frame>
+    <SnippetVideoFrame
+        src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/createAndSetLemlistNode.mp4"
+        caption="adding a create lead in lemlist campaign n8n node"
+    />
     <Frame caption="Even with a valid lemlist campaign id, you might see this error. Ignore it!">
         <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/lemlistCampaignIdError.png" alt="n8n displays error on lemlist campaign id" />
     </Frame>
 5. Last, but not least, activate the Find Phone option on your Create lead node
-    <Frame caption="This way, lemlist will automatically try to find a phone number for your leads upon addition in a campaign.">
-        <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/activateFindPhoneOption.gif" alt="activating Find Phone option in n8n lemlist node" />
-    </Frame>
+    <SnippetVideoFrame
+        src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/activateFindPhoneOption.mp4"
+        caption="This way, lemlist will automatically try to find a phone number for your leads upon addition in a campaign."
+    />
     
 
 # Give it a try ;)
@@ -152,15 +162,17 @@ Said differently, you can have n8n automations run when its webhooks receive dat
 1. Copy the **PRODUCTION** url of your webhook
 2. Head back to Tally and delete any previous submissions (for the sake of cleanliness)
 3. **Change the url of the webhook to the production url**
-    <Frame>
-        <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/switchTallyWebhookUrlToProduction.gif" alt="switching Tally webhook URL to production" />
-    </Frame>
+    <SnippetVideoFrame
+        src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/switchTallyWebhookUrlToProduction.mp4"
+        caption="switching Tally webhook URL to production"
+    />
 4. Now, publish the n8n workflow
 5. Submit the form again with, say, your personal email address
 6. And head over to the lemlist campaign and ensure that a new lead has been created
-    <Frame caption="Beware, you won't get the email instantaneously if you submitted the form outside your schedule's slots.">
-        <img src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/finalFormSubmissionTest.gif" alt="final form submission test" />
-    </Frame>
+    <SnippetVideoFrame
+        src="/images/guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode/finalFormSubmissionTest.mp4"
+        caption="Beware, you won't get the email instantaneously if you submitted the form outside your schedule's slots."
+    />
     
 
 # That’s all folks!
