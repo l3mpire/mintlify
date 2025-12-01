@@ -5885,7 +5885,7 @@
                                     },
                                     "contactOwner": {
                                         "type": "string",
-                                        "description": "Contact owner ID"
+                                        "description": "Contact owner (user ID or user login email)"
                                     }
                                 }
                             },
