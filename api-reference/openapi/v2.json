@@ -353,6 +353,10 @@
                         "type": "string",
                         "description": "Personalized icebreaker text"
                     },
+                    "timezone": {
+                        "type": "string",
+                        "description": "Lead's timezone in IANA format (e.g., Europe/Paris, America/New_York)"
+                    },
                     "campaignId": {
                         "type": "string",
                         "description": "Campaign ID the lead belongs to"
