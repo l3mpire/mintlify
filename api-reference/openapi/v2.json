@@ -353,6 +353,10 @@
                         "type": "string",
                         "description": "Personalized icebreaker text"
                     },
+                    "timezone": {
+                        "type": "string",
+                        "description": "Lead's timezone in IANA format (e.g., Europe/Paris, America/New_York)"
+                    },
                     "campaignId": {
                         "type": "string",
                         "description": "Campaign ID the lead belongs to"
@@ -5875,9 +5879,13 @@
                                         "type": "string",
                                         "description": "Personalized icebreaker message"
                                     },
+                                    "timezone": {
+                                        "type": "string",
+                                        "description": "Lead's timezone in IANA format (e.g., Europe/Paris, America/New_York)"
+                                    },
                                     "contactOwner": {
                                         "type": "string",
-                                        "description": "Contact owner ID"
+                                        "description": "Contact owner (user ID or user login email)"
                                     }
                                 }
                             },
@@ -5888,7 +5896,9 @@
                                 "companyName": "lemlist",
                                 "jobTitle": "Developer",
                                 "linkedinUrl": "https://www.linkedin.com/in/johndoe",
-                                "phone": "+33 123456789"
+                                "phone": "+33 123456789",
+                                "timezone": "Europe/Paris",
+                                "contactOwner": "login_email@lemlist.com"
                             }
                         }
                     }
