@@ -5897,7 +5897,8 @@
                                 "jobTitle": "Developer",
                                 "linkedinUrl": "https://www.linkedin.com/in/johndoe",
                                 "phone": "+33 123456789",
-                                "timezone": "Europe/Paris"
+                                "timezone": "Europe/Paris",
+                                "contactOwner": "login_email@lemlist.com"
                             }
                         }
                     }
