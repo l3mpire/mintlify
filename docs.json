@@ -83,6 +83,16 @@
         "tab": "API Reference",
         "groups": [
           {
+            "group": "Popular Resources",
+            "pages": [
+              "/api-reference/endpoints/campaigns/create-campaign",
+              "/api-reference/endpoints/leads/create-lead-in-campaign",
+              "/api-reference/endpoints/leads/get-lead-by-email-or-id",
+              "/api-reference/endpoints/enrich/enrich-data",
+              "/api-reference/objects-definitions/database"
+            ]
+          },
+          {
             "group": "Getting started",
             "pages": [
               "api-reference/getting-started/overview",
