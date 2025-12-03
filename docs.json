@@ -83,24 +83,21 @@
         "tab": "API Reference",
         "groups": [
           {
-            "group": "Popular Resources",
-            "pages": [
-              "/api-reference/endpoints/campaigns/create-campaign",
-              "/api-reference/endpoints/leads/create-lead-in-campaign",
-              "/api-reference/endpoints/leads/get-lead-by-email-or-id",
-              "/api-reference/endpoints/enrich/enrich-data",
-              "/api-reference/objects-definitions/database"
-            ]
-          },
-          {
             "group": "Getting started",
             "pages": [
               "api-reference/getting-started/overview",
               "api-reference/getting-started/authentication",
-              "api-reference/getting-started/rate-limits",
-              "api-reference/getting-started/errors",
-              "api-reference/getting-started/version",
-              "api-reference/getting-started/feedback"
+              "api-reference/getting-started/rate-limits"
+            ]
+          },
+          {
+            "group": "Popular Resources",
+            "pages": [
+              "/api-reference/endpoints/leads/create-lead-in-campaign",
+              "/api-reference/endpoints/enrich/enrich-data",
+              "/api-reference/endpoints/people-database/search-people-database",
+              "/api-reference/endpoints/webhooks/add-webhook",
+              "/api-reference/endpoints/leads/get-lead-by-email"
             ]
           },
           {
