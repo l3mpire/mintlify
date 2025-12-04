@@ -880,8 +880,8 @@
                         "type": "string",
                         "description": "Event type to listen for",
                         "enum": [
-                            "contacted", 
-                            "hooked", 
+                            "contacted",
+                            "hooked",
                             "attracted",
                             "warmed",
                             "interested",
@@ -5890,7 +5890,7 @@
                                 }
                             },
                             "example": {
-                                "email":"support@lemlist.com",
+                                "email": "support@lemlist.com",
                                 "firstName": "John",
                                 "lastName": "Doe",
                                 "companyName": "lemlist",
@@ -6235,7 +6235,7 @@
                         "name": "action",
                         "in": "query",
                         "required": false,
-                        "description": "Force the deletion of the lead. Use 'remove' to force delete.",
+                        "description": "Use 'remove' to force delete. Otherwise it will just unsubscribe the lead from the campaign.",
                         "example": "remove",
                         "schema": {
                             "type": "string"
