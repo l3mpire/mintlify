@@ -336,6 +336,7 @@
           {
             "group": "User Guides",
             "pages": [
+              "guides/index",
               "guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode",
               "guides/send-slack-notification-upon-lead-positive-reply",
               "guides/refresh-your-crm-contacts-with-the-lemlist-api",
