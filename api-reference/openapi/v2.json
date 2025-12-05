@@ -6226,7 +6226,7 @@
                 "parameters": []
             },
             "delete": {
-                "summary": "Delete Lead",
+                "summary": "Delete or Unsubscribe Lead",
                 "tags": [
                     "Leads"
                 ],
@@ -6313,6 +6313,92 @@
                                     "campaignId": "cam_9NsHPnykWESTncCW8",
                                     "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
                                     "emailStatus": "deliverable"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Lead not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Lead not found"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/campaigns/{campaignId}/leads/{email}": {
+            "parameters": [
+                {
+                    "name": "campaignId",
+                    "in": "path",
+                    "required": true,
+                    "description": "The unique identifier of the campaign",
+                    "example": "cam_A1B2C3D4E5F6G7H8I9",
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "email",
+                    "in": "path",
+                    "required": true,
+                    "description": "The email of the lead",
+                    "example": "bvelitchkine@gmail.com",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "delete": {
+                "summary": "Unsubscribe Lead from Campaign",
+                "tags": [
+                    "Leads"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "email": {
+                                            "type": "string",
+                                            "format": "email"
+                                        },
+                                        "_id": {
+                                            "type": "string"
+                                        },
+                                        "isPaused": {
+                                            "type": "boolean"
+                                        },
+                                        "campaignId": {
+                                            "type": "string"
+                                        },
+                                        "contactId": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "email": "bvelitchkine@gmail.com",
+                                    "_id": "lea_o3uCcHsibhy9id8qD",
+                                    "isPaused": false,
+                                    "campaignId": "cam_eMZnxqs9Z9nqGxzwT",
+                                    "contactId": "ctc_ARyApP88xS286tgsY"
                                 }
                             }
                         }
