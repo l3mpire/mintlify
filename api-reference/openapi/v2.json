@@ -312,7 +312,7 @@
             },
             "Lead": {
                 "type": "object",
-                "description": "A prospect added to a campaign for outreach.",
+                "description": "A contact added to a campaign for outreach. Not to be confused with a contact which is a record in lemlist, but not necessarily added to a campaign.",
                 "properties": {
                     "_id": {
                         "type": "string",
@@ -544,7 +544,7 @@
             },
             "Contact": {
                 "type": "object",
-                "description": "A contact record in your CRM.",
+                "description": "A contact record in your CRM. Not to be confused with a lead which is a contact specifically added to a campaign.",
                 "properties": {
                     "_id": {
                         "type": "string",
