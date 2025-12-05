@@ -1,11 +1,10 @@
 ---
 openapi: get /team/senders
+description: Retrieves a list of all team members and their associated campaigns.
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="User" objectPath="user" />
-
-This endpoint retrieves a list of all senders in the team along with their associated campaigns.
 
 The response includes details for each sender, such as their user ID and a list of campaigns they are involved in. Each campaign object contains the campaign ID, name, status, and the various sending channels used (e.g., LinkedIn, email). 
 

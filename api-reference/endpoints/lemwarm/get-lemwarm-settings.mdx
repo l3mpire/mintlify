@@ -1,11 +1,10 @@
 ---
 openapi: get /lemwarm/{userMailboxId}/settings
+description: Retrieves lemwarm email deliverability settings for a specific user mailbox.
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Lemwarm Settings" objectPath="lemwarm" />
-
-This endpoint retrieves lemwarm settings for a specific user mailbox.
 
 <Note>
     Use the [Get lemlist User](/api-reference/endpoints/users/get-user) endpoint to find the `userMailboxId` of the user.
