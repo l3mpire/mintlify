@@ -1,11 +1,10 @@
 ---
 openapi: get /campaigns
+description: Retrieves a paginated list of all campaigns in your team.
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Campaign" objectPath="campaign" />
-
-This endpoint retrieves the list of all campaigns.
 
 <Warning>
     Don't forget to set the query parameter version to `version=v2`.

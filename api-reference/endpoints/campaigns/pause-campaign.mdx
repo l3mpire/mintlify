@@ -1,8 +1,9 @@
 ---
 openapi: post /campaigns/{campaignId}/pause
+description: Pauses a running campaign without affecting scheduled leads.
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Campaign" objectPath="campaign" />
 
-This endpoint pauses a running campaign. If the campaign is not running, it simply does nothing.
+If the campaign is not running, it simply does nothing.

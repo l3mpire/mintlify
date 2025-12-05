@@ -1,11 +1,10 @@
 ---
 openapi: get /tasks
+description: Retrieves all pending tasks assigned to your team members.
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Task" objectPath="task" />
-
-Retrieve all pending tasks assigned to your team members.
 
 <Note>
 Tasks marked as done are automatically excluded from results.

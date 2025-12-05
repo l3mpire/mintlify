@@ -7,7 +7,7 @@ import SnippetLemlistN8nIntegration from '/snippets/snippet-lemlist-n8n-integrat
 import SnippetDownloadWorkflows from '/snippets/snippet-download-n8n-workflows.mdx';
 import { SnippetVideoFrame } from '/snippets/snippet-video-frame.jsx';
 
-# What you'll learn in this guide
+## What you'll learn in this guide
 
 How to:
 
@@ -16,7 +16,7 @@ How to:
 - enrich relevant contacts with lemlist's enrichment API
 - update your CRM records depending on whether the contact changed positions or not
 
-# Imagine…
+## Imagine…
 
 Imagine if you knew when contacts working at client companies started working for a company that’s not your client yet ;) it would definitely warrant an outreach like:
 
@@ -24,13 +24,13 @@ Imagine if you knew when contacts working at client companies started working fo
 
 The crux of the matter now, is to refresh your CRM contacts on a regular basis to know when such a career change occurs.
 
-# Refresh your CRM Contacts automatically every 6 months
+## Refresh your CRM Contacts automatically every 6 months
 
-## Overview
+### Overview
 
 We want to:
 
-- refresh the LinkedIn information of CRM contacts with [this endpoint from the lemlist API](../../api-reference/endpoints/enrich/enrich-data) (every 6 months for instance — enough time for them to have changed jobs or companies). We could even look for contacts' phone numbers and emails if we don't have them already.
+- [refresh the LinkedIn information of CRM contacts with this endpoint from the lemlist API](../../api-reference/endpoints/enrich/enrich-data) (every 6 months for instance — enough time for them to have changed jobs or companies). We could even look for contacts' phone numbers and emails if we don't have them already.
 - update their information, based on the result of the LinkedIn enrichment, and **update the date of the last enrichment** (which will help us make sure that we always refresh the contacts that have not been enriched for the longest time)
 - and then, if the contact changed companies (judging by the company domain), we want to:
     - insert the company in the CRM (if it’s not there yet)
@@ -54,7 +54,7 @@ Here are the developer docs of a few common CRMs:
 
 Finally, this is yet another case of automation where we have to connect multiple APIs (HubSpot’s and lemlist’s). So, once again, to bootstrap all these APIs we’ll use my favourite automation tool: n8n!
 
-## Create a new date field in your CRM
+### Create a new date field in your CRM
 
 If we want to refresh contacts every 6 months, and always enrich the contact that has not been refreshed for the longest time, then **we need to keep track of the enrichment date** somewhere.
 
@@ -79,7 +79,7 @@ Which is why, we need to create a `Last Enrichment Date` field in HubSpot to… 
     Note that our enrichment dates will be null at first, so **we might have to set them all to a date very far in the past** to make sure that *contacts* that have **never** been enriched are refreshed first — before those that have already been enriched once.
 </Warning>
 
-## Query the first contact up for refresh in HubSpot
+### Query the first contact up for refresh in HubSpot
 
 > Who’s the contact “up for refresh”?
 
@@ -97,7 +97,7 @@ Now let us:
         src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/addScheduleTrigger.mp4"
         caption="adding schedule trigger in n8n"
     />
-2. Chain a HTTP node to your trigger to perform [a custom API call to HubSpot](https://developers.hubspot.com/docs/api-reference/search/guide#filter-search-results). If you’re connecting n8n to HubSpot for the first time, read [this doc](https://docs.n8n.io/integrations/builtin/credentials/hubspot/?utm_source=n8n_app&utm_medium=credential_settings&utm_campaign=create_new_credentials_modal#related-resources) to authenticate properly (in the future, i’ll assume that you’re using App Token auth)
+2. Chain a HTTP node to your trigger to [perform a custom API call to HubSpot](https://developers.hubspot.com/docs/api-reference/search/guide#filter-search-results). Read this doc, [if you’re connecting n8n to HubSpot for the first time](https://docs.n8n.io/integrations/builtin/credentials/hubspot/?utm_source=n8n_app&utm_medium=credential_settings&utm_campaign=create_new_credentials_modal#related-resources) to authenticate properly (in the future, i’ll assume that you’re using App Token auth)
     > Why not use the default Search Contacts HubSpot node in n8n?
     Because it does not allow to filter on our newly created Last Enrichment Date unfortunately.
     <Accordion title="HubSpot search curl example">
@@ -195,7 +195,7 @@ Now let us:
     />
 
 
-## Get associated company data
+### Get associated company data
 
 We just reached a big milestone, but we’re not done. You’ll notice that, by default, HubSpot’s search endpoint returns little data on the company associated to the contact.
 
@@ -215,17 +215,17 @@ Here's how to fall back on our feet:
         caption="Make sure to test that node too and pin its result before moving on."
     />
 
-## Enrich the contact with the lemlist API
+### Enrich the contact with the lemlist API
 
 As i said during the introduction, i’m trying to “LinkedIn-enrich” my CRM contacts. That’s why i specifically queried a CRM contact with a LinkedIn URL — knowing that LinkedIn is the best enrichment source for job changes.
 
-It’s time to use [the lemlist enrichment endpoint](../../api-reference/endpoints/enrich/enrich-data?playground=open) to get that data. Here’s the thing though: data enrichment is asynchronous, meaning that by default, the endpoint won’t return the enrichment result. It will return an id that you can use later on to query [this other endpoint](../../api-reference/endpoints/enrich/get-enrichment-result?playground=open).
+It’s time to use [the lemlist enrichment endpoint](../../api-reference/endpoints/enrich/enrich-data?playground=open) to get that data. Here’s the thing though: data enrichment is asynchronous, meaning that by default, the endpoint won’t return the enrichment result. It will return an id that you can use later on to query [this other endpoint to get enrichment results](../../api-reference/endpoints/enrich/get-enrichment-result?playground=open).
 
 Alternatively, **in the first endpoint**, you can send a webhook url in your query so that lemlist returns the enrichment results automatically upon completion. That’s what we’ll do here. It will save us a lot of time and complexity.
 
 That being said, the lemlist default node won’t let you set a webhook url, which is why we’ll have to use a custom API call again. So:
 
-1. [Go to the playground](../../api-reference/endpoints/enrich/enrich-data), set random parameters (including a webhook URL), copy the curl and, again, import it in a HTTP node chained at the end of your workflow:
+1. [Go to the lemlist API docs playground](../../api-reference/endpoints/enrich/enrich-data), set random parameters (including a webhook URL), copy the curl and, again, import it in a HTTP node chained at the end of your workflow:
     <SnippetVideoFrame
         src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/customLemlistEnrichDataRequest.mp4"
         caption="Replace your makeshift variables with the data from your 'Contact Search' node but **do NOT execute that node yet**."
@@ -238,7 +238,7 @@ That being said, the lemlist default node won’t let you set a webhook url, whi
 3. Once the wait node added, go back to the HTTP Node, and set the webhook url parameter to the following expression: `{{ $execution.resumeUrl }}`
 4. Finally, execute the whole workflow (with pinned data in the first nodes) and let magic happen. It shouldn’t take long for lemlist to send back the enriched data ;) Don’t forget to pin the enrichment data!
 
-## Compare old and new company
+### Compare old and new company
 
 Chain an "if" node to the workflow, configured as such to check whether the contact has changed companies or not:
 <Frame>
@@ -251,9 +251,9 @@ We're basically making sure that:
 
 We will branch out depending on the result of that test.
 
-## Update CRM records accordingly
+### Update CRM records accordingly
 
-### If the contact changed companies
+#### If the contact changed companies
 
 1. Let's first check if that company exists in the CRM or not with the default "Search company by domain" HubSpot node:
     <Frame hint="Don't forget to set the node to 'always output data'" caption="This way, even if no result is found in HubSpot, the workflow won't stop.">
@@ -280,7 +280,7 @@ We will branch out depending on the result of that test.
         caption="You'll understand in the next section why we didn't do it in the same node as the one created at step 3 ;)"
     /> 
 
-### If the contact didn’t change companies
+#### If the contact didn’t change companies
 
 Then, it couldn't be any simpler, we just need to update the `Last Enrichment Date` on the contact, and that's how:
 <SnippetVideoFrame
@@ -290,7 +290,7 @@ Then, it couldn't be any simpler, we just need to update the `Last Enrichment Da
 
 Now you understand why we use a separate node, it's just to not duplicate nodes uselessly in our workflow. Cheers to that! Don't forget to test your workflow and activate it!
 
-# That's all folks!
+## That's all folks!
 
 <SnippetDownloadWorkflows />
 

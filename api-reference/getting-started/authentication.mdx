@@ -1,6 +1,6 @@
 ---
 title: 'Authentication'
-description: 'How to authenticate with the API.'
+description: 'Learn how to authenticate with the lemlist API.'
 ---
 import SnippetFeedback from '/snippets/snippet-feedback.mdx';
 
@@ -8,7 +8,7 @@ import SnippetFeedback from '/snippets/snippet-feedback.mdx';
 <span style={{ color: '#ff8080', fontWeight: 'bold' }}>We use BASIC authentication NOT bearer.</span>
 
 Pay special attention to the following:
-- You must use HTTP **BASIC** authentication (more [below](#authenticate)).
+- [You must use HTTP **BASIC** authentication](#authenticate).
 - The *login* (username) is **always empty**.
 - The *password* is **your API key**.
 - <span style={{ color: '#ff8080', fontWeight: 'bold' }}>THERE IS A COLON</span> before your API key.
@@ -20,13 +20,13 @@ Read on to learn:
 
 ## Grab your API key
 
-1. head over to [lemlist](https://app.lemlist.com)
+1. [head over to lemlist](https://app.lemlist.com)
 2. click on your profile picture in the bottom left-hand corner and click on *Settings*
 3. go to the *Integrations* tab
 4. click on *Generate a new API key*
 5. store it securely because **you won't be able to see it again**
 
-![Generating a New API Key](/images/getting-started/authentication/generateLemlistAPIKey.gif)
+![Generating a new lemlist API key](/images/getting-started/authentication/generateLemlistAPIKey.gif)
 
 > Of course, never - ever - share your API key. Treat it like a password.
 
@@ -40,9 +40,9 @@ But not just like that.
 They must be **Base64 encoded** and passed in the Authorization header of all your requests.
 
 Step by step, this is how to authenticate to our API:
-1. you get an API key (cf. [above](#grab-your-api-key))
+1. you [get an API key](#grab-your-api-key)
 2. you build the string `:YourApiKey` (YES, colon at the start)
-3. you Base64 encode that `:YourApiKey` string ([this is how in Javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/toBase64))
+3. you Base64 encode that `:YourApiKey` string ([this is how to base64-encode a string in Javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/toBase64))
 4. you pass the encoded result in the Authorization header of all requests with the prefix "Basic ".
 
 In the end, a curl request to any `endpoint` in the API will look similar to this:

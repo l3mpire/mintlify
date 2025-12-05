@@ -1,8 +1,7 @@
 ---
 openapi: get /campaigns/{campaignId}/export/start
+description: Initiates an asynchronous export of campaign statistics to a CSV file.
 ---
-
-This endpoint starts an asynchronous export of all campaign statistics. The final export result is a CSV file.
 
 You first start an export, get an export ID, and then periodically check the status of the export with the [Get Campaign Export Status](/api-reference/endpoints/campaigns/get-campaign-export-status) endpoint.
 
