@@ -30,7 +30,7 @@ The crux of the matter now, is to refresh your CRM contacts on a regular basis t
 
 We want to:
 
-- refresh the LinkedIn information of CRM contacts with [this endpoint from the lemlist API](../../api-reference/endpoints/enrich/enrich-data) (every 6 months for instance — enough time for them to have changed jobs or companies). We could even look for contacts' phone numbers and emails if we don't have them already.
+- [refresh the LinkedIn information of CRM contacts with this endpoint from the lemlist API](../../api-reference/endpoints/enrich/enrich-data) (every 6 months for instance — enough time for them to have changed jobs or companies). We could even look for contacts' phone numbers and emails if we don't have them already.
 - update their information, based on the result of the LinkedIn enrichment, and **update the date of the last enrichment** (which will help us make sure that we always refresh the contacts that have not been enriched for the longest time)
 - and then, if the contact changed companies (judging by the company domain), we want to:
     - insert the company in the CRM (if it’s not there yet)
@@ -97,7 +97,7 @@ Now let us:
         src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/addScheduleTrigger.mp4"
         caption="adding schedule trigger in n8n"
     />
-2. Chain a HTTP node to your trigger to perform [a custom API call to HubSpot](https://developers.hubspot.com/docs/api-reference/search/guide#filter-search-results). If you’re connecting n8n to HubSpot for the first time, read [this doc](https://docs.n8n.io/integrations/builtin/credentials/hubspot/?utm_source=n8n_app&utm_medium=credential_settings&utm_campaign=create_new_credentials_modal#related-resources) to authenticate properly (in the future, i’ll assume that you’re using App Token auth)
+2. Chain a HTTP node to your trigger to [perform a custom API call to HubSpot](https://developers.hubspot.com/docs/api-reference/search/guide#filter-search-results). Read this doc, [if you’re connecting n8n to HubSpot for the first time](https://docs.n8n.io/integrations/builtin/credentials/hubspot/?utm_source=n8n_app&utm_medium=credential_settings&utm_campaign=create_new_credentials_modal#related-resources) to authenticate properly (in the future, i’ll assume that you’re using App Token auth)
     > Why not use the default Search Contacts HubSpot node in n8n?
     Because it does not allow to filter on our newly created Last Enrichment Date unfortunately.
     <Accordion title="HubSpot search curl example">
@@ -219,13 +219,13 @@ Here's how to fall back on our feet:
 
 As i said during the introduction, i’m trying to “LinkedIn-enrich” my CRM contacts. That’s why i specifically queried a CRM contact with a LinkedIn URL — knowing that LinkedIn is the best enrichment source for job changes.
 
-It’s time to use [the lemlist enrichment endpoint](../../api-reference/endpoints/enrich/enrich-data?playground=open) to get that data. Here’s the thing though: data enrichment is asynchronous, meaning that by default, the endpoint won’t return the enrichment result. It will return an id that you can use later on to query [this other endpoint](../../api-reference/endpoints/enrich/get-enrichment-result?playground=open).
+It’s time to use [the lemlist enrichment endpoint](../../api-reference/endpoints/enrich/enrich-data?playground=open) to get that data. Here’s the thing though: data enrichment is asynchronous, meaning that by default, the endpoint won’t return the enrichment result. It will return an id that you can use later on to query [this other endpoint to get enrichment results](../../api-reference/endpoints/enrich/get-enrichment-result?playground=open).
 
 Alternatively, **in the first endpoint**, you can send a webhook url in your query so that lemlist returns the enrichment results automatically upon completion. That’s what we’ll do here. It will save us a lot of time and complexity.
 
 That being said, the lemlist default node won’t let you set a webhook url, which is why we’ll have to use a custom API call again. So:
 
-1. [Go to the playground](../../api-reference/endpoints/enrich/enrich-data), set random parameters (including a webhook URL), copy the curl and, again, import it in a HTTP node chained at the end of your workflow:
+1. [Go to the lemlist API docs playground](../../api-reference/endpoints/enrich/enrich-data), set random parameters (including a webhook URL), copy the curl and, again, import it in a HTTP node chained at the end of your workflow:
     <SnippetVideoFrame
         src="/images/guides/refresh-your-crm-contacts-with-the-lemlist-api/customLemlistEnrichDataRequest.mp4"
         caption="Replace your makeshift variables with the data from your 'Contact Search' node but **do NOT execute that node yet**."
