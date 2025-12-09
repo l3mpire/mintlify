@@ -6,4 +6,6 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Lead" objectPath="lead" />
 
-This endpoint unsubscribes a lead from a campaign (and deletes it if you use the `action=remove` query parameter).
+This endpoint deletes a lead from a campaign.
+
+You need to specify `action=remove` in the params to delete a lead. If you don't specify `action=remove`, the endpoint fallbacks to unsubscribing the lead and to do so you need to provide the lead email.
