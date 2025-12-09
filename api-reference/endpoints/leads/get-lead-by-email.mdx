@@ -1,11 +1,10 @@
 ---
 openapi: get /leads/{email}
+description: Retrieves a specific lead by their email address.
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Lead" objectPath="lead" />
-
-This endpoint retrieves a lead by their email address.
 
 <Warning>
 You must set the mandatory query parameter *version* to `version=v2`.

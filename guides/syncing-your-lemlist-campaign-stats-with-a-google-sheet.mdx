@@ -7,7 +7,7 @@ import SnippetLemlistN8nIntegration from '/snippets/snippet-lemlist-n8n-integrat
 import SnippetDownloadWorkflows from '/snippets/snippet-download-n8n-workflows.mdx';
 import { SnippetVideoFrame } from '/snippets/snippet-video-frame.jsx';
 
-# What you'll learn in this guide
+## What you'll learn in this guide
 
 How to:
 
@@ -15,7 +15,7 @@ How to:
 - Fetch the statistics of those campaigns
 - Put them in a Google Sheet for visualisation and sharing
 
-# Imagine…
+## Imagine…
 
 You’re an outbound agency sending tens of campaigns on behalf of your clients.
 
@@ -28,9 +28,9 @@ If you had a workflow that could export all campaign statistics, maybe filter ou
 
 Ultimately, you could build your own charts in Google Sheet: select only the metrics you care about, customize the colors to fit their brand, etc.
 
-# Sync relevant campaign stats with GSheet on a daily basis
+## Sync relevant campaign stats with GSheet on a daily basis
 
-## Overview
+### Overview
 
 > “What’s a relevant campaign?”
 
@@ -46,7 +46,7 @@ In our case, we will get only the 100 most recent ended campaigns that don’t h
 
 Again, like in all other guides: [n8n](https://n8n.io/) — my favourite! But you could definitely use another one like Make or Zapier.
 
-## Fetching relevant campaigns on a daily basis
+### Fetching relevant campaigns on a daily basis
 
 <SnippetLemlistN8nIntegration />
 
@@ -65,7 +65,7 @@ Here’s how:
         <img src="/images/guides/syncing-your-lemlist-campaign-stats-with-a-google-sheet/filterCampaignsNode.png" alt="filter node configuration" />
     </Frame>
 
-## Fetching relevant campaign statistics
+### Fetching relevant campaign statistics
 
 At the previous step, we fetched relevant campaigns, now it’s time to get their stats:
 
@@ -88,9 +88,9 @@ At the previous step, we fetched relevant campaigns, now it’s time to get thei
     Don't forget to pin everything and move on.
     
 
-## Drop results in the Google Sheet
+### Drop results in the Google Sheet
 
-1. First, create a blank Google Sheet somewhere in Google Drive and make sure n8n has access to it (here's [the doc](https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.googlesheets/?utm_source=n8n_app&utm_medium=node_settings_modal-credential_link&utm_campaign=n8n-nodes-base.googleSheets) if not) and add headers to the sheet. You need to add them manually beforehand, like this:
+1. First, create a blank Google Sheet somewhere in Google Drive and make sure n8n has access to it ([here's the doc to give n8n access to google sheets](https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.googlesheets/?utm_source=n8n_app&utm_medium=node_settings_modal-credential_link&utm_campaign=n8n-nodes-base.googleSheets) if not) and add headers to the sheet. You need to add them manually beforehand, like this:
     <SnippetVideoFrame
         src="/images/guides/syncing-your-lemlist-campaign-stats-with-a-google-sheet/copyPasteHeaders.mp4"
         caption="cmd+shit+v to paste without formatting, then copy and then special paste the transposed array." />
@@ -115,10 +115,10 @@ At the previous step, we fetched relevant campaigns, now it’s time to get thei
     Run it even a second time, and make sure that your spreadsheet actually got updated, and that you didn’t append rows at the end of the sheet ;) If not, congrats: activate your workflow and you’re good to go!
     
 
-# That's all folks!
+## That's all folks!
 
 <SnippetDownloadWorkflows />
 
 Anyway, i hope you found this guide useful and that you see how it could be tweaked a million ways to perfectly fit your needs (by filtering campaigns differently, by putting the data in different sheets, by appending rows instead of updating them, etc.).
 
-Now, i suggest you check this other guide: <a href="/guides/send-slack-notification-upon-lead-positive-reply">**Send Slack notification upon lead positive reply**</a>. It's very helpful too, should you want to warn your clients/employees in Slack directly when they get positive replies.
+Now, i suggest you check this other guide: <a href="/guides/send-slack-notification-upon-lead-positive-reply">**Send Slack notification upon lead positive reply in lemlist**</a>. It's very helpful too, should you want to warn your clients/employees in Slack directly when they get positive replies.

@@ -312,7 +312,7 @@
             },
             "Lead": {
                 "type": "object",
-                "description": "A prospect added to a campaign for outreach.",
+                "description": "A contact added to a campaign for outreach. Not to be confused with a contact which is a record in lemlist, but not necessarily added to a campaign.",
                 "properties": {
                     "_id": {
                         "type": "string",
@@ -544,7 +544,7 @@
             },
             "Contact": {
                 "type": "object",
-                "description": "A contact record in your CRM.",
+                "description": "A contact record in your CRM. Not to be confused with a lead which is a contact specifically added to a campaign.",
                 "properties": {
                     "_id": {
                         "type": "string",
@@ -880,8 +880,8 @@
                         "type": "string",
                         "description": "Event type to listen for",
                         "enum": [
-                            "contacted", 
-                            "hooked", 
+                            "contacted",
+                            "hooked",
                             "attracted",
                             "warmed",
                             "interested",
@@ -5890,7 +5890,7 @@
                                 }
                             },
                             "example": {
-                                "email":"support@lemlist.com",
+                                "email": "support@lemlist.com",
                                 "firstName": "John",
                                 "lastName": "Doe",
                                 "companyName": "lemlist",
@@ -6226,7 +6226,7 @@
                 "parameters": []
             },
             "delete": {
-                "summary": "Delete Lead",
+                "summary": "Delete or Unsubscribe Lead",
                 "tags": [
                     "Leads"
                 ],
@@ -6235,7 +6235,7 @@
                         "name": "action",
                         "in": "query",
                         "required": false,
-                        "description": "Force the deletion of the lead. Use 'remove' to force delete.",
+                        "description": "Use 'remove' to force delete. Otherwise it will just unsubscribe the lead from the campaign.",
                         "example": "remove",
                         "schema": {
                             "type": "string"
@@ -6313,6 +6313,92 @@
                                     "campaignId": "cam_9NsHPnykWESTncCW8",
                                     "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
                                     "emailStatus": "deliverable"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Lead not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Lead not found"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/campaigns/{campaignId}/leads/{email}": {
+            "parameters": [
+                {
+                    "name": "campaignId",
+                    "in": "path",
+                    "required": true,
+                    "description": "The unique identifier of the campaign",
+                    "example": "cam_A1B2C3D4E5F6G7H8I9",
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "email",
+                    "in": "path",
+                    "required": true,
+                    "description": "The email of the lead",
+                    "example": "bvelitchkine@gmail.com",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "delete": {
+                "summary": "Unsubscribe Lead from Campaign",
+                "tags": [
+                    "Leads"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "email": {
+                                            "type": "string",
+                                            "format": "email"
+                                        },
+                                        "_id": {
+                                            "type": "string"
+                                        },
+                                        "isPaused": {
+                                            "type": "boolean"
+                                        },
+                                        "campaignId": {
+                                            "type": "string"
+                                        },
+                                        "contactId": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "email": "bvelitchkine@gmail.com",
+                                    "_id": "lea_o3uCcHsibhy9id8qD",
+                                    "isPaused": false,
+                                    "campaignId": "cam_eMZnxqs9Z9nqGxzwT",
+                                    "contactId": "ctc_ARyApP88xS286tgsY"
                                 }
                             }
                         }

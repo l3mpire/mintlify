@@ -3,19 +3,20 @@ export const SnippetVideoFrame = ({
     autoplay = true,
     loop = true,
     caption,
-    alt = null
+    alt = null,
 }) => {
     return (
         <Frame caption={caption}>
             <video
+                src={src}
                 autoPlay={autoplay}
                 muted
                 loop={loop}
                 playsInline
+                loading="lazy"
                 className="w-full aspect-video rounded-xl"
-                src={src}
-                alt={alt ?? caption}
+                aria-label={alt ?? caption}
             />
         </Frame>
-    )
+    );
 }
