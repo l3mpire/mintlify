@@ -10673,7 +10673,7 @@
                         "name": "offset",
                         "in": "query",
                         "required": false,
-                        "description": "Offset for pagination",
+                        "description": "Number of records to skip. Note: This is not traditional cursor-based pagination. To retrieve all activities, increment offset by the limit value on each request (e.g., offset=0, then offset=100, then offset=200, etc.).",
                         "example": "0",
                         "schema": {
                             "type": "integer"
