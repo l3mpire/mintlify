@@ -6,15 +6,26 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="People Database People" objectPath="people-database" />
 
+This endpoint allows you to query our People database.
+
 ## Request body
 
-- filters: Array of filter objects
-	- filterId: String identifier for the filter (use [Get Database Filters](/api-reference/endpoints/people-database/get-database-filters) to discover available filters)
-	- in: Array of values to include
-	- out: Array of values to exclude
-- page: Integer, page number (1-indexed). Default: 1
-- size: Integer, results per page (max 100). Default: 25
-- search: String, free-text query across common fields (e.g., name, title, company, location)
+- **filters** (required): Array of filter objects
+	- **filterId**: Filter identifier (string)
+	- **in**: List of values you want to include (array)
+	- **out**: List of values you want to exclude (array)
+- **page** (optional): Page number (number)
+- **size** (optional): Size of the results, number between 1 and 100 (number)
+- **excludes** (optional): Array of properties to exclude from the results (array)
+
+### Filters
+
+Each filter should have the following properties:
+- **filterId**: Filter identifier (string)
+- **in**: List of the values you want to include (array)
+- **out**: List of the values you want to exclude (array)
+
+To know which filters you are able to use, refer to the [GET Filters](/api-reference/endpoints/people-database/get-database-filters) section.
 
 Example
 
@@ -33,11 +44,28 @@ Example
         }
 	],
 	"page": 1,
-	"size": 25
+	"size": 25,
+	"excludes": ["education", "skills"]
 }
 ```
 
+## Response
 
+Response will be formatted as an object with the following properties:
+- **results**: Results array
+- **total**: Total number of results (number)
+- **took**: Duration of the elastic-search query in milliseconds (number)
+- **page**: Current page (number)
+- **size**: Size of the results (asked through parameters) (number)
+- **search**: Unique identifier of the current search (string)
+- **limitations**: Remaining calls for the POST People database and POST Companies database (search is limited to a number of queries every 24 hours) (number)
+- **team**: Unique identifier of the current team (string)
+
+If you need more details about the schema of the people returned as a results array, refer to the [GET People Schema](/api-reference/endpoints/people-database/get-people-schema) section.
+
+<Note>
+This route is available starting from the Scale plan.
+</Note>
 
 ## Related
 
