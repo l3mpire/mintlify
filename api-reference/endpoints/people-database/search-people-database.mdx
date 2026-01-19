@@ -47,19 +47,23 @@ Example
 
 ## Response
 
+<Note>
+This endpoint uses the [People object](/api-reference/objects-definitions/people-database). If you need more details about the schema of the people returned as a results array, refer to the [GET People Schema](/api-reference/endpoints/people-database/get-people-schema) section.
+</Note>
+
 Response will be formatted as an object with the following properties:
-- results: results array
-- total: total number of results number
-- took: duration of the elastic-search query in milliseconds number
-- page: current page number
-- size: size of the results (asked through parameters) number
-- search: unique identifier of the current search string
-- limitations: remaining calls for the POST People database and POST Companies database (search is limited to a number of queries every 24 hours) number
-- team: unique identifier of the current team string
+- **results**: results array
+- **total**: total number of results number
+- **took**: duration of the elastic-search query in milliseconds number
+- **page**: current page number
+- **size**: size of the results (asked through parameters) number
+- **search**: unique identifier of the current search string
+- **limitations**: remaining calls for the POST People database and POST Companies database (search is limited to a number of queries every 24 hours) number
+- **team**: unique identifier of the current team string
 
-If you need more details about the schema of the people returned as a results array, refer to the GET People Schema section.
-
+<Note>
 Route is available starting scale plan
+</Note>
 
 ## Related
 
