@@ -6,26 +6,22 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="People Database People" objectPath="people-database" />
 
-This endpoint allows you to query our People database.
-
 ## Request body
 
-- **filters** (required): Array of filter objects
-	- **filterId**: Filter identifier (string)
-	- **in**: List of values you want to include (array)
-	- **out**: List of values you want to exclude (array)
-- **page** (optional): Page number (number)
-- **size** (optional): Size of the results, number between 1 and 100 (number)
-- **excludes** (optional): Array of properties to exclude from the results (array)
+You may use the following parameters:
+- filters: array of filters (required) array
+- page: page (optional) number
+- size: size of the results, number between 1 and 100 (optional) number
+- excludes: array of properties to exclude from the results (optional) array
 
-### Filters
+*Filters*
 
 Each filter should have the following properties:
-- **filterId**: Filter identifier (string)
-- **in**: List of the values you want to include (array)
-- **out**: List of the values you want to exclude (array)
+- filterId: filter identifier string
+- in: list of the values you want to include array
+- out: list of the values you want to exclude array
 
-To know which filters you are able to use, refer to the [GET Filters](/api-reference/endpoints/people-database/get-database-filters) section.
+To know which filters you are able to use, refer to the GET Filters section.
 
 Example
 
@@ -52,20 +48,18 @@ Example
 ## Response
 
 Response will be formatted as an object with the following properties:
-- **results**: Results array
-- **total**: Total number of results (number)
-- **took**: Duration of the elastic-search query in milliseconds (number)
-- **page**: Current page (number)
-- **size**: Size of the results (asked through parameters) (number)
-- **search**: Unique identifier of the current search (string)
-- **limitations**: Remaining calls for the POST People database and POST Companies database (search is limited to a number of queries every 24 hours) (number)
-- **team**: Unique identifier of the current team (string)
+- results: results array
+- total: total number of results number
+- took: duration of the elastic-search query in milliseconds number
+- page: current page number
+- size: size of the results (asked through parameters) number
+- search: unique identifier of the current search string
+- limitations: remaining calls for the POST People database and POST Companies database (search is limited to a number of queries every 24 hours) number
+- team: unique identifier of the current team string
 
-If you need more details about the schema of the people returned as a results array, refer to the [GET People Schema](/api-reference/endpoints/people-database/get-people-schema) section.
+If you need more details about the schema of the people returned as a results array, refer to the GET People Schema section.
 
-<Note>
-This route is available starting from the Scale plan.
-</Note>
+Route is available starting scale plan
 
 ## Related
 
