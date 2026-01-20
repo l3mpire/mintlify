@@ -1691,7 +1691,8 @@
             },
             "SignalSchema": {
               "type": "object",
-              "description": "A watch list signal representing a tracked event (hiring, LinkedIn activity, website visit, etc.)",
+              "description": "A watchlist signal representing a tracked event (hiring, LinkedIn activity, website visit, etc.)",
+              "required": ["_id", "teamId", "watchListId", "type", "status", "receivedAt", "createdAt", "signalData"],
               "properties": {
                   "_id": {
                       "type": "string",
@@ -13081,7 +13082,8 @@
                       "example": "50",
                       "schema": {
                           "type": "integer",
-                          "minimum": 1
+                          "minimum": 1,
+                          "maximum": 100
                       }
                   },
                   {
@@ -13242,7 +13244,7 @@
                       "description": "Watchlist not found",
                       "content": {
                           "text/plain": {
-                              "example": "Bad request"
+                              "example": "Watchlist not found"
                           }
                       }
                   },
