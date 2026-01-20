@@ -1861,6 +1861,35 @@
                       }
                   }
               }
+            },
+            "WatchListApiFetchSignalsResponse": {
+                "type": "object",
+                "description": "Paginated response containing watchlist signals",
+                "properties": {
+                    "signals": {
+                        "type": "array",
+                        "description": "Array of signals matching the query parameters",
+                        "items": {
+                            "$ref": "#/components/schemas/SignalSchema"
+                        }
+                    },
+                    "total": {
+                        "type": "integer",
+                        "description": "Total number of signals matching the filter criteria"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "Current page number (if using page-based pagination)"
+                    },
+                    "offset": {
+                        "type": "integer",
+                        "description": "Current offset (if using offset-based pagination)"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "description": "Number of signals returned in this response"
+                    }
+                }
             }
         }
     },
@@ -13048,7 +13077,7 @@
                       "name": "limit",
                       "in": "query",
                       "required": false,
-                      "description": "Number of signals to retrieve. Maximum value defined by WATCH_LIST_API_MAX_LIMIT",
+                      "description": "Number of signals to retrieve. Maximum value: 100",
                       "example": "50",
                       "schema": {
                           "type": "integer",
@@ -13088,7 +13117,7 @@
                       "in": "query",
                       "required": false,
                       "description": "Filter by signal type(s). Can be a single value or array using type[] notation. Valid values from WATCH_LIST_SIGNAL_CONFIGURATIONS_TYPES_STANDARD_KEYS",
-                      "example": "job_change",
+                      "example": "jobChange",
                       "schema": {
                           "oneOf": [
                               {
@@ -13180,7 +13209,7 @@
                                       "value": "Cannot use both page and offset parameters"
                                   },
                                   "invalidLimit": {
-                                      "value": "limit must be between 1 and {WATCH_LIST_API_MAX_LIMIT}"
+                                      "value": "limit must be between 1 and 100"
                                   },
                                   "invalidSort": {
                                       "value": "sortBy must be either receivedAt or createdAt"
