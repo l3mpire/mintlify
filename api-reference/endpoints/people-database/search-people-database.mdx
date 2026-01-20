@@ -8,107 +8,13 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="People Database People" objectPath="people-database" />
 
-## Request body
-
-You may use the following parameters:
-
-<ParamField query="filters" path="param" type="array" required>
-  Filters you want to use in your query
-</ParamField>
-
-<ParamField query="page" path="param" type="number">
-  Page you want to filter on (optional)
-</ParamField>
-
-<ParamField query="size" path="param" type="number">
-  Number of results asked, between 1 and 100 (optional)
-</ParamField>
-
-<ParamField query="excludes" path="param" type="array">
-  Array of properties to exclude from the results (optional)
-</ParamField>
-
-### Filters
-
-Each filter should have the following properties:
-
-<ParamField query="filter id" path="param" type="string" required>
-  Filter identifier
-</ParamField>
-
-<ParamField query="in" path="param" type="array">
-  List of the values you want to include
-</ParamField>
-
-<ParamField query="out" path="param" type="array">
-  List of the values you want to exclude
-</ParamField>
-
 <Note>
   To know which filters you are able to use, refer to the [GET Filters](/api-reference/endpoints/people-database/get-database-filters) section.
 </Note>
 
-Example
-
-```json
-{
-	"filters": [
-		{
-			"filterId": "country",
-			"in": ["France"],
-			"out": []
-		},
-        {
-            "filterId": "currentCompany",
-            "in": ["Lemlist"],
-            "out": ["Lemwarm"]
-        }
-	],
-	"page": 1,
-	"size": 25,
-	"excludes": ["education", "skills"]
-}
-```
-
-## Response
-
 <Note>
   This endpoint uses the [People object](/api-reference/objects-definitions/people-database). If you need more details about the schema of the people returned as a results array, refer to the [GET People Schema](/api-reference/endpoints/people-database/get-people-schema) section.
 </Note>
-
-Response will be formatted as an object with the following properties:
-
-<ResponseField name="results" type="array">
-  
-</ResponseField>
-
-<ResponseField name="total" type="number">
-  Total number of results
-</ResponseField>
-
-<ResponseField name="took" type="number">
-  Duration of the elastic-search query in milliseconds
-</ResponseField>
-
-<ResponseField name="page" type="number">
-  Current page
-</ResponseField>
-
-<ResponseField name="size" type="number">
-  Size of the results (asked through parameters)
-</ResponseField>
-
-<ResponseField name="search" type="string">
-  Unique identifier of the current search
-</ResponseField>
-
-<ResponseField name="limitations" type="number">
-  Remaining calls for the `POST People database` and `POST Companies database` (search is limited to a number of queries every 24 hours)
-</ResponseField>
-
-<ResponseField name="team" type="string">
-  Unique identifier of the current team 
-</ResponseField>
 
 <Note>
   Route is available starting "Scale" plan
