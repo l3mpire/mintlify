@@ -290,6 +290,13 @@
                   "api-reference/endpoints/lemwarm/get-lemwarm-settings",
                   "api-reference/endpoints/lemwarm/update-lemwarm-settings"
                 ]
+              },
+              {
+                "group": "Watch list / signals",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/watch-list/get-signals"
+                ]
               }
             ]
           },
@@ -330,7 +337,8 @@
               "api-reference/objects-definitions/report",
               "api-reference/objects-definitions/webhook",
               "api-reference/objects-definitions/mailbox",
-              "api-reference/objects-definitions/company-note"
+              "api-reference/objects-definitions/company-note",
+              "api-reference/objects-definitions/signal"
             ]
           }
         ]

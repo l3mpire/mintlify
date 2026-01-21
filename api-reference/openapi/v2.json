@@ -1718,6 +1718,209 @@
                         }
                     }
                 }
+            },
+            "SignalSchema": {
+              "type": "object",
+              "description": "A watchlist signal representing a tracked event (hiring, LinkedIn activity, website visit, etc.)",
+              "required": ["_id", "teamId", "watchListId", "type", "status", "receivedAt", "createdAt", "signalData"],
+              "properties": {
+                  "_id": {
+                      "type": "string",
+                      "description": "Unique signal identifier"
+                  },
+                  "teamId": {
+                      "type": "string",
+                      "description": "Team ID that owns this signal"
+                  },
+                  "watchListId": {
+                      "type": "string",
+                      "description": "Associated watchlist ID"
+                  },
+                  "watchListName": {
+                      "type": "string",
+                      "description": "Name of the associated watchlist"
+                  },
+                  "type": {
+                      "type": "string",
+                      "description": "Signal type",
+                      "enum": [
+                          "companyIsHiring",
+                          "companyRaisedFunds",
+                          "jobChange",
+                          "newHire",
+                          "companyEmployeeVisitedMyWebsite",
+                          "linkedinProfile",
+                          "linkedinTopic"
+                      ]
+                  },
+                  "status": {
+                      "type": "string",
+                      "description": "Signal status (computed based on user actions)",
+                      "enum": ["new", "old", "handled", "ignored"]
+                  },
+                  "receivedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "When the signal was received"
+                  },
+                  "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "When the signal was created in the database"
+                  },
+                  "contact": {
+                      "type": "object",
+                      "description": "Contact associated with this signal (if entity type is 'contact')",
+                      "properties": {
+                          "_id": {
+                              "type": "string",
+                              "description": "Contact ID"
+                          },
+                          "firstName": {
+                              "type": "string",
+                              "description": "Contact first name"
+                          },
+                          "lastName": {
+                              "type": "string",
+                              "description": "Contact last name"
+                          },
+                          "email": {
+                              "type": "string",
+                              "description": "Contact primary email"
+                          },
+                          "jobTitle": {
+                              "type": "string",
+                              "description": "Contact job title"
+                          },
+                          "phone": {
+                              "type": "string",
+                              "description": "Contact phone number"
+                          },
+                          "linkedinUrl": {
+                              "type": "string",
+                              "description": "Contact LinkedIn profile URL"
+                          },
+                          "picture": {
+                              "type": "string",
+                              "description": "Contact profile picture URL"
+                          }
+                      }
+                  },
+                  "company": {
+                      "type": "object",
+                      "description": "Company associated with this signal",
+                      "properties": {
+                          "_id": {
+                              "type": "string",
+                              "description": "Company ID"
+                          },
+                          "name": {
+                              "type": "string",
+                              "description": "Company name"
+                          },
+                          "domain": {
+                              "type": "string",
+                              "description": "Company website domain"
+                          },
+                          "linkedinUrl": {
+                              "type": "string",
+                              "description": "Company LinkedIn URL"
+                          },
+                          "industry": {
+                              "type": "string",
+                              "description": "Company industry"
+                          },
+                          "picture": {
+                              "type": "string",
+                              "description": "Company logo URL"
+                          }
+                      }
+                  },
+                  "signalData": {
+                      "type": "object",
+                      "description": "Signal-specific data that varies by signal type",
+                      "properties": {
+                          "jobTitle": {
+                              "type": "string",
+                              "description": "[companyIsHiring] Job posting title"
+                          },
+                          "jobDescription": {
+                              "type": "string",
+                              "description": "[companyIsHiring] Job posting description"
+                          },
+                          "jobLocation": {
+                              "type": "string",
+                              "description": "[companyIsHiring] Job posting location"
+                          },
+                          "jobUrl": {
+                              "type": "string",
+                              "description": "[companyIsHiring] Job posting URL"
+                          },
+                          "jobStatus": {
+                              "type": "string",
+                              "description": "[companyIsHiring] Job posting status"
+                          },
+                          "websiteVisited": {
+                              "type": "string",
+                              "description": "[companyEmployeeVisitedMyWebsite] Website URL that was visited"
+                          },
+                          "visitorWebsite": {
+                              "type": "string",
+                              "description": "[companyEmployeeVisitedMyWebsite] Visitor's company website"
+                          },
+                          "linkedinPostUrl": {
+                              "type": "string",
+                              "description": "[linkedinProfile/linkedinTopic] URL of the LinkedIn post"
+                          },
+                          "linkedinPostText": {
+                              "type": "string",
+                              "description": "[linkedinProfile/linkedinTopic] Text content of the LinkedIn post"
+                          },
+                          "linkedinReactionType": {
+                              "type": "string",
+                              "description": "[linkedinProfile/linkedinTopic] Type of LinkedIn reaction (like, comment, post)"
+                          },
+                          "linkedinReactedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "[linkedinProfile/linkedinTopic] When the LinkedIn reaction occurred"
+                          },
+                          "linkedinCommentText": {
+                              "type": "string",
+                              "description": "[linkedinProfile/linkedinTopic] Text of the LinkedIn comment"
+                          }
+                      }
+                  }
+              }
+            },
+            "WatchListApiFetchSignalsResponse": {
+                "type": "object",
+                "description": "Paginated response containing watchlist signals",
+                "properties": {
+                    "signals": {
+                        "type": "array",
+                        "description": "Array of signals matching the query parameters",
+                        "items": {
+                            "$ref": "#/components/schemas/SignalSchema"
+                        }
+                    },
+                    "total": {
+                        "type": "integer",
+                        "description": "Total number of signals matching the filter criteria"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "Current page number (if using page-based pagination)"
+                    },
+                    "offset": {
+                        "type": "integer",
+                        "description": "Current offset (if using offset-based pagination)"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "description": "Number of signals returned in this response"
+                    }
+                }
             }
         }
     },
@@ -13255,6 +13458,233 @@
                     }
                 }
             }
+        },
+        "/api/watchlist/signals": {
+          "get": {
+              "summary": "Get Watchlist Signals",
+              "tags": [
+                  "Watchlist"
+              ],
+              "parameters": [
+                  {
+                      "name": "page",
+                      "in": "query",
+                      "required": false,
+                      "description": "Page number to retrieve (cannot be used with offset)",
+                      "example": "1",
+                      "schema": {
+                          "type": "integer",
+                          "minimum": 1
+                      }
+                  },
+                  {
+                      "name": "offset",
+                      "in": "query",
+                      "required": false,
+                      "description": "Number of records to skip (cannot be used with page)",
+                      "example": "0",
+                      "schema": {
+                          "type": "integer",
+                          "minimum": 0
+                      }
+                  },
+                  {
+                      "name": "limit",
+                      "in": "query",
+                      "required": false,
+                      "description": "Number of signals to retrieve. Maximum value: 100",
+                      "example": "50",
+                      "schema": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 100
+                      }
+                  },
+                  {
+                      "name": "sortBy",
+                      "in": "query",
+                      "required": false,
+                      "description": "The field by which to sort signals",
+                      "example": "receivedAt",
+                      "schema": {
+                          "type": "string",
+                          "enum": [
+                              "receivedAt",
+                              "createdAt"
+                          ]
+                      }
+                  },
+                  {
+                      "name": "sortOrder",
+                      "in": "query",
+                      "required": false,
+                      "description": "The sort direction",
+                      "example": "desc",
+                      "schema": {
+                          "type": "string",
+                          "enum": [
+                              "asc",
+                              "desc"
+                          ]
+                      }
+                  },
+                  {
+                      "name": "type",
+                      "in": "query",
+                      "required": false,
+                      "description": "Filter by signal type(s). Can be a single value or array using type[] notation. Valid values from WATCH_LIST_SIGNAL_CONFIGURATIONS_TYPES_STANDARD_KEYS",
+                      "example": "jobChange",
+                      "schema": {
+                          "oneOf": [
+                              {
+                                  "type": "string"
+                              },
+                              {
+                                  "type": "array",
+                                  "items": {
+                                      "type": "string"
+                                  }
+                              }
+                          ]
+                      }
+                  },
+                  {
+                      "name": "status",
+                      "in": "query",
+                      "required": false,
+                      "description": "Filter by signal status(es). Can be a single value or array using status[] notation. Valid values from WATCH_LIST_SIGNAL_COMPUTED_STATUSES",
+                      "example": "new",
+                      "schema": {
+                          "oneOf": [
+                              {
+                                  "type": "string"
+                              },
+                              {
+                                  "type": "array",
+                                  "items": {
+                                      "type": "string"
+                                  }
+                              }
+                          ]
+                      }
+                  },
+                  {
+                      "name": "receivedAtFrom",
+                      "in": "query",
+                      "required": false,
+                      "description": "Filter signals received on or after this date (ISO date string)",
+                      "example": "2024-01-01T00:00:00.000Z",
+                      "schema": {
+                          "type": "string",
+                          "format": "date-time"
+                      }
+                  },
+                  {
+                      "name": "receivedAtTo",
+                      "in": "query",
+                      "required": false,
+                      "description": "Filter signals received on or before this date (ISO date string). Must be greater than receivedAtFrom if both are provided",
+                      "example": "2024-12-31T23:59:59.999Z",
+                      "schema": {
+                          "type": "string",
+                          "format": "date-time"
+                      }
+                  },
+                  {
+                      "name": "watchListId",
+                      "in": "query",
+                      "required": false,
+                      "description": "Filter signals by specific watchlist ID",
+                      "example": "wl_abc123",
+                      "schema": {
+                          "type": "string",
+                          "minLength": 1
+                      }
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Success",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/WatchListApiFetchSignalsResponse"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "Validation error - invalid query parameters, pagination conflict, or invalid date range",
+                      "content": {
+                          "text/plain": {
+                              "examples": {
+                                  "invalidPagination": {
+                                      "value": "page must be a positive integer"
+                                  },
+                                  "paginationConflict": {
+                                      "value": "Cannot use both page and offset parameters"
+                                  },
+                                  "invalidLimit": {
+                                      "value": "limit must be between 1 and 100"
+                                  },
+                                  "invalidSort": {
+                                      "value": "sortBy must be either receivedAt or createdAt"
+                                  },
+                                  "invalidType": {
+                                      "value": "Invalid type values: invalid_type"
+                                  },
+                                  "invalidStatus": {
+                                      "value": "Invalid status values: invalid_status"
+                                  },
+                                  "invalidDate": {
+                                      "value": "receivedAtFrom must be a valid ISO date string"
+                                  },
+                                  "invalidDateRange": {
+                                      "value": "receivedAtFrom must be before receivedAtTo"
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "401": {
+                      "description": "Unauthorized - invalid or missing API key",
+                      "content": {
+                          "text/plain": {
+                              "example": "Unauthorized"
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "Watchlist not found",
+                      "content": {
+                          "text/plain": {
+                              "example": "Watchlist not found"
+                          }
+                      }
+                  },
+                  "405": {
+                      "description": "Method not allowed - only GET is supported",
+                      "content": {
+                          "text/plain": {
+                              "example": "Method not allowed"
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "Internal server error",
+                      "content": {
+                          "text/plain": {
+                              "example": "Internal server error"
+                          }
+                      }
+                  }
+              },
+              "security": [
+                  {
+                      "ApiKeyAuth": []
+                  }
+              ]
+          }
         }
     }
 }
