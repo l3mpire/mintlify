@@ -7943,7 +7943,7 @@
         "/database/people": {
             "post": {
                 "summary": "Search People Database",
-                "description": "Search the lemlist People database using structured filters and optional free-text, with pagination support. Use GET /database/filters to discover available filterIds and their expected value formats.",
+                "description": "This endpoint allows you to query our People database. To do so, you may use the following parameters: filters (required), page (optional), size (optional), and excludes (optional). Each filter should have the following properties: filterId (filter identifier), in (list of the values you want to include), and out (list of the values you want to exclude). To know which filters you are able to use, refer to the GET Filters section.",
                 "operationId": "searchPeopleDatabase",
                 "tags": [
                     "People Database"
@@ -7957,6 +7957,7 @@
                                 "properties": {
                                     "filters": {
                                         "type": "array",
+                                        "description": "Array of filters (required)",
                                         "items": {
                                             "type": "object",
                                             "properties": {
@@ -7969,14 +7970,14 @@
                                                     "items": {
                                                         "type": "string"
                                                     },
-                                                    "description": "Values to include"
+                                                    "description": "List of the values you want to include"
                                                 },
                                                 "out": {
                                                     "type": "array",
                                                     "items": {
                                                         "type": "string"
                                                     },
-                                                    "description": "Values to exclude"
+                                                    "description": "List of the values you want to exclude"
                                                 }
                                             }
                                         }
@@ -7984,13 +7985,20 @@
                                     "page": {
                                         "type": "integer",
                                         "minimum": 1,
-                                        "description": "Page number (1-indexed). Default: 1"
+                                        "description": "Page (optional)"
                                     },
                                     "size": {
                                         "type": "integer",
                                         "minimum": 1,
                                         "maximum": 100,
-                                        "description": "Number of results per page (max 100). Default: 25"
+                                        "description": "Size of the results, number between 1 and 100 (optional)"
+                                    },
+                                    "excludes": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "description": "Array of properties to exclude from the results (optional)"
                                     },
                                     "search": {
                                         "type": "string",
@@ -8024,30 +8032,38 @@
                                     "properties": {
                                         "results": {
                                             "type": "array",
+                                            "description": "Results array",
                                             "items": {
                                                 "$ref": "#/components/schemas/PeopleSchema"
                                             }
                                         },
                                         "total": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "description": "Total number of results"
                                         },
                                         "took": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "description": "Duration of the elastic-search query in milliseconds"
                                         },
                                         "page": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "description": "Current page number"
                                         },
                                         "size": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "description": "Size of the results (asked through parameters)"
                                         },
                                         "search": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "description": "Unique identifier of the current search"
                                         },
                                         "limitation": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "description": "Remaining calls for the POST People database and POST Companies database (search is limited to a number of queries every 24 hours)"
                                         },
                                         "team": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "description": "Unique identifier of the current team"
                                         }
                                     }
                                 },
