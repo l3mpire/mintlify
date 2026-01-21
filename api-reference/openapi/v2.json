@@ -932,7 +932,8 @@
                             "enrichmentDone",
                             "enrichmentError",
                             "callRecordingDone",
-                            "callTranscriptDone"
+                            "callTranscriptDone",
+                            "inboxLabelUpdated"
                         ]
                     },
                     "campaignId": {
@@ -1201,6 +1202,35 @@
                     },
                     "total": {
                         "type": "integer"
+                    }
+                }
+            },
+            "Label": {
+                "type": "object",
+                "description": "A label used to categorize and organize inbox conversations.",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "Unique label identifier"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Label name"
+                    },
+                    "color": {
+                        "type": "string",
+                        "description": "Hex color code for the label"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time when the label was created",
+                        "nullable": true
+                    },
+                    "createdBy": {
+                        "type": "string",
+                        "description": "Email of the user who created the label",
+                        "nullable": true
                     }
                 }
             },
@@ -9770,6 +9800,390 @@
                     }
                 },
                 "parameters": []
+            }
+        },
+        "/inbox/labels": {
+            "get": {
+                "summary": "Get Many Labels",
+                "description": "List all labels available to your team.",
+                "tags": [
+                    "Inbox"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success - Returns array of labels",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Label"
+                                    }
+                                },
+                                "example": [
+                                    {
+                                        "_id": "lbl_3bgE97gvicZ888wz4",
+                                        "name": "Interested",
+                                        "color": "#F9A2A2",
+                                        "createdAt": "2025-11-26T15:49:23.470Z",
+                                        "createdBy": "john.doe@example.com"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    }
+                },
+                "parameters": []
+            },
+            "post": {
+                "summary": "Create Label",
+                "description": "Creates a new label available to the team.",
+                "tags": [
+                    "Inbox"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "labelName": {
+                                        "type": "string",
+                                        "description": "Name of the label to create"
+                                    }
+                                },
+                                "required": [
+                                    "labelName"
+                                ]
+                            },
+                            "example": {
+                                "labelName": "Interested"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success - Label created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Label"
+                                },
+                                "example": {
+                                    "_id": "lbl_3bgE97gvicZ888wz4",
+                                    "name": "Interested",
+                                    "color": "#F9A2A2",
+                                    "createdAt": "2025-11-26T15:49:23.470Z"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / labelName is required / Failed to create label",
+                        "content": {
+                            "text/plain": {
+                                "example": "labelName is required"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Label with this name already exists",
+                        "content": {
+                            "text/plain": {
+                                "example": "Label with this name already exists"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
+                    }
+                },
+                "parameters": []
+            }
+        },
+        "/inbox/labels/{labelId}": {
+            "get": {
+                "summary": "Get Label",
+                "description": "Get info of a specific label.",
+                "tags": [
+                    "Inbox"
+                ],
+                "parameters": [
+                    {
+                        "name": "labelId",
+                        "in": "path",
+                        "required": true,
+                        "description": "Label ID",
+                        "example": "lbl_3bgE97gvicZ888wz4",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Label"
+                                },
+                                "example": {
+                                    "_id": "lbl_3bgE97gvicZ888wz4",
+                                    "name": "Interested",
+                                    "color": "#F9A2A2",
+                                    "createdAt": "2025-11-26T15:49:23.470Z",
+                                    "createdBy": "john.doe@example.com"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Label not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Label not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
+                    }
+                }
+            }
+        },
+        "/inbox/conversations/labels/{contactId}": {
+            "post": {
+                "summary": "Attach Labels to Conversations",
+                "description": "Attaches one or more labels to one or more conversations.",
+                "tags": [
+                    "Inbox"
+                ],
+                "parameters": [
+                    {
+                        "name": "contactId",
+                        "in": "path",
+                        "required": true,
+                        "description": "Contact ID",
+                        "example": "ctc_yHXD3NWjPg7Z9MuWZ",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "labelIds": {
+                                        "type": "array",
+                                        "description": "Array of label IDs to attach",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "appendLabels": {
+                                        "type": "boolean",
+                                        "description": "If true, appends labels to existing ones. If false, replaces all labels."
+                                    }
+                                },
+                                "required": [
+                                    "labelIds",
+                                    "appendLabels"
+                                ]
+                            },
+                            "example": {
+                                "labelIds": [
+                                    "lbl_3bgE97gvicZ888wz4",
+                                    "lbl_5kfD28hvjdA777xy9"
+                                ],
+                                "appendLabels": true
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "ok": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "ok": true
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Invalid request body: labelIds must be an array and appendLabels must be a boolean",
+                        "content": {
+                            "text/plain": {
+                                "example": "Invalid request body: labelIds must be an array and appendLabels must be a boolean"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Possible errors: Inbox not found / Label not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Label not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Remove Labels from Conversation",
+                "description": "Removes one or more labels from one conversation.",
+                "tags": [
+                    "Inbox"
+                ],
+                "parameters": [
+                    {
+                        "name": "contactId",
+                        "in": "path",
+                        "required": true,
+                        "description": "Contact ID",
+                        "example": "ctc_yHXD3NWjPg7Z9MuWZ",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "labelIds": {
+                                        "type": "array",
+                                        "description": "Array of label IDs to remove",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "labelIds"
+                                ]
+                            },
+                            "example": {
+                                "labelIds": [
+                                    "lbl_3bgE97gvicZ888wz4"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "ok": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "ok": true
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Invalid request body: labelIds must be an array",
+                        "content": {
+                            "text/plain": {
+                                "example": "Invalid request body: labelIds must be an array"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Possible errors: Inbox not found / Label not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Label not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
+                    }
+                }
             }
         },
         "/contacts": {
