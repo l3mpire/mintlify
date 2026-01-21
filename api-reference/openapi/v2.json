@@ -13475,7 +13475,7 @@
                 }
             }
         },
-        "/api/watchlist/signals": {
+        "/watchlist/signals": {
           "get": {
               "summary": "Get Watchlist Signals",
               "tags": [
