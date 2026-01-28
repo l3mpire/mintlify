@@ -178,6 +178,10 @@
                         "type": "object",
                         "description": "LinkedIn integration settings",
                         "properties": {
+                            "linkedinUrl": {
+                                "type": "string",
+                                "description": "The LinkedIn URL of the person"
+                            },
                             "status": {
                                 "type": "boolean",
                                 "description": "Whether LinkedIn is connected"
