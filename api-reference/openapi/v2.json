@@ -6353,11 +6353,16 @@
                                     "preferredContactMethod": {
                                         "type": "string",
                                         "description": "Preferred contact method (email, linkedIn)"
+                                    },
+                                    "contactOwner": {
+                                        "type": "string",
+                                        "description": "Contact owner (user ID or user login email)"
                                     }
                                 }
                             },
                             "example": {
-                                "preferredContactMethod": "email"
+                                "preferredContactMethod": "email",
+                                "contactOwner": "login_email@user.com"
                             }
                         }
                     }
@@ -6450,7 +6455,7 @@
                         "description": "Unauthorized"
                     },
                     "404": {
-                        "description": "Lead not found",
+                        "description": "Possible errors: Lead not found / Contact owner not found",
                         "content": {
                             "text/plain": {
                                 "example": "Lead not found"
