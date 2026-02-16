@@ -1,12 +1,14 @@
 ---
-openapi: get /campaigns/{campaignId}/export/leads
+openapi: "get /campaigns/{campaignId}/export/leads"
+description: "Exports leads from a campaign with flexible filtering and format options."
 ---
 
-This endpoint exports leads from a campaign with filtering options. The export returns leads in CSV or JSON format based on their state.
+The export returns leads in CSV or JSON format based on their state.
 
 ## Filtering by state
 
 Use the `state` parameter to filter leads by their current status. You can:
+
 - Export all leads: `state=all`
 - Filter by specific states: `state=emailsOpened,emailsReplied`
 - Use multiple states: `state=interested,warmed`
@@ -15,48 +17,49 @@ Use the `state` parameter to filter leads by their current status. You can:
 
 These group multiple lead states into a single category:
 
-| State | Description |
-|-------|-------------|
-| `imported` | Leads imported without processing (not scanned, no steps sent, not reviewed) |
-| `scanned` | Leads scanned by LinkedIn or email verification |
-| `skipped` | Leads skipped during review |
-| `reviewed` | Leads that were reviewed |
-| `contacted` | Leads that were contacted (at least one step executed, no response yet) |
-| `hooked` | Leads that opened an email or LinkedIn message |
-| `attracted` | Leads that clicked in an email or accepted a LinkedIn invite |
-| `warmed` | Leads that replied to an email or LinkedIn message |
-| `interested` | Leads marked as interested |
-| `notInterested` | Leads marked as not interested |
-| `emailsBounced` | Leads where at least one step bounced or failed |
-| `emailsUnsubscribed` | Leads that unsubscribed |
-| `meetingBooked` | Leads that booked a meeting |
-| `paused` | Leads that were paused |
+| State                | Description                                                                  |
+| -------------------- | ---------------------------------------------------------------------------- |
+| `imported`           | Leads imported without processing (not scanned, no steps sent, not reviewed) |
+| `scanned`            | Leads scanned by LinkedIn or email verification                              |
+| `skipped`            | Leads skipped during review                                                  |
+| `reviewed`           | Leads that were reviewed                                                     |
+| `contacted`          | Leads that were contacted (at least one step executed, no response yet)      |
+| `hooked`             | Leads that opened an email or LinkedIn message                               |
+| `attracted`          | Leads that clicked in an email or accepted a LinkedIn invite                 |
+| `warmed`             | Leads that replied to an email or LinkedIn message                           |
+| `interested`         | Leads marked as interested                                                   |
+| `notInterested`      | Leads marked as not interested                                               |
+| `emailsBounced`      | Leads where at least one step bounced or failed                              |
+| `emailsUnsubscribed` | Leads that unsubscribed                                                      |
+| `meetingBooked`      | Leads that booked a meeting                                                  |
+| `paused`             | Leads that were paused                                                       |
 
 ### Detailed states
 
 For more granular filtering:
 
-| State | Description |
-|-------|-------------|
-| `emailsSent` | Email was sent |
-| `emailsOpened` | Lead opened an email |
-| `emailsClicked` | Lead clicked on an email |
-| `emailsReplied` | Lead replied to an email |
-| `emailsInterested` | Lead marked as success via email |
-| `emailsNotInterested` | Lead marked as not a success via email |
-| `emailsFailed` | Error sending email |
-| `linkedinVisitDone` | LinkedIn profile was visited |
-| `linkedinInviteDone` | LinkedIn invitation was sent |
-| `linkedinInviteAccepted` | LinkedIn invitation was accepted |
-| `linkedinSent` | LinkedIn message was sent |
-| `linkedinOpened` | LinkedIn message was opened |
-| `linkedinReplied` | Lead replied on LinkedIn |
-| `linkedinInterested` | Lead marked as success via LinkedIn |
-| `linkedinNotInterested` | Lead marked as not a success via LinkedIn |
+| State                    | Description                               |
+| ------------------------ | ----------------------------------------- |
+| `emailsSent`             | Email was sent                            |
+| `emailsOpened`           | Lead opened an email                      |
+| `emailsClicked`          | Lead clicked on an email                  |
+| `emailsReplied`          | Lead replied to an email                  |
+| `emailsInterested`       | Lead marked as success via email          |
+| `emailsNotInterested`    | Lead marked as not a success via email    |
+| `emailsFailed`           | Error sending email                       |
+| `linkedinVisitDone`      | LinkedIn profile was visited              |
+| `linkedinInviteDone`     | LinkedIn invitation was sent              |
+| `linkedinInviteAccepted` | LinkedIn invitation was accepted          |
+| `linkedinSent`           | LinkedIn message was sent                 |
+| `linkedinOpened`         | LinkedIn message was opened               |
+| `linkedinReplied`        | Lead replied on LinkedIn                  |
+| `linkedinInterested`     | Lead marked as success via LinkedIn       |
+| `linkedinNotInterested`  | Lead marked as not a success via LinkedIn |
 
 ## Output format
 
 Use the `format` parameter to choose between:
+
 - **`csv`** (default): Returns a CSV file suitable for Excel, Google Sheets, etc.
 - **`json`**: Returns structured JSON data for programmatic processing
 
@@ -70,11 +73,13 @@ curl --request GET \
  --header 'Authorization: Basic <encoded-value>'
 ```
 
+
 ```bash Export interested leads as JSON
 curl --request GET \
   --url 'https://api.lemlist.com/api/campaigns/cam_123/export/leads?state=interested&format=json' \
  --header 'Authorization: Basic <encoded-value>'
 ```
+
 
 ```bash Export multiple states
 curl --request GET \
@@ -85,5 +90,5 @@ curl --request GET \
 </CodeGroup>
 
 <Tip>
-Use global states like `hooked` or `warmed` to quickly segment leads by engagement level, or use detailed states for precise filtering based on specific actions.
+  Use global states like `hooked` or `warmed` to quickly segment leads by engagement level, or use detailed states for precise filtering based on specific actions.
 </Tip>

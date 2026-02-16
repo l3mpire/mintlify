@@ -7,7 +7,7 @@ import SnippetLemlistN8nIntegration from '/snippets/snippet-lemlist-n8n-integrat
 import SnippetDownloadWorkflows from '/snippets/snippet-download-n8n-workflows.mdx';
 import { SnippetVideoFrame } from '/snippets/snippet-video-frame.jsx';
 
-# What you’ll learn in this guide
+## What you’ll learn in this guide
 
 How to send email sequences automatically, to leads who submitted your form, without having to review them manually. More specifically, you’ll learn:
 
@@ -16,7 +16,7 @@ How to send email sequences automatically, to leads who submitted your form, wit
     1. enrich the leads who submitted your form to find their phone numbers
     2. and then add them to the campaign
 
-# Imagine…
+## Imagine…
 
 You organised an event and you plan to submit a form to participants during that very event. Upon submission, you’d like to send them a series of emails, and the first email to be sent a couple of hours after the event — no later.
 
@@ -35,15 +35,15 @@ If only there was a way to add leads who submitted the form to a lemlist campaig
 
 > well… there is :)
 
-# Automatically add leads to a campaign in auto launch mode
+## Automatically add leads to a campaign in auto launch mode
 
 If you leverage the lemlist API, this is all fairly easy, you’ll have to:
 
 1. create a lemlist campaign **with “auto launch” mode on**
 2. create the form you were thinking about
-3. create a workflow to bridge the gap between the form and the campaign (that’s where the API comes into play → [look](https://developer.lemlist.com/api-reference/endpoints/leads/create-lead-in-campaign)!)
+3. create a workflow to bridge the gap between the form and the campaign ([that’s where the API comes into play](https://developer.lemlist.com/api-reference/endpoints/leads/create-lead-in-campaign)!)
 
-## Create a lemlist campaign in auto launch mode
+### Create a lemlist campaign in auto launch mode
 
 1. Head over to lemlist, create a new campaign and activate the “auto launch” mode
     <SnippetVideoFrame
@@ -62,7 +62,7 @@ If you leverage the lemlist API, this is all fairly easy, you’ll have to:
         caption="It looks like this: cam_eMZnxqs9Z9nqGxzwT"
     />
 
-## Create a form on a builder like Tally
+### Create a form on a builder like Tally
 
 There are two requirements for the form itself and its builder:
 
@@ -87,7 +87,7 @@ Head over to [Tally](https://tally.so/) and create your form:
     caption="Make sure it has a mandatory email input."
 />
 
-## Connect the form builder to lemlist with n8n
+### Connect the form builder to lemlist with n8n
 
 Now, it’s the time to connect the form to your lemlist campaign.
 
@@ -104,7 +104,7 @@ And when it comes to automation tools, i LOVE [n8n](http://n8n.io/):
 
 Said differently, you can have n8n automations run when its webhooks receive data coming from Tally for instance. So, n8n it is :)
 
-### Configure the webhook in n8n
+#### Configure the webhook in n8n
 
 1. Head over to n8n
 2. Create a new workflow
@@ -118,7 +118,7 @@ Said differently, you can have n8n automations run when its webhooks receive dat
 />
 
 
-### Have Tally send the form data to the n8n webhook
+#### Have Tally send the form data to the n8n webhook
 
 1. Copy the webhook **TEST** url in n8n
 2. Head over to tally and publish your form (you can always edit it later)
@@ -136,7 +136,7 @@ Said differently, you can have n8n automations run when its webhooks receive dat
     />
     
 
-### Have n8n create the lead in the lemlist campaign
+#### Have n8n create the lead in the lemlist campaign
 
 1. Head back to your n8n workflow and search for the “Create a lead” lemlist node
 2. Select the lemlist credentials that correspond to the lemlist account with your campaign
@@ -157,7 +157,7 @@ Said differently, you can have n8n automations run when its webhooks receive dat
     />
     
 
-# Give it a try ;)
+## Give it a try ;)
 
 1. Copy the **PRODUCTION** url of your webhook
 2. Head back to Tally and delete any previous submissions (for the sake of cleanliness)
@@ -175,7 +175,7 @@ Said differently, you can have n8n automations run when its webhooks receive dat
     />
     
 
-# That’s all folks!
+## That’s all folks!
 
 <SnippetDownloadWorkflows />
 

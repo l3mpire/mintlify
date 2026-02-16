@@ -1,6 +1,6 @@
 ---
 title: 'API Errors'
-description: 'Common error responses, status codes, and how to handle them.'
+description: 'Common error responses and status codes from the lemlist API and how to handle them.'
 ---
 
 ## HTTP Status Codes
@@ -70,8 +70,8 @@ The lemlist API uses standard HTTP status codes to indicate the success or failu
 		<li><b>Always check the response status code</b> before processing the response body</li>
 		<li><b>Implement exponential backoff</b> for retrying failed requests</li>
 		<li><b>Log error responses</b> for debugging and monitoring</li>
-		<li><b>Handle authentication errors</b> by refreshing or validating your API key — see <a href="/api-reference/getting-started/authentication">Authentication</a></li>
-		<li><b>Respect rate limits</b> by implementing request throttling — see <a href="/api-reference/getting-started/rate-limits">Rate limits</a></li>
+		<li><b>Handle authentication errors</b> by refreshing or validating your API key — see <a href="/api-reference/getting-started/authentication">how to authenticate</a></li>
+		<li><b>Respect rate limits</b> by implementing request throttling — see <a href="/api-reference/getting-started/rate-limits">how to handle rate limits</a></li>
 		<li><b>Validate input</b> before sending requests to avoid unnecessary API calls</li>
 	</ol>
 </Accordion>
@@ -82,7 +82,7 @@ The lemlist API uses standard HTTP status codes to indicate the success or failu
 	If you encounter errors that are not documented here or need assistance:
 	<ol>
 		<li>Review the endpoint-specific documentation</li>
-		<li>Make sure you understood how <a href="/api-reference/getting-started/authentication">Authentication</a> works</li>
-		<li>Contact lemlist support through the <a href="https://lemlist.typeform.com/to/mfVlkyGf" target="_blank" rel="noreferrer">feedback form</a></li>
+		<li>Make sure you understood how <a href="/api-reference/getting-started/authentication">to authenticate</a> works</li>
+		<li><a href="https://lemlist.typeform.com/to/mfVlkyGf" target="_blank" rel="noreferrer">Contact lemlist support through the feedback form</a></li>
 	</ol>
 </Accordion>

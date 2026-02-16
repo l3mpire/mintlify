@@ -178,6 +178,10 @@
                         "type": "object",
                         "description": "LinkedIn integration settings",
                         "properties": {
+                            "linkedinUrl": {
+                                "type": "string",
+                                "description": "The LinkedIn URL of the person"
+                            },
                             "status": {
                                 "type": "boolean",
                                 "description": "Whether LinkedIn is connected"
@@ -312,7 +316,7 @@
             },
             "Lead": {
                 "type": "object",
-                "description": "A prospect added to a campaign for outreach.",
+                "description": "A contact added to a campaign for outreach. Not to be confused with a contact which is a record in lemlist, but not necessarily added to a campaign.",
                 "properties": {
                     "_id": {
                         "type": "string",
@@ -544,7 +548,7 @@
             },
             "Contact": {
                 "type": "object",
-                "description": "A contact record in your CRM.",
+                "description": "A contact record in your CRM. Not to be confused with a lead which is a contact specifically added to a campaign.",
                 "properties": {
                     "_id": {
                         "type": "string",
@@ -880,8 +884,8 @@
                         "type": "string",
                         "description": "Event type to listen for",
                         "enum": [
-                            "contacted", 
-                            "hooked", 
+                            "contacted",
+                            "hooked",
                             "attracted",
                             "warmed",
                             "interested",
@@ -932,7 +936,8 @@
                             "enrichmentDone",
                             "enrichmentError",
                             "callRecordingDone",
-                            "callTranscriptDone"
+                            "callTranscriptDone",
+                            "inboxLabelUpdated"
                         ]
                     },
                     "campaignId": {
@@ -1201,6 +1206,35 @@
                     },
                     "total": {
                         "type": "integer"
+                    }
+                }
+            },
+            "Label": {
+                "type": "object",
+                "description": "A label used to categorize and organize inbox conversations.",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "Unique label identifier"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Label name"
+                    },
+                    "color": {
+                        "type": "string",
+                        "description": "Hex color code for the label"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date and time when the label was created",
+                        "nullable": true
+                    },
+                    "createdBy": {
+                        "type": "string",
+                        "description": "Email of the user who created the label",
+                        "nullable": true
                     }
                 }
             },
@@ -1686,6 +1720,209 @@
                                 "description": "Timestamp of last deliverability check"
                             }
                         }
+                    }
+                }
+            },
+            "SignalSchema": {
+              "type": "object",
+              "description": "A watchlist signal representing a tracked event (hiring, LinkedIn activity, website visit, etc.)",
+              "required": ["_id", "teamId", "watchListId", "type", "status", "receivedAt", "createdAt", "signalData"],
+              "properties": {
+                  "_id": {
+                      "type": "string",
+                      "description": "Unique signal identifier"
+                  },
+                  "teamId": {
+                      "type": "string",
+                      "description": "Team ID that owns this signal"
+                  },
+                  "watchListId": {
+                      "type": "string",
+                      "description": "Associated watchlist ID"
+                  },
+                  "watchListName": {
+                      "type": "string",
+                      "description": "Name of the associated watchlist"
+                  },
+                  "type": {
+                      "type": "string",
+                      "description": "Signal type",
+                      "enum": [
+                          "companyIsHiring",
+                          "companyRaisedFunds",
+                          "jobChange",
+                          "newHire",
+                          "companyEmployeeVisitedMyWebsite",
+                          "linkedinProfile",
+                          "linkedinTopic"
+                      ]
+                  },
+                  "status": {
+                      "type": "string",
+                      "description": "Signal status (computed based on user actions)",
+                      "enum": ["new", "old", "handled", "ignored"]
+                  },
+                  "receivedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "When the signal was received"
+                  },
+                  "createdAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "When the signal was created in the database"
+                  },
+                  "contact": {
+                      "type": "object",
+                      "description": "Contact associated with this signal (if entity type is 'contact')",
+                      "properties": {
+                          "_id": {
+                              "type": "string",
+                              "description": "Contact ID"
+                          },
+                          "firstName": {
+                              "type": "string",
+                              "description": "Contact first name"
+                          },
+                          "lastName": {
+                              "type": "string",
+                              "description": "Contact last name"
+                          },
+                          "email": {
+                              "type": "string",
+                              "description": "Contact primary email"
+                          },
+                          "jobTitle": {
+                              "type": "string",
+                              "description": "Contact job title"
+                          },
+                          "phone": {
+                              "type": "string",
+                              "description": "Contact phone number"
+                          },
+                          "linkedinUrl": {
+                              "type": "string",
+                              "description": "Contact LinkedIn profile URL"
+                          },
+                          "picture": {
+                              "type": "string",
+                              "description": "Contact profile picture URL"
+                          }
+                      }
+                  },
+                  "company": {
+                      "type": "object",
+                      "description": "Company associated with this signal",
+                      "properties": {
+                          "_id": {
+                              "type": "string",
+                              "description": "Company ID"
+                          },
+                          "name": {
+                              "type": "string",
+                              "description": "Company name"
+                          },
+                          "domain": {
+                              "type": "string",
+                              "description": "Company website domain"
+                          },
+                          "linkedinUrl": {
+                              "type": "string",
+                              "description": "Company LinkedIn URL"
+                          },
+                          "industry": {
+                              "type": "string",
+                              "description": "Company industry"
+                          },
+                          "picture": {
+                              "type": "string",
+                              "description": "Company logo URL"
+                          }
+                      }
+                  },
+                  "signalData": {
+                      "type": "object",
+                      "description": "Signal-specific data that varies by signal type",
+                      "properties": {
+                          "jobTitle": {
+                              "type": "string",
+                              "description": "[companyIsHiring] Job posting title"
+                          },
+                          "jobDescription": {
+                              "type": "string",
+                              "description": "[companyIsHiring] Job posting description"
+                          },
+                          "jobLocation": {
+                              "type": "string",
+                              "description": "[companyIsHiring] Job posting location"
+                          },
+                          "jobUrl": {
+                              "type": "string",
+                              "description": "[companyIsHiring] Job posting URL"
+                          },
+                          "jobStatus": {
+                              "type": "string",
+                              "description": "[companyIsHiring] Job posting status"
+                          },
+                          "websiteVisited": {
+                              "type": "string",
+                              "description": "[companyEmployeeVisitedMyWebsite] Website URL that was visited"
+                          },
+                          "visitorWebsite": {
+                              "type": "string",
+                              "description": "[companyEmployeeVisitedMyWebsite] Visitor's company website"
+                          },
+                          "linkedinPostUrl": {
+                              "type": "string",
+                              "description": "[linkedinProfile/linkedinTopic] URL of the LinkedIn post"
+                          },
+                          "linkedinPostText": {
+                              "type": "string",
+                              "description": "[linkedinProfile/linkedinTopic] Text content of the LinkedIn post"
+                          },
+                          "linkedinReactionType": {
+                              "type": "string",
+                              "description": "[linkedinProfile/linkedinTopic] Type of LinkedIn reaction (like, comment, post)"
+                          },
+                          "linkedinReactedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "[linkedinProfile/linkedinTopic] When the LinkedIn reaction occurred"
+                          },
+                          "linkedinCommentText": {
+                              "type": "string",
+                              "description": "[linkedinProfile/linkedinTopic] Text of the LinkedIn comment"
+                          }
+                      }
+                  }
+              }
+            },
+            "WatchListApiFetchSignalsResponse": {
+                "type": "object",
+                "description": "Paginated response containing watchlist signals",
+                "properties": {
+                    "signals": {
+                        "type": "array",
+                        "description": "Array of signals matching the query parameters",
+                        "items": {
+                            "$ref": "#/components/schemas/SignalSchema"
+                        }
+                    },
+                    "total": {
+                        "type": "integer",
+                        "description": "Total number of signals matching the filter criteria"
+                    },
+                    "page": {
+                        "type": "integer",
+                        "description": "Current page number (if using page-based pagination)"
+                    },
+                    "offset": {
+                        "type": "integer",
+                        "description": "Current offset (if using offset-based pagination)"
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "description": "Number of signals returned in this response"
                     }
                 }
             }
@@ -2209,6 +2446,7 @@
                                     "email": "example@lemlist.co",
                                     "role": "admin",
                                     "linkedIn": {
+                                        "linkedinUrl": "https://www.linkedin.com/in/john-doe",
                                         "status": true,
                                         "inviteLimit": 25,
                                         "sendLimit": 33,
@@ -5890,7 +6128,7 @@
                                 }
                             },
                             "example": {
-                                "email":"support@lemlist.com",
+                                "email": "support@lemlist.com",
                                 "firstName": "John",
                                 "lastName": "Doe",
                                 "companyName": "lemlist",
@@ -6115,11 +6353,16 @@
                                     "preferredContactMethod": {
                                         "type": "string",
                                         "description": "Preferred contact method (email, linkedIn)"
+                                    },
+                                    "contactOwner": {
+                                        "type": "string",
+                                        "description": "Contact owner (user ID or user login email)"
                                     }
                                 }
                             },
                             "example": {
-                                "preferredContactMethod": "email"
+                                "preferredContactMethod": "email",
+                                "contactOwner": "login_email@user.com"
                             }
                         }
                     }
@@ -6212,7 +6455,7 @@
                         "description": "Unauthorized"
                     },
                     "404": {
-                        "description": "Lead not found",
+                        "description": "Possible errors: Lead not found / Contact owner not found",
                         "content": {
                             "text/plain": {
                                 "example": "Lead not found"
@@ -6226,7 +6469,7 @@
                 "parameters": []
             },
             "delete": {
-                "summary": "Delete Lead",
+                "summary": "Delete or Unsubscribe Lead",
                 "tags": [
                     "Leads"
                 ],
@@ -6235,7 +6478,7 @@
                         "name": "action",
                         "in": "query",
                         "required": false,
-                        "description": "Force the deletion of the lead. Use 'remove' to force delete.",
+                        "description": "Use 'remove' to force delete. Otherwise it will just unsubscribe the lead from the campaign.",
                         "example": "remove",
                         "schema": {
                             "type": "string"
@@ -6313,6 +6556,92 @@
                                     "campaignId": "cam_9NsHPnykWESTncCW8",
                                     "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
                                     "emailStatus": "deliverable"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Lead not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Lead not found"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/campaigns/{campaignId}/leads/{email}": {
+            "parameters": [
+                {
+                    "name": "campaignId",
+                    "in": "path",
+                    "required": true,
+                    "description": "The unique identifier of the campaign",
+                    "example": "cam_A1B2C3D4E5F6G7H8I9",
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "name": "email",
+                    "in": "path",
+                    "required": true,
+                    "description": "The email of the lead",
+                    "example": "bvelitchkine@gmail.com",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "delete": {
+                "summary": "Unsubscribe Lead from Campaign",
+                "tags": [
+                    "Leads"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "email": {
+                                            "type": "string",
+                                            "format": "email"
+                                        },
+                                        "_id": {
+                                            "type": "string"
+                                        },
+                                        "isPaused": {
+                                            "type": "boolean"
+                                        },
+                                        "campaignId": {
+                                            "type": "string"
+                                        },
+                                        "contactId": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "email": "bvelitchkine@gmail.com",
+                                    "_id": "lea_o3uCcHsibhy9id8qD",
+                                    "isPaused": false,
+                                    "campaignId": "cam_eMZnxqs9Z9nqGxzwT",
+                                    "contactId": "ctc_ARyApP88xS286tgsY"
                                 }
                             }
                         }
@@ -7624,7 +7953,7 @@
         "/database/people": {
             "post": {
                 "summary": "Search People Database",
-                "description": "Search the lemlist People database using structured filters and optional free-text, with pagination support. Use GET /database/filters to discover available filterIds and their expected value formats.",
+                "description": "This endpoint allows you to query our People database. To do so, you may use the following parameters: filters (required), page (optional), size (optional), and excludes (optional). Each filter should have the following properties: filterId (filter identifier), in (list of the values you want to include), and out (list of the values you want to exclude). To know which filters you are able to use, refer to the GET Filters section.",
                 "operationId": "searchPeopleDatabase",
                 "tags": [
                     "People Database"
@@ -7638,6 +7967,7 @@
                                 "properties": {
                                     "filters": {
                                         "type": "array",
+                                        "description": "Array of filters (required)",
                                         "items": {
                                             "type": "object",
                                             "properties": {
@@ -7650,14 +7980,14 @@
                                                     "items": {
                                                         "type": "string"
                                                     },
-                                                    "description": "Values to include"
+                                                    "description": "List of the values you want to include"
                                                 },
                                                 "out": {
                                                     "type": "array",
                                                     "items": {
                                                         "type": "string"
                                                     },
-                                                    "description": "Values to exclude"
+                                                    "description": "List of the values you want to exclude"
                                                 }
                                             }
                                         }
@@ -7665,13 +7995,20 @@
                                     "page": {
                                         "type": "integer",
                                         "minimum": 1,
-                                        "description": "Page number (1-indexed). Default: 1"
+                                        "description": "Page (optional)"
                                     },
                                     "size": {
                                         "type": "integer",
                                         "minimum": 1,
                                         "maximum": 100,
-                                        "description": "Number of results per page (max 100). Default: 25"
+                                        "description": "Size of the results, number between 1 and 100 (optional)"
+                                    },
+                                    "excludes": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "description": "Array of properties to exclude from the results (optional)"
                                     },
                                     "search": {
                                         "type": "string",
@@ -7705,30 +8042,38 @@
                                     "properties": {
                                         "results": {
                                             "type": "array",
+                                            "description": "Results array",
                                             "items": {
                                                 "$ref": "#/components/schemas/PeopleSchema"
                                             }
                                         },
                                         "total": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "description": "Total number of results"
                                         },
                                         "took": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "description": "Duration of the elastic-search query in milliseconds"
                                         },
                                         "page": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "description": "Current page number"
                                         },
                                         "size": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "description": "Size of the results (asked through parameters)"
                                         },
                                         "search": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "description": "Unique identifier of the current search"
                                         },
                                         "limitation": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "description": "Remaining calls for the POST People database and POST Companies database (search is limited to a number of queries every 24 hours)"
                                         },
                                         "team": {
-                                            "type": "string"
+                                            "type": "string",
+                                            "description": "Unique identifier of the current team"
                                         }
                                     }
                                 },
@@ -8142,7 +8487,7 @@
                                         "in": [
                                             "Postman"
                                         ],
-                                        "out": []
+                                        "out": ["Haskell"]
                                     }
                                 ],
                                 "page": 1,
@@ -9686,6 +10031,390 @@
                 "parameters": []
             }
         },
+        "/inbox/labels": {
+            "get": {
+                "summary": "Get Many Labels",
+                "description": "List all labels available to your team.",
+                "tags": [
+                    "Inbox"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success - Returns array of labels",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Label"
+                                    }
+                                },
+                                "example": [
+                                    {
+                                        "_id": "lbl_3bgE97gvicZ888wz4",
+                                        "name": "Interested",
+                                        "color": "#F9A2A2",
+                                        "createdAt": "2025-11-26T15:49:23.470Z",
+                                        "createdBy": "john.doe@example.com"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    }
+                },
+                "parameters": []
+            },
+            "post": {
+                "summary": "Create Label",
+                "description": "Creates a new label available to the team.",
+                "tags": [
+                    "Inbox"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "labelName": {
+                                        "type": "string",
+                                        "description": "Name of the label to create"
+                                    }
+                                },
+                                "required": [
+                                    "labelName"
+                                ]
+                            },
+                            "example": {
+                                "labelName": "Interested"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success - Label created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Label"
+                                },
+                                "example": {
+                                    "_id": "lbl_3bgE97gvicZ888wz4",
+                                    "name": "Interested",
+                                    "color": "#F9A2A2",
+                                    "createdAt": "2025-11-26T15:49:23.470Z"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / labelName is required / Failed to create label",
+                        "content": {
+                            "text/plain": {
+                                "example": "labelName is required"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Label with this name already exists",
+                        "content": {
+                            "text/plain": {
+                                "example": "Label with this name already exists"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
+                    }
+                },
+                "parameters": []
+            }
+        },
+        "/inbox/labels/{labelId}": {
+            "get": {
+                "summary": "Get Label",
+                "description": "Get info of a specific label.",
+                "tags": [
+                    "Inbox"
+                ],
+                "parameters": [
+                    {
+                        "name": "labelId",
+                        "in": "path",
+                        "required": true,
+                        "description": "Label ID",
+                        "example": "lbl_3bgE97gvicZ888wz4",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Label"
+                                },
+                                "example": {
+                                    "_id": "lbl_3bgE97gvicZ888wz4",
+                                    "name": "Interested",
+                                    "color": "#F9A2A2",
+                                    "createdAt": "2025-11-26T15:49:23.470Z",
+                                    "createdBy": "john.doe@example.com"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Label not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Label not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
+                    }
+                }
+            }
+        },
+        "/inbox/conversations/labels/{contactId}": {
+            "post": {
+                "summary": "Attach Labels to Conversations",
+                "description": "Attaches one or more labels to one or more conversations.",
+                "tags": [
+                    "Inbox"
+                ],
+                "parameters": [
+                    {
+                        "name": "contactId",
+                        "in": "path",
+                        "required": true,
+                        "description": "Contact ID",
+                        "example": "ctc_yHXD3NWjPg7Z9MuWZ",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "labelIds": {
+                                        "type": "array",
+                                        "description": "Array of label IDs to attach",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "appendLabels": {
+                                        "type": "boolean",
+                                        "description": "If true, appends labels to existing ones. If false, replaces all labels."
+                                    }
+                                },
+                                "required": [
+                                    "labelIds",
+                                    "appendLabels"
+                                ]
+                            },
+                            "example": {
+                                "labelIds": [
+                                    "lbl_3bgE97gvicZ888wz4",
+                                    "lbl_5kfD28hvjdA777xy9"
+                                ],
+                                "appendLabels": true
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "ok": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "ok": true
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Invalid request body: labelIds must be an array and appendLabels must be a boolean",
+                        "content": {
+                            "text/plain": {
+                                "example": "Invalid request body: labelIds must be an array and appendLabels must be a boolean"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Possible errors: Inbox not found / Label not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Label not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Remove Labels from Conversation",
+                "description": "Removes one or more labels from one conversation.",
+                "tags": [
+                    "Inbox"
+                ],
+                "parameters": [
+                    {
+                        "name": "contactId",
+                        "in": "path",
+                        "required": true,
+                        "description": "Contact ID",
+                        "example": "ctc_yHXD3NWjPg7Z9MuWZ",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "labelIds": {
+                                        "type": "array",
+                                        "description": "Array of label IDs to remove",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "labelIds"
+                                ]
+                            },
+                            "example": {
+                                "labelIds": [
+                                    "lbl_3bgE97gvicZ888wz4"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "ok": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "ok": true
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / Invalid request body: labelIds must be an array",
+                        "content": {
+                            "text/plain": {
+                                "example": "Invalid request body: labelIds must be an array"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "The authentication you supplied is incorrect",
+                        "content": {
+                            "text/plain": {
+                                "example": "The authentication you supplied is incorrect"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Possible errors: Inbox not found / Label not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Label not found"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed"
+                    }
+                }
+            }
+        },
         "/contacts": {
             "get": {
                 "summary": "Get Many Contacts",
@@ -10587,7 +11316,7 @@
                         "name": "offset",
                         "in": "query",
                         "required": false,
-                        "description": "Offset for pagination",
+                        "description": "Number of records to skip. Note: This is not traditional cursor-based pagination. To retrieve all activities, increment offset by the limit value on each request (e.g., offset=0, then offset=100, then offset=200, etc.).",
                         "example": "0",
                         "schema": {
                             "type": "integer"
@@ -12755,6 +13484,233 @@
                     }
                 }
             }
+        },
+        "/watchlist/signals": {
+          "get": {
+              "summary": "Get Watchlist Signals",
+              "tags": [
+                  "Watchlist"
+              ],
+              "parameters": [
+                  {
+                      "name": "page",
+                      "in": "query",
+                      "required": false,
+                      "description": "Page number to retrieve (cannot be used with offset)",
+                      "example": "1",
+                      "schema": {
+                          "type": "integer",
+                          "minimum": 1
+                      }
+                  },
+                  {
+                      "name": "offset",
+                      "in": "query",
+                      "required": false,
+                      "description": "Number of records to skip (cannot be used with page)",
+                      "example": "0",
+                      "schema": {
+                          "type": "integer",
+                          "minimum": 0
+                      }
+                  },
+                  {
+                      "name": "limit",
+                      "in": "query",
+                      "required": false,
+                      "description": "Number of signals to retrieve. Maximum value: 100",
+                      "example": "50",
+                      "schema": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 100
+                      }
+                  },
+                  {
+                      "name": "sortBy",
+                      "in": "query",
+                      "required": false,
+                      "description": "The field by which to sort signals",
+                      "example": "receivedAt",
+                      "schema": {
+                          "type": "string",
+                          "enum": [
+                              "receivedAt",
+                              "createdAt"
+                          ]
+                      }
+                  },
+                  {
+                      "name": "sortOrder",
+                      "in": "query",
+                      "required": false,
+                      "description": "The sort direction",
+                      "example": "desc",
+                      "schema": {
+                          "type": "string",
+                          "enum": [
+                              "asc",
+                              "desc"
+                          ]
+                      }
+                  },
+                  {
+                      "name": "type",
+                      "in": "query",
+                      "required": false,
+                      "description": "Filter by signal type(s). Can be a single value or array using type[] notation. Valid values from WATCH_LIST_SIGNAL_CONFIGURATIONS_TYPES_STANDARD_KEYS",
+                      "example": "jobChange",
+                      "schema": {
+                          "oneOf": [
+                              {
+                                  "type": "string"
+                              },
+                              {
+                                  "type": "array",
+                                  "items": {
+                                      "type": "string"
+                                  }
+                              }
+                          ]
+                      }
+                  },
+                  {
+                      "name": "status",
+                      "in": "query",
+                      "required": false,
+                      "description": "Filter by signal status(es). Can be a single value or array using status[] notation. Valid values from WATCH_LIST_SIGNAL_COMPUTED_STATUSES",
+                      "example": "new",
+                      "schema": {
+                          "oneOf": [
+                              {
+                                  "type": "string"
+                              },
+                              {
+                                  "type": "array",
+                                  "items": {
+                                      "type": "string"
+                                  }
+                              }
+                          ]
+                      }
+                  },
+                  {
+                      "name": "receivedAtFrom",
+                      "in": "query",
+                      "required": false,
+                      "description": "Filter signals received on or after this date (ISO date string)",
+                      "example": "2024-01-01T00:00:00.000Z",
+                      "schema": {
+                          "type": "string",
+                          "format": "date-time"
+                      }
+                  },
+                  {
+                      "name": "receivedAtTo",
+                      "in": "query",
+                      "required": false,
+                      "description": "Filter signals received on or before this date (ISO date string). Must be greater than receivedAtFrom if both are provided",
+                      "example": "2024-12-31T23:59:59.999Z",
+                      "schema": {
+                          "type": "string",
+                          "format": "date-time"
+                      }
+                  },
+                  {
+                      "name": "watchListId",
+                      "in": "query",
+                      "required": false,
+                      "description": "Filter signals by specific watchlist ID",
+                      "example": "wl_abc123",
+                      "schema": {
+                          "type": "string",
+                          "minLength": 1
+                      }
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Success",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "$ref": "#/components/schemas/WatchListApiFetchSignalsResponse"
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "Validation error - invalid query parameters, pagination conflict, or invalid date range",
+                      "content": {
+                          "text/plain": {
+                              "examples": {
+                                  "invalidPagination": {
+                                      "value": "page must be a positive integer"
+                                  },
+                                  "paginationConflict": {
+                                      "value": "Cannot use both page and offset parameters"
+                                  },
+                                  "invalidLimit": {
+                                      "value": "limit must be between 1 and 100"
+                                  },
+                                  "invalidSort": {
+                                      "value": "sortBy must be either receivedAt or createdAt"
+                                  },
+                                  "invalidType": {
+                                      "value": "Invalid type values: invalid_type"
+                                  },
+                                  "invalidStatus": {
+                                      "value": "Invalid status values: invalid_status"
+                                  },
+                                  "invalidDate": {
+                                      "value": "receivedAtFrom must be a valid ISO date string"
+                                  },
+                                  "invalidDateRange": {
+                                      "value": "receivedAtFrom must be before receivedAtTo"
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "401": {
+                      "description": "Unauthorized - invalid or missing API key",
+                      "content": {
+                          "text/plain": {
+                              "example": "Unauthorized"
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "Watchlist not found",
+                      "content": {
+                          "text/plain": {
+                              "example": "Watchlist not found"
+                          }
+                      }
+                  },
+                  "405": {
+                      "description": "Method not allowed - only GET is supported",
+                      "content": {
+                          "text/plain": {
+                              "example": "Method not allowed"
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "Internal server error",
+                      "content": {
+                          "text/plain": {
+                              "example": "Internal server error"
+                          }
+                      }
+                  }
+              },
+              "security": [
+                  {
+                      "ApiKeyAuth": []
+                  }
+              ]
+          }
         }
     }
 }

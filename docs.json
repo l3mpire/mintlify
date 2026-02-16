@@ -207,7 +207,12 @@
                   "api-reference/endpoints/inbox/get-contact-messages",
                   "api-reference/endpoints/inbox/send-email",
                   "api-reference/endpoints/inbox/send-linkedin-message",
-                  "api-reference/endpoints/inbox/send-whatsapp-message"
+                  "api-reference/endpoints/inbox/send-whatsapp-message",
+                  "api-reference/endpoints/inbox/get-many-labels",
+                  "api-reference/endpoints/inbox/get-label",
+                  "api-reference/endpoints/inbox/create-label",
+                  "api-reference/endpoints/inbox/attach-labels-to-conversations",
+                  "api-reference/endpoints/inbox/remove-labels-from-conversation"
                 ]
               },
               {
@@ -285,6 +290,13 @@
                   "api-reference/endpoints/lemwarm/get-lemwarm-settings",
                   "api-reference/endpoints/lemwarm/update-lemwarm-settings"
                 ]
+              },
+              {
+                "group": "Watch list / signals",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/watch-list/get-signals"
+                ]
               }
             ]
           },
@@ -325,7 +337,8 @@
               "api-reference/objects-definitions/report",
               "api-reference/objects-definitions/webhook",
               "api-reference/objects-definitions/mailbox",
-              "api-reference/objects-definitions/company-note"
+              "api-reference/objects-definitions/company-note",
+              "api-reference/objects-definitions/signal"
             ]
           }
         ]
@@ -336,6 +349,7 @@
           {
             "group": "User Guides",
             "pages": [
+              "guides/index",
               "guides/adding-leads-in-a-lemlist-campaign-in-auto-launch-mode",
               "guides/send-slack-notification-upon-lead-positive-reply",
               "guides/refresh-your-crm-contacts-with-the-lemlist-api",

@@ -1,5 +1,6 @@
 ---
 openapi: get /unsubs/export
+description: Exports all unsubscribed emails and domains to a CSV file.
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
@@ -8,5 +9,3 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <Warning>
     Beware, contrary to other endpoints, the path uses "unsubs" instead of "unsubscribes".
 </Warning>
-
-This endpoint exports all unsubscribes to a CSV file.
