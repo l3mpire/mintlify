@@ -11341,6 +11341,16 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "contactId",
+                        "in": "query",
+                        "required": false,
+                        "description": "Filter by contact ID",
+                        "example": "ctc_123",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
