@@ -3203,6 +3203,78 @@
                 }
             }
         },
+        "/campaigns/{campaignId}/start": {
+            "parameters": [
+                {
+                    "name": "campaignId",
+                    "in": "path",
+                    "required": true,
+                    "description": "The unique identifier of the campaign",
+                    "example": "cam_A1B2C3D4E5F6G7H8I9",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "post": {
+                "summary": "Start Campaign",
+                "tags": [
+                    "Campaigns"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "headers": {
+                            "Content-Type": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "example": "application/json"
+                            }
+                        },
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "_id": {
+                                            "type": "string"
+                                        },
+                                        "state": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "_id": "cam_A1B2C3D4E5F6G7H8I9",
+                                    "state": "running"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad team",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Campaign not found",
+                        "content": {
+                            "text/plain": {
+                                "example": "Campaign not found"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/campaigns/{campaignId}/export/start": {
             "parameters": [
                 {
