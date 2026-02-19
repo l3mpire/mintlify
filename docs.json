@@ -127,6 +127,7 @@
                   "api-reference/endpoints/campaigns/get-campaign",
                   "api-reference/endpoints/campaigns/get-many-campaigns",
                   "api-reference/endpoints/campaigns/update-campaign",
+                  "api-reference/endpoints/campaigns/start-campaign",
                   "api-reference/endpoints/campaigns/pause-campaign",
                   "api-reference/endpoints/campaigns/get-campaign-stats",
                   "api-reference/endpoints/campaigns/start-campaign-export",
