@@ -1,0 +1,9 @@
+---
+openapi: post /campaigns/{campaignId}/start
+description: Starts or resumes a paused campaign.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Campaign" objectPath="campaign" />
+
+If the campaign is already running, it simply does nothing.
