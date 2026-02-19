@@ -2942,10 +2942,29 @@
                         }
                     },
                     "400": {
-                        "description": "Bad team",
+                        "description": "Bad request",
                         "content": {
-                            "text/plain": {
-                                "example": "Bad team"
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "alreadyRunning": {
+                                        "summary": "Campaign already running",
+                                        "value": {
+                                            "error": "You can't start campaigns that are already running."
+                                        }
+                                    },
+                                    "badTeam": {
+                                        "summary": "Bad team",
+                                        "value": "Bad team"
+                                    }
+                                }
                             }
                         }
                     },
