@@ -2500,6 +2500,158 @@
                 }
             }
         },
+        "/user/channels": {
+            "get": {
+                "summary": "Get User Channels",
+                "tags": [
+                    "Users"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "Connected channels and feature availability for the authenticated user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "plan": {
+                                            "type": "string",
+                                            "nullable": true,
+                                            "description": "Current billing plan name"
+                                        },
+                                        "email": {
+                                            "type": "object",
+                                            "properties": {
+                                                "connected": {
+                                                    "type": "boolean",
+                                                    "description": "Whether at least one email account is connected"
+                                                },
+                                                "available": {
+                                                    "type": "boolean",
+                                                    "description": "Whether the email channel is available on the current plan"
+                                                },
+                                                "accounts": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string",
+                                                                "description": "Mailbox identifier"
+                                                            },
+                                                            "email": {
+                                                                "type": "string",
+                                                                "description": "Email address"
+                                                            },
+                                                            "provider": {
+                                                                "type": "string",
+                                                                "enum": ["google", "microsoft", "custom"],
+                                                                "description": "Email provider"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "linkedin": {
+                                            "type": "object",
+                                            "properties": {
+                                                "connected": {
+                                                    "type": "boolean",
+                                                    "description": "Whether LinkedIn is connected"
+                                                },
+                                                "available": {
+                                                    "type": "boolean",
+                                                    "description": "Whether LinkedIn is available on the current plan"
+                                                }
+                                            }
+                                        },
+                                        "whatsapp": {
+                                            "type": "object",
+                                            "properties": {
+                                                "connected": {
+                                                    "type": "boolean",
+                                                    "description": "Whether at least one WhatsApp account is connected"
+                                                },
+                                                "available": {
+                                                    "type": "boolean",
+                                                    "description": "Whether WhatsApp is available on the current plan"
+                                                },
+                                                "addonActive": {
+                                                    "type": "boolean",
+                                                    "description": "Whether the WhatsApp addon is active"
+                                                },
+                                                "accounts": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string",
+                                                                "description": "WhatsApp account identifier"
+                                                            },
+                                                            "phoneNumber": {
+                                                                "type": "string",
+                                                                "description": "Phone number"
+                                                            },
+                                                            "label": {
+                                                                "type": "string",
+                                                                "description": "Account label"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "plan": "Multichannel Expert",
+                                    "email": {
+                                        "connected": true,
+                                        "available": true,
+                                        "accounts": [
+                                            {
+                                                "id": "usm_bsdepN6jb8zftK9Ns",
+                                                "email": "john@acme.com",
+                                                "provider": "google"
+                                            }
+                                        ]
+                                    },
+                                    "linkedin": {
+                                        "connected": true,
+                                        "available": true
+                                    },
+                                    "whatsapp": {
+                                        "connected": false,
+                                        "available": true,
+                                        "addonActive": false,
+                                        "accounts": []
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Possible errors: Bad team / No user found for this api key",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad team"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Only GET method is supported",
+                        "content": {
+                            "text/plain": {
+                                "example": "Bad method"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/campaigns": {
             "get": {
                 "summary": "Get Many Campaigns",
@@ -6105,6 +6257,73 @@
                     }
                 }
             ],
+            "get": {
+                "summary": "Get Campaign Leads",
+                "tags": [
+                    "Leads"
+                ],
+                "parameters": [
+                    {
+                        "name": "state",
+                        "in": "query",
+                        "required": false,
+                        "description": "Filter leads by state (e.g., scanned, contacted, interested, notInterested, etc.)",
+                        "example": "scanned",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "description": "Maximum number of leads to return. Default: 100, Max: 500",
+                        "example": 100,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 500,
+                            "default": 100
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of leads in the campaign",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "_id": {
+                                                "type": "string",
+                                                "description": "Unique lead identifier"
+                                            },
+                                            "contactId": {
+                                                "type": "string",
+                                                "description": "Associated contact identifier"
+                                            },
+                                            "state": {
+                                                "type": "string",
+                                                "description": "Current lead state"
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": [
+                                    {
+                                        "_id": "lea_A1B2C3D4E5F6G7H8I9",
+                                        "contactId": "con_Z9Y8X7W6V5U4T3S2R1",
+                                        "state": "scanned"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
                 "summary": "Create Lead in Campaign",
                 "tags": [

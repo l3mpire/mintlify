@@ -116,7 +116,8 @@
                 "group": "Users",
                 "expanded": false,
                 "pages": [
-                  "api-reference/endpoints/users/get-user"
+                  "api-reference/endpoints/users/get-user",
+                  "api-reference/endpoints/users/get-user-channels"
                 ]
               },
               {
@@ -165,6 +166,7 @@
                 "expanded": false,
                 "pages": [
                   "api-reference/endpoints/leads/create-lead-in-campaign",
+                  "api-reference/endpoints/leads/get-campaign-leads",
                   "api-reference/endpoints/leads/get-lead-by-email-or-id",
                   "api-reference/endpoints/leads/get-lead-by-email",
                   "api-reference/endpoints/leads/update-lead",
