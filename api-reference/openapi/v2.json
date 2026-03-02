@@ -2747,6 +2747,17 @@
                                 "errors"
                             ]
                         }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "required": false,
+                        "description": "Search campaigns by name. Case-insensitive partial match.",
+                        "example": "Product Launch",
+                        "schema": {
+                            "type": "string",
+                            "maxLength": 1000
+                        }
                     }
                 ],
                 "responses": {
