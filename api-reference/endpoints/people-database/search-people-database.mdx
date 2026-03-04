@@ -4,18 +4,34 @@ description: "Searches the people database using filters, keywords, and paginati
 title: "Search people database"
 ---
 
-import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+This endpoint allows you to query our People database.
+To do so, you may use the following parameters:
+- filters: array of filters (required) array
+- page: page (optional) number
+- size: size of the results, number between 1 and 100 (optional) number
+- excludes: array of properties to exclude from the results (optional) array
 
-<SnippetObjectReference objectName="People Database People" objectPath="people-database" />
+Each filter should have the following properties:
+- filterId: filter identifier string
+- in: list of the values you want to include array
+- out: list of the values you want to exclude array
 
 <Note>
   To know which filters you are able to use, refer to the [GET Filters](/api-reference/endpoints/people-database/get-database-filters) section.
 </Note>
 
-<Note>
-  This endpoint uses the [People object](/api-reference/objects-definitions/people-database). If you need more details about the schema of the people returned as a results array, refer to the [GET People Schema](/api-reference/endpoints/people-database/get-people-schema) section.
-</Note>
+Response will be formatted as an object with the following properties:
+- results: results array
+- total: total number of results number
+- took: duration of the elastic-search query in milliseconds number
+- page: current page number
+- size: size of the results (asked through parameters) number
+- search: unique identifier of the current search string
+- limitations: remaining calls for the POST People database and POST Companies database (search is limited to a number of queries every 24 hours) number
+- team: unique identifier of the current team string
+
+If you need more details about the schema of the people returned as a results array, refer to the GET People Schema section.
 
 <Note>
-  Route is available starting "Scale" plan
+  If you need more details about the schema of the people returned as a results array, refer to the [GET People Schema section](/api-reference/endpoints/people-database/get-people-schema) section.
 </Note>

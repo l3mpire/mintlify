@@ -1,10 +1,8 @@
 ---
 title: Company
-openapi-schema: DatabaseCompany
+openapi-schema: CompaniesSchema
 ---
-import {SnippetObjectScreenshot} from '/snippets/snippet-object-screenshot.jsx'
 
-<SnippetObjectScreenshot
-  objectName="Company"
-  filePath="people-database-companies"
-/>
+The Company schema represents a company record from lemlist's Companies database.
+
+The available fields may vary across versions. Use the [GET /schema/companies](/api-reference/endpoints/people-database/get-companies-schema) endpoint to retrieve the current schema definition, including the full list of available properties.

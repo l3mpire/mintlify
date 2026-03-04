@@ -297,9 +297,7 @@
               {
                 "group": "Watch list / signals",
                 "expanded": false,
-                "pages": [
-                  "api-reference/endpoints/watch-list/get-signals"
-                ]
+                "pages": ["api-reference/endpoints/watch-list/get-signals"]
               }
             ]
           },
@@ -324,8 +322,7 @@
                 "pages": [
                   "api-reference/objects-definitions/database",
                   "api-reference/objects-definitions/people-database",
-                  "api-reference/objects-definitions/company-database",
-                  "api-reference/objects-definitions/database-filter"
+                  "api-reference/objects-definitions/company-database"
                 ]
               },
               "api-reference/objects-definitions/crm-filter",
@@ -375,13 +372,7 @@
       "proxy": true
     },
     "examples": {
-      "languages": [
-        "curl",
-        "python",
-        "javascript",
-        "ruby",
-        "php"
-      ],
+      "languages": ["curl", "python", "javascript", "ruby", "php"],
       "defaults": "required",
       "prefill": true
     },
