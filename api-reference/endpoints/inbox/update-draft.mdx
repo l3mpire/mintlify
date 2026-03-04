@@ -1,0 +1,19 @@
+---
+openapi: patch /inbox/{contactId}/drafts/{draftId}
+description: Partially updates an existing draft. Only the provided fields will be updated.
+---
+
+<Note>
+The `draftOwner` query parameter is required and identifies the draft owner. It accepts either:
+- A **userId** (e.g., `usr_abc123def456789`) — used directly
+- A **login email** (e.g., `john@acme.com`) — resolved to userId via email lookup
+
+This follows the same pattern as `contactOwner` in the Lead API. Team membership is verified in both cases.
+</Note>
+
+<Warning>
+**Validations:**
+- If `content` is provided, it must not be empty and has a max size of 30KB (30,000 characters)
+- `content` and `subject` are sanitized for security
+- `updatedAt` is set automatically
+</Warning>

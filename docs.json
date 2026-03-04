@@ -215,7 +215,12 @@
                   "api-reference/endpoints/inbox/get-label",
                   "api-reference/endpoints/inbox/create-label",
                   "api-reference/endpoints/inbox/attach-labels-to-conversations",
-                  "api-reference/endpoints/inbox/remove-labels-from-conversation"
+                  "api-reference/endpoints/inbox/remove-labels-from-conversation",
+                  "api-reference/endpoints/inbox/list-drafts",
+                  "api-reference/endpoints/inbox/get-draft",
+                  "api-reference/endpoints/inbox/create-draft",
+                  "api-reference/endpoints/inbox/update-draft",
+                  "api-reference/endpoints/inbox/delete-draft"
                 ]
               },
               {
