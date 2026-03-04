@@ -4,4 +4,15 @@ description: Retrieves available filters for searching the people and companies 
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
-<SnippetObjectReference objectName="People Database Filter" objectPath="database-filter" />
+This endpoint allows you to retrieve the lemleads filters. Each filter has the following properties:
+- filterId: filter identifier to use (for creating queries) string
+- description: short description of the filter string
+- mode: array that contains "leads", "companies" or both array
+- type: filter type (text, select, level, autocomplete, static, slider) string
+- helper: how to use the current filter string
+- values (optional): available values for the current filter (if the values property exists and if the current type is select) array
+- prefix (optional): automatically added to your search (if the prefix property exists) string
+
+Please, note that:
+- you will not be able to use a filter for a People database query if the leads keyword is not listed in the mode property
+- you will not be able to use a filter for a Companies database query if the companies keyword is not listed in the mode property

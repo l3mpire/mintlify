@@ -1258,442 +1258,56 @@
             },
             "DatabaseFilter": {
                 "type": "object",
-                "description": "Saved search criteria for querying the People database.",
+                "description": "A filter available for querying the People or Companies database.",
+                "required": ["filterId", "description", "mode", "type", "helper"],
                 "properties": {
-                    "_id": {
-                        "type": "string"
+                    "filterId": {
+                        "type": "string",
+                        "description": "Filter identifier to use when creating queries."
                     },
-                    "name": {
-                        "type": "string"
+                    "description": {
+                        "type": "string",
+                        "description": "Short description of the filter."
                     },
-                    "criteria": {
-                        "type": "object",
-                        "additionalProperties": true
+                    "mode": {
+                        "type": "array",
+                        "description": "Indicates whether the filter applies to \"leads\", \"companies\", or both.",
+                        "items": {
+                            "type": "string",
+                            "enum": ["leads", "companies"]
+                        }
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "Filter type.",
+                        "enum": ["text", "select", "autocomplete", "static", "slider"]
+                    },
+                    "helper": {
+                        "type": "string",
+                        "description": "How to use the current filter."
+                    },
+                    "values": {
+                        "type": "array",
+                        "description": "Available values for the current filter (present when type is \"select\").",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "prefix": {
+                        "type": "string",
+                        "description": "Automatically added to your search value."
                     }
                 }
             },
             "PeopleSchema": {
                 "type": "object",
-                "description": "A person record from lemlist's People database.",
-                "additionalProperties": true,
-                "properties": {
-                    "lead_id": {
-                        "type": "integer",
-                        "description": "Numeric identifier for the person in the People database"
-                    },
-                    "canonical_shorthand_name": {
-                        "type": "string"
-                    },
-                    "connections_count": {
-                        "type": "integer"
-                    },
-                    "country": {
-                        "type": "string"
-                    },
-                    "full_name": {
-                        "type": "string"
-                    },
-                    "education": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "additionalProperties": true,
-                            "properties": {
-                                "activities_and_societies": {
-                                    "type": "string"
-                                },
-                                "created": {
-                                    "type": "string"
-                                },
-                                "date_from": {
-                                    "type": "string"
-                                },
-                                "date_to": {
-                                    "type": "string"
-                                },
-                                "deleted": {
-                                    "type": "string"
-                                },
-                                "description": {
-                                    "type": "string"
-                                },
-                                "id": {
-                                    "type": "string"
-                                },
-                                "last_updated": {
-                                    "type": "string"
-                                },
-                                "member_id": {
-                                    "type": "string"
-                                },
-                                "school_url": {
-                                    "type": "string",
-                                    "format": "uri"
-                                },
-                                "subtitle": {
-                                    "type": "string"
-                                },
-                                "title": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "experience_count": {
-                        "type": "integer"
-                    },
-                    "experiences": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "additionalProperties": true,
-                            "properties": {
-                                "company_id": {
-                                    "type": "integer"
-                                },
-                                "company_description": {
-                                    "type": "string"
-                                },
-                                "company_employee_count": {
-                                    "type": "integer"
-                                },
-                                "company_followers_count": {
-                                    "type": "integer"
-                                },
-                                "company_founded": {
-                                    "type": "integer"
-                                },
-                                "company_headquarters_city": {
-                                    "type": "string"
-                                },
-                                "company_headquarters_country": {
-                                    "type": "string"
-                                },
-                                "company_industry": {
-                                    "type": "string"
-                                },
-                                "company_linkedin_url": {
-                                    "type": "string",
-                                    "format": "uri"
-                                },
-                                "company_logo_url": {
-                                    "type": "string",
-                                    "format": "uri"
-                                },
-                                "company_name": {
-                                    "type": "string"
-                                },
-                                "company_size": {
-                                    "type": "string"
-                                },
-                                "company_type": {
-                                    "type": "string"
-                                },
-                                "company_url": {
-                                    "type": "string"
-                                },
-                                "company_website_url": {
-                                    "type": "string",
-                                    "format": "uri"
-                                },
-                                "revenue_bucket": {
-                                    "type": "string"
-                                },
-                                "company_domain": {
-                                    "type": "string"
-                                },
-                                "employees_count_growth": {
-                                    "type": "integer"
-                                },
-                                "last_funding_round_at": {
-                                    "type": "string"
-                                },
-                                "business_business_customer": {
-                                    "type": "string"
-                                },
-                                "current_exp_bucket": {
-                                    "type": "string"
-                                },
-                                "created": {
-                                    "type": "string"
-                                },
-                                "date_from": {
-                                    "type": "string"
-                                },
-                                "date_to": {
-                                    "type": "string"
-                                },
-                                "description": {
-                                    "type": "string"
-                                },
-                                "duration": {
-                                    "type": "string"
-                                },
-                                "id": {
-                                    "type": "string"
-                                },
-                                "last_updated": {
-                                    "type": "string"
-                                },
-                                "location": {
-                                    "type": "string"
-                                },
-                                "member_id": {
-                                    "type": "string"
-                                },
-                                "order_in_profile": {
-                                    "type": "integer"
-                                },
-                                "title": {
-                                    "type": "string"
-                                },
-                                "title_normalized": {
-                                    "type": "string"
-                                },
-                                "main_in_profile": {
-                                    "type": "boolean"
-                                }
-                            }
-                        }
-                    },
-                    "interests": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "interest": {
-                                    "type": "string"
-                                },
-                                "interest_id": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "languages": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "language": {
-                                    "type": "string"
-                                },
-                                "proficiency": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "last_updated": {
-                        "type": "string"
-                    },
-                    "lead_industry": {
-                        "type": "string"
-                    },
-                    "lead_linkedin_url": {
-                        "type": "string",
-                        "format": "uri"
-                    },
-                    "lead_logo_url": {
-                        "type": "string",
-                        "format": "uri"
-                    },
-                    "linkedin_short": {
-                        "type": "string"
-                    },
-                    "location": {
-                        "type": "string"
-                    },
-                    "skills": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "skill": {
-                                    "type": "string"
-                                },
-                                "skill_id": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "summary": {
-                        "type": "string"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "lead_quality_score": {
-                        "type": "integer"
-                    },
-                    "seniority": {
-                        "type": "string"
-                    },
-                    "department": {
-                        "type": "string"
-                    },
-                    "connections_count_bucket": {
-                        "type": "string"
-                    },
-                    "years_of_exp_bucket": {
-                        "type": "string"
-                    },
-                    "current_exp_company_name": {
-                        "type": "string"
-                    },
-                    "geopoint": {
-                        "type": "array",
-                        "items": {
-                            "type": "number"
-                        },
-                        "minItems": 2,
-                        "maxItems": 2
-                    },
-                    "_score": {
-                        "type": "number"
-                    },
-                    "_id": {
-                        "type": "string"
-                    }
-                }
+                "description": "A person record from lemlist's People database. The available fields may vary across versions — use the GET /schema/people endpoint to retrieve the current schema definition.",
+                "additionalProperties": true
             },
             "CompaniesSchema": {
                 "type": "object",
-                "description": "A company record from lemlist's Companies database.",
-                "additionalProperties": true,
-                "properties": {
-                    "company_id": {
-                        "type": "string",
-                        "description": "Unique company identifier"
-                    },
-                    "company_website_url": {
-                        "type": "string",
-                        "format": "uri",
-                        "description": "Official company website URL"
-                    },
-                    "company_name": {
-                        "type": "string",
-                        "description": "Company name"
-                    },
-                    "company_linkedin_url": {
-                        "type": "string",
-                        "format": "uri",
-                        "description": "LinkedIn company profile URL"
-                    },
-                    "last_updated": {
-                        "type": "string",
-                        "description": "Last update timestamp (UTC)"
-                    },
-                    "company_headquarters_city": {
-                        "type": "string",
-                        "description": "Headquarters city"
-                    },
-                    "company_headquarters_country": {
-                        "type": "string",
-                        "description": "Headquarters country"
-                    },
-                    "company_logo_url": {
-                        "type": "string",
-                        "format": "uri",
-                        "description": "Company logo image URL"
-                    },
-                    "company_description": {
-                        "type": "string",
-                        "description": "Long company description"
-                    },
-                    "company_employee_count": {
-                        "type": "string",
-                        "description": "Employee count as string"
-                    },
-                    "company_type": {
-                        "type": "string",
-                        "description": "Company type (e.g., Privately Held, Public Company)"
-                    },
-                    "company_founded": {
-                        "type": "string",
-                        "description": "Year founded as string"
-                    },
-                    "company_followers_count": {
-                        "type": "string",
-                        "description": "LinkedIn followers count as string"
-                    },
-                    "company_size": {
-                        "type": "string",
-                        "description": "Company size bucket"
-                    },
-                    "revenue_bucket": {
-                        "type": "string",
-                        "description": "Revenue range bucket"
-                    },
-                    "company_domain": {
-                        "type": "string",
-                        "description": "Company web domain"
-                    },
-                    "employees_count_growth": {
-                        "type": "integer",
-                        "description": "Employee count growth number"
-                    },
-                    "last_funding_round_at": {
-                        "type": "string",
-                        "description": "Date of last funding round"
-                    },
-                    "techno_used_array": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "description": "Array of technologies used by the company"
-                    },
-                    "business_business_customer": {
-                        "type": "string",
-                        "description": "Customer type",
-                        "enum": [
-                            "B2B",
-                            "B2C",
-                            "B2B2C"
-                        ]
-                    },
-                    "company_quality_score": {
-                        "type": "string",
-                        "description": "Quality score as string"
-                    },
-                    "company_industry": {
-                        "type": "string",
-                        "description": "Primary industry"
-                    },
-                    "company_subindustry": {
-                        "type": "string",
-                        "description": "Sub-industry"
-                    },
-                    "company_subsubindustry": {
-                        "type": "string",
-                        "description": "Sub-sub-industry"
-                    },
-                    "company_location": {
-                        "type": "string",
-                        "description": "Full formatted location"
-                    },
-                    "company_location_geopoint_array": {
-                        "type": "array",
-                        "items": {
-                            "type": "number"
-                        },
-                        "description": "Geopoint coordinates [longitude, latitude]"
-                    },
-                    "company_occ_lead": {
-                        "type": "string",
-                        "description": "Occupational lead count as string"
-                    },
-                    "_score": {
-                        "type": "number",
-                        "description": "Search relevance score"
-                    },
-                    "_id": {
-                        "type": "string",
-                        "description": "Internal document ID"
-                    }
-                }
+                "description": "A company record from lemlist's Companies database. The available fields may vary across versions — use the GET /schema/companies endpoint to retrieve the current schema definition.",
+                "additionalProperties": true
             },
             "LemwarmSettings": {
                 "type": "object",
@@ -8494,7 +8108,7 @@
                 "tags": [
                     "People Database"
                 ],
-                "description": "Get the schema definition for people in the database",
+                "description": "Retrieves the current schema definition for people in the database. The schema may vary across versions, so always use this endpoint to get the up-to-date field definitions.",
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -8502,16 +8116,19 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
+                                    "description": "The response contains a sample record illustrating the current schema, a version object, and a list of available property names.",
                                     "properties": {
                                         "schema": {
-                                            "$ref": "#/components/schemas/PeopleSchema"
+                                            "type": "object",
+                                            "description": "A sample people record whose keys represent all available fields in the current schema version. Fields may be added or removed between versions.",
+                                            "additionalProperties": true
                                         },
                                         "version": {
                                             "type": "object",
                                             "properties": {
                                                 "since": {
                                                     "type": "integer",
-                                                    "description": "Version date in YYYYMMDD"
+                                                    "description": "Version date in YYYYMMDD format."
                                                 },
                                                 "type": {
                                                     "type": "string",
@@ -8527,6 +8144,7 @@
                                         },
                                         "properties": {
                                             "type": "array",
+                                            "description": "List of all property names available in the current schema version.",
                                             "items": {
                                                 "type": "string"
                                             }
@@ -8534,195 +8152,8 @@
                                     },
                                     "required": [
                                         "schema",
-                                        "version"
-                                    ]
-                                },
-                                "example": {
-                                    "schema": {
-                                        "lead_id": 231488528,
-                                        "canonical_shorthand_name": "john-doe",
-                                        "connections_count": 500,
-                                        "country": "United States",
-                                        "full_name": "John Doe",
-                                        "education": [
-                                            {
-                                                "activities_and_societies": "ACM, AI Club",
-                                                "created": "2020-08-15T00:00:00.000Z",
-                                                "date_from": "2016-09-01",
-                                                "date_to": "2020-06-01",
-                                                "deleted": "",
-                                                "description": "BSc in Computer Science",
-                                                "id": "edu_1",
-                                                "last_updated": "2021-08-15T00:00:00.000Z",
-                                                "member_id": "mem_123",
-                                                "school_url": "https://www.stanford.edu/",
-                                                "subtitle": "School of Engineering",
-                                                "title": "Stanford University"
-                                            }
-                                        ],
-                                        "experience_count": 2,
-                                        "experiences": [
-                                            {
-                                                "company_id": 123456,
-                                                "company_description": "AI-powered customer engagement platform",
-                                                "company_employee_count": 250,
-                                                "company_followers_count": 5000,
-                                                "company_founded": 2015,
-                                                "company_headquarters_city": "San Francisco",
-                                                "company_headquarters_country": "United States",
-                                                "company_industry": "Computer Software",
-                                                "company_linkedin_url": "https://www.linkedin.com/company/techcorp/",
-                                                "company_logo_url": "https://example.com/logo.png",
-                                                "company_name": "TechCorp Inc.",
-                                                "company_size": "201-500 employees",
-                                                "company_type": "Privately Held",
-                                                "company_url": "https://www.techcorp.com",
-                                                "company_website_url": "https://www.techcorp.com",
-                                                "revenue_bucket": "$50M - $100M",
-                                                "company_domain": "techcorp.com",
-                                                "employees_count_growth": 18,
-                                                "last_funding_round_at": "2022-06-01",
-                                                "business_business_customer": "B2B",
-                                                "current_exp_bucket": "3-5 years",
-                                                "created": "2021-01-10T00:00:00.000Z",
-                                                "date_from": "2020-02-01",
-                                                "date_to": "",
-                                                "description": "Leading ML feature teams and MLOps initiatives",
-                                                "duration": "4 yrs",
-                                                "id": "exp_1",
-                                                "last_updated": "2024-09-01T00:00:00.000Z",
-                                                "location": "San Francisco Bay Area",
-                                                "member_id": "mem_123",
-                                                "order_in_profile": 0,
-                                                "title": "Senior Machine Learning Engineer",
-                                                "title_normalized": "Machine Learning Engineer",
-                                                "main_in_profile": true
-                                            },
-                                            {
-                                                "company_id": 98765,
-                                                "company_description": "Cloud infrastructure and developer tools",
-                                                "company_employee_count": 1500,
-                                                "company_followers_count": 20000,
-                                                "company_founded": 2010,
-                                                "company_headquarters_city": "Seattle",
-                                                "company_headquarters_country": "United States",
-                                                "company_industry": "Information Technology",
-                                                "company_linkedin_url": "https://www.linkedin.com/company/cloudco/",
-                                                "company_logo_url": "https://example.com/logo2.png",
-                                                "company_name": "CloudCo",
-                                                "company_size": "1001-5000 employees",
-                                                "company_type": "Public Company",
-                                                "company_url": "https://www.cloudco.com",
-                                                "company_website_url": "https://www.cloudco.com",
-                                                "revenue_bucket": ">$1B",
-                                                "company_domain": "cloudco.com",
-                                                "employees_count_growth": 25,
-                                                "last_funding_round_at": "2019-05-01",
-                                                "business_business_customer": "B2B",
-                                                "current_exp_bucket": "1-2 years",
-                                                "created": "2018-07-10T00:00:00.000Z",
-                                                "date_from": "2018-07-01",
-                                                "date_to": "2020-01-01",
-                                                "description": "Worked on distributed systems and observability",
-                                                "duration": "1 yr 6 mos",
-                                                "id": "exp_2",
-                                                "last_updated": "2020-01-10T00:00:00.000Z",
-                                                "location": "Seattle, WA",
-                                                "member_id": "mem_123",
-                                                "order_in_profile": 1,
-                                                "title": "Software Engineer",
-                                                "title_normalized": "Software Engineer",
-                                                "main_in_profile": false
-                                            }
-                                        ],
-                                        "interests": [
-                                            {
-                                                "interest": "Artificial Intelligence",
-                                                "interest_id": "int_ai"
-                                            },
-                                            {
-                                                "interest": "Open Source",
-                                                "interest_id": "int_oss"
-                                            }
-                                        ],
-                                        "languages": [
-                                            {
-                                                "language": "English",
-                                                "proficiency": "native"
-                                            },
-                                            {
-                                                "language": "French",
-                                                "proficiency": "professional"
-                                            }
-                                        ],
-                                        "last_updated": "2024-10-31T12:00:00.000Z",
-                                        "lead_industry": "Computer Software",
-                                        "lead_linkedin_url": "https://www.linkedin.com/in/john-doe/",
-                                        "lead_logo_url": "https://example.com/john.png",
-                                        "linkedin_short": "john-doe",
-                                        "location": "San Francisco Bay Area",
-                                        "skills": [
-                                            {
-                                                "skill": "Machine Learning",
-                                                "skill_id": "sk_ml"
-                                            },
-                                            {
-                                                "skill": "Python",
-                                                "skill_id": "sk_py"
-                                            },
-                                            {
-                                                "skill": "MLOps",
-                                                "skill_id": "sk_mlops"
-                                            }
-                                        ],
-                                        "summary": "Engineer focused on building ML systems that ship to production.",
-                                        "title": "Senior Machine Learning Engineer",
-                                        "lead_quality_score": 87,
-                                        "seniority": "senior",
-                                        "department": "engineering",
-                                        "connections_count_bucket": "500+",
-                                        "years_of_exp_bucket": "6-10 years",
-                                        "current_exp_company_name": "TechCorp Inc.",
-                                        "geopoint": [
-                                            37.7749,
-                                            -122.4194
-                                        ],
-                                        "_score": 0.98123,
-                                        "_id": "people_abc123"
-                                    },
-                                    "version": {
-                                        "since": 20241031,
-                                        "type": "date"
-                                    },
-                                    "properties": [
-                                        "lead_id",
-                                        "canonical_shorthand_name",
-                                        "connections_count",
-                                        "country",
-                                        "full_name",
-                                        "education",
-                                        "experience_count",
-                                        "experiences",
-                                        "interests",
-                                        "languages",
-                                        "last_updated",
-                                        "lead_industry",
-                                        "lead_linkedin_url",
-                                        "lead_logo_url",
-                                        "linkedin_short",
-                                        "location",
-                                        "skills",
-                                        "summary",
-                                        "title",
-                                        "lead_quality_score",
-                                        "seniority",
-                                        "department",
-                                        "connections_count_bucket",
-                                        "years_of_exp_bucket",
-                                        "current_exp_company_name",
-                                        "geopoint",
-                                        "_score",
-                                        "_id"
+                                        "version",
+                                        "properties"
                                     ]
                                 }
                             }
@@ -9113,7 +8544,7 @@
                 "tags": [
                     "People Database"
                 ],
-                "description": "Get the schema definition for companies in the database",
+                "description": "Retrieves the current schema definition for companies in the database. The schema may vary across versions, so always use this endpoint to get the up-to-date field definitions.",
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -9121,17 +8552,19 @@
                             "application/json": {
                                 "schema": {
                                     "type": "object",
+                                    "description": "The response contains a sample record illustrating the current schema, a version object, and a list of available property names.",
                                     "properties": {
                                         "schema": {
                                             "type": "object",
-                                            "$ref": "#/components/schemas/CompaniesSchema"
+                                            "description": "A sample company record whose keys represent all available fields in the current schema version. Fields may be added or removed between versions.",
+                                            "additionalProperties": true
                                         },
                                         "version": {
                                             "type": "object",
                                             "properties": {
                                                 "since": {
                                                     "type": "integer",
-                                                    "description": "Version date in YYYYMMDD"
+                                                    "description": "Version date in YYYYMMDD format."
                                                 },
                                                 "type": {
                                                     "type": "string",
@@ -9147,90 +8580,16 @@
                                         },
                                         "properties": {
                                             "type": "array",
+                                            "description": "List of all property names available in the current schema version.",
                                             "items": {
                                                 "type": "string"
                                             }
                                         }
-                                    }
-                                },
-                                "example": {
-                                    "schema": {
-                                        "company_id": "88945664",
-                                        "company_website_url": "http://codetentaclestechnologies.com",
-                                        "company_name": "Codetentacles Technologies",
-                                        "company_linkedin_url": "https://www.linkedin.com/company/codetentacles-technologies",
-                                        "last_updated": "2025-09-07 02:11:32 UTC",
-                                        "company_headquarters_city": "Pune, Maharashtra",
-                                        "company_headquarters_country": "India",
-                                        "company_logo_url": "https://media.licdn.com/dms/image/v2/D560BAQH70W3TXccPPA/company-logo_200_200/company-logo_200_200/0/1719993740432/codetentacles_technologies_logo?e=2147483647&v=beta&t=Eehfy0lIdDuBL17dzRAYAFu4LdLHb6cUaLjeuBGBUic",
-                                        "company_description": "CodeTentacles, established on Aug-2015 with the idea \"Make Your Imagination Come True\". Which means anyone who came up with their idea, we will give a closely realistic solutions to them.",
-                                        "company_employee_count": "31",
-                                        "company_type": "Public Company",
-                                        "company_founded": "2015",
-                                        "company_size": "11-50",
-                                        "company_followers_count": "3958",
-                                        "revenue_bucket": "$5M - $10M",
-                                        "company_domain": "codetentaclestechnologies.com",
-                                        "employees_count_growth": -3,
-                                        "last_funding_round_at": "More than 6 months",
-                                        "techno_used_array": [
-                                            "Apache HTTP Server",
-                                            "Lightbox",
-                                            "LinkedIn Sales Navigator",
-                                            "Postman",
-                                            "React",
-                                            "Node.js",
-                                            "WordPress",
-                                            "JavaScript"
-                                        ],
-                                        "business_business_customer": "B2B",
-                                        "company_quality_score": "3",
-                                        "company_industry": "Technology, Information and Media",
-                                        "company_subindustry": "Technology, Information and Internet",
-                                        "company_subsubindustry": "Software Development",
-                                        "company_location": "Office no.704 , 7th floor , City Avenue , Wakad - Pune , Maharashtra - 411057; Pune, Maharashtra 411057, IN",
-                                        "company_location_geopoint_array": [
-                                            73.92,
-                                            18.64
-                                        ],
-                                        "company_occ_lead": "60",
-                                        "_score": 10.002095,
-                                        "_id": "88945664"
                                     },
-                                    "version": {
-                                        "since": 20251031,
-                                        "type": "date"
-                                    },
-                                    "properties": [
-                                        "company_id",
-                                        "company_website_url",
-                                        "company_name",
-                                        "company_linkedin_url",
-                                        "last_updated",
-                                        "company_headquarters_city",
-                                        "company_headquarters_country",
-                                        "company_logo_url",
-                                        "company_description",
-                                        "company_employee_count",
-                                        "company_type",
-                                        "company_founded",
-                                        "company_size",
-                                        "company_followers_count",
-                                        "revenue_bucket",
-                                        "company_domain",
-                                        "employees_count_growth",
-                                        "last_funding_round_at",
-                                        "techno_used_array",
-                                        "business_business_customer",
-                                        "company_quality_score",
-                                        "company_industry",
-                                        "company_subindustry",
-                                        "company_subsubindustry",
-                                        "company_location",
-                                        "company_location_geopoint_array",
-                                        "company_occ_lead",
-                                        "_score",
-                                        "_id"
+                                    "required": [
+                                        "schema",
+                                        "version",
+                                        "properties"
                                     ]
                                 }
                             }
