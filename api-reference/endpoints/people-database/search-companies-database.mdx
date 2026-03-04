@@ -2,33 +2,9 @@
 openapi: post /database/companies
 description: Searches the companies database using filters, keywords, and pagination.
 ---
-This endpoint allows you to query our Companies database.
-To do so, you may use the following parameters:
-- filters: array of filters (required) array
-- page: page (optional) number
-- size: size of the results, number between 1 and 100 (optional) number
-- excludes: array of properties to exclude from the results (optional) array
-
-Each filter should have the following properties:
-- filterId: filter identifier string
-- in: list of the values you want to include array
-- out: list of the values you want to exclude array
-
 <Note>
   To know which filters you are able to use, refer to the [GET Filters](/api-reference/endpoints/people-database/get-database-filters) section.
 </Note>
-
-Response will be formatted as an object with the following properties:
-- results: results array
-- total: total number of results number
-- took: duration of the elastic-search query in milliseconds number
-- page: current page number
-- size: size of the results (asked through parameters) number
-- search: unique identifier of the current search string
-- limitations: remaining calls for the POST People database and POST Companies database (search is limited to a number of queries every 24 hours) number
-- team: unique identifier of the current team string
-
-If you need more details about the schema of the people returned as a results array, refer to the GET People Schema section.
 
 <Note>
   If you need more details about the schema of the companies returned as a results array, refer to the [GET Companies Schema section](/api-reference/endpoints/people-database/get-companies-schema) section.
