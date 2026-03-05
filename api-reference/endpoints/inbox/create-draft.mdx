@@ -1,0 +1,20 @@
+---
+openapi: post /inbox/{contactId}/drafts
+description: Creates a new draft for a specific contact. The source is automatically set to "api".
+---
+
+<Note>
+The `draftOwner` query parameter is required and identifies the draft owner. It accepts either:
+- A **userId** (e.g., `usr_abc123def456789`) — used directly
+- A **login email** (e.g., `john@acme.com`) — resolved to userId via email lookup
+
+This follows the same pattern as `contactOwner` in the Lead API. Team membership is verified in both cases.
+</Note>
+
+<Warning>
+**Validations:**
+- `content` must not be empty and has a max size of 30KB (30,000 characters)
+- `channel` must be one of: `email`, `linkedin`, `whatsapp`, `sms`
+- Maximum of 10 drafts per conversation
+- `content` and `subject` are sanitized for security
+</Warning>

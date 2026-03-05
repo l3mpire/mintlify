@@ -1,0 +1,12 @@
+---
+openapi: get /inbox/{contactId}/drafts
+description: Lists all non-deleted drafts for a specific contact.
+---
+
+<Note>
+The `draftOwner` query parameter is required and identifies the draft owner. It accepts either:
+- A **userId** (e.g., `usr_abc123def456789`) — used directly
+- A **login email** (e.g., `john@acme.com`) — resolved to userId via email lookup
+
+This follows the same pattern as `contactOwner` in the Lead API. Team membership is verified in both cases.
+</Note>
