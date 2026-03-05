@@ -1125,6 +1125,10 @@
           "createdAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "hasDraft": {
+            "type": "boolean",
+            "description": "Whether this conversation has a draft"
           }
         }
       },
@@ -8755,6 +8759,7 @@
                       "haveReplies": true,
                       "lastRepliedAt": "2024-12-03T10:12:20.620Z",
                       "lastRepliedChannel": "email",
+                      "hasDraft": true,
                       "contact": {
                         "_id": "ctc_wfKeM8EmiTikud7QE",
                         "fullName": "Victoire",
