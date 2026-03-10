@@ -358,6 +358,18 @@
         ]
       },
       {
+        "tab": "MCP Server",
+        "groups": [
+          {
+            "group": "MCP",
+            "pages": [
+              "mcp/setup",
+              "mcp/lemlist-agent"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Guides",
         "groups": [
           {

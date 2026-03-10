@@ -1,0 +1,146 @@
+---
+title: 'MCP Server Setup'
+description: 'Connect lemlist to your AI assistant (Claude, Cursor, and more) using the Model Context Protocol'
+---
+
+The lemlist MCP server lets you interact with lemlist directly from your AI assistant. Manage campaigns, search leads, analyze performance — all through natural conversation.
+
+## OAuth (recommended)
+
+With OAuth, you don't need to create an API key. Your AI client handles authentication automatically via your browser.
+
+<Tabs>
+  <Tab title="Claude Desktop">
+    In Claude Desktop, go to **Settings > MCP Servers > Add**, then set:
+    - **Name**: `lemlist`
+    - **Type**: `command`
+
+    Or add this directly to your `claude_desktop_config.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "lemlist": {
+          "command": "npx",
+          "args": [
+            "mcp-remote",
+            "https://app.lemlist.com/mcp"
+          ]
+        }
+      }
+    }
+    ```
+
+    `mcp-remote` handles the full OAuth flow automatically: discovery, client registration, browser-based consent, token exchange (PKCE), and token refresh.
+  </Tab>
+  <Tab title="Claude Code">
+    ```bash
+    claude mcp add --transport http lemlist https://app.lemlist.com/mcp
+    ```
+
+    No `--header` flag needed — OAuth handles authentication automatically.
+  </Tab>
+</Tabs>
+
+The first time you use a lemlist tool, your **browser will open** a consent page where you select your team and authorize access.
+Tokens are managed automatically (access token: 1h, refresh token: 30 days).
+
+## With API Key
+
+If you prefer using an API key, first create one in lemlist:
+
+1. Go to [app.lemlist.com](https://app.lemlist.com)
+2. Navigate to **Settings > Team > Integrations**
+3. Click **Generate**
+4. Save your API key somewhere safe
+
+Then configure your AI client:
+
+<Tabs>
+  <Tab title="Cursor">
+    Go to **Settings > Tools & MCP > New MCP Server**, then add:
+
+    ```json
+    {
+      "mcpServers": {
+        "lemlist": {
+          "url": "https://app.lemlist.com/mcp",
+          "headers": {
+            "X-API-Key": "... YOUR API KEY ..."
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Claude Code">
+    ```bash
+    claude mcp add --transport http lemlist https://app.lemlist.com/mcp \
+      --header "X-API-Key: YOUR_API_KEY"
+    ```
+  </Tab>
+  <Tab title="Claude Desktop (macOS/Linux)">
+    Go to **Settings > Developer > Edit Config** and add to `claude_desktop_config.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "lemlist": {
+          "command": "npx",
+          "args": [
+            "mcp-remote",
+            "https://app.lemlist.com/mcp",
+            "--header",
+            "X-API-Key: ${API_KEY}"
+          ],
+          "env": {
+            "API_KEY": "... YOUR API KEY ..."
+          }
+        }
+      }
+    }
+    ```
+
+    Restart Claude Desktop after saving. The MCP server should appear in Settings.
+  </Tab>
+  <Tab title="Claude Desktop (Windows)">
+    ```json
+    {
+      "mcpServers": {
+        "lemlist": {
+          "command": "C:\\PROGRA~1\\nodejs\\npx.cmd",
+          "args": [
+            "mcp-remote",
+            "https://app.lemlist.com/mcp",
+            "--header",
+            "X-API-Key: ${API_KEY}"
+          ],
+          "env": {
+            "API_KEY": "... YOUR API KEY ..."
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Available tools
+
+The MCP server exposes a growing set of tools that evolve regularly. Simply ask your AI assistant what lemlist operations it can perform, and it will provide the most up-to-date list.
+
+Current capabilities include:
+- **Campaign management** — create, update, start, pause campaigns and sequences
+- **Lead management** — add, search, update leads across campaigns
+- **Lead sourcing** — search the 450M+ B2B database by role, industry, company size, location
+- **Email enrichment** — find and verify email addresses
+- **Team & stats** — view team info, campaign performance metrics
+- **Webhooks** — manage event subscriptions
+
+<Note>
+Some operations (email finding, verification, phone enrichment) consume credits. Your AI assistant will warn you before using them.
+</Note>
+
+---
+
+> *That's it. No SDK, no boilerplate, no tears. Just ask.*
