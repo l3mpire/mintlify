@@ -1,0 +1,49 @@
+---
+openapi: post /user/email-accounts
+description: Connects a new SMTP/IMAP email account to your team.
+---
+
+Connects a custom SMTP/IMAP email account that can be used as a sender in your campaigns.
+
+The account is validated against banned hosts and SSRF checks before being connected. Gmail SMTP/IMAP connections are not allowed — use OAuth instead.
+
+## Examples
+
+<CodeGroup>
+```json minimal (required fields only)
+{
+  "sender_name": "John Doe",
+  "sender_email": "john@company.com",
+  "smtp_host": "smtp.company.com",
+  "smtp_port": 587,
+  "smtp_login": "john@company.com",
+  "smtp_password": "password123",
+  "imap_host": "imap.company.com",
+  "imap_port": 993,
+  "imap_login": "john@company.com",
+  "imap_password": "password123"
+}
+```
+
+```json with secure flags and user assignment
+{
+  "sender_name": "John Doe",
+  "sender_email": "john@company.com",
+  "smtp_host": "smtp.company.com",
+  "smtp_port": 465,
+  "smtp_login": "john@company.com",
+  "smtp_password": "password123",
+  "smtp_secure": true,
+  "imap_host": "imap.company.com",
+  "imap_port": 993,
+  "imap_login": "john@company.com",
+  "imap_password": "password123",
+  "imap_secure": true,
+  "userId": "usr_A1B2C3D4E5F6G7H8I9"
+}
+```
+</CodeGroup>
+
+<Note>
+The `userId` parameter is optional. When provided, the email account is assigned to that specific team member (who must belong to the team). When omitted, it defaults to the API key creator or team owner.
+</Note>

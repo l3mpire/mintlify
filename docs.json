@@ -121,6 +121,15 @@
                 ]
               },
               {
+                "group": "Email Accounts",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/email-accounts/connect-email-account",
+                  "api-reference/endpoints/email-accounts/disconnect-email-account",
+                  "api-reference/endpoints/email-accounts/test-email-account"
+                ]
+              },
+              {
                 "group": "Campaigns",
                 "expanded": false,
                 "pages": [

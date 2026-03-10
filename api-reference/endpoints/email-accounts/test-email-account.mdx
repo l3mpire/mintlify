@@ -1,0 +1,26 @@
+---
+openapi: post /user/email-accounts/{emailAccountId}/test
+description: Tests the SMTP and IMAP connection of an email account.
+---
+
+Runs a connectivity check on both the SMTP and IMAP servers for the specified email account. Each protocol is tested independently — one can succeed while the other fails.
+
+Use this endpoint to verify that an email account is properly configured before using it in campaigns.
+
+## Example response
+
+<CodeGroup>
+```json both connections successful
+{
+  "smtp": { "success": true },
+  "imap": { "success": true }
+}
+```
+
+```json IMAP connection failed
+{
+  "smtp": { "success": true },
+  "imap": { "success": false, "error": "Invalid credentials" }
+}
+```
+</CodeGroup>

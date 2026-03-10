@@ -1,0 +1,14 @@
+---
+openapi: delete /user/email-accounts/{emailAccountId}
+description: Disconnects an email account from your team.
+---
+
+Permanently disconnects the specified SMTP/IMAP email account. This will:
+
+- Remove the SMTP and IMAP credentials
+- Pause any active lemwarm warming
+- Unlink the account from campaigns if owned by the API caller
+
+<Warning>
+This action cannot be undone. The email account will need to be reconnected from scratch.
+</Warning>
