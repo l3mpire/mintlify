@@ -40,10 +40,10 @@ Only include the fields you want to update. Required fields are not enforced her
 
 | Field | Type | Applies To | Description |
 | --- | --- | --- | --- |
-| `subject` | string | `email` | Email subject line |
+| `subject` | string | `email` | Email subject line. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
 | `message` | string | `email`, `linkedin*`, `manual`, `phone`, `whatsappMessage` | Message text |
 | `altMessage` | string | `linkedinSend` | Fallback LinkedIn message |
-| `title` | string | `manual` | Title for manual task |
+| `title` | string | `manual` | Title for manual task. Maximum 400 characters |
 | `method` | string | `api` | One of `GET`, `POST`, `PUT`, `DELETE`, `PATCH` |
 | `url` | string | `api` | Valid HTTP/HTTPS URL |
 | `delay` | integer | all except `sendToAnotherCampaign` | Delay before this step in hours |

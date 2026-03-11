@@ -94,10 +94,10 @@ In conditional steps, if the `delayType` is not `"within"`, the `delay` field is
 | `type` (String, Required) | The type of step to create. Allowed values: `email`, `manual`, `phone`, `api`, `linkedinVisit`, `linkedinInvite`, `linkedinSend`, `sendToAnotherCampaign`, `conditional`, `whatsappMessage` |
 | `index` (Integer, Optional) | The position within the sequence to insert the new step. Must be an integer ≥ -1. If omitted or if the index is greater than the number of steps, the new step is added to the end |
 | `delay` (Integer, Optional) | The delay (in seconds) before executing the step. Defaults to 0 for the first step and to 1 for subsequent steps (except for certain conditional configurations) |
-| `subject` (String, Conditional) | The email subject. Required for steps of type `email` |
+| `subject` (String, Conditional) | The email subject. Required for steps of type `email`. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
 | `message` (String, Conditional) | Content of the email or message. Used for `email`, `linkedinInvite`, and `linkedinSend` step types, or the note of `manual` and `phone` step types |
 | `altMessage` (String, Conditional) | An alternate message for steps of type `linkedinSend` |
-| `title` (String, Conditional) | A title or label used in `manual` steps |
+| `title` (String, Conditional) | A title or label used in `manual` steps. Maximum 400 characters |
 | `method` (String, Conditional) | The HTTP method to use for API steps. Allowed values: `GET`, `POST`, `PUT`, `DELETE`, `PATCH` |
 | `url` (String, Conditional) | The URL of the API endpoint to call. Must be a valid URL (starting with `http://` or `https://`) |
 | `conditionKey` (String, Conditional) | For conditional steps only. Defines the condition key. Allowed values: `emailsOpened`, `emailsClicked`, `emailsUnsubscribed`, `meetingBooked`, `linkedinInviteAccepted`, `hasWhatsappAccount` |
