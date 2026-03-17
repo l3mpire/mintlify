@@ -2609,6 +2609,16 @@
                 "errors"
               ]
             }
+          },
+          {
+            "name": "createdBy",
+            "in": "query",
+            "required": false,
+            "description": "Filter campaigns by creator user ID (usr_xxx format). Only returns campaigns created by the specified user.",
+            "example": "usr_HPQ2sT3AdrQWvTDxr",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
