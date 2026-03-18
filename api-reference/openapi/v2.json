@@ -643,6 +643,10 @@
           "createdBy": {
             "type": "string",
             "description": "ID of the user who created the contact"
+          },
+          "unsubscribed": {
+            "type": "boolean",
+            "description": "Whether the contact is globally unsubscribed. When true, no outreach will be sent to this contact."
           }
         }
       },
@@ -10531,7 +10535,8 @@
                     ],
                     "ownerId": "usr_gmHgNGRcGPSTJrDbT",
                     "createdAt": "2025-10-28T00:40:37.917Z",
-                    "createdBy": "usr_gmHgNGRcGPSTJrDbT"
+                    "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                    "unsubscribed": false
                   },
                   {
                     "_id": "ctc_8aECJTHfPfbMy6mSG",
@@ -10570,7 +10575,8 @@
                     ],
                     "ownerId": "usr_4YGm9ez7gMd2okyRp",
                     "createdAt": "2024-10-01T09:00:13.831Z",
-                    "createdBy": "usr_4YGm9ez7gMd2okyRp"
+                    "createdBy": "usr_4YGm9ez7gMd2okyRp",
+                    "unsubscribed": true
                   }
                 ]
               }
@@ -10649,7 +10655,8 @@
                   ],
                   "ownerId": "usr_gmHgNGRcGPSTJrDbT",
                   "createdAt": "2025-10-28T00:40:37.917Z",
-                  "createdBy": "usr_gmHgNGRcGPSTJrDbT"
+                  "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                  "unsubscribed": false
                 }
               }
             }
