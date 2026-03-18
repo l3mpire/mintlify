@@ -261,11 +261,36 @@
                 "group": "Unsubscribes",
                 "expanded": false,
                 "pages": [
-                  "api-reference/endpoints/unsubscribes/add-unsubscribe-email-or-domain",
-                  "api-reference/endpoints/unsubscribes/get-unsubscribe-by-email",
-                  "api-reference/endpoints/unsubscribes/get-many-unsubscribes",
-                  "api-reference/endpoints/unsubscribes/delete-unsubscribe-email",
-                  "api-reference/endpoints/unsubscribes/export-unsubscribes"
+                  {
+                    "group": "Variables",
+                    "pages": [
+                      "api-reference/endpoints/unsubscribes/list-unsubscribed-variables",
+                      "api-reference/endpoints/unsubscribes/get-unsubscribed-variable",
+                      "api-reference/endpoints/unsubscribes/unsubscribe-variable",
+                      "api-reference/endpoints/unsubscribes/bulk-unsubscribe-variables",
+                      "api-reference/endpoints/unsubscribes/resubscribe-variable",
+                      "api-reference/endpoints/unsubscribes/export-unsubscribed-variables"
+                    ]
+                  },
+                  {
+                    "group": "Contacts",
+                    "pages": [
+                      "api-reference/endpoints/unsubscribes/get-contact-subscription-status",
+                      "api-reference/endpoints/unsubscribes/unsubscribe-contact",
+                      "api-reference/endpoints/unsubscribes/resubscribe-contact",
+                      "api-reference/endpoints/unsubscribes/export-unsubscribed-contacts"
+                    ]
+                  },
+                  {
+                    "group": "Legacy",
+                    "pages": [
+                      "api-reference/endpoints/unsubscribes/add-unsubscribe-email-or-domain",
+                      "api-reference/endpoints/unsubscribes/get-unsubscribe-by-email",
+                      "api-reference/endpoints/unsubscribes/get-many-unsubscribes",
+                      "api-reference/endpoints/unsubscribes/delete-unsubscribe-email",
+                      "api-reference/endpoints/unsubscribes/export-unsubscribes"
+                    ]
+                  }
                 ]
               },
               {
