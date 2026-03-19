@@ -1,0 +1,11 @@
+---
+openapi: post /campaigns/{campaignId}/duplicate
+description: Duplicates an existing campaign with all its sequences, schedules, and templates.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Campaign" objectPath="campaign" />
+
+Creates a full copy of the campaign including its sequence steps, schedules, and AI variable templates. CRM settings are not duplicated. The duplicated campaign is created in draft state with all lead counts reset to zero.
+
+You can optionally provide a custom `name` in the request body. If omitted, the duplicated campaign will be named `"{original name} Copy"`.
