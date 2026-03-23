@@ -447,6 +447,44 @@
           }
         }
       },
+      "UnsubscribedVariable": {
+        "type": "object",
+        "description": "A variable (email, domain, LinkedIn URL, or phone number) that has been unsubscribed.",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Unique identifier for the unsubscribe entry"
+          },
+          "value": {
+            "type": "string",
+            "description": "The unsubscribed variable (email, domain, LinkedIn URL, or phone number)"
+          },
+          "source": {
+            "type": "string",
+            "description": "Origin of the unsubscription",
+            "enum": ["api", "bounced", "lead", "user", "abuse"]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the variable was unsubscribed"
+          }
+        }
+      },
+      "ContactSubscriptionStatus": {
+        "type": "object",
+        "description": "Subscription status of a contact.",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Contact identifier"
+          },
+          "doNotContact": {
+            "type": "boolean",
+            "description": "Whether the contact is unsubscribed"
+          }
+        }
+      },
       "Enrich": {
         "type": "object",
         "description": "Contact information discovered through data enrichment (emails, phone numbers, LinkedIn URLs).",
@@ -605,6 +643,10 @@
           "createdBy": {
             "type": "string",
             "description": "ID of the user who created the contact"
+          },
+          "unsubscribed": {
+            "type": "boolean",
+            "description": "Whether the contact is globally unsubscribed. When true, no outreach will be sent to this contact."
           }
         }
       },
@@ -10493,7 +10535,8 @@
                     ],
                     "ownerId": "usr_gmHgNGRcGPSTJrDbT",
                     "createdAt": "2025-10-28T00:40:37.917Z",
-                    "createdBy": "usr_gmHgNGRcGPSTJrDbT"
+                    "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                    "unsubscribed": false
                   },
                   {
                     "_id": "ctc_8aECJTHfPfbMy6mSG",
@@ -10532,7 +10575,8 @@
                     ],
                     "ownerId": "usr_4YGm9ez7gMd2okyRp",
                     "createdAt": "2024-10-01T09:00:13.831Z",
-                    "createdBy": "usr_4YGm9ez7gMd2okyRp"
+                    "createdBy": "usr_4YGm9ez7gMd2okyRp",
+                    "unsubscribed": true
                   }
                 ]
               }
@@ -10611,7 +10655,8 @@
                   ],
                   "ownerId": "usr_gmHgNGRcGPSTJrDbT",
                   "createdAt": "2025-10-28T00:40:37.917Z",
-                  "createdBy": "usr_gmHgNGRcGPSTJrDbT"
+                  "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                  "unsubscribed": false
                 }
               }
             }
@@ -12013,6 +12058,7 @@
     },
     "/unsubscribes": {
       "get": {
+        "deprecated": true,
         "summary": "Get Many Unsubscribes",
         "tags": [
           "Unsubscribes"
@@ -12098,6 +12144,7 @@
     },
     "/unsubs/export": {
       "get": {
+        "deprecated": true,
         "summary": "Export Unsubscribes",
         "tags": [
           "Unsubscribes"
@@ -12126,8 +12173,390 @@
         }
       }
     },
+    "/unsubscribes/variables": {
+      "get": {
+        "summary": "List Unsubscribed Variables",
+        "description": "Retrieves a paginated list of all unsubscribed variables (emails, domains, LinkedIn URLs, phone numbers).",
+        "tags": ["Unsubscribes"],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of entries to skip for pagination",
+            "example": "0",
+            "schema": { "type": "integer", "default": 0 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Number of entries to return (max 100)",
+            "example": "50",
+            "schema": { "type": "integer", "default": 100, "maximum": 100 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/UnsubscribedVariable" }
+                },
+                "example": [
+                  {
+                    "_id": "uns_Y9Lf5R2mpNWs8x0cz",
+                    "value": "john.doe@example.com",
+                    "source": "user",
+                    "createdAt": "2023-06-12T10:45:21.367Z"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Bad team",
+            "content": { "text/plain": { "example": "Bad team" } }
+          },
+          "401": { "description": "Unauthorized" }
+        }
+      },
+      "post": {
+        "summary": "Bulk Unsubscribe Variables",
+        "description": "Unsubscribes up to 10,000 variables in a single request.",
+        "tags": ["Unsubscribes"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["values"],
+                "properties": {
+                  "values": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "List of variables to unsubscribe (emails, domains, LinkedIn URLs, or phone numbers). Maximum 10,000 values.",
+                    "maxItems": 10000
+                  }
+                }
+              },
+              "example": {
+                "values": ["john.doe@example.com", "@example.org", "+1234567890"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": "Variables unsubscribed"
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "text/plain": {
+                "example": "Maximum 10000 values allowed"
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/unsubscribes/variables/{value}": {
+      "get": {
+        "summary": "Get Unsubscribed Variable",
+        "description": "Retrieves a specific unsubscribed variable by its value.",
+        "tags": ["Unsubscribes"],
+        "parameters": [
+          {
+            "name": "value",
+            "in": "path",
+            "required": true,
+            "description": "The variable value (email, domain, LinkedIn URL, or phone number)",
+            "example": "john.doe@example.com",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "_id": { "type": "string", "description": "Unique identifier" },
+                    "value": { "type": "string", "description": "The unsubscribed variable" },
+                    "variable": { "type": "string", "description": "Alias of value" },
+                    "source": { "type": "string", "description": "Origin of the unsubscription", "enum": ["api", "bounced", "lead", "user", "abuse"] }
+                  }
+                },
+                "example": {
+                  "_id": "uns_Y9Lf5R2mpNWs8x0cz",
+                  "value": "john.doe@example.com",
+                  "variable": "john.doe@example.com",
+                  "source": "user"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": { "text/plain": { "example": "No value" } }
+          },
+          "401": { "description": "Unauthorized" },
+          "404": {
+            "description": "Variable not found",
+            "content": { "text/plain": { "example": "Variable not found" } }
+          }
+        }
+      },
+      "post": {
+        "summary": "Unsubscribe Variable",
+        "description": "Unsubscribes a single variable. This operation is idempotent — if the variable is already unsubscribed, the existing record is returned.",
+        "tags": ["Unsubscribes"],
+        "parameters": [
+          {
+            "name": "value",
+            "in": "path",
+            "required": true,
+            "description": "The variable value to unsubscribe (email, domain, LinkedIn URL, or phone number)",
+            "example": "john.doe@example.com",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "_id": { "type": "string", "description": "Unique identifier" },
+                    "value": { "type": "string", "description": "The unsubscribed variable" },
+                    "variable": { "type": "string", "description": "Alias of value" },
+                    "source": { "type": "string", "description": "Origin of the unsubscription", "enum": ["api", "bounced", "lead", "user", "abuse"] }
+                  }
+                },
+                "example": {
+                  "_id": "uns_Y9Lf5R2mpNWs8x0cz",
+                  "value": "john.doe@example.com",
+                  "variable": "john.doe@example.com",
+                  "source": "api"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": { "text/plain": { "example": "No value" } }
+          },
+          "401": { "description": "Unauthorized" },
+          "500": {
+            "description": "Server error",
+            "content": { "text/plain": { "example": "Failed to unsubscribe variable" } }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Re-subscribe Variable",
+        "description": "Removes a variable from the unsubscribe list. Variables with a protected source (LEAD or ABUSE) cannot be re-subscribed.",
+        "tags": ["Unsubscribes"],
+        "parameters": [
+          {
+            "name": "value",
+            "in": "path",
+            "required": true,
+            "description": "The variable value to re-subscribe",
+            "example": "john.doe@example.com",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": "Variable subscribed"
+              }
+            }
+          },
+          "400": {
+            "description": "Variable not found in unsubscribe list",
+            "content": { "text/plain": { "example": "Variable not found in unsubscribe list" } }
+          },
+          "401": { "description": "Unauthorized" },
+          "409": {
+            "description": "Variable is protected (source is LEAD or ABUSE) and cannot be re-subscribed",
+            "content": { "text/plain": { "example": "Variable is protected and cannot be re-subscribed" } }
+          }
+        }
+      }
+    },
+    "/unsubscribes/contacts/{contactId}": {
+      "get": {
+        "summary": "Get Contact Subscription Status",
+        "description": "Checks whether a contact is unsubscribed (do-not-contact).",
+        "tags": ["Unsubscribes"],
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "path",
+            "required": true,
+            "description": "The contact identifier",
+            "example": "con_aB1cD2eF3gH4iJ5kL",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ContactSubscriptionStatus" },
+                "example": {
+                  "_id": "con_aB1cD2eF3gH4iJ5kL",
+                  "doNotContact": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": { "text/plain": { "example": "Bad contact identifier" } }
+          },
+          "401": { "description": "Unauthorized" },
+          "500": {
+            "description": "Server error",
+            "content": { "text/plain": { "example": "Failed to get contact subscription" } }
+          }
+        }
+      },
+      "post": {
+        "summary": "Unsubscribe Contact",
+        "description": "Marks a contact as unsubscribed (do-not-contact).",
+        "tags": ["Unsubscribes"],
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "path",
+            "required": true,
+            "description": "The contact identifier",
+            "example": "con_aB1cD2eF3gH4iJ5kL",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": "Contact subscription updated"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": { "text/plain": { "example": "Bad contact identifier" } }
+          },
+          "401": { "description": "Unauthorized" },
+          "500": {
+            "description": "Server error",
+            "content": { "text/plain": { "example": "Failed to update contact subscription" } }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Re-subscribe Contact",
+        "description": "Removes the unsubscribed (do-not-contact) flag from a contact.",
+        "tags": ["Unsubscribes"],
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "path",
+            "required": true,
+            "description": "The contact identifier",
+            "example": "con_aB1cD2eF3gH4iJ5kL",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "example": "Contact subscription updated"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": { "text/plain": { "example": "Bad contact identifier" } }
+          },
+          "401": { "description": "Unauthorized" },
+          "500": {
+            "description": "Server error",
+            "content": { "text/plain": { "example": "Failed to update contact subscription" } }
+          }
+        }
+      }
+    },
+    "/unsubscribes/exports/variables": {
+      "get": {
+        "summary": "Export Unsubscribed Variables",
+        "description": "Exports all unsubscribed variables to a CSV file.",
+        "tags": ["Unsubscribes"],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/csv": {
+                "example": "_id,value,source,createdAt\nuns_Y9Lf5R2mpNWs8x0cz,john.doe@example.com,user,2023-06-12T10:45:21.367Z\nuns_QB3xQGhw6qJCyWXF9,@example.org,api,2023-07-21T09:14:25.521Z"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad team",
+            "content": { "text/plain": { "example": "Bad team" } }
+          },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/unsubscribes/exports/contacts": {
+      "get": {
+        "summary": "Export Unsubscribed Contacts",
+        "description": "Exports all contacts with their subscription status to a CSV file.",
+        "tags": ["Unsubscribes"],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/csv": {
+                "example": "_id,doNotContact\ncon_aB1cD2eF3gH4iJ5kL,true\ncon_mN6oP7qR8sT9uV0wX,false"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad team",
+            "content": { "text/plain": { "example": "Bad team" } }
+          },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
     "/unsubscribes/{email}": {
       "get": {
+        "deprecated": true,
         "summary": "Get Unsubscribe by Email",
         "tags": [
           "Unsubscribes"
@@ -12219,6 +12648,7 @@
         }
       },
       "post": {
+        "deprecated": true,
         "summary": "Add Unsubscribe Email or Domain",
         "tags": [
           "Unsubscribes"
@@ -12294,6 +12724,7 @@
         }
       },
       "delete": {
+        "deprecated": true,
         "summary": "Delete Unsubscribe Email",
         "tags": [
           "Unsubscribes"

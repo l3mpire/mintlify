@@ -1,0 +1,8 @@
+---
+openapi: delete /unsubscribes/variables/{value}
+description: Re-subscribes a variable, removing it from the unsubscribe list.
+---
+
+<Warning>
+    Variables with a **LEAD** or **ABUSE** source are protected and cannot be re-subscribed (returns `409`).
+</Warning>
