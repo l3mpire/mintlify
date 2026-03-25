@@ -3020,7 +3020,7 @@
                     },
                     "sendUsers": {
                       "type": "array",
-                      "description": "Configured senders with their detected channel capabilities. Only present when sendUserIds was provided in the request.",
+                      "description": "Configured senders for the campaign. Only present when sendUserIds was provided in the request. For campaigns with a random sender strategy, senders that lack capabilities for any campaign channel are excluded. For dynamic sender strategy, all provided senders are kept.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -3042,10 +3042,6 @@
                                 }
                               }
                             }
-                          },
-                          "hasLinkedin": {
-                            "type": "boolean",
-                            "description": "Whether the sender has LinkedIn connected"
                           }
                         }
                       }
@@ -3063,10 +3059,30 @@
             }
           },
           "400": {
-            "description": "Bad team",
+            "description": "Bad request",
             "content": {
               "text/plain": {
-                "example": "Bad team"
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "badTeam": {
+                    "summary": "Bad team",
+                    "value": "Bad team"
+                  },
+                  "noValidSenders": {
+                    "summary": "No valid sender IDs",
+                    "value": "None of the provided sender IDs are members of this team"
+                  },
+                  "noCapableSenders": {
+                    "summary": "No senders with required capabilities (random strategy only)",
+                    "value": "None of the provided senders have the required capabilities for this campaign"
+                  },
+                  "missingChannels": {
+                    "summary": "Campaign channels not covered (random strategy only)",
+                    "value": "The provided senders do not cover the following campaign channels: linkedin, sms"
+                  }
+                }
               }
             }
           },
@@ -3141,7 +3157,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Array of user IDs (usr_xxx format) to assign as campaign senders. Each sender's connected channels (email, LinkedIn, etc.) are automatically detected."
+                    "description": "Array of user IDs (usr_xxx format) to assign as campaign senders. For campaigns with a random sender strategy, each sender is validated against the campaign's sending channels (email, LinkedIn, SMS, WhatsApp): senders without capabilities for at least one channel are excluded, and all channels must be covered by at least one sender. For dynamic sender strategy, all provided senders are kept without channel validation."
                   }
                 }
               },
