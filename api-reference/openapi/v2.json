@@ -3042,6 +3042,20 @@
                                 }
                               }
                             }
+                          },
+                          "phoneNumbers": {
+                            "type": "array",
+                            "description": "Connected phone numbers",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "whatsappAccountIds": {
+                            "type": "array",
+                            "description": "Connected WhatsApp account IDs",
+                            "items": {
+                              "type": "string"
+                            }
                           }
                         }
                       }
