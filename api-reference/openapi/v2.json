@@ -10184,8 +10184,8 @@
         }
       },
       "post": {
-        "summary": "Upsert Contact",
-        "description": "Creates a new contact or updates an existing one (upsert). If a contact with the same email or LinkedIn URL already exists, it will be updated with the provided non-empty fields. Null or empty values are ignored during updates to preserve existing data. You can optionally link the contact to a company by providing `companyId`, `companyDomain`, or `companyLinkedinUrl`.",
+        "summary": "Add and update contact",
+        "description": "Creates a new contact or updates an existing one (upsert). If a contact with the same email, LinkedIn URL, or Sales Navigator URL already exists, it will be updated with the provided non-empty fields. Null or empty values are ignored during updates to preserve existing data. You can optionally link the contact to a company by providing `companyId`, `companyDomain`, or `companyLinkedinUrl`.",
         "tags": [
           "Contacts"
         ],
@@ -10198,15 +10198,15 @@
                 "properties": {
                   "email": {
                     "type": "string",
-                    "description": "Contact email address. Used as a unique key for upsert matching. At least one of `email` or `linkedinUrl` is required."
+                    "description": "Contact email address. Used as a unique key for upsert matching. At least one of `email`, `linkedinUrl`, or `linkedinUrlSalesNav` is required."
                   },
                   "linkedinUrl": {
                     "type": "string",
-                    "description": "LinkedIn profile URL. Used as an alternative unique key for upsert matching. At least one of `email` or `linkedinUrl` is required."
+                    "description": "LinkedIn profile URL. Used as an alternative unique key for upsert matching. At least one of `email`, `linkedinUrl`, or `linkedinUrlSalesNav` is required."
                   },
-                  "salesnavUrl": {
+                  "linkedinUrlSalesNav": {
                     "type": "string",
-                    "description": "LinkedIn Sales Navigator profile URL."
+                    "description": "LinkedIn Sales Navigator profile URL. Used as an alternative unique key for upsert matching."
                   },
                   "additionalEmails": {
                     "type": "array",
@@ -10269,28 +10269,24 @@
                   },
                   "contactOwner": {
                     "type": "string",
-                    "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the owner is silently ignored and the contact is created/updated without an owner assignment."
-                  },
-                  "statusId": {
-                    "type": "string",
-                    "description": "CRM status ID to assign to the contact."
+                    "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the owner defaults to the API key owner."
                   },
                   "source": {
                     "type": "string",
-                    "description": "Origin of the contact record. Defaults to `api` if not specified.",
+                    "description": "Origin of the contact record. Set on creation only and cannot be updated afterwards. Defaults to `api`.",
                     "default": "api"
                   },
                   "companyId": {
                     "type": "string",
-                    "description": "ID of a company to link to this contact. Takes priority over `companyDomain` and `companyLinkedinUrl`."
+                    "description": "ID of a company already existing in lemlist to link to this contact. Takes priority over `companyDomain` and `companyLinkedinUrl`."
                   },
                   "companyDomain": {
                     "type": "string",
-                    "description": "Domain of a company to link to this contact (e.g. `lemlist.com`). Used if `companyId` is not provided."
+                    "description": "Domain of a company already existing in lemlist to link to this contact (e.g. `lemlist.com`). Used if `companyId` is not provided."
                   },
                   "companyLinkedinUrl": {
                     "type": "string",
-                    "description": "LinkedIn URL of a company to link to this contact. Used if `companyId` and `companyDomain` are not provided."
+                    "description": "LinkedIn URL of a company already existing in lemlist to link to this contact. Used if `companyId` and `companyDomain` are not provided."
                   }
                 },
                 "additionalProperties": {
@@ -10358,10 +10354,6 @@
                         "ownerId": {
                           "type": "string",
                           "description": "Owner user ID"
-                        },
-                        "statusId": {
-                          "type": "string",
-                          "description": "CRM status ID"
                         },
                         "companyId": {
                           "type": "string",
@@ -10432,7 +10424,6 @@
                       "jobTitle": "Product Manager"
                     },
                     "ownerId": "usr_gmHgNGRcGPSTJrDbT",
-                    "statusId": "cst_tZsmxPtbEKWXQS5e8",
                     "source": "api",
                     "createdAt": "2025-10-28T00:40:37.917Z",
                     "createdBy": "usr_gmHgNGRcGPSTJrDbT",
@@ -11018,8 +11009,8 @@
         }
       },
       "post": {
-        "summary": "Upsert Company",
-        "description": "Creates a new company or updates an existing one (upsert). If a company with the same domain or LinkedIn URL already exists, it will be updated with the provided non-empty fields. Null or empty values are ignored during updates to preserve existing data.",
+        "summary": "Add and update company",
+        "description": "Creates a new company or updates an existing one (upsert). If a company with the same domain, LinkedIn URL, or Sales Navigator URL already exists, it will be updated with the provided non-empty fields. Null or empty values are ignored during updates to preserve existing data.",
         "tags": ["Companies"],
         "requestBody": {
           "required": true,
@@ -11040,9 +11031,13 @@
                     "type": "string",
                     "description": "LinkedIn company page URL. Used as an alternative unique key for upsert matching."
                   },
-                  "picture": {
+                  "linkedinUrlSalesNav": {
                     "type": "string",
-                    "description": "URL of the company logo or picture."
+                    "description": "LinkedIn Sales Navigator company URL. Used as an alternative unique key for upsert matching."
+                  },
+                  "companyOwner": {
+                    "type": "string",
+                    "description": "Owner of the company. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the owner defaults to the API key owner."
                   },
                   "industry": {
                     "type": "string",
@@ -11080,21 +11075,13 @@
                     "type": "string",
                     "description": "Company headquarters location."
                   },
-                  "linkedinUrlSalesNav": {
+                  "picture": {
                     "type": "string",
-                    "description": "LinkedIn Sales Navigator company URL."
-                  },
-                  "companyOwner": {
-                    "type": "string",
-                    "description": "Owner of the company. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the owner is silently ignored and the company is created/updated without an owner assignment."
-                  },
-                  "statusId": {
-                    "type": "string",
-                    "description": "CRM status ID to assign to the company."
+                    "description": "URL of the company logo or picture."
                   },
                   "source": {
                     "type": "string",
-                    "description": "Origin of the company record. Defaults to `api` if not specified.",
+                    "description": "Origin of the company record. Set on creation only and cannot be updated afterwards. Defaults to `api`.",
                     "default": "api"
                   }
                 },
@@ -11152,10 +11139,6 @@
                           "type": "string",
                           "description": "Owner user ID"
                         },
-                        "statusId": {
-                          "type": "string",
-                          "description": "CRM status ID"
-                        },
                         "source": {
                           "type": "string",
                           "description": "Record origin"
@@ -11209,7 +11192,6 @@
                       "location": "San Francisco, CA"
                     },
                     "ownerId": "usr_gmHgNGRcGPSTJrDbT",
-                    "statusId": "cst_S5YNtY72mxoBmTRwz",
                     "source": "api",
                     "createdAt": "2025-10-28T00:40:37.917Z",
                     "createdBy": "usr_gmHgNGRcGPSTJrDbT",

@@ -4,9 +4,11 @@ description: Creates a new contact or updates an existing one based on email or 
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
-Creates a new contact in your CRM, or updates an existing one if a contact with the same `email` or `linkedinUrl` already exists (upsert).
+Creates a new contact in your CRM, or updates an existing one if a contact with the same `email`, `linkedinUrl`, or `linkedinUrlSalesNav` already exists (upsert).
 
 During updates, only non-empty fields are applied — null or empty values are ignored to preserve existing data.
+
+<SnippetObjectReference objectName="Contact" objectPath="contact" />
 
 ## Upsert matching
 
@@ -16,12 +18,13 @@ At least one identifier is required:
 |------------|-------------|
 | `email` | Primary email address — used as the main unique key |
 | `linkedinUrl` | LinkedIn profile URL — used as an alternative unique key |
+| `linkedinUrlSalesNav` | LinkedIn Sales Navigator profile URL — used as an alternative unique key |
 
-If a contact with the same `email` or `linkedinUrl` already exists, the endpoint updates it instead of creating a duplicate.
+If a contact with the same `email`, `linkedinUrl`, or `linkedinUrlSalesNav` already exists, the endpoint updates it instead of creating a duplicate.
 
 ## Linking to a company
 
-You can link the contact to an existing company using one of the following fields (in order of priority):
+You can link the contact to a company that already exists in your lemlist CRM using one of the following fields (in order of priority):
 
 | Field | Description |
 |-------|-------------|
@@ -29,7 +32,7 @@ You can link the contact to an existing company using one of the following field
 | `companyDomain` | Company domain (e.g. `lemlist.com`) — used if `companyId` is not provided |
 | `companyLinkedinUrl` | Company LinkedIn URL — used as a last resort |
 
-When a company is successfully linked, the response includes `companyLinked: true` and the resolved `companyId`.
+When a company is successfully linked, the response includes `companyLinked: true` and the `companyId`.
 
 ## Owner assignment
 
@@ -43,5 +46,3 @@ You can assign an owner to the contact using the `contactOwner` field. Accepted 
 <Note>
 If the provided value does not match a team member (invalid format, unknown email, or unknown user ID), the owner is **silently ignored** — no error or warning is returned. On creation, the contact defaults to the API key owner.
 </Note>
-
-<SnippetObjectReference objectName="Contact" objectPath="contact" />
