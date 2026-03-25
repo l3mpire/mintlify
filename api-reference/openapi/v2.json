@@ -439,11 +439,7 @@
           "scope": {
             "type": "string",
             "description": "Unsubscribe scope",
-            "enum": [
-              "campaign",
-              "team",
-              "global"
-            ]
+            "enum": ["campaign", "team", "global"]
           }
         }
       },
@@ -496,11 +492,7 @@
           "status": {
             "type": "string",
             "description": "Enrichment status",
-            "enum": [
-              "pending",
-              "completed",
-              "failed"
-            ]
+            "enum": ["pending", "completed", "failed"]
           },
           "email": {
             "type": "string",
@@ -561,11 +553,7 @@
           "status": {
             "type": "string",
             "description": "Task status",
-            "enum": [
-              "pending",
-              "completed",
-              "ignored"
-            ]
+            "enum": ["pending", "completed", "ignored"]
           },
           "dueDate": {
             "type": "string",
@@ -1042,11 +1030,7 @@
           "exportStatus": {
             "type": "string",
             "description": "Export request status",
-            "enum": [
-              "pending",
-              "done",
-              "error"
-            ]
+            "enum": ["pending", "done", "error"]
           }
         }
       },
@@ -1070,11 +1054,7 @@
           "status": {
             "type": "string",
             "description": "Connection status",
-            "enum": [
-              "CONNECTED",
-              "ERROR",
-              "DISCONNECTED"
-            ]
+            "enum": ["CONNECTED", "ERROR", "DISCONNECTED"]
           },
           "lemlist": {
             "type": "object",
@@ -1690,11 +1670,7 @@
           "business_business_customer": {
             "type": "string",
             "description": "Customer type",
-            "enum": [
-              "B2B",
-              "B2C",
-              "B2B2C"
-            ]
+            "enum": ["B2B", "B2C", "B2B2C"]
           },
           "company_quality_score": {
             "type": "string",
@@ -1811,12 +1787,7 @@
           "status": {
             "type": "string",
             "description": "Signal status (computed based on user actions)",
-            "enum": [
-              "new",
-              "old",
-              "handled",
-              "ignored"
-            ]
+            "enum": ["new", "old", "handled", "ignored"]
           },
           "receivedAt": {
             "type": "string",
@@ -1988,9 +1959,7 @@
     "/team": {
       "get": {
         "summary": "Get Team",
-        "tags": [
-          "Team"
-        ],
+        "tags": ["Team"],
         "parameters": [],
         "responses": {
           "200": {
@@ -2122,9 +2091,7 @@
     "/team/senders": {
       "get": {
         "summary": "Get Team Senders",
-        "tags": [
-          "Team"
-        ],
+        "tags": ["Team"],
         "parameters": [
           {
             "name": "state",
@@ -2200,41 +2167,25 @@
                         "_id": "cam_XeLi45vzbAAMcwE9w",
                         "name": "Onboarding",
                         "status": "paused",
-                        "sendingChannels": [
-                          "email",
-                          "manual",
-                          "linkedinVisit"
-                        ]
+                        "sendingChannels": ["email", "manual", "linkedinVisit"]
                       },
                       {
                         "_id": "cam_jgQF6raCqZFpRhXic",
                         "name": "Community Launch",
                         "status": "running",
-                        "sendingChannels": [
-                          "email",
-                          "manual",
-                          "linkedinVisit"
-                        ]
+                        "sendingChannels": ["email", "manual", "linkedinVisit"]
                       },
                       {
                         "_id": "cam_uZN54wByB9fN4Egak",
                         "name": "Email Warmup Test",
                         "status": "ended",
-                        "sendingChannels": [
-                          "email",
-                          "manual",
-                          "linkedinVisit"
-                        ]
+                        "sendingChannels": ["email", "manual", "linkedinVisit"]
                       },
                       {
                         "_id": "cam_gdFao7vTMuxwtsdzR",
                         "name": "Product Launch Campaign",
                         "status": "draft",
-                        "sendingChannels": [
-                          "email",
-                          "manual",
-                          "linkedinVisit"
-                        ]
+                        "sendingChannels": ["email", "manual", "linkedinVisit"]
                       }
                     ]
                   },
@@ -2245,19 +2196,13 @@
                         "_id": "cam_inoaxzRkxC6RmFC7S",
                         "name": "WhatsApp Outreach",
                         "status": "draft",
-                        "sendingChannels": [
-                          "email",
-                          "whatsappMessage"
-                        ]
+                        "sendingChannels": ["email", "whatsappMessage"]
                       },
                       {
                         "_id": "cam_DkMxX9HCeWbv7jsYr",
                         "name": "WhatsApp Test Campaign",
                         "status": "ended",
-                        "sendingChannels": [
-                          "email",
-                          "whatsappMessage"
-                        ]
+                        "sendingChannels": ["email", "whatsappMessage"]
                       }
                     ]
                   },
@@ -2317,9 +2262,7 @@
     "/team/credits": {
       "get": {
         "summary": "Get Team Credits",
-        "tags": [
-          "Team"
-        ],
+        "tags": ["Team"],
         "parameters": [],
         "responses": {
           "200": {
@@ -2393,9 +2336,7 @@
     "/team/crmUsers": {
       "get": {
         "summary": "Get Team CRM Users",
-        "tags": [
-          "Team"
-        ],
+        "tags": ["Team"],
         "parameters": [],
         "responses": {
           "200": {
@@ -2477,9 +2418,7 @@
       ],
       "get": {
         "summary": "Get User",
-        "tags": [
-          "Users"
-        ],
+        "tags": ["Users"],
         "parameters": [],
         "responses": {
           "200": {
@@ -2559,9 +2498,7 @@
     "/campaigns": {
       "get": {
         "summary": "Get Many Campaigns",
-        "tags": [
-          "Campaigns"
-        ],
+        "tags": ["Campaigns"],
         "parameters": [
           {
             "name": "offset",
@@ -2592,9 +2529,7 @@
             "schema": {
               "type": "string",
               "default": "v2",
-              "enum": [
-                "v2"
-              ]
+              "enum": ["v2"]
             }
           },
           {
@@ -2615,9 +2550,7 @@
             "example": "createdAt",
             "schema": {
               "type": "string",
-              "enum": [
-                "createdAt"
-              ]
+              "enum": ["createdAt"]
             }
           },
           {
@@ -2628,10 +2561,7 @@
             "example": "desc",
             "schema": {
               "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ]
+              "enum": ["asc", "desc"]
             }
           },
           {
@@ -2691,9 +2621,7 @@
                     "createdBy": "usr_PdR6Q7ZifnXYEXPJR",
                     "status": "running",
                     "hasError": true,
-                    "errors": [
-                      "Your campaign does not have sender."
-                    ]
+                    "errors": ["Your campaign does not have sender."]
                   },
                   {
                     "_id": "cam_E7zXbH4n6n78TWdvX",
@@ -2711,9 +2639,7 @@
                   {
                     "_id": "cam_ohtpFfMbJ5vpDkLsm",
                     "name": "CRM Integration Test",
-                    "labels": [
-                      "CRM"
-                    ],
+                    "labels": ["CRM"],
                     "createdAt": "2023-01-27T14:58:52.482Z",
                     "createdBy": "usr_ez9h9tXDLP9LqpYyp",
                     "status": "running",
@@ -2771,9 +2697,7 @@
       },
       "post": {
         "summary": "Create Campaign",
-        "tags": [
-          "Campaigns"
-        ],
+        "tags": ["Campaigns"],
         "parameters": [],
         "responses": {
           "200": {
@@ -2869,9 +2793,7 @@
                 "example": {
                   "_id": "cam_WN3M22c3gDs4eQDXN",
                   "sequenceId": "seq_hPj7N88tCgpFYgtnj",
-                  "scheduleIds": [
-                    "skd_isFGZkjSsvJZ7CfRx"
-                  ],
+                  "scheduleIds": ["skd_isFGZkjSsvJZ7CfRx"],
                   "teamId": "tea_MtScZ2GexXzHXRdTr",
                   "createdBy": "usr_XCQktNJNa79X5Tvnh",
                   "createdAt": "2025-01-16T13:53:22.726Z",
@@ -2882,9 +2804,7 @@
                   "variableKeys": [],
                   "senders": [],
                   "sendUsers": [],
-                  "displayedVariableKeys": [
-                    "companyName"
-                  ],
+                  "displayedVariableKeys": ["companyName"],
                   "emoji": "\ud83d\ude80",
                   "stopOnEmailReplied": true,
                   "crmOpportunitiesOnTask": true,
@@ -2940,9 +2860,7 @@
                     "description": "The name of the campaign"
                   }
                 },
-                "required": [
-                  "name"
-                ]
+                "required": ["name"]
               },
               "example": {
                 "name": "My new campaign"
@@ -2967,9 +2885,7 @@
       ],
       "get": {
         "summary": "Get Campaign",
-        "tags": [
-          "Campaigns"
-        ],
+        "tags": ["Campaigns"],
         "parameters": [],
         "responses": {
           "200": {
@@ -3030,9 +2946,7 @@
       },
       "patch": {
         "summary": "Update Campaign",
-        "tags": [
-          "Campaigns"
-        ],
+        "tags": ["Campaigns"],
         "parameters": [],
         "responses": {
           "200": {
@@ -3212,9 +3126,7 @@
       ],
       "post": {
         "summary": "Pause Campaign",
-        "tags": [
-          "Campaigns"
-        ],
+        "tags": ["Campaigns"],
         "parameters": [],
         "responses": {
           "200": {
@@ -3285,9 +3197,7 @@
       "get": {
         "summary": "Start Campaign Stats Export",
         "description": "Start an asynchronous export of all campaign statistics. The final export result is a CSV file.",
-        "tags": [
-          "Campaigns"
-        ],
+        "tags": ["Campaigns"],
         "parameters": [],
         "responses": {
           "200": {
@@ -3319,11 +3229,7 @@
                     },
                     "status": {
                       "type": "string",
-                      "enum": [
-                        "pending",
-                        "done",
-                        "error"
-                      ],
+                      "enum": ["pending", "done", "error"],
                       "description": "Current status of the export"
                     },
                     "startedAt": {
@@ -3423,9 +3329,7 @@
       "get": {
         "summary": "Get Campaign Export Status",
         "description": "Check the status of an asynchronous campaign export.",
-        "tags": [
-          "Campaigns"
-        ],
+        "tags": ["Campaigns"],
         "parameters": [],
         "responses": {
           "200": {
@@ -3463,11 +3367,7 @@
                         },
                         "status": {
                           "type": "string",
-                          "enum": [
-                            "pending",
-                            "done",
-                            "error"
-                          ],
+                          "enum": ["pending", "done", "error"],
                           "description": "Current status of the export"
                         },
                         "startedAt": {
@@ -3654,9 +3554,7 @@
       "put": {
         "summary": "Set Email for Campaign Export Notification",
         "description": "Set an email address for a given export. When the export is done, an email with the download URL will be sent to the address provided.",
-        "tags": [
-          "Campaigns"
-        ],
+        "tags": ["Campaigns"],
         "parameters": [],
         "responses": {
           "200": {
@@ -3689,11 +3587,7 @@
                         },
                         "status": {
                           "type": "string",
-                          "enum": [
-                            "pending",
-                            "done",
-                            "error"
-                          ]
+                          "enum": ["pending", "done", "error"]
                         },
                         "startedAt": {
                           "type": "string",
@@ -3810,9 +3704,7 @@
       "get": {
         "summary": "Export Campaign Leads",
         "description": "Export leads from a campaign with filtering options. Returns leads in CSV or JSON format based on their state (e.g., contacted, interested, replied, etc.).",
-        "tags": [
-          "Campaigns"
-        ],
+        "tags": ["Campaigns"],
         "parameters": [
           {
             "name": "state",
@@ -3878,10 +3770,7 @@
             "example": "json",
             "schema": {
               "type": "string",
-              "enum": [
-                "json",
-                "csv"
-              ]
+              "enum": ["json", "csv"]
             }
           }
         ],
@@ -3900,11 +3789,7 @@
                     "properties": {
                       "emailStatus": {
                         "type": "string",
-                        "enum": [
-                          "deliverable",
-                          "risky",
-                          "undeliverable"
-                        ]
+                        "enum": ["deliverable", "risky", "undeliverable"]
                       },
                       "email": {
                         "type": "string",
@@ -3981,9 +3866,7 @@
       "get": {
         "summary": "Get Campaign Reports",
         "description": "Retrieve reports for one or multiple campaigns. Returns aggregated statistics and export status for the specified campaigns.",
-        "tags": [
-          "Campaigns"
-        ],
+        "tags": ["Campaigns"],
         "parameters": [
           {
             "name": "campaignIds",
@@ -4196,9 +4079,7 @@
       ],
       "get": {
         "summary": "Get Campaign Sequences",
-        "tags": [
-          "Sequences"
-        ],
+        "tags": ["Sequences"],
         "parameters": [],
         "responses": {
           "200": {
@@ -4371,9 +4252,7 @@
       ],
       "post": {
         "summary": "Add Step to Sequence",
-        "tags": [
-          "Sequences"
-        ],
+        "tags": ["Sequences"],
         "parameters": [],
         "responses": {
           "200": {
@@ -4487,13 +4366,7 @@
                   "method": {
                     "type": "string",
                     "description": "HTTP method for API steps",
-                    "enum": [
-                      "GET",
-                      "POST",
-                      "PUT",
-                      "DELETE",
-                      "PATCH"
-                    ]
+                    "enum": ["GET", "POST", "PUT", "DELETE", "PATCH"]
                   },
                   "url": {
                     "type": "string",
@@ -4514,10 +4387,7 @@
                   "delayType": {
                     "type": "string",
                     "description": "Delay type for conditional steps",
-                    "enum": [
-                      "within",
-                      "waitUntil"
-                    ]
+                    "enum": ["within", "waitUntil"]
                   },
                   "campaignId": {
                     "type": "string",
@@ -4631,9 +4501,7 @@
       ],
       "patch": {
         "summary": "Update Sequence Step",
-        "tags": [
-          "Sequences"
-        ],
+        "tags": ["Sequences"],
         "parameters": [],
         "responses": {
           "200": {
@@ -4703,9 +4571,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "type"
-                ],
+                "required": ["type"],
                 "properties": {
                   "type": {
                     "type": "string",
@@ -4746,13 +4612,7 @@
                   "method": {
                     "type": "string",
                     "description": "HTTP method for API steps",
-                    "enum": [
-                      "GET",
-                      "POST",
-                      "PUT",
-                      "DELETE",
-                      "PATCH"
-                    ]
+                    "enum": ["GET", "POST", "PUT", "DELETE", "PATCH"]
                   },
                   "url": {
                     "type": "string",
@@ -4774,10 +4634,7 @@
                   "delayType": {
                     "type": "string",
                     "description": "Delay type for conditional steps",
-                    "enum": [
-                      "within",
-                      "waitUntil"
-                    ]
+                    "enum": ["within", "waitUntil"]
                   },
                   "campaignId": {
                     "type": "string",
@@ -4866,9 +4723,7 @@
       },
       "delete": {
         "summary": "Delete Sequence Step",
-        "tags": [
-          "Sequences"
-        ],
+        "tags": ["Sequences"],
         "parameters": [],
         "responses": {
           "200": {
@@ -4930,9 +4785,7 @@
     "/schedules": {
       "get": {
         "summary": "Get Many Schedules",
-        "tags": [
-          "Schedules"
-        ],
+        "tags": ["Schedules"],
         "parameters": [
           {
             "name": "page",
@@ -4972,9 +4825,7 @@
             "example": "createdAt",
             "schema": {
               "type": "string",
-              "enum": [
-                "createdAt"
-              ]
+              "enum": ["createdAt"]
             }
           },
           {
@@ -4985,10 +4836,7 @@
             "example": "desc",
             "schema": {
               "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ]
+              "enum": ["asc", "desc"]
             }
           }
         ],
@@ -5009,12 +4857,7 @@
                       "timezone": "Europe/Paris",
                       "start": "09:00",
                       "end": "18:00",
-                      "weekdays": [
-                        1,
-                        2,
-                        3,
-                        4
-                      ],
+                      "weekdays": [1, 2, 3, 4],
                       "public": true,
                       "teamId": "tea_b4rMsi2trB42WyuWP",
                       "createdBy": "usr_gmHgNGRcGPSTJrDbT",
@@ -5027,13 +4870,7 @@
                       "timezone": "Europe/Paris",
                       "start": "09:00",
                       "end": "18:00",
-                      "weekdays": [
-                        1,
-                        2,
-                        3,
-                        4,
-                        5
-                      ],
+                      "weekdays": [1, 2, 3, 4, 5],
                       "teamId": "tea_b4rMsi2trB42WyuWP",
                       "createdBy": "usr_gmHgNGRcGPSTJrDbT",
                       "createdAt": "2025-10-27T07:01:04.041Z"
@@ -5045,13 +4882,7 @@
                       "timezone": "Asia/Seoul",
                       "start": "09:00",
                       "end": "18:00",
-                      "weekdays": [
-                        1,
-                        2,
-                        3,
-                        4,
-                        5
-                      ],
+                      "weekdays": [1, 2, 3, 4, 5],
                       "teamId": "tea_b4rMsi2trB42WyuWP",
                       "createdBy": "usr_gmHgNGRcGPSTJrDbT",
                       "createdAt": "2025-10-24T09:37:25.040Z"
@@ -5063,13 +4894,7 @@
                       "timezone": "Asia/Seoul",
                       "start": "09:00",
                       "end": "18:00",
-                      "weekdays": [
-                        1,
-                        2,
-                        3,
-                        4,
-                        5
-                      ],
+                      "weekdays": [1, 2, 3, 4, 5],
                       "teamId": "tea_b4rMsi2trB42WyuWP",
                       "createdBy": "usr_gmHgNGRcGPSTJrDbT",
                       "createdAt": "2025-10-24T07:24:44.785Z"
@@ -5081,13 +4906,7 @@
                       "timezone": "Europe/Sofia",
                       "start": "09:00",
                       "end": "18:00",
-                      "weekdays": [
-                        1,
-                        2,
-                        3,
-                        4,
-                        5
-                      ],
+                      "weekdays": [1, 2, 3, 4, 5],
                       "teamId": "tea_b4rMsi2trB42WyuWP",
                       "createdBy": "usr_dZKq4dpAnn8YQQMJm",
                       "createdAt": "2025-10-20T13:13:34.680Z"
@@ -5123,9 +4942,7 @@
       },
       "post": {
         "summary": "Create Schedule",
-        "tags": [
-          "Schedules"
-        ],
+        "tags": ["Schedules"],
         "security": [
           {
             "basicAuth": []
@@ -5173,13 +4990,7 @@
                       "maximum": 7
                     },
                     "description": "Days of the week the schedule is active (1=Monday, 7=Sunday)",
-                    "default": [
-                      1,
-                      2,
-                      3,
-                      4,
-                      5
-                    ]
+                    "default": [1, 2, 3, 4, 5]
                   },
                   "public": {
                     "type": "boolean",
@@ -5187,13 +4998,7 @@
                     "default": false
                   }
                 },
-                "required": [
-                  "name",
-                  "timezone",
-                  "start",
-                  "end",
-                  "weekdays"
-                ]
+                "required": ["name", "timezone", "start", "end", "weekdays"]
               },
               "example": {
                 "name": "Default schedule",
@@ -5201,13 +5006,7 @@
                 "timezone": "Europe/Paris",
                 "start": "09:00",
                 "end": "18:00",
-                "weekdays": [
-                  1,
-                  2,
-                  3,
-                  4,
-                  5
-                ],
+                "weekdays": [1, 2, 3, 4, 5],
                 "public": false
               }
             }
@@ -5229,13 +5028,7 @@
                   "timezone": "Europe/Paris",
                   "start": "09:00",
                   "end": "18:00",
-                  "weekdays": [
-                    1,
-                    2,
-                    3,
-                    4,
-                    5
-                  ],
+                  "weekdays": [1, 2, 3, 4, 5],
                   "public": false,
                   "teamId": "tea_Lq4kN7R2pqEA4YFst",
                   "createdBy": "usr_n2PG5aHnsGErYS2Yg",
@@ -5303,9 +5096,7 @@
       ],
       "get": {
         "summary": "Get Schedule",
-        "tags": [
-          "Schedules"
-        ],
+        "tags": ["Schedules"],
         "responses": {
           "200": {
             "description": "Success",
@@ -5330,13 +5121,7 @@
                   "timezone": "Europe/Berlin",
                   "start": "08:00",
                   "end": "18:00",
-                  "weekdays": [
-                    1,
-                    2,
-                    3,
-                    2,
-                    5
-                  ],
+                  "weekdays": [1, 2, 3, 2, 5],
                   "public": true,
                   "teamId": "tea_b4rMsi2trB42WyuWP",
                   "createdBy": "usr_gmHgNGRcGPSTJrDbT",
@@ -5374,9 +5159,7 @@
       },
       "patch": {
         "summary": "Update Schedule",
-        "tags": [
-          "Schedules"
-        ],
+        "tags": ["Schedules"],
         "security": [
           {
             "basicAuth": []
@@ -5448,13 +5231,7 @@
                   "timezone": "Europe/Berlin",
                   "start": "08:00",
                   "end": "18:00",
-                  "weekdays": [
-                    1,
-                    2,
-                    3,
-                    2,
-                    5
-                  ],
+                  "weekdays": [1, 2, 3, 2, 5],
                   "public": true,
                   "teamId": "tea_b4rMsi2trB42WyuWP",
                   "createdBy": "usr_gmHgNGRcGPSTJrDbT",
@@ -5526,9 +5303,7 @@
       },
       "delete": {
         "summary": "Delete Schedule",
-        "tags": [
-          "Schedules"
-        ],
+        "tags": ["Schedules"],
         "responses": {
           "200": {
             "description": "Success",
@@ -5586,9 +5361,7 @@
       ],
       "get": {
         "summary": "Get Campaign Schedules",
-        "tags": [
-          "Schedules"
-        ],
+        "tags": ["Schedules"],
         "responses": {
           "200": {
             "description": "Success",
@@ -5608,13 +5381,7 @@
                     "timezone": "Atlantic/Reykjavik",
                     "start": "08:00",
                     "end": "18:00",
-                    "weekdays": [
-                      1,
-                      2,
-                      3,
-                      4,
-                      5
-                    ],
+                    "weekdays": [1, 2, 3, 4, 5],
                     "teamId": "tea_b834id4r7skME8mfW",
                     "createdBy": "usr_F7iPChEQ3pSmuTiCe",
                     "createdAt": "2025-02-06T16:29:10.217Z"
@@ -5626,13 +5393,7 @@
                     "timezone": "Africa/Ceuta",
                     "start": "09:00",
                     "end": "18:00",
-                    "weekdays": [
-                      1,
-                      2,
-                      3,
-                      4,
-                      5
-                    ],
+                    "weekdays": [1, 2, 3, 4, 5],
                     "teamId": "tea_b834id4r7skME8mfW",
                     "createdBy": "usr_cTWih7tcKWicFRiQj",
                     "createdAt": "2025-02-06T15:36:01.531Z"
@@ -5644,13 +5405,7 @@
                     "timezone": "Europe/Paris",
                     "start": "09:00",
                     "end": "18:00",
-                    "weekdays": [
-                      1,
-                      2,
-                      3,
-                      4,
-                      5
-                    ],
+                    "weekdays": [1, 2, 3, 4, 5],
                     "teamId": "tea_b834id4r7skME8mfW",
                     "createdBy": "usr_cTWih7tcKWicFRiQj",
                     "createdAt": "2025-02-06T15:35:52.079Z"
@@ -5707,9 +5462,7 @@
       ],
       "post": {
         "summary": "Associate Schedule with Campaign",
-        "tags": [
-          "Schedules"
-        ],
+        "tags": ["Schedules"],
         "responses": {
           "200": {
             "description": "Success",
@@ -5762,9 +5515,7 @@
     "/leads": {
       "get": {
         "summary": "Get Lead by Email or ID",
-        "tags": [
-          "Leads"
-        ],
+        "tags": ["Leads"],
         "description": "Retrieve a lead using either their email address or lead ID",
         "parameters": [
           {
@@ -5795,9 +5546,7 @@
             "example": "v2",
             "schema": {
               "type": "string",
-              "enum": [
-                "v2"
-              ]
+              "enum": ["v2"]
             }
           }
         ],
@@ -5910,9 +5659,7 @@
       ],
       "get": {
         "summary": "Get Lead by Email",
-        "tags": [
-          "Leads"
-        ],
+        "tags": ["Leads"],
         "parameters": [
           {
             "name": "version",
@@ -5923,9 +5670,7 @@
             "schema": {
               "type": "string",
               "default": "v2",
-              "enum": [
-                "v2"
-              ]
+              "enum": ["v2"]
             }
           }
         ],
@@ -6082,9 +5827,7 @@
       ],
       "post": {
         "summary": "Create Lead in Campaign",
-        "tags": [
-          "Leads"
-        ],
+        "tags": ["Leads"],
         "parameters": [
           {
             "name": "deduplicate",
@@ -6305,9 +6048,7 @@
       },
       "delete": {
         "summary": "Unsubscribe Lead from Campaign",
-        "tags": [
-          "Leads"
-        ],
+        "tags": ["Leads"],
         "responses": {
           "200": {
             "description": "Success",
@@ -6395,9 +6136,7 @@
       ],
       "patch": {
         "summary": "Update Lead in a Campaign",
-        "tags": [
-          "Leads"
-        ],
+        "tags": ["Leads"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -6531,9 +6270,7 @@
       },
       "delete": {
         "summary": "Delete or Unsubscribe Lead",
-        "tags": [
-          "Leads"
-        ],
+        "tags": ["Leads"],
         "parameters": [
           {
             "name": "action",
@@ -6668,9 +6405,7 @@
       ],
       "delete": {
         "summary": "Unsubscribe Lead from Campaign",
-        "tags": [
-          "Leads"
-        ],
+        "tags": ["Leads"],
         "responses": {
           "200": {
             "description": "Success",
@@ -6744,9 +6479,7 @@
       ],
       "post": {
         "summary": "Resume Paused Lead",
-        "tags": [
-          "Leads"
-        ],
+        "tags": ["Leads"],
         "responses": {
           "200": {
             "description": "Success",
@@ -6860,9 +6593,7 @@
       ],
       "post": {
         "summary": "Pause Lead",
-        "tags": [
-          "Leads"
-        ],
+        "tags": ["Leads"],
         "parameters": [
           {
             "name": "campaignId",
@@ -6987,9 +6718,7 @@
       ],
       "post": {
         "summary": "Mark Lead as Interested",
-        "tags": [
-          "Leads"
-        ],
+        "tags": ["Leads"],
         "description": "Mark a lead as interested across all campaigns",
         "responses": {
           "200": {
@@ -7104,9 +6833,7 @@
       ],
       "post": {
         "summary": "Mark Lead as Not Interested",
-        "tags": [
-          "Leads"
-        ],
+        "tags": ["Leads"],
         "description": "Mark a lead as not interested across all campaigns",
         "responses": {
           "200": {
@@ -7231,9 +6958,7 @@
       ],
       "post": {
         "summary": "Mark Lead as Interested in Campaign",
-        "tags": [
-          "Leads"
-        ],
+        "tags": ["Leads"],
         "responses": {
           "200": {
             "description": "Success",
@@ -7352,9 +7077,7 @@
       ],
       "post": {
         "summary": "Mark Lead as Not Interested in Campaign",
-        "tags": [
-          "Leads"
-        ],
+        "tags": ["Leads"],
         "responses": {
           "200": {
             "description": "Success",
@@ -7463,9 +7186,7 @@
       ],
       "post": {
         "summary": "Add Custom Variables on Leads",
-        "tags": [
-          "Leads"
-        ],
+        "tags": ["Leads"],
         "description": "Add custom variables to a lead and sets values for that specific lead.",
         "parameters": [
           {
@@ -7537,9 +7258,7 @@
       },
       "patch": {
         "summary": "Update Values of Custom Variables of a Lead",
-        "tags": [
-          "Leads"
-        ],
+        "tags": ["Leads"],
         "description": "Update values of custom variables for a lead.",
         "parameters": [
           {
@@ -7611,9 +7330,7 @@
       },
       "delete": {
         "summary": "Erase Values of Custom Variables on a Lead",
-        "tags": [
-          "Leads"
-        ],
+        "tags": ["Leads"],
         "description": "Erases the values of custom variables on a lead.",
         "parameters": [
           {
@@ -7684,9 +7401,7 @@
     "/leads/audio": {
       "post": {
         "summary": "Upload Audio for Voice Message Step",
-        "tags": [
-          "Leads"
-        ],
+        "tags": ["Leads"],
         "parameters": [
           {
             "name": "leadId",
@@ -7788,9 +7503,7 @@
     "/crm/filters": {
       "get": {
         "summary": "Get CRM Filters",
-        "tags": [
-          "Leads"
-        ],
+        "tags": ["Leads"],
         "parameters": [
           {
             "name": "crm",
@@ -7820,11 +7533,7 @@
             "example": "lead",
             "schema": {
               "type": "string",
-              "enum": [
-                "lead",
-                "contact",
-                "report"
-              ]
+              "enum": ["lead", "contact", "report"]
             }
           }
         ],
@@ -7881,9 +7590,7 @@
       ],
       "post": {
         "summary": "Import Leads from CRM",
-        "tags": [
-          "Leads"
-        ],
+        "tags": ["Leads"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -7911,11 +7618,7 @@
                     "description": "Whether to deduplicate leads"
                   }
                 },
-                "required": [
-                  "crm",
-                  "userId",
-                  "filterId"
-                ]
+                "required": ["crm", "userId", "filterId"]
               },
               "example": {
                 "crm": "hubspot",
@@ -7959,9 +7662,7 @@
     "/database/filters": {
       "get": {
         "summary": "Get Database Filters",
-        "tags": [
-          "People Database"
-        ],
+        "tags": ["People Database"],
         "responses": {
           "200": {
             "description": "Success",
@@ -7977,10 +7678,7 @@
                   {
                     "filterId": "country",
                     "description": "Filter by country",
-                    "mode": [
-                      "leads",
-                      "companies"
-                    ],
+                    "mode": ["leads", "companies"],
                     "type": "text",
                     "helper": "Use free text search"
                   }
@@ -8016,9 +7714,7 @@
         "summary": "Search People Database",
         "description": "This endpoint allows you to query our People database. To do so, you may use the following parameters: filters (required), page (optional), size (optional), and excludes (optional). Each filter should have the following properties: filterId (filter identifier), in (list of the values you want to include), and out (list of the values you want to exclude). To know which filters you are able to use, refer to the GET Filters section.",
         "operationId": "searchPeopleDatabase",
-        "tags": [
-          "People Database"
-        ],
+        "tags": ["People Database"],
         "requestBody": {
           "description": "Search criteria. Provide one or more filters and optionally control pagination with page/size and a free-text search.",
           "content": {
@@ -8081,9 +7777,7 @@
                 "filters": [
                   {
                     "filterId": "country",
-                    "in": [
-                      "France"
-                    ],
+                    "in": ["France"],
                     "out": []
                   }
                 ],
@@ -8231,9 +7925,7 @@
     "/schema/people": {
       "get": {
         "summary": "Get People Schema",
-        "tags": [
-          "People Database"
-        ],
+        "tags": ["People Database"],
         "description": "Get the schema definition for people in the database",
         "responses": {
           "200": {
@@ -8255,15 +7947,10 @@
                         },
                         "type": {
                           "type": "string",
-                          "enum": [
-                            "date"
-                          ]
+                          "enum": ["date"]
                         }
                       },
-                      "required": [
-                        "since",
-                        "type"
-                      ]
+                      "required": ["since", "type"]
                     },
                     "properties": {
                       "type": "array",
@@ -8272,10 +7959,7 @@
                       }
                     }
                   },
-                  "required": [
-                    "schema",
-                    "version"
-                  ]
+                  "required": ["schema", "version"]
                 },
                 "example": {
                   "schema": {
@@ -8423,10 +8107,7 @@
                     "connections_count_bucket": "500+",
                     "years_of_exp_bucket": "6-10 years",
                     "current_exp_company_name": "TechCorp Inc.",
-                    "geopoint": [
-                      37.7749,
-                      -122.4194
-                    ],
+                    "geopoint": [37.7749, -122.4194],
                     "_score": 0.98123,
                     "_id": "people_abc123"
                   },
@@ -8495,9 +8176,7 @@
       "post": {
         "summary": "Search Companies Database",
         "description": "Search the lemlist Companies database using structured filters with pagination support. Returns comprehensive company data including technologies used, location, employee count, and other business intelligence.",
-        "tags": [
-          "People Database"
-        ],
+        "tags": ["People Database"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -8545,12 +8224,8 @@
                 "filters": [
                   {
                     "filterId": "currentCompanyTechnologies",
-                    "in": [
-                      "Postman"
-                    ],
-                    "out": [
-                      "Haskell"
-                    ]
+                    "in": ["Postman"],
+                    "out": ["Haskell"]
                   }
                 ],
                 "page": 1,
@@ -8703,10 +8378,7 @@
                       "company_subindustry": "Technology, Information and Internet",
                       "company_subsubindustry": "Software Development",
                       "company_location": "Office no.704 , 7th floor , City Avenue , Wakad - Pune , Maharashtra - 411057; Pune, Maharashtra 411057, IN",
-                      "company_location_geopoint_array": [
-                        73.92,
-                        18.64
-                      ],
+                      "company_location_geopoint_array": [73.92, 18.64],
                       "company_occ_lead": "60",
                       "_score": 10.002095,
                       "_id": "88945664"
@@ -8806,10 +8478,7 @@
                       "company_subindustry": "Technology, Information and Internet",
                       "company_subsubindustry": "Software Development",
                       "company_location": "San Francisco, California 94104, US",
-                      "company_location_geopoint_array": [
-                        -122.42,
-                        37.78
-                      ],
+                      "company_location_geopoint_array": [-122.42, 37.78],
                       "company_occ_lead": "117",
                       "_score": 9.972561,
                       "_id": "9903838"
@@ -8852,9 +8521,7 @@
     "/schema/companies": {
       "get": {
         "summary": "Get Companies Schema",
-        "tags": [
-          "People Database"
-        ],
+        "tags": ["People Database"],
         "description": "Get the schema definition for companies in the database",
         "responses": {
           "200": {
@@ -8877,15 +8544,10 @@
                         },
                         "type": {
                           "type": "string",
-                          "enum": [
-                            "date"
-                          ]
+                          "enum": ["date"]
                         }
                       },
-                      "required": [
-                        "since",
-                        "type"
-                      ]
+                      "required": ["since", "type"]
                     },
                     "properties": {
                       "type": "array",
@@ -8931,10 +8593,7 @@
                     "company_subindustry": "Technology, Information and Internet",
                     "company_subsubindustry": "Software Development",
                     "company_location": "Office no.704 , 7th floor , City Avenue , Wakad - Pune , Maharashtra - 411057; Pune, Maharashtra 411057, IN",
-                    "company_location_geopoint_array": [
-                      73.92,
-                      18.64
-                    ],
+                    "company_location_geopoint_array": [73.92, 18.64],
                     "company_occ_lead": "60",
                     "_score": 10.002095,
                     "_id": "88945664"
@@ -9005,9 +8664,7 @@
       "get": {
         "summary": "Get Many Tasks",
         "description": "Retrieve tasks with optional filtering and pagination. Tasks marked as `done` are excluded from results.",
-        "tags": [
-          "Tasks"
-        ],
+        "tags": ["Tasks"],
         "parameters": [
           {
             "name": "page",
@@ -9099,9 +8756,7 @@
       "post": {
         "summary": "Create Task",
         "description": "Create a manual task (opportunity) associated with a contact/company or lead.",
-        "tags": [
-          "Tasks"
-        ],
+        "tags": ["Tasks"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -9115,12 +8770,7 @@
                   "type": {
                     "type": "string",
                     "description": "The type of task.",
-                    "enum": [
-                      "email",
-                      "manual",
-                      "phone",
-                      "linkedin"
-                    ]
+                    "enum": ["email", "manual", "phone", "linkedin"]
                   },
                   "assignedTo": {
                     "type": "string",
@@ -9144,21 +8794,11 @@
                   "priority": {
                     "type": "string",
                     "description": "Priority level of the task.",
-                    "enum": [
-                      "",
-                      "0",
-                      "1",
-                      "2"
-                    ],
+                    "enum": ["", "0", "1", "2"],
                     "default": ""
                   }
                 },
-                "required": [
-                  "leadId",
-                  "type",
-                  "assignedTo",
-                  "dueDate"
-                ]
+                "required": ["leadId", "type", "assignedTo", "dueDate"]
               },
               "example": {
                 "type": "phone",
@@ -9219,9 +8859,7 @@
       "patch": {
         "summary": "Update Task",
         "description": "Update task details such as assignment, due date, title, message, priority, or completion status.",
-        "tags": [
-          "Tasks"
-        ],
+        "tags": ["Tasks"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -9252,21 +8890,14 @@
                   "priority": {
                     "type": "string",
                     "description": "Priority level of the task",
-                    "enum": [
-                      "",
-                      "0",
-                      "1",
-                      "2"
-                    ]
+                    "enum": ["", "0", "1", "2"]
                   },
                   "done": {
                     "type": "boolean",
                     "description": "Mark task as completed"
                   }
                 },
-                "required": [
-                  "id"
-                ]
+                "required": ["id"]
               },
               "example": {
                 "id": "opp_AbkAqfvTJtdR7mdZ5",
@@ -9321,9 +8952,7 @@
     "/tasks/ignore": {
       "post": {
         "summary": "Ignore Tasks",
-        "tags": [
-          "Tasks"
-        ],
+        "tags": ["Tasks"],
         "parameters": [],
         "requestBody": {
           "content": {
@@ -9339,9 +8968,7 @@
                     "description": "Array of task IDs to ignore"
                   }
                 },
-                "required": [
-                  "ids"
-                ]
+                "required": ["ids"]
               }
             }
           }
@@ -9383,9 +9010,7 @@
     "/inbox": {
       "get": {
         "summary": "Get Many Inboxes",
-        "tags": [
-          "Inbox"
-        ],
+        "tags": ["Inbox"],
         "parameters": [
           {
             "name": "page",
@@ -9466,9 +9091,7 @@
                       "opportunities": [],
                       "lastActivityAt": "2024-12-17T09:42:32.971Z",
                       "createdBy": "act_mjdoySn9mkfbcMS5e",
-                      "channels": [
-                        "email"
-                      ],
+                      "channels": ["email"],
                       "teamId": "tea_b4rMsi2trB42WyuWP",
                       "contactId": "ctc_wfKeM8EmiTikud7QE",
                       "users": [
@@ -9498,9 +9121,7 @@
                       "opportunities": [],
                       "lastActivityAt": "2024-12-17T09:42:30.430Z",
                       "createdBy": "act_otgjsMTZFLXc3t344",
-                      "channels": [
-                        "email"
-                      ],
+                      "channels": ["email"],
                       "teamId": "tea_b4rMsi2trB42WyuWP",
                       "contactId": "ctc_miqxedLWeYvaZJGmj",
                       "users": [
@@ -9529,9 +9150,7 @@
                       "opportunities": [],
                       "lastActivityAt": "2024-12-17T09:42:17.682Z",
                       "createdBy": "act_Xwdkdj3RLeE3ubf6P",
-                      "channels": [
-                        "email"
-                      ],
+                      "channels": ["email"],
                       "teamId": "tea_b4rMsi2trB42WyuWP",
                       "contactId": "ctc_pywvuxsduA3T22NGR",
                       "users": [
@@ -9560,9 +9179,7 @@
                       "opportunities": [],
                       "lastActivityAt": "2024-12-04T16:58:53.629Z",
                       "createdBy": "act_iEfKLEB93nf7a5P9t",
-                      "channels": [
-                        "email"
-                      ],
+                      "channels": ["email"],
                       "teamId": "tea_b4rMsi2trB42WyuWP",
                       "contactId": "ctc_FdjS5TF5v47H53YPh",
                       "users": [
@@ -9637,9 +9254,7 @@
       ],
       "get": {
         "summary": "Get Contact Messages",
-        "tags": [
-          "Inbox"
-        ],
+        "tags": ["Inbox"],
         "parameters": [
           {
             "name": "userId",
@@ -9823,9 +9438,7 @@
     "/inbox/email": {
       "post": {
         "summary": "Send Email",
-        "tags": [
-          "Inbox"
-        ],
+        "tags": ["Inbox"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -9932,9 +9545,7 @@
     "/inbox/linkedin": {
       "post": {
         "summary": "Send LinkedIn Message",
-        "tags": [
-          "Inbox"
-        ],
+        "tags": ["Inbox"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -9958,12 +9569,7 @@
                     "description": "Message content"
                   }
                 },
-                "required": [
-                  "sendUserId",
-                  "leadId",
-                  "contactId",
-                  "message"
-                ]
+                "required": ["sendUserId", "leadId", "contactId", "message"]
               },
               "example": {
                 "sendUserId": "usr_h47tiJr87Zn7XtQHi",
@@ -10019,9 +9625,7 @@
     "/inbox/whatsapp": {
       "post": {
         "summary": "Send WhatsApp Message",
-        "tags": [
-          "Inbox"
-        ],
+        "tags": ["Inbox"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -10098,9 +9702,7 @@
       "get": {
         "summary": "Get Many Labels",
         "description": "List all labels available to your team.",
-        "tags": [
-          "Inbox"
-        ],
+        "tags": ["Inbox"],
         "responses": {
           "200": {
             "description": "Success - Returns array of labels",
@@ -10146,9 +9748,7 @@
       "post": {
         "summary": "Create Label",
         "description": "Creates a new label available to the team.",
-        "tags": [
-          "Inbox"
-        ],
+        "tags": ["Inbox"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -10160,9 +9760,7 @@
                     "description": "Name of the label to create"
                   }
                 },
-                "required": [
-                  "labelName"
-                ]
+                "required": ["labelName"]
               },
               "example": {
                 "labelName": "Interested"
@@ -10222,9 +9820,7 @@
       "get": {
         "summary": "Get Label",
         "description": "Get info of a specific label.",
-        "tags": [
-          "Inbox"
-        ],
+        "tags": ["Inbox"],
         "parameters": [
           {
             "name": "labelId",
@@ -10289,9 +9885,7 @@
       "post": {
         "summary": "Attach Labels to Conversations",
         "description": "Attaches one or more labels to one or more conversations.",
-        "tags": [
-          "Inbox"
-        ],
+        "tags": ["Inbox"],
         "parameters": [
           {
             "name": "contactId",
@@ -10322,16 +9916,10 @@
                     "description": "If true, appends labels to existing ones. If false, replaces all labels."
                   }
                 },
-                "required": [
-                  "labelIds",
-                  "appendLabels"
-                ]
+                "required": ["labelIds", "appendLabels"]
               },
               "example": {
-                "labelIds": [
-                  "lbl_3bgE97gvicZ888wz4",
-                  "lbl_5kfD28hvjdA777xy9"
-                ],
+                "labelIds": ["lbl_3bgE97gvicZ888wz4", "lbl_5kfD28hvjdA777xy9"],
                 "appendLabels": true
               }
             }
@@ -10388,9 +9976,7 @@
       "delete": {
         "summary": "Remove Labels from Conversation",
         "description": "Removes one or more labels from one conversation.",
-        "tags": [
-          "Inbox"
-        ],
+        "tags": ["Inbox"],
         "parameters": [
           {
             "name": "contactId",
@@ -10417,14 +10003,10 @@
                     }
                   }
                 },
-                "required": [
-                  "labelIds"
-                ]
+                "required": ["labelIds"]
               },
               "example": {
-                "labelIds": [
-                  "lbl_3bgE97gvicZ888wz4"
-                ]
+                "labelIds": ["lbl_3bgE97gvicZ888wz4"]
               }
             }
           }
@@ -10481,9 +10063,7 @@
     "/contacts": {
       "get": {
         "summary": "Get Many Contacts",
-        "tags": [
-          "Contacts"
-        ],
+        "tags": ["Contacts"],
         "parameters": [
           {
             "name": "idsOrEmails",
@@ -10970,9 +10550,7 @@
       ],
       "get": {
         "summary": "Get Contact",
-        "tags": [
-          "Contacts"
-        ],
+        "tags": ["Contacts"],
         "responses": {
           "200": {
             "description": "Success",
@@ -11050,9 +10628,7 @@
       ],
       "post": {
         "summary": "Start lemwarm",
-        "tags": [
-          "lemwarm"
-        ],
+        "tags": ["lemwarm"],
         "parameters": [],
         "responses": {
           "200": {
@@ -11110,9 +10686,7 @@
       ],
       "post": {
         "summary": "Pause lemwarm",
-        "tags": [
-          "lemwarm"
-        ],
+        "tags": ["lemwarm"],
         "parameters": [],
         "responses": {
           "200": {
@@ -11170,9 +10744,7 @@
       ],
       "get": {
         "summary": "Get lemwarm Settings",
-        "tags": [
-          "lemwarm"
-        ],
+        "tags": ["lemwarm"],
         "parameters": [],
         "responses": {
           "200": {
@@ -11217,9 +10789,7 @@
       },
       "patch": {
         "summary": "Update lemwarm Settings",
-        "tags": [
-          "lemwarm"
-        ],
+        "tags": ["lemwarm"],
         "parameters": [],
         "requestBody": {
           "content": {
@@ -11288,9 +10858,7 @@
     "/companies": {
       "get": {
         "summary": "Get Many Companies",
-        "tags": [
-          "Companies"
-        ],
+        "tags": ["Companies"],
         "parameters": [
           {
             "name": "page",
@@ -11310,9 +10878,7 @@
             "example": "createdAt",
             "schema": {
               "type": "string",
-              "enum": [
-                "createdAt"
-              ]
+              "enum": ["createdAt"]
             }
           },
           {
@@ -11323,10 +10889,7 @@
             "example": "desc",
             "schema": {
               "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ]
+              "enum": ["asc", "desc"]
             }
           },
           {
@@ -11378,10 +10941,7 @@
                       "type": "integer"
                     }
                   },
-                  "required": [
-                    "data",
-                    "total"
-                  ]
+                  "required": ["data", "total"]
                 },
                 "example": {
                   "data": [
@@ -11758,9 +11318,7 @@
       ],
       "get": {
         "summary": "Get Company Notes",
-        "tags": [
-          "Companies"
-        ],
+        "tags": ["Companies"],
         "parameters": [
           {
             "name": "limit",
@@ -11790,9 +11348,7 @@
             "example": "createdAt",
             "schema": {
               "type": "string",
-              "enum": [
-                "createdAt"
-              ]
+              "enum": ["createdAt"]
             }
           },
           {
@@ -11803,10 +11359,7 @@
             "example": "desc",
             "schema": {
               "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ]
+              "enum": ["asc", "desc"]
             }
           }
         ],
@@ -11828,10 +11381,7 @@
                       "type": "integer"
                     }
                   },
-                  "required": [
-                    "data",
-                    "total"
-                  ]
+                  "required": ["data", "total"]
                 },
                 "example": {
                   "data": [
@@ -11888,9 +11438,7 @@
       },
       "post": {
         "summary": "Create Company Note",
-        "tags": [
-          "Companies"
-        ],
+        "tags": ["Companies"],
         "requestBody": {
           "content": {
             "application/json": {
@@ -11902,9 +11450,7 @@
                     "description": "The note content"
                   }
                 },
-                "required": [
-                  "note"
-                ]
+                "required": ["note"]
               },
               "example": {
                 "note": "Note created from the API!"
@@ -11967,9 +11513,7 @@
     "/activities": {
       "get": {
         "summary": "Get Many Activities",
-        "tags": [
-          "Activities"
-        ],
+        "tags": ["Activities"],
         "parameters": [
           {
             "name": "version",
@@ -11979,9 +11523,7 @@
             "example": "v2",
             "schema": {
               "type": "string",
-              "enum": [
-                "v2"
-              ]
+              "enum": ["v2"]
             }
           },
           {
@@ -12328,9 +11870,7 @@
     "/v2/campaigns/{campaignId}/stats": {
       "get": {
         "summary": "Get Campaign Stats",
-        "tags": [
-          "Campaigns"
-        ],
+        "tags": ["Campaigns"],
         "description": "Retrieve detailed statistics for a specific campaign, with filtering options by date, user, A/B testing, and communication channels.",
         "parameters": [
           {
@@ -12383,10 +11923,7 @@
             "example": "A",
             "schema": {
               "type": "string",
-              "enum": [
-                "A",
-                "B"
-              ]
+              "enum": ["A", "B"]
             }
           },
           {
@@ -12696,9 +12233,7 @@
       "get": {
         "deprecated": true,
         "summary": "Get Many Unsubscribes",
-        "tags": [
-          "Unsubscribes"
-        ],
+        "tags": ["Unsubscribes"],
         "parameters": [
           {
             "name": "offset",
@@ -12782,9 +12317,7 @@
       "get": {
         "deprecated": true,
         "summary": "Export Unsubscribes",
-        "tags": [
-          "Unsubscribes"
-        ],
+        "tags": ["Unsubscribes"],
         "parameters": [],
         "responses": {
           "200": {
@@ -12839,7 +12372,9 @@
               "application/json": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/UnsubscribedVariable" }
+                  "items": {
+                    "$ref": "#/components/schemas/UnsubscribedVariable"
+                  }
                 },
                 "example": [
                   {
@@ -12880,7 +12415,11 @@
                 }
               },
               "example": {
-                "values": ["john.doe@example.com", "@example.org", "+1234567890"]
+                "values": [
+                  "john.doe@example.com",
+                  "@example.org",
+                  "+1234567890"
+                ]
               }
             }
           }
@@ -12929,10 +12468,23 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "_id": { "type": "string", "description": "Unique identifier" },
-                    "value": { "type": "string", "description": "The unsubscribed variable" },
-                    "variable": { "type": "string", "description": "Alias of value" },
-                    "source": { "type": "string", "description": "Origin of the unsubscription", "enum": ["api", "bounced", "lead", "user", "abuse"] }
+                    "_id": {
+                      "type": "string",
+                      "description": "Unique identifier"
+                    },
+                    "value": {
+                      "type": "string",
+                      "description": "The unsubscribed variable"
+                    },
+                    "variable": {
+                      "type": "string",
+                      "description": "Alias of value"
+                    },
+                    "source": {
+                      "type": "string",
+                      "description": "Origin of the unsubscription",
+                      "enum": ["api", "bounced", "lead", "user", "abuse"]
+                    }
                   }
                 },
                 "example": {
@@ -12977,10 +12529,23 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "_id": { "type": "string", "description": "Unique identifier" },
-                    "value": { "type": "string", "description": "The unsubscribed variable" },
-                    "variable": { "type": "string", "description": "Alias of value" },
-                    "source": { "type": "string", "description": "Origin of the unsubscription", "enum": ["api", "bounced", "lead", "user", "abuse"] }
+                    "_id": {
+                      "type": "string",
+                      "description": "Unique identifier"
+                    },
+                    "value": {
+                      "type": "string",
+                      "description": "The unsubscribed variable"
+                    },
+                    "variable": {
+                      "type": "string",
+                      "description": "Alias of value"
+                    },
+                    "source": {
+                      "type": "string",
+                      "description": "Origin of the unsubscription",
+                      "enum": ["api", "bounced", "lead", "user", "abuse"]
+                    }
                   }
                 },
                 "example": {
@@ -12999,7 +12564,9 @@
           "401": { "description": "Unauthorized" },
           "500": {
             "description": "Server error",
-            "content": { "text/plain": { "example": "Failed to unsubscribe variable" } }
+            "content": {
+              "text/plain": { "example": "Failed to unsubscribe variable" }
+            }
           }
         }
       },
@@ -13028,12 +12595,20 @@
           },
           "400": {
             "description": "Variable not found in unsubscribe list",
-            "content": { "text/plain": { "example": "Variable not found in unsubscribe list" } }
+            "content": {
+              "text/plain": {
+                "example": "Variable not found in unsubscribe list"
+              }
+            }
           },
           "401": { "description": "Unauthorized" },
           "409": {
             "description": "Variable is protected (source is LEAD or ABUSE) and cannot be re-subscribed",
-            "content": { "text/plain": { "example": "Variable is protected and cannot be re-subscribed" } }
+            "content": {
+              "text/plain": {
+                "example": "Variable is protected and cannot be re-subscribed"
+              }
+            }
           }
         }
       }
@@ -13058,7 +12633,9 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ContactSubscriptionStatus" },
+                "schema": {
+                  "$ref": "#/components/schemas/ContactSubscriptionStatus"
+                },
                 "example": {
                   "_id": "con_aB1cD2eF3gH4iJ5kL",
                   "doNotContact": false
@@ -13073,7 +12650,9 @@
           "401": { "description": "Unauthorized" },
           "500": {
             "description": "Server error",
-            "content": { "text/plain": { "example": "Failed to get contact subscription" } }
+            "content": {
+              "text/plain": { "example": "Failed to get contact subscription" }
+            }
           }
         }
       },
@@ -13107,7 +12686,11 @@
           "401": { "description": "Unauthorized" },
           "500": {
             "description": "Server error",
-            "content": { "text/plain": { "example": "Failed to update contact subscription" } }
+            "content": {
+              "text/plain": {
+                "example": "Failed to update contact subscription"
+              }
+            }
           }
         }
       },
@@ -13141,7 +12724,11 @@
           "401": { "description": "Unauthorized" },
           "500": {
             "description": "Server error",
-            "content": { "text/plain": { "example": "Failed to update contact subscription" } }
+            "content": {
+              "text/plain": {
+                "example": "Failed to update contact subscription"
+              }
+            }
           }
         }
       }
@@ -13194,9 +12781,7 @@
       "get": {
         "deprecated": true,
         "summary": "Get Unsubscribe by Email",
-        "tags": [
-          "Unsubscribes"
-        ],
+        "tags": ["Unsubscribes"],
         "parameters": [
           {
             "name": "email",
@@ -13286,9 +12871,7 @@
       "post": {
         "deprecated": true,
         "summary": "Add Unsubscribe Email or Domain",
-        "tags": [
-          "Unsubscribes"
-        ],
+        "tags": ["Unsubscribes"],
         "parameters": [
           {
             "name": "email",
@@ -13325,10 +12908,7 @@
                       "description": "The unsubscribed email address"
                     }
                   },
-                  "required": [
-                    "_id",
-                    "value"
-                  ]
+                  "required": ["_id", "value"]
                 },
                 "example": {
                   "_id": "uns_QB3xQGhw6qJCyWXF9",
@@ -13362,9 +12942,7 @@
       "delete": {
         "deprecated": true,
         "summary": "Delete Unsubscribe Email",
-        "tags": [
-          "Unsubscribes"
-        ],
+        "tags": ["Unsubscribes"],
         "parameters": [
           {
             "name": "email",
@@ -13396,10 +12974,7 @@
                       "description": "The unsubscribed email address"
                     }
                   },
-                  "required": [
-                    "_id",
-                    "value"
-                  ]
+                  "required": ["_id", "value"]
                 },
                 "example": {
                   "_id": "uns_NiaRzPzj6nB8sAGFD",
@@ -13433,9 +13008,7 @@
     "/hooks": {
       "get": {
         "summary": "Get Many Webhooks",
-        "tags": [
-          "Webhooks"
-        ],
+        "tags": ["Webhooks"],
         "responses": {
           "200": {
             "description": "Success",
@@ -13549,9 +13122,7 @@
       },
       "post": {
         "summary": "Add Webhook",
-        "tags": [
-          "Webhooks"
-        ],
+        "tags": ["Webhooks"],
         "parameters": [
           {
             "name": "campaignId",
@@ -13655,9 +13226,7 @@
                     ]
                   }
                 },
-                "required": [
-                  "targetUrl"
-                ]
+                "required": ["targetUrl"]
               },
               "example": {
                 "targetUrl": "https://webhook.site/1d50ac35-2755-42cc-964c-9acbb4ebca30",
@@ -13727,9 +13296,7 @@
     "/hooks/{hookId}": {
       "delete": {
         "summary": "Delete Webhook",
-        "tags": [
-          "Webhooks"
-        ],
+        "tags": ["Webhooks"],
         "parameters": [
           {
             "name": "hookId",
@@ -13808,9 +13375,7 @@
     "/enrich/{enrichId}": {
       "get": {
         "summary": "Get Enrichment Result",
-        "tags": [
-          "Enrich"
-        ],
+        "tags": ["Enrich"],
         "parameters": [
           {
             "name": "enrichId",
@@ -13882,9 +13447,7 @@
     "/enrich": {
       "post": {
         "summary": "Enrich Data",
-        "tags": [
-          "Enrich"
-        ],
+        "tags": ["Enrich"],
         "parameters": [
           {
             "name": "findEmail",
@@ -14036,9 +13599,7 @@
     "/v2/enrichments/bulk": {
       "post": {
         "summary": "Bulk Enrich Data",
-        "tags": [
-          "Enrich"
-        ],
+        "tags": ["Enrich"],
         "description": "Send a batch of enrichment requests for multiple entities. Maximum 500 enrichment requests per call.",
         "parameters": [
           {
@@ -14061,9 +13622,7 @@
                 "maxItems": 500,
                 "items": {
                   "type": "object",
-                  "required": [
-                    "enrichmentRequests"
-                  ],
+                  "required": ["enrichmentRequests"],
                   "properties": {
                     "input": {
                       "type": "object",
@@ -14113,10 +13672,7 @@
                           "linkedin_enrichment"
                         ]
                       },
-                      "example": [
-                        "find_email",
-                        "verify"
-                      ]
+                      "example": ["find_email", "verify"]
                     },
                     "metadata": {
                       "description": "Custom data to be returned in the response and webhook. Can be a string or an object",
@@ -14146,9 +13702,7 @@
                         "firstName": "John",
                         "lastName": "Doe"
                       },
-                      "enrichmentRequests": [
-                        "find_email"
-                      ],
+                      "enrichmentRequests": ["find_email"],
                       "metadata": {
                         "id": "some_id"
                       }
@@ -14157,9 +13711,7 @@
                       "input": {
                         "linkedinUrl": "https://www.linkedin.com/in/john-doe"
                       },
-                      "enrichmentRequests": [
-                        "find_email"
-                      ],
+                      "enrichmentRequests": ["find_email"],
                       "metadata": "some_id"
                     }
                   ]
@@ -14171,9 +13723,7 @@
                       "input": {
                         "linkedinUrl": "https://www.linkedin.com/in/john-doe"
                       },
-                      "enrichmentRequests": [
-                        "find_phone"
-                      ],
+                      "enrichmentRequests": ["find_phone"],
                       "metadata": {
                         "id": "some_id"
                       }
@@ -14187,9 +13737,7 @@
                       "input": {
                         "email": "john.doe@example.com"
                       },
-                      "enrichmentRequests": [
-                        "verify"
-                      ],
+                      "enrichmentRequests": ["verify"],
                       "metadata": {
                         "id": "some_id"
                       }
@@ -14203,9 +13751,7 @@
                       "input": {
                         "linkedinUrl": "https://www.linkedin.com/in/john-doe"
                       },
-                      "enrichmentRequests": [
-                        "linkedin_enrichment"
-                      ],
+                      "enrichmentRequests": ["linkedin_enrichment"],
                       "metadata": {
                         "id": "some_id"
                       }
@@ -14463,9 +14009,7 @@
     "/leads/{leadId}/enrich": {
       "post": {
         "summary": "Enrich Lead",
-        "tags": [
-          "Enrich"
-        ],
+        "tags": ["Enrich"],
         "parameters": [
           {
             "name": "leadId",
@@ -14576,9 +14120,7 @@
     "/watchlist/signals": {
       "get": {
         "summary": "Get Watchlist Signals",
-        "tags": [
-          "Watchlist"
-        ],
+        "tags": ["Watchlist"],
         "parameters": [
           {
             "name": "page",
@@ -14622,10 +14164,7 @@
             "example": "receivedAt",
             "schema": {
               "type": "string",
-              "enum": [
-                "receivedAt",
-                "createdAt"
-              ]
+              "enum": ["receivedAt", "createdAt"]
             }
           },
           {
@@ -14636,10 +14175,7 @@
             "example": "desc",
             "schema": {
               "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ]
+              "enum": ["asc", "desc"]
             }
           },
           {
@@ -14803,9 +14339,7 @@
     "/user/email-accounts": {
       "post": {
         "summary": "Connect Email Account",
-        "tags": [
-          "Email Accounts"
-        ],
+        "tags": ["Email Accounts"],
         "requestBody": {
           "required": true,
           "content": {
@@ -14960,9 +14494,7 @@
     "/user/email-accounts/{emailAccountId}": {
       "delete": {
         "summary": "Disconnect Email Account",
-        "tags": [
-          "Email Accounts"
-        ],
+        "tags": ["Email Accounts"],
         "parameters": [
           {
             "name": "emailAccountId",
@@ -15034,9 +14566,7 @@
     "/user/email-accounts/{emailAccountId}/test": {
       "post": {
         "summary": "Test Email Account",
-        "tags": [
-          "Email Accounts"
-        ],
+        "tags": ["Email Accounts"],
         "parameters": [
           {
             "name": "emailAccountId",
@@ -15140,9 +14670,7 @@
       ],
       "post": {
         "summary": "Duplicate Campaign",
-        "tags": [
-          "Campaigns"
-        ],
+        "tags": ["Campaigns"],
         "requestBody": {
           "content": {
             "application/json": {
