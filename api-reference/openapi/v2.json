@@ -10602,6 +10602,357 @@
             "description": "Method not allowed"
           }
         }
+      },
+      "post": {
+        "summary": "Upsert Contact",
+        "description": "Creates a new contact or updates an existing one (upsert). If a contact with the same email or LinkedIn URL already exists, it will be updated with the provided non-empty fields. Null or empty values are ignored during updates to preserve existing data. You can optionally link the contact to a company by providing `companyId`, `companyDomain`, or `companyLinkedinUrl`.",
+        "tags": [
+          "Contacts"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Contact email address. Used as a unique key for upsert matching. At least one of `email` or `linkedinUrl` is required."
+                  },
+                  "linkedinUrl": {
+                    "type": "string",
+                    "description": "LinkedIn profile URL. Used as an alternative unique key for upsert matching. At least one of `email` or `linkedinUrl` is required."
+                  },
+                  "salesnavUrl": {
+                    "type": "string",
+                    "description": "LinkedIn Sales Navigator profile URL."
+                  },
+                  "additionalEmails": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Additional email addresses for the contact. Each must be a valid email address."
+                  },
+                  "firstName": {
+                    "type": "string",
+                    "description": "Contact first name."
+                  },
+                  "lastName": {
+                    "type": "string",
+                    "description": "Contact last name."
+                  },
+                  "phone": {
+                    "type": "string",
+                    "description": "Contact phone number."
+                  },
+                  "jobTitle": {
+                    "type": "string",
+                    "description": "Contact job title. If a company is linked, this is saved as part of the job data."
+                  },
+                  "jobDescription": {
+                    "type": "string",
+                    "description": "Contact job description. If a company is linked, this is saved as part of the job data."
+                  },
+                  "picture": {
+                    "type": "string",
+                    "description": "URL of the contact's profile picture."
+                  },
+                  "timezone": {
+                    "type": "string",
+                    "description": "Contact timezone."
+                  },
+                  "industry": {
+                    "type": "string",
+                    "description": "Contact industry."
+                  },
+                  "languages": {
+                    "type": "string",
+                    "description": "Contact languages."
+                  },
+                  "location": {
+                    "type": "string",
+                    "description": "Contact location."
+                  },
+                  "skills": {
+                    "type": "string",
+                    "description": "Contact skills."
+                  },
+                  "summary": {
+                    "type": "string",
+                    "description": "Contact summary or bio."
+                  },
+                  "tagline": {
+                    "type": "string",
+                    "description": "Contact tagline."
+                  },
+                  "contactOwner": {
+                    "type": "string",
+                    "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the owner is silently ignored and the contact is created/updated without an owner assignment."
+                  },
+                  "statusId": {
+                    "type": "string",
+                    "description": "CRM status ID to assign to the contact."
+                  },
+                  "source": {
+                    "type": "string",
+                    "description": "Origin of the contact record. Defaults to `api` if not specified.",
+                    "default": "api"
+                  },
+                  "companyId": {
+                    "type": "string",
+                    "description": "ID of a company to link to this contact. Takes priority over `companyDomain` and `companyLinkedinUrl`."
+                  },
+                  "companyDomain": {
+                    "type": "string",
+                    "description": "Domain of a company to link to this contact (e.g. `lemlist.com`). Used if `companyId` is not provided."
+                  },
+                  "companyLinkedinUrl": {
+                    "type": "string",
+                    "description": "LinkedIn URL of a company to link to this contact. Used if `companyId` and `companyDomain` are not provided."
+                  }
+                },
+                "additionalProperties": {
+                  "description": "Any additional key is treated as a custom field. Custom fields must be registered in the team's CRM field registry beforehand."
+                }
+              },
+              "example": {
+                "email": "jane.smith@example.com",
+                "firstName": "Jane",
+                "lastName": "Smith",
+                "linkedinUrl": "https://linkedin.com/in/janesmith",
+                "jobTitle": "Product Manager",
+                "companyDomain": "acme.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string",
+                          "description": "Unique contact identifier"
+                        },
+                        "teamId": {
+                          "type": "string",
+                          "description": "Team ID"
+                        },
+                        "emails": {
+                          "type": "array",
+                          "description": "Contact email addresses",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "value": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "linkedinUrl": {
+                          "type": "string",
+                          "description": "LinkedIn profile URL"
+                        },
+                        "linkedinUrlSalesNav": {
+                          "type": "string",
+                          "description": "LinkedIn Sales Navigator URL"
+                        },
+                        "fields": {
+                          "type": "object",
+                          "description": "Key/value fields (firstName, lastName, phone, jobTitle, custom fields, etc.)",
+                          "additionalProperties": true
+                        },
+                        "ownerId": {
+                          "type": "string",
+                          "description": "Owner user ID"
+                        },
+                        "statusId": {
+                          "type": "string",
+                          "description": "CRM status ID"
+                        },
+                        "companyId": {
+                          "type": "string",
+                          "description": "Linked company ID (present only when a company was linked)"
+                        },
+                        "source": {
+                          "type": "string",
+                          "description": "Record origin"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Creation timestamp"
+                        },
+                        "createdBy": {
+                          "type": "string",
+                          "description": "User ID who created the record"
+                        },
+                        "unsubscribed": {
+                          "type": "boolean",
+                          "description": "Whether the contact is unsubscribed"
+                        },
+                        "created": {
+                          "type": "boolean",
+                          "description": "`true` when a new contact was created, `false` when an existing contact was updated."
+                        },
+                        "updated": {
+                          "type": "boolean",
+                          "description": "Present and set to `true` only when an existing contact was updated (i.e. `created` is `false`)."
+                        },
+                        "companyLinked": {
+                          "type": "boolean",
+                          "description": "Whether a company was successfully linked to the contact."
+                        }
+                      }
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "_id": "ctc_Rofmb6uNGyaPNZ2ni",
+                    "teamId": "tea_b4rMsi2trB42WyuWP",
+                    "emails": [
+                      {
+                        "value": "jane.smith@example.com"
+                      }
+                    ],
+                    "linkedinUrl": "https://www.linkedin.com/in/janesmith",
+                    "fields": {
+                      "firstName": "Jane",
+                      "lastName": "Smith",
+                      "jobTitle": "Product Manager"
+                    },
+                    "ownerId": "usr_gmHgNGRcGPSTJrDbT",
+                    "statusId": "cst_tZsmxPtbEKWXQS5e8",
+                    "source": "api",
+                    "createdAt": "2025-10-28T00:40:37.917Z",
+                    "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                    "unsubscribed": false,
+                    "created": true,
+                    "companyLinked": true,
+                    "companyId": "cpn_8H6uDPbNcNfZjkcSP"
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Existing contact updated (upsert matched by email or LinkedIn URL)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Same shape as the 201 response, with `created: false` and `updated: true`."
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "_id": "ctc_Rofmb6uNGyaPNZ2ni",
+                    "teamId": "tea_b4rMsi2trB42WyuWP",
+                    "emails": [
+                      {
+                        "value": "jane.smith@example.com"
+                      }
+                    ],
+                    "fields": {
+                      "firstName": "Jane",
+                      "lastName": "Smith",
+                      "jobTitle": "Product Manager"
+                    },
+                    "ownerId": "usr_gmHgNGRcGPSTJrDbT",
+                    "source": "api",
+                    "createdAt": "2025-10-28T00:40:37.917Z",
+                    "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                    "unsubscribed": false,
+                    "created": false,
+                    "updated": true,
+                    "companyLinked": false
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Error code: `MISSING_IDENTIFIER`, `INVALID_EMAIL`, `INVALID_ADDITIONAL_EMAILS`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, or `CONTACT_VALIDATION_FAILED`."
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "MISSING_IDENTIFIER",
+                    "message": "At least one identifier is required: email or linkedinUrl"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          }
+        },
+        "parameters": []
       }
     },
     "/contacts/{idOrEmail}": {
@@ -11105,6 +11456,291 @@
             "description": "Method not allowed"
           }
         }
+      },
+      "post": {
+        "summary": "Upsert Company",
+        "description": "Creates a new company or updates an existing one (upsert). If a company with the same domain or LinkedIn URL already exists, it will be updated with the provided non-empty fields. Null or empty values are ignored during updates to preserve existing data.",
+        "tags": ["Companies"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Company name."
+                  },
+                  "domain": {
+                    "type": "string",
+                    "description": "Company website domain (e.g. `lemlist.com`). Used as a unique key for upsert matching."
+                  },
+                  "linkedinUrl": {
+                    "type": "string",
+                    "description": "LinkedIn company page URL. Used as an alternative unique key for upsert matching."
+                  },
+                  "picture": {
+                    "type": "string",
+                    "description": "URL of the company logo or picture."
+                  },
+                  "industry": {
+                    "type": "string",
+                    "description": "Industry sector of the company."
+                  },
+                  "location": {
+                    "type": "string",
+                    "description": "Geographic location of the company."
+                  },
+                  "size": {
+                    "type": "string",
+                    "description": "Company size."
+                  },
+                  "specialties": {
+                    "type": "string",
+                    "description": "Company specialties."
+                  },
+                  "tagline": {
+                    "type": "string",
+                    "description": "Company tagline."
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "Company type."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Company description."
+                  },
+                  "foundedOn": {
+                    "type": "string",
+                    "description": "Company founding date."
+                  },
+                  "headquarters": {
+                    "type": "string",
+                    "description": "Company headquarters location."
+                  },
+                  "linkedinUrlSalesNav": {
+                    "type": "string",
+                    "description": "LinkedIn Sales Navigator company URL."
+                  },
+                  "companyOwner": {
+                    "type": "string",
+                    "description": "Owner of the company. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the owner is silently ignored and the company is created/updated without an owner assignment."
+                  },
+                  "statusId": {
+                    "type": "string",
+                    "description": "CRM status ID to assign to the company."
+                  },
+                  "source": {
+                    "type": "string",
+                    "description": "Origin of the company record. Defaults to `api` if not specified.",
+                    "default": "api"
+                  }
+                },
+                "required": ["name", "domain"],
+                "additionalProperties": {
+                  "description": "Any additional key is treated as a custom field. Custom fields must be registered in the team's CRM field registry beforehand."
+                }
+              },
+              "example": {
+                "name": "Acme Corp",
+                "domain": "acme.com",
+                "linkedinUrl": "https://linkedin.com/company/acme",
+                "industry": "Technology",
+                "location": "San Francisco, CA"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Company created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string",
+                          "description": "Unique company identifier"
+                        },
+                        "teamId": {
+                          "type": "string",
+                          "description": "Team ID"
+                        },
+                        "domain": {
+                          "type": "string",
+                          "description": "Company domain"
+                        },
+                        "linkedinUrl": {
+                          "type": "string",
+                          "description": "LinkedIn URL"
+                        },
+                        "fields": {
+                          "type": "object",
+                          "description": "Key/value fields (name, picture, industry, location, custom fields, etc.)",
+                          "additionalProperties": true
+                        },
+                        "ownerId": {
+                          "type": "string",
+                          "description": "Owner user ID"
+                        },
+                        "statusId": {
+                          "type": "string",
+                          "description": "CRM status ID"
+                        },
+                        "source": {
+                          "type": "string",
+                          "description": "Record origin"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Creation timestamp"
+                        },
+                        "createdBy": {
+                          "type": "string",
+                          "description": "User ID who created the record"
+                        },
+                        "created": {
+                          "type": "boolean",
+                          "description": "`true` when a new company was created, `false` when an existing company was updated."
+                        },
+                        "updated": {
+                          "type": "boolean",
+                          "description": "Present and set to `true` only when an existing company was updated (i.e. `created` is `false`)."
+                        }
+                      }
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "Optional warnings (e.g. owner resolution issues).",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "_id": "cpn_8H6uDPbNcNfZjkcSP",
+                    "teamId": "tea_b4rMsi2trB42WyuWP",
+                    "domain": "acme.com",
+                    "linkedinUrl": "https://www.linkedin.com/company/acme",
+                    "fields": {
+                      "name": "Acme Corp",
+                      "industry": "Technology",
+                      "location": "San Francisco, CA"
+                    },
+                    "ownerId": "usr_gmHgNGRcGPSTJrDbT",
+                    "statusId": "cst_S5YNtY72mxoBmTRwz",
+                    "source": "api",
+                    "createdAt": "2025-10-28T00:40:37.917Z",
+                    "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                    "created": true
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Existing company updated (upsert matched by domain or LinkedIn URL)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Same shape as the 201 response, with `created: false` and `updated: true`."
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "_id": "cpn_8H6uDPbNcNfZjkcSP",
+                    "teamId": "tea_b4rMsi2trB42WyuWP",
+                    "domain": "acme.com",
+                    "fields": {
+                      "name": "Acme Corp",
+                      "industry": "Technology",
+                      "location": "San Francisco, CA"
+                    },
+                    "ownerId": "usr_gmHgNGRcGPSTJrDbT",
+                    "source": "api",
+                    "createdAt": "2025-10-28T00:40:37.917Z",
+                    "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                    "created": false,
+                    "updated": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Error code: `MISSING_REQUIRED_FIELD`, `INVALID_DOMAIN`, `INVALID_LINKEDIN_URL`, or `INVALID_FIELD`."
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "MISSING_REQUIRED_FIELD",
+                    "message": "Missing required field: name"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          }
+        },
+        "parameters": []
       }
     },
     "/companies/{companyId}/notes": {

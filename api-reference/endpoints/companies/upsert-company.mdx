@@ -1,0 +1,35 @@
+---
+openapi: post /companies
+description: Creates a new company or updates an existing one based on domain or LinkedIn URL.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+Creates a new company in your CRM, or updates an existing one if a company with the same `domain` or `linkedinUrl` already exists (upsert).
+
+During updates, only non-empty fields are applied — null or empty values are ignored to preserve existing data.
+
+## Upsert matching
+
+Both `name` and `domain` are required. The endpoint matches existing companies by:
+
+| Identifier | Description |
+|------------|-------------|
+| `domain` | Company website domain (e.g. `lemlist.com`) — primary unique key |
+| `linkedinUrl` | LinkedIn company page URL — alternative unique key |
+
+If a company with the same `domain` or `linkedinUrl` already exists, the endpoint updates it instead of creating a duplicate.
+
+## Owner assignment
+
+You can assign an owner to the company using the `companyOwner` field. Accepted formats:
+
+| Format | Example |
+|--------|---------|
+| User ID | `usr_2aB3cD4eF5gH6iJ7k` |
+| Team member email | `john@yourcompany.com` |
+
+<Note>
+If the provided value does not match a team member (invalid format, unknown email, or unknown user ID), the owner is **silently ignored** — no error or warning is returned. On creation, the company defaults to the API key owner.
+</Note>
+
+<SnippetObjectReference objectName="Company" objectPath="company" />
