@@ -3,7 +3,7 @@
   "info": {
     "title": "lemlist API",
     "version": "1.0.0",
-    "description": "Welcome to the lemlist Developer Documentation.\n\nlemlist is very customizable and open. You'll find on this page all the API and integration you can do with lemlist.\n\n# Rate Limit\n\nlemlist's API rate limits requests in order to prevent abuse and overload of our services.  \nRate limits are applied on all routes and per API key performing the request.  \nThe rate limits are **20** requests per **2** seconds.  \nThe response provides any information you may need about it:\n\n| Header | Description |\n| --- | --- |\n| Retry-After | The number of seconds in which you can retry |\n| X-RateLimit-Limit | The maximum requests in that time |\n| X-RateLimit-Remaining | The number of remaining requests you can make |\n| X-RateLimit-Reset | The date when the rate limit will reset |\n\n_Example of values for the rate limit headers_\n\n``` json\n{\n    \"Retry-After\": 2,\n    \"X-RateLimit-Limit\": 20,\n    \"X-RateLimit-Remaining\": 7,\n    \"X-RateLimit-Reset\" : \"Tue Feb 16 2021 09:02:42 GMT+0100 (Central European Standard Time)\"\n}\n\n ```\n\n# Definitions\n\n## Team\n\nA team is the entity of lemlist that can handle users and billing.\n\n## Credits\n\nCredits are the coins a team uses to enrich emails, LinkedIn URLs, etc. via the enrich route. Each enrichment feature needs a certain amount of credits to run.\n\n## User\n\nYou use a user account to connect to lemlist and send messages via the connected emails or LinkedIn account.\n\n## Campaign\n\nA campaign is the entity to automate outreach. A campaign has multiple sequences composed of steps.\n\n## Lead\n\nA lead is a person that you try to contact via a campaign.\n\n## Activity\n\nAn activity is the history of all the steps.\n\n## Unsubscribe\n\nAn unsubscribe occurs when a person decides they don't want to receive emails from you anymore.\n\n# Authentication\n\nAll API routes use the dedicated subdomain `api.lemlist.com`.\n\nlemlist uses API keys to allow access to the API. You can get your lemlist API key at our [integration page](https://app.lemlist.com/settings/integrations).\n\nYou need to add the `Authorization` header using the `Basic` authentication type. `login:password` **where the login is always empty and the password is the API key**.\n\n\u26a0\ufe0f **Don't forget to add the semicolon (**`:`**) before your API key in curl command.**\n\n> To authorize, use this code: \n  \n\n``` shell\ncurl https://api.lemlist.com/api/team \\\n  --user \":YourApiKey\"\n\n ```\n\n**Make sure to replace** **`YourApiKey`** **with your API key.**\n\n# Give feedback\n\nIf you want to report a bug, ask for data, or share with us a use case, please fill this [form](https://lemlist.typeform.com/to/mfVlkyGf). It will help us centralize your needs!"
+    "description": "Welcome to the lemlist Developer Documentation.\n\nlemlist is very customizable and open. You'll find on this page all the API and integration you can do with lemlist.\n\n# Rate Limit\n\nlemlist's API rate limits requests in order to prevent abuse and overload of our services.  \nRate limits are applied on all routes and per API key performing the request.  \nThe rate limits are **20** requests per **2** seconds.  \nThe response provides any information you may need about it:\n\n| Header | Description |\n| --- | --- |\n| Retry-After | The number of seconds in which you can retry |\n| X-RateLimit-Limit | The maximum requests in that time |\n| X-RateLimit-Remaining | The number of remaining requests you can make |\n| X-RateLimit-Reset | The date when the rate limit will reset |\n\n_Example of values for the rate limit headers_\n\n``` json\n{\n    \"Retry-After\": 2,\n    \"X-RateLimit-Limit\": 20,\n    \"X-RateLimit-Remaining\": 7,\n    \"X-RateLimit-Reset\" : \"Tue Feb 16 2021 09:02:42 GMT+0100 (Central European Standard Time)\"\n}\n\n ```\n\n# Definitions\n\n## Team\n\nA team is the entity of lemlist that can handle users and billing.\n\n## Credits\n\nCredits are the coins a team uses to enrich emails, LinkedIn URLs, etc. via the enrich route. Each enrichment feature needs a certain amount of credits to run.\n\n## User\n\nYou use a user account to connect to lemlist and send messages via the connected emails or LinkedIn account.\n\n## Campaign\n\nA campaign is the entity to automate outreach. A campaign has multiple sequences composed of steps.\n\n## Lead\n\nA lead is a person that you try to contact via a campaign.\n\n## Activity\n\nAn activity is the history of all the steps.\n\n## Unsubscribe\n\nAn unsubscribe occurs when a person decides they don't want to receive emails from you anymore.\n\n# Authentication\n\nAll API routes use the dedicated subdomain `api.lemlist.com`.\n\nlemlist uses API keys to allow access to the API. You can get your lemlist API key at our [integration page](https://app.lemlist.com/settings/integrations).\n\nYou need to add the `Authorization` header using the `Basic` authentication type. `login:password` **where the login is always empty and the password is the API key**.\n\n⚠️ **Don't forget to add the semicolon (**`:`**) before your API key in curl command.**\n\n> To authorize, use this code: \n  \n\n``` shell\ncurl https://api.lemlist.com/api/team \\\n  --user \":YourApiKey\"\n\n ```\n\n**Make sure to replace** **`YourApiKey`** **with your API key.**\n\n# Give feedback\n\nIf you want to report a bug, ask for data, or share with us a use case, please fill this [form](https://lemlist.typeform.com/to/mfVlkyGf). It will help us centralize your needs!"
   },
   "servers": [
     {
@@ -458,7 +458,13 @@
           "source": {
             "type": "string",
             "description": "Origin of the unsubscription",
-            "enum": ["api", "bounced", "lead", "user", "abuse"]
+            "enum": [
+              "api",
+              "bounced",
+              "lead",
+              "user",
+              "abuse"
+            ]
           },
           "createdAt": {
             "type": "string",
@@ -3011,6 +3017,48 @@
                     "stopOnLinkClickedFilter": {
                       "type": "string",
                       "description": "Filter for which link clicks should stop the campaign"
+                    },
+                    "sendUsers": {
+                      "type": "array",
+                      "description": "Configured senders for the campaign. Only present when sendUserIds was provided in the request. Senders that lack capabilities for any campaign sending channel are excluded.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "User ID of the sender"
+                          },
+                          "mailboxes": {
+                            "type": "array",
+                            "description": "Connected email mailboxes",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "sendUserMailboxId": {
+                                  "type": "string"
+                                },
+                                "email": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          },
+                          "phoneNumbers": {
+                            "type": "array",
+                            "description": "Connected phone numbers",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "whatsappAccountIds": {
+                            "type": "array",
+                            "description": "Connected WhatsApp account IDs",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 },
@@ -3025,10 +3073,34 @@
             }
           },
           "400": {
-            "description": "Bad team",
+            "description": "Bad request",
             "content": {
               "text/plain": {
-                "example": "Bad team"
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "badTeam": {
+                    "summary": "Bad team",
+                    "value": "Bad team"
+                  },
+                  "dynamicStrategy": {
+                    "summary": "Cannot update senders for dynamic strategy campaigns",
+                    "value": "Cannot update senders on campaigns with a dynamic sender strategy (contactOwner, leadImporter, customField)"
+                  },
+                  "noValidSenders": {
+                    "summary": "No valid sender IDs",
+                    "value": "None of the provided sender IDs are members of this team"
+                  },
+                  "noCapableSenders": {
+                    "summary": "No senders with required capabilities",
+                    "value": "None of the provided senders have the required capabilities for this campaign"
+                  },
+                  "missingChannels": {
+                    "summary": "Campaign channels not covered",
+                    "value": "The provided senders do not cover the following campaign channels: linkedin, sms"
+                  }
+                }
               }
             }
           },
@@ -3097,6 +3169,13 @@
                   "stopOnLinkClickedFilter": {
                     "type": "string",
                     "description": "Filter for which link clicks should stop the campaign"
+                  },
+                  "sendUserIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array of user IDs (usr_xxx format) to assign as campaign senders. Cannot be used on campaigns with a dynamic sender strategy (contactOwner, leadImporter, customField). Each sender is validated against the campaign's sending channels (email, LinkedIn, SMS, WhatsApp): senders without capabilities for at least one channel are excluded, and all channels must be covered by at least one sender."
                   }
                 }
               },
@@ -4176,7 +4255,7 @@
                         "index": 1,
                         "sequenceId": "seq_JiYPY37b43uJg2hfA",
                         "sequenceStep": 0,
-                        "message": "Hey {{firstName}}, \n\nwe're launching an event, a place where people can regularly meet, network, and learn from each other. We would love it if you could join us for a drink & chat next week. What do you say? \ud83d\ude0a"
+                        "message": "Hey {{firstName}}, \n\nwe're launching an event, a place where people can regularly meet, network, and learn from each other. We would love it if you could join us for a drink & chat next week. What do you say? 😊"
                       },
                       {
                         "_id": "stp_L6fcwoMWJcRMzi7Rp",
@@ -4186,7 +4265,7 @@
                         "sequenceId": "seq_JiYPY37b43uJg2hfA",
                         "sequenceStep": 1,
                         "subject": "{{firstName}}, do we count on you for the event?",
-                        "message": "<p style=\"margin: 0px; box-sizing: border-box;\">Hey {{firstName}},<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">Do you have any plans for Thursday, 7pm?<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">What about spending the evening with cool people by our office?<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">We're launching an event, a place where people can regularly meet, network, and build connections that help them grow further \ud83d\ude0a<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">It would be really nice if we could count on you for the event-&nbsp;<a target=\"_blank\" style=\"color: rgb(0, 123, 255); text-decoration: none; background-color: transparent; user-select: auto; box-sizing: border-box;\" rel=\"noopener noreferrer\" href=\"{{event_link_to_send}}\">here's your invite</a>&nbsp;\ud83d\udd25</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">Can you make it?<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">Sarah,</p><p style=\"margin: 0px; box-sizing: border-box;\">Head of Marketing</p>",
+                        "message": "<p style=\"margin: 0px; box-sizing: border-box;\">Hey {{firstName}},<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">Do you have any plans for Thursday, 7pm?<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">What about spending the evening with cool people by our office?<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">We're launching an event, a place where people can regularly meet, network, and build connections that help them grow further 😊<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">It would be really nice if we could count on you for the event-&nbsp;<a target=\"_blank\" style=\"color: rgb(0, 123, 255); text-decoration: none; background-color: transparent; user-select: auto; box-sizing: border-box;\" rel=\"noopener noreferrer\" href=\"{{event_link_to_send}}\">here's your invite</a>&nbsp;🔥</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">Can you make it?<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">Sarah,</p><p style=\"margin: 0px; box-sizing: border-box;\">Head of Marketing</p>",
                         "type": "email"
                       },
                       {
@@ -4341,7 +4420,7 @@
                   },
                   "index": {
                     "type": "integer",
-                    "description": "The position within the sequence to insert the new step (\u2265 -1). If omitted or greater than the number of steps, the new step is added to the end"
+                    "description": "The position within the sequence to insert the new step (≥ -1). If omitted or greater than the number of steps, the new step is added to the end"
                   },
                   "delay": {
                     "type": "integer",
@@ -7857,14 +7936,14 @@
                           "title_normalized": "Account Executive",
                           "date_from": "September 2025",
                           "duration": "1 month",
-                          "location": "Ville de Paris, \u00cele-de-France, France",
+                          "location": "Ville de Paris, Île-de-France, France",
                           "current_exp_bucket": "Less than 6 months"
                         }
                       ],
                       "interests": [],
                       "languages": [
                         {
-                          "language": "Fran\u00e7ais",
+                          "language": "Français",
                           "proficiency": "Native or bilingual proficiency"
                         },
                         {
@@ -9355,7 +9434,7 @@
                       "sendUserMailboxId": "usm_bn6KxhSrHZEak2NM6",
                       "leadEmail": "victoire@lemlist.co",
                       "contactId": "ctc_wfKeM8EmiTikud7QE",
-                      "message": "<html><div style=\"min-width: 360px\"></div><div dir=\"ltr\">\n    <div>Hello lemlist Team! \ud83d\ude0e<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">I joined lemlist last Monday, and I am humbly offering you the chance to meet me (and probably my cat, Megatron \ud83d\ude3d\ud83e\udd16) through a 15-minute call at your convenience! You can book it <span style=\"cursor: pointer; background: var(--tertiary2-color-100); color: var(--alert); box-sizing: border-box;\" data-error=\"true\">[here]</span>(https://app.lemcal.com/@camille-ingouf/reunion-de-15-minute?leadId=lea_jcw2hneu7qs7iYKBr).<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">See you soon!<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">Camille INGOUF</div>\n    <div class=\"gmail_extra\">\n      <div class=\"gmail_signature\" data-smartmail=\"gmail_signature\"><div dir=\"ltr\"><div><div dir=\"ltr\"></div></div></div></div>\n      \n    </div>\n    </div>\n<span summary=\"/api/reply/data-ll-tsk_ke6Bo8Az5E68mzhbS\"></span>\n<img alt=\"logo\" src=\"https://zr0.lemlst.org/api/track/open/usr_7RCLS4LdYP2oc8jmE/tsk_ke6Bo8Az5E68mzhbS\" height=\"1\" width=\"1\"></html>",
+                      "message": "<html><div style=\"min-width: 360px\"></div><div dir=\"ltr\">\n    <div>Hello lemlist Team! 😎<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">I joined lemlist last Monday, and I am humbly offering you the chance to meet me (and probably my cat, Megatron 😽🤖) through a 15-minute call at your convenience! You can book it <span style=\"cursor: pointer; background: var(--tertiary2-color-100); color: var(--alert); box-sizing: border-box;\" data-error=\"true\">[here]</span>(https://app.lemcal.com/@camille-ingouf/reunion-de-15-minute?leadId=lea_jcw2hneu7qs7iYKBr).<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">See you soon!<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">Camille INGOUF</div>\n    <div class=\"gmail_extra\">\n      <div class=\"gmail_signature\" data-smartmail=\"gmail_signature\"><div dir=\"ltr\"><div><div dir=\"ltr\"></div></div></div></div>\n      \n    </div>\n    </div>\n<span summary=\"/api/reply/data-ll-tsk_ke6Bo8Az5E68mzhbS\"></span>\n<img alt=\"logo\" src=\"https://zr0.lemlst.org/api/track/open/usr_7RCLS4LdYP2oc8jmE/tsk_ke6Bo8Az5E68mzhbS\" height=\"1\" width=\"1\"></html>",
                       "subject": "Meet me !",
                       "attachments": []
                     },
@@ -9376,7 +9455,7 @@
                       "sendUserMailboxId": "usm_zs86Mc8ZbHXfkLBAC",
                       "leadEmail": "victoire@lemlist.co",
                       "contactId": "ctc_wfKeM8EmiTikud7QE",
-                      "message": "<div dir=\"ltr\">Haha Welcome Christophe, j&#39;adore cette campagne ! <br><br>A tr\u00e8s vite, <div>Victoire </div></div><br><div class=\"gmail_quote gmail_quote_container\"><div dir=\"ltr\" class=\"gmail_attr\">On Tue, Dec 3, 2024 at 10:52 AM Christophe OPOIX &lt;<a href=\"mailto:christophe.o@lemtest.com\">christophe.o@lemtest.com</a>&gt; wrote:<br></div><blockquote class=\"gmail_quote\" style=\"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex\"><div style=\"min-width:360px\"></div><div dir=\"ltr\">\n    <div><p style=\"margin:0px;box-sizing:border-box\">Hey Victoire  , </p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">I hope this email finds you well!</p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">Have you ever heard about Christophe Opoix? <br> <br>\ud83c\uddeb\ud83c\uddf7 He was a member of the French Parliament during the French Revolution, <br>\ud83c\udfd8\ufe0f He has a street named after him<br><strong style=\"font-weight:700;box-sizing:border-box\">\ud83d\udcd9 </strong>He authored the famous &quot;Beurre frais \u00e9pur\u00e9, et conservant longtemps ses bonnes qualit\u00e9s, sans devenir rance&quot;.<br style=\"box-sizing:border-box\"><br style=\"box-sizing:border-box\"><img width=\"134\" style=\"width: 134px; display: block; vertical-align: top; margin: 5px auto; text-align: center; border-style: none; padding: 0px 1px; box-sizing: border-box;\" src=\"https://zr0.lemlst.org/api/files/Files/fil_gGjMMAcLNwc7q654u.png\"></p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">Unfortunately, this brilliant man died ages ago...</p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">But wait, there&#39;s another Christophe Opoix you might be interested in meeting\u2014one who is very much alive and well! Yes, that&#39;s me. I&#39;ve just joined Lemlist, and I&#39;m looking forward to meeting everyone for a quick chat.</p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">\u2611\ufe0f Book an appointment on \ud83d\udcc5 <a style=\"color:rgb(51,138,241);text-decoration:none;background-color:transparent;box-sizing:border-box;font-weight:500\" href=\"https://app.lemcal.com/@christophe-opoix/15-min-chat?leadId=lea_WoeA2FAw8jemE2Mex\" target=\"_blank\">my lemcal</a> !</p><p style=\"margin:0px;box-sizing:border-box\"><br></p><p style=\"margin:0px;box-sizing:border-box\">Feel free to reach out and get to know me better. I'm excited to be part of the team and eager to contribute to our collective success.</p><p style=\"margin:0px;box-sizing:border-box\">Looking forward to seeing you all soon!<br style=\"box-sizing:border-box\"><br style=\"box-sizing:border-box\">Best regards, as your contemporary, Christophe Opoix</p></div>\n    <div class=\"gmail_extra\">\n      <div class=\"gmail_signature\"><div dir=\"ltr\"><div><div dir=\"ltr\"></div></div></div></div>\n      \n    </div>\n    </div>\n<span summary=\"/api/reply/data-ll-tsk_FvpBdB4NwuyG7GGTf\"></span>\n<img alt=\"logo\" src=\"https://zr0.lemlst.org/api/track/open/usr_t2KCwPen66NrrqGtQ/tsk_FvpBdB4NwuyG7GGTf\" height=\"1\" width=\"1\">\n</blockquote></div>\n",
+                      "message": "<div dir=\"ltr\">Haha Welcome Christophe, j&#39;adore cette campagne ! <br><br>A très vite, <div>Victoire </div></div><br><div class=\"gmail_quote gmail_quote_container\"><div dir=\"ltr\" class=\"gmail_attr\">On Tue, Dec 3, 2024 at 10:52 AM Christophe OPOIX &lt;<a href=\"mailto:christophe.o@lemtest.com\">christophe.o@lemtest.com</a>&gt; wrote:<br></div><blockquote class=\"gmail_quote\" style=\"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex\"><div style=\"min-width:360px\"></div><div dir=\"ltr\">\n    <div><p style=\"margin:0px;box-sizing:border-box\">Hey Victoire  , </p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">I hope this email finds you well!</p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">Have you ever heard about Christophe Opoix? <br> <br>🇫🇷 He was a member of the French Parliament during the French Revolution, <br>🏘️ He has a street named after him<br><strong style=\"font-weight:700;box-sizing:border-box\">📙 </strong>He authored the famous &quot;Beurre frais épuré, et conservant longtemps ses bonnes qualités, sans devenir rance&quot;.<br style=\"box-sizing:border-box\"><br style=\"box-sizing:border-box\"><img width=\"134\" style=\"width: 134px; display: block; vertical-align: top; margin: 5px auto; text-align: center; border-style: none; padding: 0px 1px; box-sizing: border-box;\" src=\"https://zr0.lemlst.org/api/files/Files/fil_gGjMMAcLNwc7q654u.png\"></p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">Unfortunately, this brilliant man died ages ago...</p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">But wait, there&#39;s another Christophe Opoix you might be interested in meeting—one who is very much alive and well! Yes, that&#39;s me. I&#39;ve just joined Lemlist, and I&#39;m looking forward to meeting everyone for a quick chat.</p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">☑️ Book an appointment on 📅 <a style=\"color:rgb(51,138,241);text-decoration:none;background-color:transparent;box-sizing:border-box;font-weight:500\" href=\"https://app.lemcal.com/@christophe-opoix/15-min-chat?leadId=lea_WoeA2FAw8jemE2Mex\" target=\"_blank\">my lemcal</a> !</p><p style=\"margin:0px;box-sizing:border-box\"><br></p><p style=\"margin:0px;box-sizing:border-box\">Feel free to reach out and get to know me better. I'm excited to be part of the team and eager to contribute to our collective success.</p><p style=\"margin:0px;box-sizing:border-box\">Looking forward to seeing you all soon!<br style=\"box-sizing:border-box\"><br style=\"box-sizing:border-box\">Best regards, as your contemporary, Christophe Opoix</p></div>\n    <div class=\"gmail_extra\">\n      <div class=\"gmail_signature\"><div dir=\"ltr\"><div><div dir=\"ltr\"></div></div></div></div>\n      \n    </div>\n    </div>\n<span summary=\"/api/reply/data-ll-tsk_FvpBdB4NwuyG7GGTf\"></span>\n<img alt=\"logo\" src=\"https://zr0.lemlst.org/api/track/open/usr_t2KCwPen66NrrqGtQ/tsk_FvpBdB4NwuyG7GGTf\" height=\"1\" width=\"1\">\n</blockquote></div>\n",
                       "subject": "Re: Have you heard about Christophe Opoix ?",
                       "attachments": []
                     },
@@ -9396,7 +9475,7 @@
                       "sendUserMailboxId": "usm_zs86Mc8ZbHXfkLBAC",
                       "leadEmail": "victoire@lemlist.co",
                       "contactId": "ctc_wfKeM8EmiTikud7QE",
-                      "message": "<html><div style=\"min-width: 360px\"></div><div dir=\"ltr\">\n    <div><p style=\"margin: 0px; box-sizing: border-box;\">Hey Victoire  ,&nbsp;</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">I hope this email finds you well!</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">Have you ever heard about Christophe Opoix? <br> <br>\ud83c\uddeb\ud83c\uddf7 He was a member of the French Parliament during the French Revolution, <br>\ud83c\udfd8\ufe0f He has a street named after him<br><strong style=\"font-weight: 700; box-sizing: border-box;\">\ud83d\udcd9&nbsp;</strong>He authored the famous \"Beurre frais \u00e9pur\u00e9, et conservant longtemps ses bonnes qualit\u00e9s, sans devenir rance\".<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"><img  width=\"134\" style=\"width: 134px; display: block; vertical-align: top; margin: 5px auto; text-align: center; border-style: none; cursor: pointer; padding: 0px 1px; box-sizing: border-box;\" src=\"https://zr0.lemlst.org/api/files/Files/fil_gGjMMAcLNwc7q654u.png\"></p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">Unfortunately, this brilliant man died ages ago...</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">But wait, there's another Christophe Opoix you might be interested in meeting\u2014one who is very much alive and well! Yes, that's me. I've just joined Lemlist, and I'm looking forward to meeting everyone for a quick chat.</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">\u2611\ufe0f Book an appointment on \ud83d\udcc5 <a style=\"color: rgb(51, 138, 241); text-decoration: none; background-color: transparent; user-select: auto; box-sizing: border-box; font-weight: 500;\" href=\"https://app.lemcal.com/@christophe-opoix/15-min-chat?leadId=lea_WoeA2FAw8jemE2Mex\">my lemcal</a> !</p><p style=\"margin: 0px; box-sizing: border-box;\"><br></p><p style=\"margin: 0px; box-sizing: border-box;\">Feel free to reach out and get to know me better. I'm excited to be part of the team and eager to contribute to our collective success.</p><p style=\"margin: 0px; box-sizing: border-box;\">Looking forward to seeing you all soon!<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">Best regards, as your contemporary, Christophe Opoix</p></div>\n    <div class=\"gmail_extra\">\n      <div class=\"gmail_signature\" data-smartmail=\"gmail_signature\"><div dir=\"ltr\"><div><div dir=\"ltr\"></div></div></div></div>\n      \n    </div>\n    </div>\n<span summary=\"/api/reply/data-ll-tsk_FvpBdB4NwuyG7GGTf\"></span>\n<img alt=\"logo\" src=\"https://zr0.lemlst.org/api/track/open/usr_t2KCwPen66NrrqGtQ/tsk_FvpBdB4NwuyG7GGTf\" height=\"1\" width=\"1\"></html>",
+                      "message": "<html><div style=\"min-width: 360px\"></div><div dir=\"ltr\">\n    <div><p style=\"margin: 0px; box-sizing: border-box;\">Hey Victoire  ,&nbsp;</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">I hope this email finds you well!</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">Have you ever heard about Christophe Opoix? <br> <br>🇫🇷 He was a member of the French Parliament during the French Revolution, <br>🏘️ He has a street named after him<br><strong style=\"font-weight: 700; box-sizing: border-box;\">📙&nbsp;</strong>He authored the famous \"Beurre frais épuré, et conservant longtemps ses bonnes qualités, sans devenir rance\".<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"><img  width=\"134\" style=\"width: 134px; display: block; vertical-align: top; margin: 5px auto; text-align: center; border-style: none; cursor: pointer; padding: 0px 1px; box-sizing: border-box;\" src=\"https://zr0.lemlst.org/api/files/Files/fil_gGjMMAcLNwc7q654u.png\"></p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">Unfortunately, this brilliant man died ages ago...</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">But wait, there's another Christophe Opoix you might be interested in meeting—one who is very much alive and well! Yes, that's me. I've just joined Lemlist, and I'm looking forward to meeting everyone for a quick chat.</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">☑️ Book an appointment on 📅 <a style=\"color: rgb(51, 138, 241); text-decoration: none; background-color: transparent; user-select: auto; box-sizing: border-box; font-weight: 500;\" href=\"https://app.lemcal.com/@christophe-opoix/15-min-chat?leadId=lea_WoeA2FAw8jemE2Mex\">my lemcal</a> !</p><p style=\"margin: 0px; box-sizing: border-box;\"><br></p><p style=\"margin: 0px; box-sizing: border-box;\">Feel free to reach out and get to know me better. I'm excited to be part of the team and eager to contribute to our collective success.</p><p style=\"margin: 0px; box-sizing: border-box;\">Looking forward to seeing you all soon!<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">Best regards, as your contemporary, Christophe Opoix</p></div>\n    <div class=\"gmail_extra\">\n      <div class=\"gmail_signature\" data-smartmail=\"gmail_signature\"><div dir=\"ltr\"><div><div dir=\"ltr\"></div></div></div></div>\n      \n    </div>\n    </div>\n<span summary=\"/api/reply/data-ll-tsk_FvpBdB4NwuyG7GGTf\"></span>\n<img alt=\"logo\" src=\"https://zr0.lemlst.org/api/track/open/usr_t2KCwPen66NrrqGtQ/tsk_FvpBdB4NwuyG7GGTf\" height=\"1\" width=\"1\"></html>",
                       "subject": "Have you heard about Christophe Opoix  ?",
                       "attachments": []
                     }
@@ -12328,7 +12407,9 @@
       "get": {
         "summary": "List Unsubscribed Variables",
         "description": "Retrieves a paginated list of all unsubscribed variables (emails, domains, LinkedIn URLs, phone numbers).",
-        "tags": ["Unsubscribes"],
+        "tags": [
+          "Unsubscribes"
+        ],
         "parameters": [
           {
             "name": "offset",
@@ -12336,7 +12417,10 @@
             "required": false,
             "description": "Number of entries to skip for pagination",
             "example": "0",
-            "schema": { "type": "integer", "default": 0 }
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
           },
           {
             "name": "limit",
@@ -12344,7 +12428,11 @@
             "required": false,
             "description": "Number of entries to return (max 100)",
             "example": "50",
-            "schema": { "type": "integer", "default": 100, "maximum": 100 }
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "maximum": 100
+            }
           }
         ],
         "responses": {
@@ -12371,26 +12459,38 @@
           },
           "400": {
             "description": "Bad team",
-            "content": { "text/plain": { "example": "Bad team" } }
+            "content": {
+              "text/plain": {
+                "example": "Bad team"
+              }
+            }
           },
-          "401": { "description": "Unauthorized" }
+          "401": {
+            "description": "Unauthorized"
+          }
         }
       },
       "post": {
         "summary": "Bulk Unsubscribe Variables",
         "description": "Unsubscribes up to 10,000 variables in a single request.",
-        "tags": ["Unsubscribes"],
+        "tags": [
+          "Unsubscribes"
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["values"],
+                "required": [
+                  "values"
+                ],
                 "properties": {
                   "values": {
                     "type": "array",
-                    "items": { "type": "string" },
+                    "items": {
+                      "type": "string"
+                    },
                     "description": "List of variables to unsubscribe (emails, domains, LinkedIn URLs, or phone numbers). Maximum 10,000 values.",
                     "maxItems": 10000
                   }
@@ -12423,7 +12523,9 @@
               }
             }
           },
-          "401": { "description": "Unauthorized" }
+          "401": {
+            "description": "Unauthorized"
+          }
         }
       }
     },
@@ -12431,7 +12533,9 @@
       "get": {
         "summary": "Get Unsubscribed Variable",
         "description": "Retrieves a specific unsubscribed variable by its value.",
-        "tags": ["Unsubscribes"],
+        "tags": [
+          "Unsubscribes"
+        ],
         "parameters": [
           {
             "name": "value",
@@ -12439,7 +12543,9 @@
             "required": true,
             "description": "The variable value (email, domain, LinkedIn URL, or phone number)",
             "example": "john.doe@example.com",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -12480,19 +12586,31 @@
           },
           "400": {
             "description": "Bad request",
-            "content": { "text/plain": { "example": "No value" } }
+            "content": {
+              "text/plain": {
+                "example": "No value"
+              }
+            }
           },
-          "401": { "description": "Unauthorized" },
+          "401": {
+            "description": "Unauthorized"
+          },
           "404": {
             "description": "Variable not found",
-            "content": { "text/plain": { "example": "Variable not found" } }
+            "content": {
+              "text/plain": {
+                "example": "Variable not found"
+              }
+            }
           }
         }
       },
       "post": {
         "summary": "Unsubscribe Variable",
         "description": "Unsubscribes a single variable. This operation is idempotent — if the variable is already unsubscribed, the existing record is returned.",
-        "tags": ["Unsubscribes"],
+        "tags": [
+          "Unsubscribes"
+        ],
         "parameters": [
           {
             "name": "value",
@@ -12500,7 +12618,9 @@
             "required": true,
             "description": "The variable value to unsubscribe (email, domain, LinkedIn URL, or phone number)",
             "example": "john.doe@example.com",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -12541,9 +12661,15 @@
           },
           "400": {
             "description": "Bad request",
-            "content": { "text/plain": { "example": "No value" } }
+            "content": {
+              "text/plain": {
+                "example": "No value"
+              }
+            }
           },
-          "401": { "description": "Unauthorized" },
+          "401": {
+            "description": "Unauthorized"
+          },
           "500": {
             "description": "Server error",
             "content": {
@@ -12555,7 +12681,9 @@
       "delete": {
         "summary": "Re-subscribe Variable",
         "description": "Removes a variable from the unsubscribe list. Variables with a protected source (LEAD or ABUSE) cannot be re-subscribed.",
-        "tags": ["Unsubscribes"],
+        "tags": [
+          "Unsubscribes"
+        ],
         "parameters": [
           {
             "name": "value",
@@ -12563,7 +12691,9 @@
             "required": true,
             "description": "The variable value to re-subscribe",
             "example": "john.doe@example.com",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -12583,7 +12713,9 @@
               }
             }
           },
-          "401": { "description": "Unauthorized" },
+          "401": {
+            "description": "Unauthorized"
+          },
           "409": {
             "description": "Variable is protected (source is LEAD or ABUSE) and cannot be re-subscribed",
             "content": {
@@ -12599,7 +12731,9 @@
       "get": {
         "summary": "Get Contact Subscription Status",
         "description": "Checks whether a contact is unsubscribed (do-not-contact).",
-        "tags": ["Unsubscribes"],
+        "tags": [
+          "Unsubscribes"
+        ],
         "parameters": [
           {
             "name": "contactId",
@@ -12607,7 +12741,9 @@
             "required": true,
             "description": "The contact identifier",
             "example": "con_aB1cD2eF3gH4iJ5kL",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -12627,9 +12763,15 @@
           },
           "400": {
             "description": "Bad request",
-            "content": { "text/plain": { "example": "Bad contact identifier" } }
+            "content": {
+              "text/plain": {
+                "example": "Bad contact identifier"
+              }
+            }
           },
-          "401": { "description": "Unauthorized" },
+          "401": {
+            "description": "Unauthorized"
+          },
           "500": {
             "description": "Server error",
             "content": {
@@ -12641,7 +12783,9 @@
       "post": {
         "summary": "Unsubscribe Contact",
         "description": "Marks a contact as unsubscribed (do-not-contact).",
-        "tags": ["Unsubscribes"],
+        "tags": [
+          "Unsubscribes"
+        ],
         "parameters": [
           {
             "name": "contactId",
@@ -12649,7 +12793,9 @@
             "required": true,
             "description": "The contact identifier",
             "example": "con_aB1cD2eF3gH4iJ5kL",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -12663,9 +12809,15 @@
           },
           "400": {
             "description": "Bad request",
-            "content": { "text/plain": { "example": "Bad contact identifier" } }
+            "content": {
+              "text/plain": {
+                "example": "Bad contact identifier"
+              }
+            }
           },
-          "401": { "description": "Unauthorized" },
+          "401": {
+            "description": "Unauthorized"
+          },
           "500": {
             "description": "Server error",
             "content": {
@@ -12679,7 +12831,9 @@
       "delete": {
         "summary": "Re-subscribe Contact",
         "description": "Removes the unsubscribed (do-not-contact) flag from a contact.",
-        "tags": ["Unsubscribes"],
+        "tags": [
+          "Unsubscribes"
+        ],
         "parameters": [
           {
             "name": "contactId",
@@ -12687,7 +12841,9 @@
             "required": true,
             "description": "The contact identifier",
             "example": "con_aB1cD2eF3gH4iJ5kL",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -12701,9 +12857,15 @@
           },
           "400": {
             "description": "Bad request",
-            "content": { "text/plain": { "example": "Bad contact identifier" } }
+            "content": {
+              "text/plain": {
+                "example": "Bad contact identifier"
+              }
+            }
           },
-          "401": { "description": "Unauthorized" },
+          "401": {
+            "description": "Unauthorized"
+          },
           "500": {
             "description": "Server error",
             "content": {
@@ -12719,7 +12881,9 @@
       "get": {
         "summary": "Export Unsubscribed Variables",
         "description": "Exports all unsubscribed variables to a CSV file.",
-        "tags": ["Unsubscribes"],
+        "tags": [
+          "Unsubscribes"
+        ],
         "responses": {
           "200": {
             "description": "Success",
@@ -12731,9 +12895,15 @@
           },
           "400": {
             "description": "Bad team",
-            "content": { "text/plain": { "example": "Bad team" } }
+            "content": {
+              "text/plain": {
+                "example": "Bad team"
+              }
+            }
           },
-          "401": { "description": "Unauthorized" }
+          "401": {
+            "description": "Unauthorized"
+          }
         }
       }
     },
@@ -12741,7 +12911,9 @@
       "get": {
         "summary": "Export Unsubscribed Contacts",
         "description": "Exports all contacts with their subscription status to a CSV file.",
-        "tags": ["Unsubscribes"],
+        "tags": [
+          "Unsubscribes"
+        ],
         "responses": {
           "200": {
             "description": "Success",
@@ -12753,9 +12925,15 @@
           },
           "400": {
             "description": "Bad team",
-            "content": { "text/plain": { "example": "Bad team" } }
+            "content": {
+              "text/plain": {
+                "example": "Bad team"
+              }
+            }
           },
-          "401": { "description": "Unauthorized" }
+          "401": {
+            "description": "Unauthorized"
+          }
         }
       }
     },
@@ -14781,6 +14959,118 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/campaigns/{campaignId}/statutes": {
+      "parameters": [
+        {
+          "name": "campaignId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the campaign",
+          "example": "cam_A1B2C3D4E5F6G7H8I9",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Get Campaign Statutes",
+        "description": "Retrieves validation statutes for a campaign, including errors that block launching and warnings about daily limits, DNS issues, etc. Uses the same validation engine as the lemlist UI.",
+        "tags": [
+          "Campaigns"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "The campaign name"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "The campaign status (draft, running, paused, etc.)"
+                    },
+                    "statutes": {
+                      "type": "array",
+                      "description": "List of validation statutes for the campaign",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "issue",
+                              "information"
+                            ],
+                            "description": "Statute type: 'issue' for problems, 'information' for non-blocking info"
+                          },
+                          "level": {
+                            "type": "integer",
+                            "enum": [
+                              1,
+                              2,
+                              3
+                            ],
+                            "description": "Severity: 3 = error (blocks launch), 2 = warning (actionable), 1 = info"
+                          },
+                          "message": {
+                            "type": "string",
+                            "description": "Human-readable description of the issue (may contain HTML)"
+                          },
+                          "category": {
+                            "type": "string",
+                            "description": "Optional category (e.g. 'limit', 'steps', 'schedule')"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "name": "Product Launch Campaign",
+                  "status": "draft",
+                  "statutes": [
+                    {
+                      "type": "issue",
+                      "level": 3,
+                      "message": "No senders configured on this campaign."
+                    },
+                    {
+                      "type": "information",
+                      "level": 2,
+                      "category": "limit",
+                      "message": "John Doe daily email sending limit has been exceeded. You can increase the limit in settings or wait 2 hours"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad team",
+            "content": {
+              "text/plain": {
+                "example": "Bad team"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Campaign not found"
+          },
+          "405": {
+            "description": "Bad method"
           }
         }
       }
