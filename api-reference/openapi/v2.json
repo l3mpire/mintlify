@@ -3020,7 +3020,7 @@
                     },
                     "sendUsers": {
                       "type": "array",
-                      "description": "Configured senders for the campaign. Only present when sendUserIds was provided in the request. For campaigns with a random sender strategy, senders that lack capabilities for any campaign channel are excluded. For dynamic sender strategy, all provided senders are kept.",
+                      "description": "Configured senders for the campaign. Only present when sendUserIds was provided in the request. Senders that lack capabilities for any campaign sending channel are excluded.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -3084,16 +3084,20 @@
                     "summary": "Bad team",
                     "value": "Bad team"
                   },
+                  "dynamicStrategy": {
+                    "summary": "Cannot update senders for dynamic strategy campaigns",
+                    "value": "Cannot update senders on campaigns with a dynamic sender strategy (contactOwner, leadImporter, customField)"
+                  },
                   "noValidSenders": {
                     "summary": "No valid sender IDs",
                     "value": "None of the provided sender IDs are members of this team"
                   },
                   "noCapableSenders": {
-                    "summary": "No senders with required capabilities (random strategy only)",
+                    "summary": "No senders with required capabilities",
                     "value": "None of the provided senders have the required capabilities for this campaign"
                   },
                   "missingChannels": {
-                    "summary": "Campaign channels not covered (random strategy only)",
+                    "summary": "Campaign channels not covered",
                     "value": "The provided senders do not cover the following campaign channels: linkedin, sms"
                   }
                 }
@@ -3171,7 +3175,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Array of user IDs (usr_xxx format) to assign as campaign senders. For campaigns with a random sender strategy, each sender is validated against the campaign's sending channels (email, LinkedIn, SMS, WhatsApp): senders without capabilities for at least one channel are excluded, and all channels must be covered by at least one sender. For dynamic sender strategy, all provided senders are kept without channel validation."
+                    "description": "Array of user IDs (usr_xxx format) to assign as campaign senders. Cannot be used on campaigns with a dynamic sender strategy (contactOwner, leadImporter, customField). Each sender is validated against the campaign's sending channels (email, LinkedIn, SMS, WhatsApp): senders without capabilities for at least one channel are excluded, and all channels must be covered by at least one sender."
                   }
                 }
               },
