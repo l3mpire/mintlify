@@ -12403,7 +12403,7 @@
         }
       }
     },
-    "/unsubscribes/variables": {
+    "/v2/unsubscribes/variables": {
       "get": {
         "summary": "List Unsubscribed Variables",
         "description": "Retrieves a paginated list of all unsubscribed variables (emails, domains, LinkedIn URLs, phone numbers).",
@@ -12529,7 +12529,7 @@
         }
       }
     },
-    "/unsubscribes/variables/{value}": {
+    "/v2/unsubscribes/variables/{value}": {
       "get": {
         "summary": "Get Unsubscribed Variable",
         "description": "Retrieves a specific unsubscribed variable by its value.",
@@ -12727,7 +12727,7 @@
         }
       }
     },
-    "/unsubscribes/contacts/{contactId}": {
+    "/v2/unsubscribes/contacts/{contactId}": {
       "get": {
         "summary": "Get Contact Subscription Status",
         "description": "Checks whether a contact is unsubscribed (do-not-contact).",
@@ -12877,7 +12877,7 @@
         }
       }
     },
-    "/unsubscribes/exports/variables": {
+    "/v2/unsubscribes/exports/variables": {
       "get": {
         "summary": "Export Unsubscribed Variables",
         "description": "Exports all unsubscribed variables to a CSV file.",
@@ -12907,7 +12907,7 @@
         }
       }
     },
-    "/unsubscribes/exports/contacts": {
+    "/v2/unsubscribes/exports/contacts": {
       "get": {
         "summary": "Export Unsubscribed Contacts",
         "description": "Exports all contacts with their subscription status to a CSV file.",
