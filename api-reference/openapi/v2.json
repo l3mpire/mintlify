@@ -458,13 +458,7 @@
           "source": {
             "type": "string",
             "description": "Origin of the unsubscription",
-            "enum": [
-              "api",
-              "bounced",
-              "lead",
-              "user",
-              "abuse"
-            ]
+            "enum": ["api", "bounced", "lead", "user", "abuse"]
           },
           "createdAt": {
             "type": "string",
@@ -3014,6 +3008,14 @@
                       "type": "boolean",
                       "description": "Disable tracking of email replies"
                     },
+                    "disableOutOfOffice": {
+                      "type": "boolean",
+                      "description": "Disable out-of-office detection"
+                    },
+                    "sequenceSharing": {
+                      "type": "boolean",
+                      "description": "Enable sequence sharing for the campaign"
+                    },
                     "stopOnLinkClickedFilter": {
                       "type": "string",
                       "description": "Filter for which link clicks should stop the campaign"
@@ -3063,11 +3065,43 @@
                   }
                 },
                 "example": {
-                  "name": "NEW TO DELETE",
+                  "name": "New campaign name",
                   "stopOnEmailReplied": true,
                   "stopOnMeetingBooked": true,
-                  "stopOnLinkClicked": true,
-                  "disableTrackReply": true
+                  "stopOnLinkClicked": false,
+                  "leadsPausedByInterest": false,
+                  "opportunityReplied": true,
+                  "opportunityClicked": false,
+                  "autoLeadInterest": true,
+                  "disableTrackOpen": false,
+                  "disableTrackClick": false,
+                  "disableTrackReply": false,
+                  "disableOutOfOffice": false,
+                  "sequenceSharing": false,
+                  "sendUsers": [
+                    {
+                      "id": "usr_2aBCdEfGHiJkLmNOp",
+                      "mailboxes": [
+                        {
+                          "sendUserMailboxId": "smb_1aBcDeFgHiJkLmNoP",
+                          "email": "john@acme.com"
+                        }
+                      ],
+                      "phoneNumbers": ["+15551234567"],
+                      "whatsappAccountIds": ["wha_3xYzAbCdEfGhIjKlM"]
+                    },
+                    {
+                      "id": "usr_7xYzAbCdEfGhIjKlM",
+                      "mailboxes": [
+                        {
+                          "sendUserMailboxId": "smb_9zYxWvUtSrQpOnMlK",
+                          "email": "jane@acme.com"
+                        }
+                      ],
+                      "phoneNumbers": [],
+                      "whatsappAccountIds": []
+                    }
+                  ]
                 }
               }
             }
@@ -3166,6 +3200,14 @@
                     "type": "boolean",
                     "description": "Disable tracking of email replies"
                   },
+                  "disableOutOfOffice": {
+                    "type": "boolean",
+                    "description": "Disable out-of-office detection"
+                  },
+                  "sequenceSharing": {
+                    "type": "boolean",
+                    "description": "Enable sequence sharing for the campaign"
+                  },
                   "stopOnLinkClickedFilter": {
                     "type": "string",
                     "description": "Filter for which link clicks should stop the campaign"
@@ -3181,9 +3223,22 @@
               },
               "example": {
                 "name": "New campaign name",
-                "stopOnEmailReplied": false,
+                "stopOnEmailReplied": true,
                 "stopOnMeetingBooked": true,
-                "stopOnLinkClicked": false
+                "stopOnLinkClicked": false,
+                "leadsPausedByInterest": false,
+                "opportunityReplied": true,
+                "opportunityClicked": false,
+                "autoLeadInterest": true,
+                "disableTrackOpen": false,
+                "disableTrackClick": false,
+                "disableTrackReply": false,
+                "disableOutOfOffice": false,
+                "sequenceSharing": false,
+                "sendUserIds": [
+                  "usr_2aBCdEfGHiJkLmNOp",
+                  "usr_7xYzAbCdEfGhIjKlM"
+                ]
               }
             }
           }
@@ -10265,9 +10320,7 @@
       "post": {
         "summary": "Add and update contact",
         "description": "Creates a new contact or updates an existing one (upsert). If a contact with the same email, LinkedIn URL, or Sales Navigator URL already exists, it will be updated with the provided non-empty fields. Null or empty values are ignored during updates to preserve existing data. You can optionally link the contact to a company by providing `companyId`, `companyDomain`, or `companyLinkedinUrl`.",
-        "tags": [
-          "Contacts"
-        ],
+        "tags": ["Contacts"],
         "requestBody": {
           "required": true,
           "content": {
@@ -12407,9 +12460,7 @@
       "get": {
         "summary": "List Unsubscribed Variables",
         "description": "Retrieves a paginated list of all unsubscribed variables (emails, domains, LinkedIn URLs, phone numbers).",
-        "tags": [
-          "Unsubscribes"
-        ],
+        "tags": ["Unsubscribes"],
         "parameters": [
           {
             "name": "offset",
@@ -12473,18 +12524,14 @@
       "post": {
         "summary": "Bulk Unsubscribe Variables",
         "description": "Unsubscribes up to 10,000 variables in a single request.",
-        "tags": [
-          "Unsubscribes"
-        ],
+        "tags": ["Unsubscribes"],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "values"
-                ],
+                "required": ["values"],
                 "properties": {
                   "values": {
                     "type": "array",
@@ -12533,9 +12580,7 @@
       "get": {
         "summary": "Get Unsubscribed Variable",
         "description": "Retrieves a specific unsubscribed variable by its value.",
-        "tags": [
-          "Unsubscribes"
-        ],
+        "tags": ["Unsubscribes"],
         "parameters": [
           {
             "name": "value",
@@ -12608,9 +12653,7 @@
       "post": {
         "summary": "Unsubscribe Variable",
         "description": "Unsubscribes a single variable. This operation is idempotent — if the variable is already unsubscribed, the existing record is returned.",
-        "tags": [
-          "Unsubscribes"
-        ],
+        "tags": ["Unsubscribes"],
         "parameters": [
           {
             "name": "value",
@@ -12681,9 +12724,7 @@
       "delete": {
         "summary": "Re-subscribe Variable",
         "description": "Removes a variable from the unsubscribe list. Variables with a protected source (LEAD or ABUSE) cannot be re-subscribed.",
-        "tags": [
-          "Unsubscribes"
-        ],
+        "tags": ["Unsubscribes"],
         "parameters": [
           {
             "name": "value",
@@ -12731,9 +12772,7 @@
       "get": {
         "summary": "Get Contact Subscription Status",
         "description": "Checks whether a contact is unsubscribed (do-not-contact).",
-        "tags": [
-          "Unsubscribes"
-        ],
+        "tags": ["Unsubscribes"],
         "parameters": [
           {
             "name": "contactId",
@@ -12783,9 +12822,7 @@
       "post": {
         "summary": "Unsubscribe Contact",
         "description": "Marks a contact as unsubscribed (do-not-contact).",
-        "tags": [
-          "Unsubscribes"
-        ],
+        "tags": ["Unsubscribes"],
         "parameters": [
           {
             "name": "contactId",
@@ -12831,9 +12868,7 @@
       "delete": {
         "summary": "Re-subscribe Contact",
         "description": "Removes the unsubscribed (do-not-contact) flag from a contact.",
-        "tags": [
-          "Unsubscribes"
-        ],
+        "tags": ["Unsubscribes"],
         "parameters": [
           {
             "name": "contactId",
@@ -12881,9 +12916,7 @@
       "get": {
         "summary": "Export Unsubscribed Variables",
         "description": "Exports all unsubscribed variables to a CSV file.",
-        "tags": [
-          "Unsubscribes"
-        ],
+        "tags": ["Unsubscribes"],
         "responses": {
           "200": {
             "description": "Success",
@@ -12911,9 +12944,7 @@
       "get": {
         "summary": "Export Unsubscribed Contacts",
         "description": "Exports all contacts with their subscription status to a CSV file.",
-        "tags": [
-          "Unsubscribes"
-        ],
+        "tags": ["Unsubscribes"],
         "responses": {
           "200": {
             "description": "Success",
@@ -14979,9 +15010,7 @@
       "get": {
         "summary": "Get Campaign Statutes",
         "description": "Retrieves validation statutes for a campaign, including errors that block launching and warnings about daily limits, DNS issues, etc. Uses the same validation engine as the lemlist UI.",
-        "tags": [
-          "Campaigns"
-        ],
+        "tags": ["Campaigns"],
         "parameters": [],
         "responses": {
           "200": {
@@ -15007,19 +15036,12 @@
                         "properties": {
                           "type": {
                             "type": "string",
-                            "enum": [
-                              "issue",
-                              "information"
-                            ],
+                            "enum": ["issue", "information"],
                             "description": "Statute type: 'issue' for problems, 'information' for non-blocking info"
                           },
                           "level": {
                             "type": "integer",
-                            "enum": [
-                              1,
-                              2,
-                              3
-                            ],
+                            "enum": [1, 2, 3],
                             "description": "Severity: 3 = error (blocks launch), 2 = warning (actionable), 1 = info"
                           },
                           "message": {
