@@ -16,11 +16,18 @@ At least one identifier is required:
 
 | Identifier | Description |
 |------------|-------------|
+| `contactId` | Existing contact ID — updates a specific contact directly, bypassing email/LinkedIn matching |
 | `email` | Primary email address — used as the main unique key |
 | `linkedinUrl` | LinkedIn profile URL — used as an alternative unique key |
 | `linkedinUrlSalesNav` | LinkedIn Sales Navigator profile URL — used as an alternative unique key |
 
 If a contact with the same `email`, `linkedinUrl`, or `linkedinUrlSalesNav` already exists, the endpoint updates it instead of creating a duplicate.
+
+When `contactId` is provided, the contact is matched by its ID directly — `email` and `linkedinUrl` are not required and are not used for matching (they are stored as data if provided).
+
+<Warning>
+`contactId` can only be used to **update** an existing contact. It cannot be used to create a new contact — use `email` or `linkedinUrl` for creation.
+</Warning>
 
 ## Linking to a company
 
