@@ -1,0 +1,12 @@
+---
+openapi: get /campaigns/{campaignId}/statutes
+description: Retrieves validation statutes for a campaign, including errors that block launching and warnings about daily limits, DNS issues, etc.
+---
+
+Statutes use the same validation engine as the lemlist UI. Each statute has a severity level:
+
+| Level | Meaning | Example |
+|-------|---------|---------|
+| **3** | Error — blocks campaign launch | Invalid sender, missing mailbox, broken DNS |
+| **2** | Warning — actionable but not blocking | Daily limit exceeded, schedule missing |
+| **1** | Info — purely informational | Sending rate summary |
