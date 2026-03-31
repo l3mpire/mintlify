@@ -1,0 +1,23 @@
+---
+openapi: get /fields
+description: Lists all available fields for contacts and companies.
+---
+
+Returns all available fields for contacts and companies, grouped by entity.
+Use this endpoint to discover field names before upserting contacts or companies.
+
+## Field sources
+
+| Source | Description |
+|--------|-------------|
+| `default` | Built-in fields available on every account (e.g. email, firstName, phone) |
+| `custom` | Custom fields created by your team |
+| `crm_synced` | Fields synced from your connected CRM |
+
+## Filtering
+
+Use query parameters to narrow results:
+- **`entity`** — return fields for a single entity (`contact` or `company`)
+- **`source`** — return only fields from a specific source (`default`, `custom`, or `crm_synced`)
+
+Both filters can be combined.
