@@ -12,7 +12,13 @@ Use this endpoint to discover field names before upserting contacts or companies
 |--------|-------------|
 | `default` | Built-in fields available on every account (e.g. email, firstName, phone) |
 | `custom` | Custom fields created by your team |
-| `crm_synced` | Fields synced from your connected CRM |
+| `crm_synced` | Fields from your connected CRM's field mapping configuration |
+
+## CRM-synced fields
+
+When your team has a CRM connected, fields with `source: "crm_synced"` reflect the field mapping configured between lemlist and your CRM. These fields include an additional `crmField` property containing the corresponding field name on the CRM side.
+
+If no CRM is connected, no `crm_synced` fields are returned.
 
 ## Filtering
 

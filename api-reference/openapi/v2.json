@@ -15057,9 +15057,9 @@
                                 "enum": ["default", "custom", "crm_synced"],
                                 "description": "Origin of the field"
                               },
-                              "description": {
+                              "crmField": {
                                 "type": "string",
-                                "description": "Field description (crm_synced fields only)"
+                                "description": "Corresponding CRM field name (crm_synced fields only)"
                               }
                             },
                             "required": ["name", "label", "type", "source"]
@@ -15088,9 +15088,9 @@
                                 "enum": ["default", "custom", "crm_synced"],
                                 "description": "Origin of the field"
                               },
-                              "description": {
+                              "crmField": {
                                 "type": "string",
-                                "description": "Field description (crm_synced fields only)"
+                                "description": "Corresponding CRM field name (crm_synced fields only)"
                               }
                             },
                             "required": ["name", "label", "type", "source"]
@@ -15106,7 +15106,8 @@
                     "contact": [
                       { "name": "email", "label": "Email", "type": "text", "source": "default" },
                       { "name": "firstName", "label": "First name", "type": "text", "source": "default" },
-                      { "name": "revenue", "label": "Annual Revenue", "type": "number", "source": "custom" }
+                      { "name": "revenue", "label": "Annual Revenue", "type": "number", "source": "custom" },
+                      { "name": "leadStatus", "label": "leadStatus", "type": "text", "source": "crm_synced", "crmField": "hs_lead_status" }
                     ],
                     "company": [
                       { "name": "linkedinUrl", "label": "LinkedIn URL", "type": "text", "source": "default" },
