@@ -14994,6 +14994,195 @@
         }
       }
     },
+    "/fields": {
+      "get": {
+        "summary": "List Fields",
+        "tags": ["Fields"],
+        "parameters": [
+          {
+            "name": "entity",
+            "in": "query",
+            "required": false,
+            "description": "Filter by entity type",
+            "schema": {
+              "type": "string",
+              "enum": ["contact", "company"]
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "description": "Filter by field source",
+            "schema": {
+              "type": "string",
+              "enum": ["default", "custom", "crm_synced"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "contact": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "description": "Internal field name (use this as the key when upserting contacts/companies)"
+                              },
+                              "label": {
+                                "type": "string",
+                                "description": "Human-readable display name"
+                              },
+                              "type": {
+                                "type": "string",
+                                "enum": ["text", "number", "boolean", "datetime", "date", "phone"],
+                                "description": "Field data type"
+                              },
+                              "source": {
+                                "type": "string",
+                                "enum": ["default", "custom", "crm_synced"],
+                                "description": "Origin of the field"
+                              },
+                              "crmField": {
+                                "type": "string",
+                                "description": "Corresponding CRM field name (crm_synced fields only)"
+                              }
+                            },
+                            "required": ["name", "label", "type", "source"]
+                          }
+                        },
+                        "company": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "description": "Internal field name (use this as the key when upserting contacts/companies)"
+                              },
+                              "label": {
+                                "type": "string",
+                                "description": "Human-readable display name"
+                              },
+                              "type": {
+                                "type": "string",
+                                "enum": ["text", "number", "boolean", "datetime", "date", "phone"],
+                                "description": "Field data type"
+                              },
+                              "source": {
+                                "type": "string",
+                                "enum": ["default", "custom", "crm_synced"],
+                                "description": "Origin of the field"
+                              },
+                              "crmField": {
+                                "type": "string",
+                                "description": "Corresponding CRM field name (crm_synced fields only)"
+                              }
+                            },
+                            "required": ["name", "label", "type", "source"]
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "contact": [
+                      { "name": "email", "label": "Email", "type": "text", "source": "default" },
+                      { "name": "firstName", "label": "First name", "type": "text", "source": "default" },
+                      { "name": "revenue", "label": "Annual Revenue", "type": "number", "source": "custom" },
+                      { "name": "leadStatus", "label": "leadStatus", "type": "text", "source": "crm_synced", "crmField": "hs_lead_status" }
+                    ],
+                    "company": [
+                      { "name": "linkedinUrl", "label": "LinkedIn URL", "type": "text", "source": "default" },
+                      { "name": "industry", "label": "Industry", "type": "text", "source": "custom" }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Invalid entity parameter. Must be one of: contact, company"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Unauthorized"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": "Method not allowed. Use GET."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/campaigns/{campaignId}/statutes": {
       "parameters": [
         {

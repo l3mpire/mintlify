@@ -341,6 +341,11 @@
                 "group": "Watch list / signals",
                 "expanded": false,
                 "pages": ["api-reference/endpoints/watch-list/get-signals"]
+              },
+              {
+                "group": "Fields",
+                "expanded": false,
+                "pages": ["api-reference/endpoints/fields/list-fields"]
               }
             ]
           },
