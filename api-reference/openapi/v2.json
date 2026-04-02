@@ -10319,8 +10319,10 @@
       },
       "post": {
         "summary": "Add and update contact",
-        "description": "Creates a new contact or updates an existing one (upsert). If a contact with the same email, LinkedIn URL, or Sales Navigator URL already exists, it will be updated with the provided non-empty fields. Null or empty values are ignored during updates to preserve existing data. You can optionally link the contact to a company by providing `companyId`, `companyDomain`, or `companyLinkedinUrl`.",
-        "tags": ["Contacts"],
+        "description": "Creates a new contact or updates an existing one (upsert). If a contact with the same email, LinkedIn URL, or Sales Navigator URL already exists, it will be updated with the provided non-empty fields. Null or empty values are ignored during updates to preserve existing data. You can target an existing contact directly by providing `contactId`, bypassing email/LinkedIn matching. You can optionally link the contact to a company by providing `companyId`, `companyDomain`, or `companyLinkedinUrl`.",
+        "tags": [
+          "Contacts"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -10328,13 +10330,17 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "contactId": {
+                    "type": "string",
+                    "description": "Existing contact ID. Updates a specific contact by ID, bypassing email/LinkedIn matching. Can only be used to update an existing contact, not to create a new one. When provided, `email` and `linkedinUrl` are not required. At least one of `contactId`, `email`, `linkedinUrl`, or `linkedinUrlSalesNav` is required."
+                  },
                   "email": {
                     "type": "string",
-                    "description": "Contact email address. Used as a unique key for upsert matching. At least one of `email`, `linkedinUrl`, or `linkedinUrlSalesNav` is required."
+                    "description": "Contact email address. Used as a unique key for upsert matching. At least one of `contactId`, `email`, `linkedinUrl`, or `linkedinUrlSalesNav` is required."
                   },
                   "linkedinUrl": {
                     "type": "string",
-                    "description": "LinkedIn profile URL. Used as an alternative unique key for upsert matching. At least one of `email`, `linkedinUrl`, or `linkedinUrlSalesNav` is required."
+                    "description": "LinkedIn profile URL. Used as an alternative unique key for upsert matching. At least one of `contactId`, `email`, `linkedinUrl`, or `linkedinUrlSalesNav` is required."
                   },
                   "linkedinUrlSalesNav": {
                     "type": "string",
@@ -10627,7 +10633,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `MISSING_IDENTIFIER`, `INVALID_EMAIL`, `INVALID_ADDITIONAL_EMAILS`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, or `CONTACT_VALIDATION_FAILED`."
+                          "description": "Error code: `MISSING_IDENTIFIER`, `INVALID_CONTACT_ID`, `CONTACT_NOT_FOUND_BY_ID`, `INVALID_EMAIL`, `INVALID_ADDITIONAL_EMAILS`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, or `CONTACT_VALIDATION_FAILED`."
                         },
                         "message": {
                           "type": "string"
@@ -10640,7 +10646,7 @@
                   "success": false,
                   "error": {
                     "code": "MISSING_IDENTIFIER",
-                    "message": "At least one identifier is required: email or linkedinUrl"
+                    "message": "At least one identifier is required: email, linkedinUrl or contactId"
                   }
                 }
               }
@@ -11142,7 +11148,7 @@
       },
       "post": {
         "summary": "Add and update company",
-        "description": "Creates a new company or updates an existing one (upsert). If a company with the same domain, LinkedIn URL, or Sales Navigator URL already exists, it will be updated with the provided non-empty fields. Null or empty values are ignored during updates to preserve existing data.",
+        "description": "Creates a new company or updates an existing one (upsert). If a company with the same domain, LinkedIn URL, or Sales Navigator URL already exists, it will be updated with the provided non-empty fields. Null or empty values are ignored during updates to preserve existing data. You can target an existing company directly by providing `companyId`, bypassing domain/LinkedIn matching — in that case `name` and `domain` become optional.",
         "tags": ["Companies"],
         "requestBody": {
           "required": true,
@@ -11151,13 +11157,17 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "companyId": {
+                    "type": "string",
+                    "description": "Existing company ID. Updates a specific company by ID, bypassing domain/LinkedIn matching. Can only be used to update an existing company, not to create a new one. When provided, `name` and `domain` become optional."
+                  },
                   "name": {
                     "type": "string",
-                    "description": "Company name."
+                    "description": "Company name. Required unless `companyId` is provided."
                   },
                   "domain": {
                     "type": "string",
-                    "description": "Company website domain (e.g. `lemlist.com`). Used as a unique key for upsert matching."
+                    "description": "Company website domain (e.g. `lemlist.com`). Used as a unique key for upsert matching. Required unless `companyId` is provided."
                   },
                   "linkedinUrl": {
                     "type": "string",
@@ -11217,7 +11227,6 @@
                     "default": "api"
                   }
                 },
-                "required": ["name", "domain"],
                 "additionalProperties": {
                   "description": "Any additional key is treated as a custom field. Custom fields must be registered in the team's CRM field registry beforehand."
                 }
@@ -11386,7 +11395,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `MISSING_REQUIRED_FIELD`, `INVALID_DOMAIN`, `INVALID_LINKEDIN_URL`, or `INVALID_FIELD`."
+                          "description": "Error code: `MISSING_REQUIRED_FIELD`, `INVALID_COMPANY_ID`, `COMPANY_NOT_FOUND_BY_ID`, `INVALID_DOMAIN`, `INVALID_LINKEDIN_URL`, or `INVALID_FIELD`."
                         },
                         "message": {
                           "type": "string"

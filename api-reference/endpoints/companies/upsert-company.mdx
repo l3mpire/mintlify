@@ -12,15 +12,22 @@ During updates, only non-empty fields are applied — null or empty values are i
 
 ## Upsert matching
 
-Both `name` and `domain` are required. The endpoint matches existing companies by:
+The endpoint matches existing companies by:
 
 | Identifier | Description |
 |------------|-------------|
+| `companyId` | Existing company ID — updates a specific company directly, bypassing domain/LinkedIn matching |
 | `domain` | Company website domain (e.g. `lemlist.com`) — primary unique key |
 | `linkedinUrl` | LinkedIn company page URL — alternative unique key |
 | `linkedinUrlSalesNav` | LinkedIn Sales Navigator company URL — alternative unique key |
 
 If a company with the same `domain`, `linkedinUrl`, or `linkedinUrlSalesNav` already exists, the endpoint updates it instead of creating a duplicate.
+
+When `companyId` is provided, the company is matched by its ID directly — `name` and `domain` are not required and are not used for matching (they are stored as data if provided). Without `companyId`, both `name` and `domain` remain required.
+
+<Warning>
+`companyId` can only be used to **update** an existing company. It cannot be used to create a new company — use `name` and `domain` for creation.
+</Warning>
 
 ## Owner assignment
 
