@@ -10320,9 +10320,7 @@
       "post": {
         "summary": "Add and update contact",
         "description": "Creates a new contact or updates an existing one (upsert). If a contact with the same email, LinkedIn URL, or Sales Navigator URL already exists, it will be updated with the provided non-empty fields. Null or empty values are ignored during updates to preserve existing data. You can target an existing contact directly by providing `contactId`, bypassing email/LinkedIn matching. You can optionally link the contact to a company by providing `companyId`, `companyDomain`, or `companyLinkedinUrl`.",
-        "tags": [
-          "Contacts"
-        ],
+        "tags": ["Contacts"],
         "requestBody": {
           "required": true,
           "content": {
@@ -12340,6 +12338,354 @@
                 "example": "Campaign not found"
               }
             }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "text/plain": {
+                "example": "Bad method"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/campaigns/stats/batch": {
+      "post": {
+        "summary": "Get Batch Campaign Stats",
+        "tags": ["Campaigns"],
+        "description": "Retrieve detailed statistics for multiple campaigns in a single request, with filtering options by date, user, A/B testing, and communication channels. Processes up to 100 campaigns per request.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["campaignIds", "startDate", "endDate"],
+                "properties": {
+                  "campaignIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1,
+                    "maxItems": 100,
+                    "description": "Array of campaign IDs to retrieve stats for",
+                    "example": ["cam_123", "cam_456"]
+                  },
+                  "startDate": {
+                    "type": "string",
+                    "description": "Start date in ISO 8601 format",
+                    "example": "2024-01-07T22:00:00.000Z"
+                  },
+                  "endDate": {
+                    "type": "string",
+                    "description": "End date in ISO 8601 format",
+                    "example": "2025-07-10T21:59:59.999Z"
+                  },
+                  "sendUser": {
+                    "type": "string",
+                    "description": "Filter stats by send user. Format: `sendUserId|sendUserEmail`. The sendUserId should begin with 'usr_' and the sendUserEmail should be a valid sender email. If the param is specified, both sendUserId and sendUserEmail are mandatory.",
+                    "example": "usr_b62rnsjxu236ttSH3|email@example.com"
+                  },
+                  "ABSelected": {
+                    "type": "string",
+                    "enum": ["A", "B"],
+                    "description": "A/B version filter"
+                  },
+                  "channels": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": ["email", "linkedin", "others"]
+                    },
+                    "description": "Filter by communication channels"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "description": "Array of campaign stats results",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "campaignId": {
+                            "type": "string",
+                            "description": "The campaign ID"
+                          },
+                          "nbLeads": {
+                            "type": "integer",
+                            "description": "Total number of leads in the campaign"
+                          },
+                          "nbLeadsLaunched": {
+                            "type": "integer",
+                            "description": "Number of leads launched in the campaign"
+                          },
+                          "nbLeadsReached": {
+                            "type": "integer",
+                            "description": "Number of leads that were successfully reached"
+                          },
+                          "nbLeadsOpened": {
+                            "type": "integer",
+                            "description": "Number of leads that opened messages"
+                          },
+                          "nbLeadsInteracted": {
+                            "type": "integer",
+                            "description": "Number of leads that interacted with messages (clicked, replied)"
+                          },
+                          "nbLeadsAnswered": {
+                            "type": "integer",
+                            "description": "Number of leads that answered"
+                          },
+                          "nbLeadsInterested": {
+                            "type": "integer",
+                            "description": "Number of leads marked as interested"
+                          },
+                          "nbLeadsNotInterested": {
+                            "type": "integer",
+                            "description": "Number of leads marked as not interested"
+                          },
+                          "nbLeadsUnsubscribed": {
+                            "type": "integer",
+                            "description": "Number of leads that unsubscribed"
+                          },
+                          "nbLeadsInterrupted": {
+                            "type": "integer",
+                            "description": "Number of leads with interrupted sequences"
+                          },
+                          "messagesSent": {
+                            "type": "integer",
+                            "description": "Total number of messages sent"
+                          },
+                          "messagesNotSent": {
+                            "type": "integer",
+                            "description": "Number of messages that failed to send"
+                          },
+                          "messagesBounced": {
+                            "type": "integer",
+                            "description": "Number of messages that bounced"
+                          },
+                          "delivered": {
+                            "type": "integer",
+                            "description": "Number of messages successfully delivered"
+                          },
+                          "opened": {
+                            "type": "integer",
+                            "description": "Number of messages opened"
+                          },
+                          "clicked": {
+                            "type": "integer",
+                            "description": "Number of messages with clicks"
+                          },
+                          "replied": {
+                            "type": "integer",
+                            "description": "Number of messages that received replies"
+                          },
+                          "invitationAccepted": {
+                            "type": "integer",
+                            "description": "Number of LinkedIn invitations accepted"
+                          },
+                          "meetingBooked": {
+                            "type": "integer",
+                            "description": "Number of meetings booked"
+                          },
+                          "steps": {
+                            "type": "array",
+                            "description": "Detailed metrics for each step in the campaign",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "index": {
+                                  "type": "integer",
+                                  "description": "Step index in the sequence"
+                                },
+                                "sequenceId": {
+                                  "type": "string",
+                                  "description": "ID of the sequence"
+                                },
+                                "sequenceStep": {
+                                  "type": "integer",
+                                  "description": "Step number within the sequence"
+                                },
+                                "abTest": {
+                                  "type": "string",
+                                  "description": "A/B test variant (if applicable)"
+                                },
+                                "taskType": {
+                                  "type": "string",
+                                  "description": "Type of task",
+                                  "enum": [
+                                    "email",
+                                    "linkedinVisit",
+                                    "linkedinInvite",
+                                    "linkedinSend",
+                                    "phone",
+                                    "manual",
+                                    "conditional"
+                                  ]
+                                },
+                                "conditionLabel": {
+                                  "type": "string",
+                                  "description": "Label for conditional steps"
+                                },
+                                "invited": {
+                                  "type": "integer",
+                                  "description": "Number of LinkedIn invitations sent"
+                                },
+                                "sent": {
+                                  "type": "integer",
+                                  "description": "Number of messages sent"
+                                },
+                                "delivered": {
+                                  "type": "integer",
+                                  "description": "Number of messages delivered"
+                                },
+                                "opened": {
+                                  "type": "integer",
+                                  "description": "Number of messages opened"
+                                },
+                                "clicked": {
+                                  "type": "integer",
+                                  "description": "Number of clicks from a message from this step"
+                                },
+                                "replied": {
+                                  "type": "integer",
+                                  "description": "Number of replies"
+                                },
+                                "notDelivered": {
+                                  "type": "integer",
+                                  "description": "Number of messages not delivered"
+                                },
+                                "bounced": {
+                                  "type": "integer",
+                                  "description": "Number of messages bounced"
+                                },
+                                "unsubscribed": {
+                                  "type": "integer",
+                                  "description": "Number of unsubscribes from this step"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "errors": {
+                      "type": "array",
+                      "description": "Array of errors for campaigns that failed to retrieve stats",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "campaignId": {
+                            "type": "string",
+                            "description": "The campaign ID that failed"
+                          },
+                          "error": {
+                            "type": "string",
+                            "description": "Error message"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "results": [
+                    {
+                      "campaignId": "cam_123",
+                      "nbLeads": 32,
+                      "nbLeadsLaunched": 32,
+                      "nbLeadsReached": 32,
+                      "nbLeadsOpened": 31,
+                      "nbLeadsInteracted": 4,
+                      "nbLeadsAnswered": 16,
+                      "nbLeadsInterested": 1,
+                      "nbLeadsNotInterested": 0,
+                      "nbLeadsUnsubscribed": 1,
+                      "nbLeadsInterrupted": 1,
+                      "messagesSent": 72,
+                      "messagesNotSent": 0,
+                      "messagesBounced": 0,
+                      "delivered": 72,
+                      "opened": 47,
+                      "clicked": 4,
+                      "replied": 16,
+                      "invitationAccepted": 0,
+                      "meetingBooked": 0,
+                      "steps": [
+                        {
+                          "index": 1,
+                          "sequenceId": "seq_JiYPY37b43uJg2hfA",
+                          "sequenceStep": 0,
+                          "taskType": "linkedinSend",
+                          "invited": 0,
+                          "sent": 32,
+                          "delivered": 32,
+                          "opened": 15,
+                          "clicked": 0,
+                          "replied": 15,
+                          "notDelivered": 0,
+                          "bounced": 0,
+                          "unsubscribed": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "errors": []
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Invalid parameters",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "emptyCampaignIds": {
+                    "summary": "Empty campaign IDs",
+                    "value": "Bad params: campaignIds must be a non-empty array"
+                  },
+                  "tooManyCampaignIds": {
+                    "summary": "Too many campaign IDs",
+                    "value": "Bad params: campaignIds must contain at most 100 items"
+                  },
+                  "missingDates": {
+                    "summary": "Missing dates",
+                    "value": "Bad params: startDate and endDate are required"
+                  },
+                  "invalidChannels": {
+                    "summary": "Invalid channels",
+                    "value": "Bad params: channels must be an array of \"others\", \"email\" or \"linkedin\""
+                  },
+                  "invalidAB": {
+                    "summary": "Invalid A/B selection",
+                    "value": "Bad params: ABSelected must be A or B"
+                  },
+                  "invalidSendUserFormat": {
+                    "summary": "Invalid send user format",
+                    "value": "Bad param format: sendUser must be formatted as follow: <sendUserId>|<sendUserEmail>"
+                  },
+                  "invalidSendUser": {
+                    "summary": "Send user email mismatch",
+                    "value": "Bad params: the send user email is not related to the send user id"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "405": {
             "description": "Method not allowed",
@@ -15058,7 +15404,14 @@
                               },
                               "type": {
                                 "type": "string",
-                                "enum": ["text", "number", "boolean", "datetime", "date", "phone"],
+                                "enum": [
+                                  "text",
+                                  "number",
+                                  "boolean",
+                                  "datetime",
+                                  "date",
+                                  "phone"
+                                ],
                                 "description": "Field data type"
                               },
                               "source": {
@@ -15089,7 +15442,14 @@
                               },
                               "type": {
                                 "type": "string",
-                                "enum": ["text", "number", "boolean", "datetime", "date", "phone"],
+                                "enum": [
+                                  "text",
+                                  "number",
+                                  "boolean",
+                                  "datetime",
+                                  "date",
+                                  "phone"
+                                ],
                                 "description": "Field data type"
                               },
                               "source": {
@@ -15113,14 +15473,45 @@
                   "success": true,
                   "data": {
                     "contact": [
-                      { "name": "email", "label": "Email", "type": "text", "source": "default" },
-                      { "name": "firstName", "label": "First name", "type": "text", "source": "default" },
-                      { "name": "revenue", "label": "Annual Revenue", "type": "number", "source": "custom" },
-                      { "name": "leadStatus", "label": "leadStatus", "type": "text", "source": "crm_synced", "crmField": "hs_lead_status" }
+                      {
+                        "name": "email",
+                        "label": "Email",
+                        "type": "text",
+                        "source": "default"
+                      },
+                      {
+                        "name": "firstName",
+                        "label": "First name",
+                        "type": "text",
+                        "source": "default"
+                      },
+                      {
+                        "name": "revenue",
+                        "label": "Annual Revenue",
+                        "type": "number",
+                        "source": "custom"
+                      },
+                      {
+                        "name": "leadStatus",
+                        "label": "leadStatus",
+                        "type": "text",
+                        "source": "crm_synced",
+                        "crmField": "hs_lead_status"
+                      }
                     ],
                     "company": [
-                      { "name": "linkedinUrl", "label": "LinkedIn URL", "type": "text", "source": "default" },
-                      { "name": "industry", "label": "Industry", "type": "text", "source": "custom" }
+                      {
+                        "name": "linkedinUrl",
+                        "label": "LinkedIn URL",
+                        "type": "text",
+                        "source": "default"
+                      },
+                      {
+                        "name": "industry",
+                        "label": "Industry",
+                        "type": "text",
+                        "source": "custom"
+                      }
                     ]
                   }
                 }

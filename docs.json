@@ -142,6 +142,7 @@
                   "api-reference/endpoints/campaigns/pause-campaign",
                   "api-reference/endpoints/campaigns/duplicate-campaign",
                   "api-reference/endpoints/campaigns/get-campaign-stats",
+                  "api-reference/endpoints/campaigns/get-batch-campaign-stats",
                   "api-reference/endpoints/campaigns/start-campaign-export",
                   "api-reference/endpoints/campaigns/get-campaign-export-status",
                   "api-reference/endpoints/campaigns/set-export-email-notification",
@@ -396,10 +397,7 @@
         "groups": [
           {
             "group": "MCP",
-            "pages": [
-              "mcp/setup",
-              "mcp/lemlist-agent"
-            ]
+            "pages": ["mcp/setup", "mcp/lemlist-agent"]
           }
         ]
       },
