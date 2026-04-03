@@ -1,6 +1,6 @@
 ---
 openapi: get /companies
-description: Retrieves a paginated list of all companies in your CRM.
+description: Retrieves companies from your CRM. Use `idsOrDomains` to fetch specific companies by ID or domain in a single request (max 100), or omit it to get a paginated list of all companies.
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 

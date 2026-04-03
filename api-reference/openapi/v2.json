@@ -10990,10 +10990,20 @@
         "tags": ["Companies"],
         "parameters": [
           {
+            "name": "idsOrDomains",
+            "in": "query",
+            "required": false,
+            "description": "Comma-separated list of company IDs or domains to fetch. When provided, returns only matching companies (no pagination). Each value is classified as a company ID (e.g. `cpn_xxx`) or a domain (e.g. `example.com`). URLs are normalized automatically (e.g. `https://example.com/path` → `example.com`). Invalid values are silently skipped. Maximum 100 values.",
+            "example": "cpn_8H6uDPbNcNfZjkcSP,persana.ai",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "page",
             "in": "query",
             "required": false,
-            "description": "Page number to retrieve",
+            "description": "Page number to retrieve. Ignored when `idsOrDomains` is provided.",
             "example": "1",
             "schema": {
               "type": "integer"
