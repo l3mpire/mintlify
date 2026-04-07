@@ -10320,9 +10320,7 @@
       "post": {
         "summary": "Add and update contact",
         "description": "Creates a new contact or updates an existing one (upsert). If a contact with the same email, LinkedIn URL, or Sales Navigator URL already exists, it will be updated with the provided non-empty fields. Null or empty values are ignored during updates to preserve existing data. You can target an existing contact directly by providing `contactId`, bypassing email/LinkedIn matching. You can optionally link the contact to a company by providing `companyId`, `companyDomain`, or `companyLinkedinUrl`.",
-        "tags": [
-          "Contacts"
-        ],
+        "tags": ["Contacts"],
         "requestBody": {
           "required": true,
           "content": {
@@ -15058,7 +15056,14 @@
                               },
                               "type": {
                                 "type": "string",
-                                "enum": ["text", "number", "boolean", "datetime", "date", "phone"],
+                                "enum": [
+                                  "text",
+                                  "number",
+                                  "boolean",
+                                  "datetime",
+                                  "date",
+                                  "phone"
+                                ],
                                 "description": "Field data type"
                               },
                               "source": {
@@ -15089,7 +15094,14 @@
                               },
                               "type": {
                                 "type": "string",
-                                "enum": ["text", "number", "boolean", "datetime", "date", "phone"],
+                                "enum": [
+                                  "text",
+                                  "number",
+                                  "boolean",
+                                  "datetime",
+                                  "date",
+                                  "phone"
+                                ],
                                 "description": "Field data type"
                               },
                               "source": {
@@ -15113,14 +15125,45 @@
                   "success": true,
                   "data": {
                     "contact": [
-                      { "name": "email", "label": "Email", "type": "text", "source": "default" },
-                      { "name": "firstName", "label": "First name", "type": "text", "source": "default" },
-                      { "name": "revenue", "label": "Annual Revenue", "type": "number", "source": "custom" },
-                      { "name": "leadStatus", "label": "leadStatus", "type": "text", "source": "crm_synced", "crmField": "hs_lead_status" }
+                      {
+                        "name": "email",
+                        "label": "Email",
+                        "type": "text",
+                        "source": "default"
+                      },
+                      {
+                        "name": "firstName",
+                        "label": "First name",
+                        "type": "text",
+                        "source": "default"
+                      },
+                      {
+                        "name": "revenue",
+                        "label": "Annual Revenue",
+                        "type": "number",
+                        "source": "custom"
+                      },
+                      {
+                        "name": "leadStatus",
+                        "label": "leadStatus",
+                        "type": "text",
+                        "source": "crm_synced",
+                        "crmField": "hs_lead_status"
+                      }
                     ],
                     "company": [
-                      { "name": "linkedinUrl", "label": "LinkedIn URL", "type": "text", "source": "default" },
-                      { "name": "industry", "label": "Industry", "type": "text", "source": "custom" }
+                      {
+                        "name": "linkedinUrl",
+                        "label": "LinkedIn URL",
+                        "type": "text",
+                        "source": "default"
+                      },
+                      {
+                        "name": "industry",
+                        "label": "Industry",
+                        "type": "text",
+                        "source": "custom"
+                      }
                     ]
                   }
                 }
