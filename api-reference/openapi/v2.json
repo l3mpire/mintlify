@@ -10194,6 +10194,717 @@
         }
       }
     },
+    "/inbox/{contactId}/drafts": {
+      "get": {
+        "summary": "List Drafts",
+        "description": "Lists all non-deleted drafts for a specific contact.",
+        "tags": ["Inbox"],
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "path",
+            "required": true,
+            "description": "Contact ID",
+            "example": "ctc_yHXD3NWjPg7Z9MuWZ",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "draftOwner",
+            "in": "query",
+            "required": true,
+            "description": "Draft owner identifier. Accepts either a userId (e.g., `usr_abc123def456789`) or a login email (e.g., `john@acme.com`).",
+            "example": "usr_abc123def456789",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "drafts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string",
+                            "description": "Unique draft identifier"
+                          },
+                          "channel": {
+                            "type": "string",
+                            "enum": ["email", "linkedin", "whatsapp", "sms"],
+                            "description": "Communication channel"
+                          },
+                          "subject": {
+                            "type": "string",
+                            "description": "Draft subject"
+                          },
+                          "contentPreview": {
+                            "type": "string",
+                            "description": "Content preview (max 100 chars)"
+                          },
+                          "source": {
+                            "type": "string",
+                            "enum": ["api", "ui"],
+                            "description": "Draft creation source"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Creation date"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Last update date"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "drafts": [
+                    {
+                      "_id": "drf_abc123def456789",
+                      "channel": "email",
+                      "subject": "Follow up on our meeting",
+                      "contentPreview": "Hi John, I wanted to follow up on our conversation from last week...",
+                      "source": "api",
+                      "createdAt": "2025-01-15T10:30:00.000Z",
+                      "updatedAt": "2025-01-15T10:30:00.000Z"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible errors: Missing draftOwner / User not found",
+            "content": {
+              "text/plain": {
+                "example": "User not found: neither a valid email nor a valid user id for this team"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Draft",
+        "description": "Creates a new draft for a specific contact. The source is automatically set to \"api\".",
+        "tags": ["Inbox"],
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "path",
+            "required": true,
+            "description": "Contact ID",
+            "example": "ctc_yHXD3NWjPg7Z9MuWZ",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "draftOwner",
+            "in": "query",
+            "required": true,
+            "description": "Draft owner identifier. Accepts either a userId (e.g., `usr_abc123def456789`) or a login email (e.g., `john@acme.com`).",
+            "example": "usr_abc123def456789",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "channel": {
+                    "type": "string",
+                    "enum": ["email", "linkedin", "whatsapp", "sms"],
+                    "description": "Communication channel"
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "Draft content (max 30KB)"
+                  },
+                  "subject": {
+                    "type": "string",
+                    "description": "Draft subject (optional)"
+                  },
+                  "cc": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "CC email addresses (optional)"
+                  },
+                  "attachments": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "Attachment file name"
+                        },
+                        "url": {
+                          "type": "string",
+                          "description": "Attachment URL"
+                        },
+                        "size": {
+                          "type": "integer",
+                          "description": "File size in bytes"
+                        },
+                        "type": {
+                          "type": "string",
+                          "description": "MIME type"
+                        }
+                      }
+                    },
+                    "description": "File attachments (optional)"
+                  },
+                  "replyToActivityId": {
+                    "type": "string",
+                    "description": "Activity ID to reply to (optional)"
+                  },
+                  "sourceMetadata": {
+                    "type": "object",
+                    "description": "Additional metadata (optional)"
+                  }
+                },
+                "required": ["channel", "content"]
+              },
+              "example": {
+                "channel": "email",
+                "content": "<p>Hello John, I wanted to follow up on our conversation.</p>",
+                "subject": "Follow up on our meeting",
+                "cc": [],
+                "attachments": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Draft created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "draftId": {
+                      "type": "string",
+                      "description": "ID of the created draft"
+                    }
+                  }
+                },
+                "example": {
+                  "draftId": "drf_abc123def456789"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible errors: Missing draftOwner / Invalid channel / Content must not be empty / Content too large / Draft limit reached (max 10 per conversation) / User not found",
+            "content": {
+              "text/plain": {
+                "example": "Content must not be empty"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      }
+    },
+    "/inbox/{contactId}/drafts/{draftId}": {
+      "get": {
+        "summary": "Get Draft",
+        "description": "Retrieves a single draft with its full content, including attachments.",
+        "tags": ["Inbox"],
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "path",
+            "required": true,
+            "description": "Contact ID",
+            "example": "ctc_yHXD3NWjPg7Z9MuWZ",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "draftId",
+            "in": "path",
+            "required": true,
+            "description": "Draft ID",
+            "example": "drf_abc123def456789",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "draftOwner",
+            "in": "query",
+            "required": true,
+            "description": "Draft owner identifier. Accepts either a userId (e.g., `usr_abc123def456789`) or a login email (e.g., `john@acme.com`).",
+            "example": "usr_abc123def456789",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "draft": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string",
+                          "description": "Unique draft identifier"
+                        },
+                        "channel": {
+                          "type": "string",
+                          "enum": ["email", "linkedin", "whatsapp", "sms"],
+                          "description": "Communication channel"
+                        },
+                        "subject": {
+                          "type": "string",
+                          "description": "Draft subject"
+                        },
+                        "cc": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "CC email addresses"
+                        },
+                        "content": {
+                          "type": "string",
+                          "description": "Full draft content"
+                        },
+                        "attachments": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "url": {
+                                "type": "string"
+                              },
+                              "size": {
+                                "type": "integer"
+                              },
+                              "type": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "description": "File attachments"
+                        },
+                        "source": {
+                          "type": "string",
+                          "enum": ["api", "ui"],
+                          "description": "Draft creation source"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Creation date"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Last update date"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "draft": {
+                    "_id": "drf_abc123def456789",
+                    "channel": "email",
+                    "subject": "Follow up on our meeting",
+                    "cc": [],
+                    "content": "<p>Hello John, I wanted to follow up on our conversation.</p>",
+                    "attachments": [],
+                    "source": "api",
+                    "createdAt": "2025-01-15T10:30:00.000Z",
+                    "updatedAt": "2025-01-15T10:30:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible errors: Missing draftOwner / User not found",
+            "content": {
+              "text/plain": {
+                "example": "User not found: neither a valid email nor a valid user id for this team"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "Draft not found",
+            "content": {
+              "text/plain": {
+                "example": "Draft not found"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Draft",
+        "description": "Partially updates an existing draft. Only the provided fields will be updated.",
+        "tags": ["Inbox"],
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "path",
+            "required": true,
+            "description": "Contact ID",
+            "example": "ctc_yHXD3NWjPg7Z9MuWZ",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "draftId",
+            "in": "path",
+            "required": true,
+            "description": "Draft ID",
+            "example": "drf_abc123def456789",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "draftOwner",
+            "in": "query",
+            "required": true,
+            "description": "Draft owner identifier. Accepts either a userId (e.g., `usr_abc123def456789`) or a login email (e.g., `john@acme.com`).",
+            "example": "usr_abc123def456789",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "subject": {
+                    "type": "string",
+                    "description": "Draft subject"
+                  },
+                  "cc": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "CC email addresses"
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "Draft content (max 30KB)"
+                  },
+                  "attachments": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "Attachment file name"
+                        },
+                        "url": {
+                          "type": "string",
+                          "description": "Attachment URL"
+                        },
+                        "size": {
+                          "type": "integer",
+                          "description": "File size in bytes"
+                        },
+                        "type": {
+                          "type": "string",
+                          "description": "MIME type"
+                        }
+                      }
+                    },
+                    "description": "File attachments"
+                  },
+                  "replyToActivityId": {
+                    "type": "string",
+                    "description": "Activity ID to reply to"
+                  }
+                }
+              },
+              "example": {
+                "subject": "Updated subject",
+                "content": "<p>Updated content for the draft.</p>"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "draft": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string",
+                          "description": "Unique draft identifier"
+                        },
+                        "channel": {
+                          "type": "string",
+                          "enum": ["email", "linkedin", "whatsapp", "sms"],
+                          "description": "Communication channel"
+                        },
+                        "subject": {
+                          "type": "string",
+                          "description": "Draft subject"
+                        },
+                        "cc": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "CC email addresses"
+                        },
+                        "content": {
+                          "type": "string",
+                          "description": "Full draft content"
+                        },
+                        "attachments": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "url": {
+                                "type": "string"
+                              },
+                              "size": {
+                                "type": "integer"
+                              },
+                              "type": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "description": "File attachments"
+                        },
+                        "source": {
+                          "type": "string",
+                          "enum": ["api", "ui"],
+                          "description": "Draft creation source"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Creation date"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Last update date"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "draft": {
+                    "_id": "drf_abc123def456789",
+                    "channel": "email",
+                    "subject": "Updated subject",
+                    "cc": [],
+                    "content": "<p>Updated content for the draft.</p>",
+                    "attachments": [],
+                    "source": "api",
+                    "createdAt": "2025-01-15T10:30:00.000Z",
+                    "updatedAt": "2025-01-15T11:00:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible errors: Missing draftOwner / Content must not be empty / Content too large / User not found",
+            "content": {
+              "text/plain": {
+                "example": "Content must not be empty"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "Draft not found",
+            "content": {
+              "text/plain": {
+                "example": "Draft not found"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Draft",
+        "description": "Soft-deletes a draft by setting its deletedAt timestamp.",
+        "tags": ["Inbox"],
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "path",
+            "required": true,
+            "description": "Contact ID",
+            "example": "ctc_yHXD3NWjPg7Z9MuWZ",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "draftId",
+            "in": "path",
+            "required": true,
+            "description": "Draft ID",
+            "example": "drf_abc123def456789",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "draftOwner",
+            "in": "query",
+            "required": true,
+            "description": "Draft owner identifier. Accepts either a userId (e.g., `usr_abc123def456789`) or a login email (e.g., `john@acme.com`).",
+            "example": "usr_abc123def456789",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible errors: Missing draftOwner / User not found",
+            "content": {
+              "text/plain": {
+                "example": "User not found: neither a valid email nor a valid user id for this team"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "Draft not found",
+            "content": {
+              "text/plain": {
+                "example": "Draft not found"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      }
+    },
     "/contacts": {
       "get": {
         "summary": "Get Many Contacts",
@@ -10320,9 +11031,7 @@
       "post": {
         "summary": "Add and update contact",
         "description": "Creates a new contact or updates an existing one (upsert). If a contact with the same email, LinkedIn URL, or Sales Navigator URL already exists, it will be updated with the provided non-empty fields. Null or empty values are ignored during updates to preserve existing data. You can target an existing contact directly by providing `contactId`, bypassing email/LinkedIn matching. You can optionally link the contact to a company by providing `companyId`, `companyDomain`, or `companyLinkedinUrl`.",
-        "tags": [
-          "Contacts"
-        ],
+        "tags": ["Contacts"],
         "requestBody": {
           "required": true,
           "content": {
@@ -15058,7 +15767,14 @@
                               },
                               "type": {
                                 "type": "string",
-                                "enum": ["text", "number", "boolean", "datetime", "date", "phone"],
+                                "enum": [
+                                  "text",
+                                  "number",
+                                  "boolean",
+                                  "datetime",
+                                  "date",
+                                  "phone"
+                                ],
                                 "description": "Field data type"
                               },
                               "source": {
@@ -15089,7 +15805,14 @@
                               },
                               "type": {
                                 "type": "string",
-                                "enum": ["text", "number", "boolean", "datetime", "date", "phone"],
+                                "enum": [
+                                  "text",
+                                  "number",
+                                  "boolean",
+                                  "datetime",
+                                  "date",
+                                  "phone"
+                                ],
                                 "description": "Field data type"
                               },
                               "source": {
@@ -15113,14 +15836,45 @@
                   "success": true,
                   "data": {
                     "contact": [
-                      { "name": "email", "label": "Email", "type": "text", "source": "default" },
-                      { "name": "firstName", "label": "First name", "type": "text", "source": "default" },
-                      { "name": "revenue", "label": "Annual Revenue", "type": "number", "source": "custom" },
-                      { "name": "leadStatus", "label": "leadStatus", "type": "text", "source": "crm_synced", "crmField": "hs_lead_status" }
+                      {
+                        "name": "email",
+                        "label": "Email",
+                        "type": "text",
+                        "source": "default"
+                      },
+                      {
+                        "name": "firstName",
+                        "label": "First name",
+                        "type": "text",
+                        "source": "default"
+                      },
+                      {
+                        "name": "revenue",
+                        "label": "Annual Revenue",
+                        "type": "number",
+                        "source": "custom"
+                      },
+                      {
+                        "name": "leadStatus",
+                        "label": "leadStatus",
+                        "type": "text",
+                        "source": "crm_synced",
+                        "crmField": "hs_lead_status"
+                      }
                     ],
                     "company": [
-                      { "name": "linkedinUrl", "label": "LinkedIn URL", "type": "text", "source": "default" },
-                      { "name": "industry", "label": "Industry", "type": "text", "source": "custom" }
+                      {
+                        "name": "linkedinUrl",
+                        "label": "LinkedIn URL",
+                        "type": "text",
+                        "source": "default"
+                      },
+                      {
+                        "name": "industry",
+                        "label": "Industry",
+                        "type": "text",
+                        "source": "custom"
+                      }
                     ]
                   }
                 }
