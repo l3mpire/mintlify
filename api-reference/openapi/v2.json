@@ -7609,7 +7609,7 @@
         "operationId": "searchPeopleDatabase",
         "tags": ["People Database"],
         "requestBody": {
-          "description": "Search criteria. Provide one or more filters and optionally control pagination with page/size and a free-text search.",
+          "description": "Search criteria. Provide one or more filters and optionally control pagination with page/size",
           "content": {
             "application/json": {
               "schema": {
@@ -7667,7 +7667,7 @@
                   {
                     "filterId": "country",
                     "in": ["France"],
-                    "out": []
+                    "out": ["India"]
                   }
                 ],
                 "page": 1,
