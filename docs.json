@@ -213,7 +213,10 @@
                 "pages": [
                   "api-reference/endpoints/contacts/upsert-contact",
                   "api-reference/endpoints/contacts/get-contact",
-                  "api-reference/endpoints/contacts/get-many-contacts"
+                  "api-reference/endpoints/contacts/get-many-contacts",
+                  "api-reference/endpoints/contacts/get-contact-lists",
+                  "api-reference/endpoints/contacts/create-contact-list",
+                  "api-reference/endpoints/contacts/add-contacts-to-list"
                 ]
               },
               {
