@@ -11043,19 +11043,73 @@
     "/contacts": {
       "get": {
         "summary": "Get Many Contacts",
+        "description": "Retrieves contacts by IDs/emails, or searches contacts by name, email, or contact list.\n\nWhen using `idsOrEmails`, returns an array of matching contacts directly.\n\nWhen using `search`, `email`, or `listId`, returns a paginated response with `contacts`, `total`, `limit`, and `offset` fields. You can combine `listId` with `search` or `email` to filter within a specific list.",
         "tags": ["Contacts"],
         "parameters": [
           {
             "name": "idsOrEmails",
             "in": "query",
-            "required": true,
-            "description": "A comma separated string of either valid contact IDs (MongoDB ObjectId) or valid email addresses",
+            "required": false,
+            "description": "A comma separated string of either valid contact IDs (MongoDB ObjectId) or valid email addresses. At least one of `idsOrEmails`, `search`, `email`, or `listId` is required.",
             "example": "ctc_Rofmb6uNGyaPNZ2ni,chafik@lemlist.co",
             "schema": {
               "type": "string"
             },
             "style": "form",
             "explode": false
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Search contacts by name or other text fields. Must be at least 2 characters. At least one of `idsOrEmails`, `search`, `email`, or `listId` is required.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "description": "Search contacts by exact email address. At least one of `idsOrEmails`, `search`, `email`, or `listId` is required.",
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          {
+            "name": "listId",
+            "in": "query",
+            "required": false,
+            "description": "Filter contacts by contact list ID (`clt_xxx` format). Can be combined with `search` or `email`, or used alone to list all contacts in a list. Get valid IDs from `GET /contacts/lists`.",
+            "example": "clt_abc123def456ghi78",
+            "schema": {
+              "type": "string",
+              "pattern": "^clt_[a-zA-Z0-9]+$"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of contacts to return (1–100). Defaults to 20.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of contacts to skip for pagination. Defaults to 0.",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
           }
         ],
         "responses": {
@@ -11143,10 +11197,10 @@
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / idsOrEmails not found in query",
+            "description": "Possible errors: Bad team / at least one query parameter is required / search query too short / invalid listId format",
             "content": {
               "text/plain": {
-                "example": "Bad team"
+                "example": "idsOrEmails, search, email, or listId parameter is required"
               }
             }
           },
@@ -11584,6 +11638,263 @@
           }
         },
         "parameters": []
+      }
+    },
+    "/contacts/lists": {
+      "get": {
+        "summary": "Get Contact Lists",
+        "description": "Retrieves all static and dynamic contact lists for the team. Optionally filter by name.",
+        "tags": ["Contacts"],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Filter lists by name (case-insensitive partial match).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "description": "Unique list ID (`clt_xxx` format)"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Name of the contact list"
+                      },
+                      "dynamic": {
+                        "type": "boolean",
+                        "description": "Whether the list is dynamic (auto-populated by filters) or static (manually managed)"
+                      }
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "_id": "clt_abc123def456ghi78",
+                    "name": "Nurturing",
+                    "dynamic": false
+                  },
+                  {
+                    "_id": "clt_xyz789uvw012rst34",
+                    "name": "Enterprise Prospects",
+                    "dynamic": true
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Bad team",
+            "content": {
+              "text/plain": {
+                "example": "Bad team"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Contact List",
+        "description": "Creates a new static contact list. After creating the list, use `POST /contacts/lists/{listId}/entities` to add contacts to it.",
+        "tags": ["Contacts"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Name of the contact list to create (max 200 characters)."
+                  }
+                }
+              },
+              "example": {
+                "name": "Nurturing"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact list created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "list": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Unique list ID (`clt_xxx` format)"
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the created list"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Contact list created successfully",
+                  "list": {
+                    "id": "clt_abc123def456ghi78",
+                    "name": "Nurturing"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible errors: Bad team / name is required / name too long",
+            "content": {
+              "text/plain": {
+                "example": "name is required and must be a non-empty string"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      }
+    },
+    "/contacts/lists/{listId}/entities": {
+      "parameters": [
+        {
+          "name": "listId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the contact list (`clt_xxx` format)",
+          "example": "clt_abc123def456ghi78",
+          "schema": {
+            "type": "string",
+            "pattern": "^clt_[a-zA-Z0-9]+$"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Add Contacts to List",
+        "description": "Adds existing CRM contacts to a static contact list. Contacts already in the list are silently skipped (no duplicates created). Cannot be used with dynamic lists.",
+        "tags": ["Contacts"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["contactIds"],
+                "properties": {
+                  "contactIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^ctc_[a-zA-Z0-9]+$"
+                    },
+                    "maxItems": 1000,
+                    "description": "Array of contact IDs to add to the list (`ctc_xxx` format). Maximum 1,000 per request."
+                  }
+                }
+              },
+              "example": {
+                "contactIds": ["ctc_abc123def456ghi78", "ctc_xyz789uvw012rst34"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contacts added to list successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "addedCount": {
+                      "type": "integer",
+                      "description": "Number of contacts added to the list"
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Contacts added to list successfully",
+                  "addedCount": 2
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible errors: Bad team / invalid listId / contactIds required / invalid contact ID format / list is not a contact list / cannot add to dynamic list",
+            "content": {
+              "text/plain": {
+                "example": "contactIds is required and must be a non-empty array"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "Contact list not found",
+            "content": {
+              "text/plain": {
+                "example": "Contact list not found"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
       }
     },
     "/lemwarm/{userMailboxId}/start": {

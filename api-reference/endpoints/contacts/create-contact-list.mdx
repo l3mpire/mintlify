@@ -1,0 +1,10 @@
+---
+openapi: post /contacts/lists
+description: Creates a new static contact list.
+---
+
+Creates a new static contact list in your CRM. After creation, use `POST /contacts/lists/{listId}/entities` to add contacts to it.
+
+<Warning>
+Only **static** lists can be created via the API. Dynamic lists (auto-populated by filters) are managed through the lemlist UI.
+</Warning>

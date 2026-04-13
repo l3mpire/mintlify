@@ -1,0 +1,11 @@
+---
+openapi: get /contacts/lists
+description: Retrieves all contact lists for the team, with optional name filtering.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+Returns all static and dynamic contact lists. Use the `search` parameter to filter lists by name.
+
+List IDs (`clt_xxx`) can be used with:
+- `GET /contacts` — filter contacts by list via the `listId` query parameter
+- `POST /contacts/lists/{listId}/entities` — add contacts to a list

@@ -1,7 +1,24 @@
 ---
 openapi: get /contacts
-description: Retrieves a paginated list of all contacts.
+description: Retrieves contacts by IDs/emails, or searches by name, email, or contact list.
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Contact" objectPath="contact" />
+
+## Query modes
+
+This endpoint supports two query modes:
+
+| Mode | Parameters | Response format |
+|------|-----------|----------------|
+| **By IDs/emails** | `idsOrEmails` | Array of contacts |
+| **Search/filter** | `search`, `email`, and/or `listId` | Paginated object with `contacts`, `total`, `limit`, `offset` |
+
+At least one of `idsOrEmails`, `search`, `email`, or `listId` is required.
+
+### Filtering by contact list
+
+Use the `listId` parameter to retrieve contacts belonging to a specific list. Get valid list IDs from `GET /contacts/lists`.
+
+You can combine `listId` with `search` or `email` to further narrow results within a list.
