@@ -118,7 +118,6 @@ These aggregate multiple activity types into a single lead-state change event.
 | Event | Description |
 | ----- | ----------- |
 | `annotated` | Lead annotated |
-| `opportunitiesDone` | Task marked as done |
 
 ### Workspace activities
 
@@ -160,12 +159,13 @@ These aggregate multiple activity types into a single lead-state change event.
 
 ### Deprecated events
 
-These events still work for backward compatibility but may be removed in a future version.
+These events have been removed from the API. Use the replacements below.
 
-| Event | Replacement |
-| ----- | ----------- |
+| Removed event | Replacement |
+| ------------- | ----------- |
 | `skipped` | No direct replacement |
 | `emailsSendFailed` | Use `emailsFailed` instead |
+| `opportunitiesDone` | Use `annotated` or task-level webhooks instead |
 
 ## Examples
 

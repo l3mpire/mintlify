@@ -982,16 +982,13 @@
               "sendLimitReached",
               "lemwarmPaused",
               "annotated",
-              "opportunitiesDone",
               "enrichmentDone",
               "enrichmentError",
               "callRecordingDone",
               "callTranscriptDone",
               "inboxLabelUpdated",
               "signalRegistered",
-              "deliverabilityAlertTriggered",
-              "skipped",
-              "emailsSendFailed"
+              "deliverabilityAlertTriggered"
             ]
           },
           "campaignId": {
@@ -14975,16 +14972,13 @@
                       "sendLimitReached",
                       "lemwarmPaused",
                       "annotated",
-                      "opportunitiesDone",
                       "enrichmentDone",
                       "enrichmentError",
                       "callRecordingDone",
                       "callTranscriptDone",
                       "inboxLabelUpdated",
                       "signalRegistered",
-                      "deliverabilityAlertTriggered",
-                      "skipped",
-                      "emailsSendFailed"
+                      "deliverabilityAlertTriggered"
                     ]
                   }
                 },
