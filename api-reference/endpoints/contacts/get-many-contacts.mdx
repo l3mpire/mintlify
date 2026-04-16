@@ -1,6 +1,6 @@
 ---
 openapi: get /contacts
-description: Retrieves contacts by IDs/emails, or searches by name, email, or contact list.
+description: Retrieves contacts by IDs/emails, or searches by name, email, contact list, or campaign membership.
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
@@ -13,12 +13,16 @@ This endpoint supports two query modes:
 | Mode | Parameters | Response format |
 |------|-----------|----------------|
 | **By IDs/emails** | `idsOrEmails` | Array of contacts |
-| **Search/filter** | `search`, `email`, and/or `listId` | Paginated object with `contacts`, `total`, `limit`, `offset` |
+| **Search/filter** | `search`, `email`, `listId`, and/or `notInAnyCampaign` | Paginated object with `contacts`, `total`, `limit`, `offset` |
 
-At least one of `idsOrEmails`, `search`, `email`, or `listId` is required.
+At least one of `idsOrEmails`, `search`, `email`, `listId`, or `notInAnyCampaign` is required.
 
 ### Filtering by contact list
 
 Use the `listId` parameter to retrieve contacts belonging to a specific list. Get valid list IDs from `GET /contacts/lists`.
 
 You can combine `listId` with `search` or `email` to further narrow results within a list.
+
+### Filtering contacts not in any campaign
+
+Use `notInAnyCampaign=true` to find contacts that are not part of any campaign (orphan contacts). This can be used alone or combined with other filters like `search`, `email`, or `listId`.
