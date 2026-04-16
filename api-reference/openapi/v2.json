@@ -5714,6 +5714,58 @@
           }
         },
         "parameters": []
+      },
+      "delete": {
+        "summary": "Dissociate Schedule from Campaign",
+        "description": "Removes a schedule from a campaign. The schedule is soft-deleted and pulled from the campaign's scheduleIds. A campaign must always have at least one schedule.",
+        "tags": ["Schedules"],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "scheduleId": {
+                      "type": "string"
+                    },
+                    "campaignId": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "scheduleId": "skd_CBHNKLZsZr3FFJHPK",
+                  "campaignId": "cam_SaAarzTsXms8BENvR"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible errors: Bad team / Schedule not associated to this campaign / Campaign must have at least one schedule",
+            "content": {
+              "text/plain": {
+                "example": "Schedule not associated to this campaign"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Possible errors: Campaign not found / Schedule not found",
+            "content": {
+              "text/plain": {
+                "example": "Campaign not found"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        },
+        "parameters": []
       }
     },
     "/leads": {

@@ -170,7 +170,8 @@
                   "api-reference/endpoints/schedules/update-schedule",
                   "api-reference/endpoints/schedules/delete-schedule",
                   "api-reference/endpoints/schedules/get-campaign-schedules",
-                  "api-reference/endpoints/schedules/associate-schedule-with-campaign"
+                  "api-reference/endpoints/schedules/associate-schedule-with-campaign",
+                  "api-reference/endpoints/schedules/dissociate-schedule-from-campaign"
                 ]
               },
               {
