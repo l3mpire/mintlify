@@ -11897,6 +11897,57 @@
         }
       }
     },
+    "/contacts/export": {
+      "get": {
+        "summary": "Export Contact List",
+        "description": "Exports contacts or companies from a CRM list as a CSV file. The response is streamed as `text/csv` with a `Content-Disposition: attachment` header.\n\nThe exported columns depend on the `entity` type:\n- **contact**: firstName, lastName, email, linkedinUrl, companyName, jobTitle, phone, status, owner, campaigns, contactLists, and more.\n- **company**: name, domain, linkedinUrl, industry, website, status, size, owner, numberOfContacts, companyLists, and more.\n\nCustom fields are included as additional columns.",
+        "tags": ["Contacts"],
+        "parameters": [
+          {
+            "name": "listId",
+            "in": "query",
+            "required": true,
+            "description": "The contact list ID to export (`clt_xxx` format), or `\"all\"` to export all contacts.",
+            "example": "clt_abc123def456ghi78",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entity",
+            "in": "query",
+            "required": false,
+            "description": "The type of entities to export. Defaults to `\"contact\"`.",
+            "schema": {
+              "type": "string",
+              "enum": ["contact", "company"],
+              "default": "contact"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CSV file download",
+            "content": {
+              "text/csv": {
+                "example": "firstName,lastName,email,companyName,jobTitle,status\nJohn,Doe,john@example.com,Acme Inc,CEO,interested"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad team",
+            "content": {
+              "text/plain": {
+                "example": "Bad team"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/lemwarm/{userMailboxId}/start": {
       "parameters": [
         {
