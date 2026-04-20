@@ -11043,14 +11043,14 @@
     "/contacts": {
       "get": {
         "summary": "Get Many Contacts",
-        "description": "Retrieves contacts by IDs/emails, or searches contacts by name, email, or contact list.\n\nWhen using `idsOrEmails`, returns an array of matching contacts directly.\n\nWhen using `search`, `email`, or `listId`, returns a paginated response with `contacts`, `total`, `limit`, and `offset` fields. You can combine `listId` with `search` or `email` to filter within a specific list.",
+        "description": "Retrieves contacts by IDs/emails, or searches contacts by name, email, contact list, or campaign membership.\n\nWhen using `idsOrEmails`, returns an array of matching contacts directly.\n\nWhen using `search`, `email`, `listId`, or `notInAnyCampaign`, returns a paginated response with `contacts`, `total`, `limit`, and `offset` fields. You can combine filters together to narrow results (e.g. `listId` with `search`, or `notInAnyCampaign` with `search`).",
         "tags": ["Contacts"],
         "parameters": [
           {
             "name": "idsOrEmails",
             "in": "query",
             "required": false,
-            "description": "A comma separated string of either valid contact IDs (MongoDB ObjectId) or valid email addresses. At least one of `idsOrEmails`, `search`, `email`, or `listId` is required.",
+            "description": "A comma separated string of either valid contact IDs (MongoDB ObjectId) or valid email addresses. At least one of `idsOrEmails`, `search`, `email`, `listId`, or `notInAnyCampaign` is required.",
             "example": "ctc_Rofmb6uNGyaPNZ2ni,chafik@lemlist.co",
             "schema": {
               "type": "string"
@@ -11062,7 +11062,7 @@
             "name": "search",
             "in": "query",
             "required": false,
-            "description": "Search contacts by name or other text fields. Must be at least 2 characters. At least one of `idsOrEmails`, `search`, `email`, or `listId` is required.",
+            "description": "Search contacts by name or other text fields. Must be at least 2 characters. At least one of `idsOrEmails`, `search`, `email`, `listId`, or `notInAnyCampaign` is required.",
             "schema": {
               "type": "string"
             }
@@ -11071,7 +11071,7 @@
             "name": "email",
             "in": "query",
             "required": false,
-            "description": "Search contacts by exact email address. At least one of `idsOrEmails`, `search`, `email`, or `listId` is required.",
+            "description": "Search contacts by exact email address. At least one of `idsOrEmails`, `search`, `email`, `listId`, or `notInAnyCampaign` is required.",
             "schema": {
               "type": "string",
               "format": "email"
@@ -11086,6 +11086,15 @@
             "schema": {
               "type": "string",
               "pattern": "^clt_[a-zA-Z0-9]+$"
+            }
+          },
+          {
+            "name": "notInAnyCampaign",
+            "in": "query",
+            "required": false,
+            "description": "When set to `true`, only returns contacts that are not part of any campaign (orphan contacts). Can be used alone or combined with other filters such as `search`, `email`, or `listId`.",
+            "schema": {
+              "type": "boolean"
             }
           },
           {
@@ -11200,7 +11209,7 @@
             "description": "Possible errors: Bad team / at least one query parameter is required / search query too short / invalid listId format",
             "content": {
               "text/plain": {
-                "example": "idsOrEmails, search, email, or listId parameter is required"
+                "example": "idsOrEmails, search, email, listId, or notInAnyCampaign parameter is required"
               }
             }
           },
