@@ -2858,12 +2858,17 @@
                   "name": {
                     "type": "string",
                     "description": "The name of the campaign"
+                  },
+                  "timezone": {
+                    "type": "string",
+                    "description": "IANA timezone for the campaign schedule (e.g. `America/New_York`). Defaults to `Europe/Paris` if omitted."
                   }
                 },
                 "required": ["name"]
               },
               "example": {
-                "name": "My new campaign"
+                "name": "My new campaign",
+                "timezone": "America/New_York"
               }
             }
           }
