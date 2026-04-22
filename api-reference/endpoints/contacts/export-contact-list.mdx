@@ -1,0 +1,8 @@
+---
+openapi: get /contacts/export
+description: Exports contacts or companies from a CRM list as a CSV file.
+---
+
+Exports entities from a contact list as a downloadable CSV file. The columns included depend on the `entity` type (`contact` or `company`).
+
+Use `GET /contacts/lists` to retrieve valid list IDs (`clt_xxx` format), then pass the desired ID as the `listId` query parameter. Set `entity` to `company` to export companies instead of contacts.
