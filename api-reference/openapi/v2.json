@@ -2026,7 +2026,7 @@
                   "createdAt": "2018-02-22T08:52:30.926Z",
                   "hooks": [
                     {
-                      "_id": "hoo_7bNbHKmFcpDiNACg6",
+                      "_id": "hoo_Ib5jfViX9hn3FzNqr",
                       "targetUrl": "https://hooks.zapier.com/hooks/standard/946357/*some-id*/",
                       "createdAt": "2018-06-05T09:07:07.761Z",
                       "zapId": 123456789,
@@ -2035,7 +2035,7 @@
                       "isFirst": true
                     },
                     {
-                      "_id": "hoo_agftPLA7RovPXuvet",
+                      "_id": "hoo_SDRr2w4JigZDL7OB2",
                       "targetUrl": "https://hooks.zapier.com/hooks/standard/5078320/*some-other-id*/",
                       "createdAt": "2019-06-05T14:38:56.535Z",
                       "zapId": 987654321,
@@ -2043,19 +2043,19 @@
                       "campaignId": "cam_J2M3P9Z8whahaha"
                     },
                     {
-                      "_id": "hoo_PN8TP9Ny9qEJRytrm",
+                      "_id": "hoo_IYAPP4HnSyU7UTH3E",
                       "targetUrl": "https://hooks.zapier.com/hooks/standard/5078320/*some-id*/",
                       "createdAt": "2019-06-05T15:49:36.624Z",
                       "zapId": 59831776,
                       "type": "emailsReplied",
-                      "campaignId": "cam_fdyDRgEwMiCJnj5Sx",
+                      "campaignId": "cam_qBNYaIFXA77eXM1Ey",
                       "isFirst": true
                     },
                     {
-                      "_id": "hoo_GXALX6diEW5bovH7e",
+                      "_id": "hoo_UAtwcPAd0tK9U6hKG",
                       "targetUrl": "https://subdomain.pipedream.net",
                       "createdAt": "2022-02-10T16:45:28.216Z",
-                      "campaignId": "cam_i6Cy2zKTw5LZpu6K5"
+                      "campaignId": "cam_7BE8IZRaqahU44Wp6"
                     }
                   ],
                   "slackWebhook": {
@@ -2069,7 +2069,7 @@
                     "lemrich_postLemrichKafka",
                     "computedFieldActiveCampaigns"
                   ],
-                  "pictureId": "fil_3mwPqkGHvKbETiwmC.png",
+                  "pictureId": "fil_vRhMy09kT1Rv4Kq4O.png",
                   "invitedUsers": [
                     {
                       "email": "support@lemlist.com",
@@ -2078,9 +2078,9 @@
                       "invitedAt": "2023-03-04T20:06:29.585Z"
                     },
                     {
-                      "email": "jojo@lemlist.co",
+                      "email": "taylor@example.com",
                       "role": "admin",
-                      "invitedBy": "usr_tB8T7zgZEfxhahha",
+                      "invitedBy": "usr_Hq4uzGvFP5q6homd",
                       "invitedAt": "2024-09-13T12:39:55.984Z"
                     }
                   ],
@@ -2200,10 +2200,10 @@
                 },
                 "example": [
                   {
-                    "userId": "usr_5GdFEgSLCN4n9uaMY",
+                    "userId": "usr_QB6kKK1wv68DujOET",
                     "campaigns": [
                       {
-                        "_id": "cam_XeLi45vzbAAMcwE9w",
+                        "_id": "cam_tBpHORyt3WhTQoi5A",
                         "name": "Onboarding",
                         "status": "paused",
                         "sendingChannels": [
@@ -2213,7 +2213,7 @@
                         ]
                       },
                       {
-                        "_id": "cam_jgQF6raCqZFpRhXic",
+                        "_id": "cam_O3BQOaXuyUuyqEHug",
                         "name": "Community Launch",
                         "status": "running",
                         "sendingChannels": [
@@ -2223,7 +2223,7 @@
                         ]
                       },
                       {
-                        "_id": "cam_uZN54wByB9fN4Egak",
+                        "_id": "cam_NTJ1rituEQ61jVl6p",
                         "name": "Email Warmup Test",
                         "status": "ended",
                         "sendingChannels": [
@@ -2233,7 +2233,7 @@
                         ]
                       },
                       {
-                        "_id": "cam_gdFao7vTMuxwtsdzR",
+                        "_id": "cam_1kESsVXFMzfrJImNc",
                         "name": "Product Launch Campaign",
                         "status": "draft",
                         "sendingChannels": [
@@ -2245,10 +2245,10 @@
                     ]
                   },
                   {
-                    "userId": "usr_5eQFBL8KgTjhbATT7",
+                    "userId": "usr_v5xz8De4nsLeNWAfv",
                     "campaigns": [
                       {
-                        "_id": "cam_inoaxzRkxC6RmFC7S",
+                        "_id": "cam_fDwCRnYtL1cfwcA7k",
                         "name": "WhatsApp Outreach",
                         "status": "draft",
                         "sendingChannels": [
@@ -2257,7 +2257,7 @@
                         ]
                       },
                       {
-                        "_id": "cam_DkMxX9HCeWbv7jsYr",
+                        "_id": "cam_WBCWNrsoMKkCWWLqw",
                         "name": "WhatsApp Test Campaign",
                         "status": "ended",
                         "sendingChannels": [
@@ -2268,10 +2268,10 @@
                     ]
                   },
                   {
-                    "userId": "usr_AzyCDxe92WNSrGkPz",
+                    "userId": "usr_rhhX1KT0qgOGCOrgE",
                     "campaigns": [
                       {
-                        "_id": "cam_CSRnRHoZxe6b3Ste3",
+                        "_id": "cam_pCi08vhGoho2oK3YR",
                         "name": "Networking",
                         "status": "running",
                         "sendingChannels": [
@@ -2282,7 +2282,7 @@
                         ]
                       },
                       {
-                        "_id": "cam_j3TKRt2Mx5pmeMxAu",
+                        "_id": "cam_zhcBovstiHVaV1abf",
                         "name": "Product Tools Campaign",
                         "status": "paused",
                         "sendingChannels": [
@@ -2434,15 +2434,15 @@
                 },
                 "example": [
                   {
-                    "userId": "usr_h47tiJr87Zn7XtQHi",
+                    "userId": "usr_FU6yAd3UdBFel0UDy",
                     "crm": "salesforce"
                   },
                   {
-                    "userId": "usr_h47tiJr87Zn7XtQHi",
+                    "userId": "usr_FU6yAd3UdBFel0UDy",
                     "crm": "hubspot"
                   },
                   {
-                    "userId": "usr_h47tiJr87Zn7XtQHi",
+                    "userId": "usr_FU6yAd3UdBFel0UDy",
                     "crm": "pipedrive"
                   }
                 ]
@@ -2475,7 +2475,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier of the user",
-          "example": "usr_QAucgYReK6EmMB3Cz",
+          "example": "usr_eSrHPSoL9QVPUOsho",
           "schema": {
             "type": "string"
           }
@@ -2504,7 +2504,7 @@
                   "$ref": "#/components/schemas/User"
                 },
                 "example": {
-                  "_id": "usr_QAucgYReK6EmMB3Cz",
+                  "_id": "usr_eSrHPSoL9QVPUOsho",
                   "email": "example@lemlist.co",
                   "role": "admin",
                   "linkedIn": {
@@ -2516,7 +2516,7 @@
                   },
                   "mailboxes": [
                     {
-                      "_id": "usm_bsdepN6jb8zftK9Ns",
+                      "_id": "usm_2mkqJNUjnJQiyVBht",
                       "email": "example@gmail.com",
                       "provider": "google",
                       "status": "ERROR",
@@ -2528,7 +2528,7 @@
                       }
                     },
                     {
-                      "_id": "usm_gPKrqoNxaXxScTpPh",
+                      "_id": "usm_gqlN3jKWoGo1Je8El",
                       "email": "example@outlook.com",
                       "status": "ERROR",
                       "lemlist": {
@@ -2663,7 +2663,7 @@
             "in": "query",
             "required": false,
             "description": "Filter campaigns by creator user ID (usr_xxx format). Only returns campaigns created by the specified user.",
-            "example": "usr_HPQ2sT3AdrQWvTDxr",
+            "example": "usr_QG9E94KvTmC7KWqzs",
             "schema": {
               "type": "string"
             }
@@ -2690,11 +2690,11 @@
                 },
                 "example": [
                   {
-                    "_id": "cam_KFsZWCvxY34fZjKpQ",
+                    "_id": "cam_4HrZbi8xsez4QlrnL",
                     "name": "Product Launch Campaign",
                     "labels": [],
                     "createdAt": "2025-02-20T14:45:54.230Z",
-                    "createdBy": "usr_PdR6Q7ZifnXYEXPJR",
+                    "createdBy": "usr_zdTCrNFyXblc4mrYK",
                     "status": "running",
                     "hasError": true,
                     "errors": [
@@ -2702,11 +2702,11 @@
                     ]
                   },
                   {
-                    "_id": "cam_E7zXbH4n6n78TWdvX",
+                    "_id": "cam_k3gu2sa4KIfhRK34M",
                     "name": "Sales Outreach 2025",
                     "labels": [],
                     "createdAt": "2025-02-05T09:00:07.541Z",
-                    "createdBy": "usr_w7wBTtp3iTNbqQtGq",
+                    "createdBy": "usr_UEvrOEP0CTAYEoFR4",
                     "status": "running",
                     "hasError": true,
                     "errors": [
@@ -2715,13 +2715,13 @@
                     ]
                   },
                   {
-                    "_id": "cam_ohtpFfMbJ5vpDkLsm",
+                    "_id": "cam_HcFmYEhnCI39Pscan",
                     "name": "CRM Integration Test",
                     "labels": [
                       "CRM"
                     ],
                     "createdAt": "2023-01-27T14:58:52.482Z",
-                    "createdBy": "usr_ez9h9tXDLP9LqpYyp",
+                    "createdBy": "usr_i52PiQtbq8SucjVTM",
                     "status": "running",
                     "hasError": true,
                     "errors": [
@@ -2730,11 +2730,11 @@
                     ]
                   },
                   {
-                    "_id": "cam_rsoutbiF7uYK8Bz2C",
+                    "_id": "cam_yZXeC6q3SXs3ha1FI",
                     "name": "Customer Onboarding",
                     "labels": [],
                     "createdAt": "2022-06-14T13:32:57.880Z",
-                    "createdBy": "usr_ez9h9tXDLP9LqpYyp",
+                    "createdBy": "usr_i52PiQtbq8SucjVTM",
                     "status": "running"
                   }
                 ]
@@ -2873,13 +2873,13 @@
                   }
                 },
                 "example": {
-                  "_id": "cam_WN3M22c3gDs4eQDXN",
-                  "sequenceId": "seq_hPj7N88tCgpFYgtnj",
+                  "_id": "cam_kok3I33Sba7mcNIO7",
+                  "sequenceId": "seq_ScVmFnlKdP6aVmyZN",
                   "scheduleIds": [
-                    "skd_isFGZkjSsvJZ7CfRx"
+                    "skd_IrCdCoQ0ZUAEeUDwR"
                   ],
-                  "teamId": "tea_MtScZ2GexXzHXRdTr",
-                  "createdBy": "usr_XCQktNJNa79X5Tvnh",
+                  "teamId": "tea_edrkv2LgUK4Wf4ZzO",
+                  "createdBy": "usr_Sy3xIhbEi7auHFv5A",
                   "createdAt": "2025-01-16T13:53:22.726Z",
                   "state": "running",
                   "scannedCount": 0,
@@ -2897,7 +2897,7 @@
                   "unsubscribe": "campaign",
                   "name": "My new campaign",
                   "crm": "hubspot",
-                  "crmUserId": "usr_BXJcMBSk7pwhdqAL2"
+                  "crmUserId": "usr_0p9Q8ZyXSTNGpsHOe"
                 }
               }
             }
@@ -2999,19 +2999,19 @@
                   "$ref": "#/components/schemas/Campaign"
                 },
                 "example": {
-                  "_id": "cam_9NsHPnykWESTncCW8",
+                  "_id": "cam_bSn8EORHQxbWPjHvu",
                   "name": "Product Launch Campaign",
                   "createdAt": "2025-10-27T07:01:04.058Z",
                   "status": "draft",
                   "creator": {
-                    "userId": "usr_gmHgNGRcGPSTJrDbT",
+                    "userId": "usr_ahfFktBBHUIxbVG5P",
                     "userEmail": "support@lemlist.com"
                   },
                   "senders": [
                     {
-                      "id": "usr_AzyCDxe92WNSrGkPz",
+                      "id": "usr_rhhX1KT0qgOGCOrgE",
                       "email": "support@lemlist.com",
-                      "sendUserMailboxId": "usm_JLtj28DpEdrwseTAc"
+                      "sendUserMailboxId": "usm_J7BzS86A1vRMc2AuB"
                     }
                   ]
                 }
@@ -3579,8 +3579,8 @@
                   }
                 },
                 "example": {
-                  "_id": "axp_7dKLTwqpjxzR5vh2n",
-                  "id": "axp_7dKLTwqpjxzR5vh2n",
+                  "_id": "axp_Vv6lJOc8NlVVmDud5",
+                  "id": "axp_Vv6lJOc8NlVVmDud5",
                   "teamId": "tea_c123fg5h8ijKL9noP",
                   "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
                   "campaignName": "Insights Outreach 2024",
@@ -3635,7 +3635,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier of the export returned by the /start endpoint",
-          "example": "axp_7dKLTwqpjxzR5vh2n",
+          "example": "axp_Vv6lJOc8NlVVmDud5",
           "schema": {
             "type": "string"
           }
@@ -3743,10 +3743,10 @@
                     "value": {
                       "ok": true,
                       "status": {
-                        "_id": "axp_7guBefTBQGqFfps87",
-                        "id": "axp_7guBefTBQGqFfps87",
-                        "teamId": "tea_b4rMsi2trB42WyuWP",
-                        "campaignId": "cam_DqHpWfjd67n2KTj2W",
+                        "_id": "axp_eVuZ9rVr4yYWrnPWA",
+                        "id": "axp_eVuZ9rVr4yYWrnPWA",
+                        "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                        "campaignId": "cam_lBCWmqEWI399hJZOd",
                         "campaignName": "lemstage",
                         "status": "done",
                         "startedAt": "2025-10-27T07:53:16.267Z",
@@ -3767,7 +3767,7 @@
                     "value": {
                       "ok": true,
                       "status": {
-                        "id": "axp_7dKLTwqpjxzR5vh2n",
+                        "id": "axp_Vv6lJOc8NlVVmDud5",
                         "teamId": "tea_c123fg5h8ijKL9noP",
                         "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
                         "campaignName": "Insights Outreach 2024",
@@ -3824,7 +3824,7 @@
                     "summary": "Export not found",
                     "value": {
                       "ok": false,
-                      "message": "Export with id axp_8bALQxunkwwC3yc9p not found"
+                      "message": "Export with id axp_DIoSPp9YM5EwWdyP0 not found"
                     }
                   },
                   "campaignNotFound": {
@@ -3855,7 +3855,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier of the export returned by the /start endpoint",
-          "example": "axp_7dKLTwqpjxzR5vh2n",
+          "example": "axp_Vv6lJOc8NlVVmDud5",
           "schema": {
             "type": "string"
           }
@@ -3962,8 +3962,8 @@
                 "example": {
                   "ok": true,
                   "status": {
-                    "_id": "axp_7dKLTwqpjxzR5vh2n",
-                    "id": "axp_7dKLTwqpjxzR5vh2n",
+                    "_id": "axp_Vv6lJOc8NlVVmDud5",
+                    "id": "axp_Vv6lJOc8NlVVmDud5",
                     "teamId": "tea_c123fg5h8ijKL9noP",
                     "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
                     "campaignName": "Insights Outreach 2024",
@@ -3977,7 +3977,7 @@
                     "total": 0,
                     "fileSize": 654,
                     "endedAt": "2024-07-11T09:49:15.497Z",
-                    "url": "https://api.lemlist.com/api/files/exports/fil_axp_7dKLTwqpjxzR5vh2n_insights_outreach_2024.csv",
+                    "url": "https://api.lemlist.com/api/files/exports/fil_axp_Vv6lJOc8NlVVmDud5_insights_outreach_2024.csv",
                     "email": "emily.johnson@example.com"
                   }
                 }
@@ -4111,7 +4111,7 @@
             "description": "Leads exported successfully",
             "content": {
               "text/csv": {
-                "example": "emailStatus,email,firstName,lastName,picture,phone,linkedinUrl,timezone,companyName,companyDomain,icebreaker,Original event page,url extension,event_link_to_send,testFieldToDelete,naissance,lastState,status,_id\n,jeremy@example.com,Jeremy,Smith,,,https://www.linkedin.com/in/jeremysmith,,example.com,,,https://www.example.com/event-registration,?name=Jeremy&email=jeremy@example.com,https://www.example.com/event-registration?name=Jeremy&email=jeremy@example.com,,,linkedinReplied,done,lea_s3jmQcQt7Mb4QBtgb\n,frankie@example.org,Frankie,Johnson,,,https://www.linkedin.com/in/frankiejohnson,,example.org,,,https://www.example.com/event-registration,?name=Frankie&email=frankie@example.org,https://www.example.com/event-registration?name=Frankie&email=frankie@example.org,,,linkedinReplied,done,lea_2vDeEy8BAsB4qfkMT\n,louiza@example.io,Louiza,Brown,,,https://www.linkedin.com/in/louizabrown,,example.io,,,https://www.example.com/event-registration,?name=Louiza&email=louiza@example.io,https://www.example.com/event-registration?name=Louiza&email=louiza@example.io,,,emailsInterested,interested,lea_7aKJvPZKHL6LeQKug\n,benjamin@example.co,Benjamin,Williams,,,https://www.linkedin.com/in/benjaminwilliams,,example.co,,,https://www.example.com/event-registration,?name=Benjamin&email=benjamin@example.co,https://www.example.com/event-registration?name=Benjamin&email=benjamin@example.co,,,emailsUnsubscribed,unsubscribed,lea_JyRM9Tx9qh7bzA4n4\n,roxanne@example.net,Roxanne,Davis,,,https://www.linkedin.com/in/roxannedavis,,example.net,,,https://www.example.com/event-registration,?name=Roxanne&email=roxanne@example.net,https://www.example.com/event-registration?name=Roxanne&email=roxanne@example.net,,,emailsClicked,done,lea_WbYhcco3kpfFPYWNu\n,thomas@example.fr,Thomas,Miller,,,https://www.linkedin.com/in/thomasmiller,,example.fr,,,https://www.example.com/event-registration,?name=Thomas&email=thomas@example.fr,https://www.example.com/event-registration?name=Thomas&email=thomas@example.fr,,,emailsSent,done,lea_WyFSfFYJoYwbzQFPu"
+                "example": "emailStatus,email,firstName,lastName,picture,phone,linkedinUrl,timezone,companyName,companyDomain,icebreaker,Original event page,url extension,event_link_to_send,testFieldToDelete,naissance,lastState,status,_id\n,jeremy@example.com,Jeremy,Smith,,,https://www.linkedin.com/in/jeremysmith,,example.com,,,https://www.example.com/event-registration,?name=Jeremy&email=jeremy@example.com,https://www.example.com/event-registration?name=Jeremy&email=jeremy@example.com,,,linkedinReplied,done,lea_s2cXajAHahdDKmDw8\n,frankie@example.org,Frankie,Johnson,,,https://www.linkedin.com/in/frankiejohnson,,example.org,,,https://www.example.com/event-registration,?name=Frankie&email=frankie@example.org,https://www.example.com/event-registration?name=Frankie&email=frankie@example.org,,,linkedinReplied,done,lea_E8hdds5NryDRXpGJa\n,louiza@example.io,Louiza,Brown,,,https://www.linkedin.com/in/louizabrown,,example.io,,,https://www.example.com/event-registration,?name=Louiza&email=louiza@example.io,https://www.example.com/event-registration?name=Louiza&email=louiza@example.io,,,emailsInterested,interested,lea_tLAI7Fr2gR5hVxAIc\n,benjamin@example.co,Benjamin,Williams,,,https://www.linkedin.com/in/benjaminwilliams,,example.co,,,https://www.example.com/event-registration,?name=Benjamin&email=benjamin@example.co,https://www.example.com/event-registration?name=Benjamin&email=benjamin@example.co,,,emailsUnsubscribed,unsubscribed,lea_oznzWQKKZGXrBdqXb\n,roxanne@example.net,Roxanne,Davis,,,https://www.linkedin.com/in/roxannedavis,,example.net,,,https://www.example.com/event-registration,?name=Roxanne&email=roxanne@example.net,https://www.example.com/event-registration?name=Roxanne&email=roxanne@example.net,,,emailsClicked,done,lea_M22nl3gUwvAiNl6Ks\n,thomas@example.fr,Thomas,Miller,,,https://www.linkedin.com/in/thomasmiller,,example.fr,,,https://www.example.com/event-registration,?name=Thomas&email=thomas@example.fr,https://www.example.com/event-registration?name=Thomas&email=thomas@example.fr,,,emailsSent,done,lea_z3DydraGgNBnLdV7o"
               },
               "application/json": {
                 "schema": {
@@ -4333,9 +4333,9 @@
                 },
                 "example": [
                   {
-                    "_id": "cam_9NsHPnykWESTncCW8",
+                    "_id": "cam_bSn8EORHQxbWPjHvu",
                     "name": "Product Launch Campaign",
-                    "creator": "usr_gmHgNGRcGPSTJrDbT|user@example.com",
+                    "creator": "usr_ahfFktBBHUIxbVG5P|user@example.com",
                     "createdAt": "2025-10-27T07:01:04.058Z",
                     "createdBy": "John Smith",
                     "labels": "",
@@ -4358,9 +4358,9 @@
                     "notInterested": 0
                   },
                   {
-                    "_id": "cam_DqHpWfjd67n2KTj2W",
+                    "_id": "cam_lBCWmqEWI399hJZOd",
                     "name": "Event Outreach Campaign",
-                    "creator": "usr_TPov3iJdqpjniMBDv|admin@example.co",
+                    "creator": "usr_QHeXD2DttUIlvWT9V|admin@example.co",
                     "createdAt": "2022-11-09T16:41:03.538Z",
                     "createdBy": "Sarah Johnson",
                     "labels": "",
@@ -4505,36 +4505,36 @@
                   }
                 },
                 "example": {
-                  "seq_JiYPY37b43uJg2hfA": {
-                    "_id": "seq_JiYPY37b43uJg2hfA",
+                  "seq_rH5RD3fMkkt2gM3YC": {
+                    "_id": "seq_rH5RD3fMkkt2gM3YC",
                     "steps": [
                       {
-                        "_id": "stp_twj5hF8qD2TP3xx7v",
+                        "_id": "stp_sFUj6keaSz9wr049M",
                         "delay": 0,
-                        "emailTemplateId": "etp_SbuYw3hvrPHaCzkny",
+                        "emailTemplateId": "etp_ahlbc2yafFyu728H8",
                         "type": "linkedinSend",
                         "index": 1,
-                        "sequenceId": "seq_JiYPY37b43uJg2hfA",
+                        "sequenceId": "seq_rH5RD3fMkkt2gM3YC",
                         "sequenceStep": 0,
                         "message": "Hey {{firstName}}, \n\nwe're launching an event, a place where people can regularly meet, network, and learn from each other. We would love it if you could join us for a drink & chat next week. What do you say? 😊"
                       },
                       {
-                        "_id": "stp_L6fcwoMWJcRMzi7Rp",
+                        "_id": "stp_qsTl0LO6zkQQJQqsP",
                         "delay": 1,
-                        "emailTemplateId": "etp_46ExBhhrk8SzrvpZv",
+                        "emailTemplateId": "etp_HFjUGtyDxIOxgZYcG",
                         "index": 2,
-                        "sequenceId": "seq_JiYPY37b43uJg2hfA",
+                        "sequenceId": "seq_rH5RD3fMkkt2gM3YC",
                         "sequenceStep": 1,
                         "subject": "{{firstName}}, do we count on you for the event?",
                         "message": "<p style=\"margin: 0px; box-sizing: border-box;\">Hey {{firstName}},<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">Do you have any plans for Thursday, 7pm?<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">What about spending the evening with cool people by our office?<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">We're launching an event, a place where people can regularly meet, network, and build connections that help them grow further 😊<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">It would be really nice if we could count on you for the event-&nbsp;<a target=\"_blank\" style=\"color: rgb(0, 123, 255); text-decoration: none; background-color: transparent; user-select: auto; box-sizing: border-box;\" rel=\"noopener noreferrer\" href=\"{{event_link_to_send}}\">here's your invite</a>&nbsp;🔥</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">Can you make it?<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">Sarah,</p><p style=\"margin: 0px; box-sizing: border-box;\">Head of Marketing</p>",
                         "type": "email"
                       },
                       {
-                        "_id": "stp_2JyMQiTSvPrahoncJ",
+                        "_id": "stp_pRcXzJDmOrBkFtNc3",
                         "delay": 1,
-                        "emailTemplateId": "etp_NZNcbz74ymBvJDM95",
+                        "emailTemplateId": "etp_3tjFTgdOMS6JL8U1g",
                         "index": 3,
-                        "sequenceId": "seq_JiYPY37b43uJg2hfA",
+                        "sequenceId": "seq_rH5RD3fMkkt2gM3YC",
                         "sequenceStep": 2,
                         "subject": "{{firstName}}, do we count on you for the event?",
                         "message": "<p style=\"margin: 0px; box-sizing: border-box;\">So, should I add you to the list of attendees?<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">We'll meet around 7pm, have a drink and exchange with entrepreneurs, marketers, and salespeople.<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\"><a target=\"_blank\" style=\"color: rgb(0, 123, 255); text-decoration: none; background-color: transparent; user-select: auto; box-sizing: border-box;\" rel=\"noopener noreferrer\" href=\"{{event_link_to_send}}\">Here's the link</a> if you want to join!<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">We would love to have you with us for this event!<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">Sarah</p><p style=\"margin: 0px; box-sizing: border-box;\">Head of Marketing</p>",
@@ -4584,7 +4584,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier of the sequence",
-          "example": "seq_p9qaCXrptS8XcPPNK",
+          "example": "seq_lkCSKd32qSZZTe5Ru",
           "schema": {
             "type": "string"
           }
@@ -4630,10 +4630,10 @@
                   }
                 },
                 "example": {
-                  "_id": "stp_Z2539g5BB4qCoZBgf",
+                  "_id": "stp_V0JHmSpWiO0rxHUkz",
                   "type": "linkedinInvite",
                   "delay": 2,
-                  "emailTemplateId": "etp_LWuaE5JG4Bm4riPf5",
+                  "emailTemplateId": "etp_sw6csWaZNwnfdwGZ6",
                   "message": "Hello, I would like..."
                 }
               }
@@ -4834,7 +4834,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier of the sequence",
-          "example": "seq_p9qaCXrptS8XcPPNK",
+          "example": "seq_lkCSKd32qSZZTe5Ru",
           "schema": {
             "type": "string"
           }
@@ -4844,7 +4844,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier of the step",
-          "example": "stp_Z2539g5BB4qCoZBgf",
+          "example": "stp_V0JHmSpWiO0rxHUkz",
           "schema": {
             "type": "string"
           }
@@ -4890,10 +4890,10 @@
                   }
                 },
                 "example": {
-                  "_id": "stp_Z2539g5BB4qCoZBgf",
+                  "_id": "stp_V0JHmSpWiO0rxHUkz",
                   "type": "linkedinInvite",
                   "delay": 0,
-                  "emailTemplateId": "etp_xNieSJDTnd2YZ46LF",
+                  "emailTemplateId": "etp_HZvLoLNEwdJ8Vu0w7",
                   "message": "Hello, I want to..."
                 }
               }
@@ -5224,7 +5224,7 @@
                 "example": {
                   "schedules": [
                     {
-                      "_id": "skd_AEcaBR4KvwvFtFhyH",
+                      "_id": "skd_iQiNG7VinWIUkgLy1",
                       "name": "Custom Schedule",
                       "secondsToWait": 1200,
                       "timezone": "Europe/Paris",
@@ -5237,12 +5237,12 @@
                         4
                       ],
                       "public": true,
-                      "teamId": "tea_b4rMsi2trB42WyuWP",
-                      "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "createdBy": "usr_ahfFktBBHUIxbVG5P",
                       "createdAt": "2025-10-27T09:41:11.187Z"
                     },
                     {
-                      "_id": "skd_eb8Lm39mKoMW8mibE",
+                      "_id": "skd_u6cfmo0a7pgwfup9i",
                       "name": "Default schedule",
                       "secondsToWait": 1200,
                       "timezone": "Europe/Paris",
@@ -5255,12 +5255,12 @@
                         4,
                         5
                       ],
-                      "teamId": "tea_b4rMsi2trB42WyuWP",
-                      "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "createdBy": "usr_ahfFktBBHUIxbVG5P",
                       "createdAt": "2025-10-27T07:01:04.041Z"
                     },
                     {
-                      "_id": "skd_iNkGfQRHbzoS22hdA",
+                      "_id": "skd_nNGfP0HEkRYJLW4qA",
                       "name": "Default schedule",
                       "secondsToWait": 1200,
                       "timezone": "Asia/Seoul",
@@ -5273,12 +5273,12 @@
                         4,
                         5
                       ],
-                      "teamId": "tea_b4rMsi2trB42WyuWP",
-                      "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "createdBy": "usr_ahfFktBBHUIxbVG5P",
                       "createdAt": "2025-10-24T09:37:25.040Z"
                     },
                     {
-                      "_id": "skd_8NyTiriwLFHXNiSTq",
+                      "_id": "skd_kgykTULiqy42doHxY",
                       "name": "Default schedule",
                       "secondsToWait": 1200,
                       "timezone": "Asia/Seoul",
@@ -5291,12 +5291,12 @@
                         4,
                         5
                       ],
-                      "teamId": "tea_b4rMsi2trB42WyuWP",
-                      "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "createdBy": "usr_ahfFktBBHUIxbVG5P",
                       "createdAt": "2025-10-24T07:24:44.785Z"
                     },
                     {
-                      "_id": "skd_Qick3HJqsxiW5Bir7",
+                      "_id": "skd_SvcCMF1LTI3mgzmCW",
                       "name": "Default schedule",
                       "secondsToWait": 1200,
                       "timezone": "Europe/Sofia",
@@ -5309,8 +5309,8 @@
                         4,
                         5
                       ],
-                      "teamId": "tea_b4rMsi2trB42WyuWP",
-                      "createdBy": "usr_dZKq4dpAnn8YQQMJm",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "createdBy": "usr_46he8cjrZ7s0IQi53",
                       "createdAt": "2025-10-20T13:13:34.680Z"
                     }
                   ],
@@ -5444,7 +5444,7 @@
                   "$ref": "#/components/schemas/Schedule"
                 },
                 "example": {
-                  "_id": "skd_JTb4gjdiizqPoYqzh",
+                  "_id": "skd_VK2e2ON1xErgrc8NC",
                   "name": "Default schedule",
                   "secondsToWait": 120,
                   "timezone": "Europe/Paris",
@@ -5458,8 +5458,8 @@
                     5
                   ],
                   "public": false,
-                  "teamId": "tea_Lq4kN7R2pqEA4YFst",
-                  "createdBy": "usr_n2PG5aHnsGErYS2Yg",
+                  "teamId": "tea_oQGvp4rfqA5RWLkqW",
+                  "createdBy": "usr_AUGImxyH3VKF6eYEf",
                   "createdAt": "2025-01-17T15:17:59.207Z"
                 }
               }
@@ -5516,7 +5516,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier of the schedule",
-          "example": "skd_JTb4gjdiizqPoYqzh",
+          "example": "skd_VK2e2ON1xErgrc8NC",
           "schema": {
             "type": "string"
           }
@@ -5545,7 +5545,7 @@
                   ]
                 },
                 "example": {
-                  "_id": "skd_AEcaBR4KvwvFtFhyH",
+                  "_id": "skd_iQiNG7VinWIUkgLy1",
                   "name": "Renamed Schedule",
                   "secondsToWait": 1000,
                   "timezone": "Europe/Berlin",
@@ -5559,8 +5559,8 @@
                     5
                   ],
                   "public": true,
-                  "teamId": "tea_b4rMsi2trB42WyuWP",
-                  "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                  "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                  "createdBy": "usr_ahfFktBBHUIxbVG5P",
                   "createdAt": "2025-10-27T09:41:11.187Z"
                 }
               }
@@ -5663,7 +5663,7 @@
                   "$ref": "#/components/schemas/Schedule"
                 },
                 "example": {
-                  "_id": "skd_AEcaBR4KvwvFtFhyH",
+                  "_id": "skd_iQiNG7VinWIUkgLy1",
                   "name": "Renamed Schedule",
                   "secondsToWait": 1000,
                   "timezone": "Europe/Berlin",
@@ -5677,8 +5677,8 @@
                     5
                   ],
                   "public": true,
-                  "teamId": "tea_b4rMsi2trB42WyuWP",
-                  "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                  "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                  "createdBy": "usr_ahfFktBBHUIxbVG5P",
                   "createdAt": "2025-10-27T09:41:11.187Z"
                 }
               }
@@ -5764,7 +5764,7 @@
                   }
                 },
                 "example": {
-                  "_id": "skd_L2sKZ3HMddtrfmHGr"
+                  "_id": "skd_Z6mAiyX6c73uqQtCV"
                 }
               }
             }
@@ -5823,7 +5823,7 @@
                 },
                 "example": [
                   {
-                    "_id": "skd_Cyf3LZJuJamrmCMrv",
+                    "_id": "skd_dI6LDboHxORcW2quf",
                     "name": "Test 2",
                     "secondsToWait": 1200,
                     "timezone": "Atlantic/Reykjavik",
@@ -5836,12 +5836,12 @@
                       4,
                       5
                     ],
-                    "teamId": "tea_b834id4r7skME8mfW",
-                    "createdBy": "usr_F7iPChEQ3pSmuTiCe",
+                    "teamId": "tea_HpxHgbqZR5p7jPodG",
+                    "createdBy": "usr_gbY1wCFnSHq5ubnyG",
                     "createdAt": "2025-02-06T16:29:10.217Z"
                   },
                   {
-                    "_id": "skd_hCG7J8K4EcLYM3GS9",
+                    "_id": "skd_shtm9OHLWbGkro94C",
                     "name": "Default schedule",
                     "secondsToWait": 1200,
                     "timezone": "Africa/Ceuta",
@@ -5854,12 +5854,12 @@
                       4,
                       5
                     ],
-                    "teamId": "tea_b834id4r7skME8mfW",
-                    "createdBy": "usr_cTWih7tcKWicFRiQj",
+                    "teamId": "tea_HpxHgbqZR5p7jPodG",
+                    "createdBy": "usr_z7biYanHn06hmOlXs",
                     "createdAt": "2025-02-06T15:36:01.531Z"
                   },
                   {
-                    "_id": "skd_sxKnxqQ9Qx9vMEyyZ",
+                    "_id": "skd_R90npZ8YWo0QqjO3u",
                     "name": "Default schedule",
                     "secondsToWait": 1200,
                     "timezone": "Europe/Paris",
@@ -5872,8 +5872,8 @@
                       4,
                       5
                     ],
-                    "teamId": "tea_b834id4r7skME8mfW",
-                    "createdBy": "usr_cTWih7tcKWicFRiQj",
+                    "teamId": "tea_HpxHgbqZR5p7jPodG",
+                    "createdBy": "usr_z7biYanHn06hmOlXs",
                     "createdAt": "2025-02-06T15:35:52.079Z"
                   }
                 ]
@@ -5920,7 +5920,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier of the schedule",
-          "example": "skd_CBHNKLZsZr3FFJHPK",
+          "example": "skd_J4m3pn7lRnVmwm02m",
           "schema": {
             "type": "string"
           }
@@ -5948,8 +5948,8 @@
                   }
                 },
                 "example": {
-                  "scheduleId": "skd_CBHNKLZsZr3FFJHPK",
-                  "campaignId": "cam_SaAarzTsXms8BENvR"
+                  "scheduleId": "skd_J4m3pn7lRnVmwm02m",
+                  "campaignId": "cam_JWW1H20HETqEXaKyR"
                 }
               }
             }
@@ -5993,7 +5993,7 @@
             "in": "query",
             "required": false,
             "description": "The lead ID. You should use at least one of 'email' or 'id'.",
-            "example": "lea_7kMNQwplxvvD2hf5z",
+            "example": "lea_8xJSc7sV7ggpiVnXe",
             "schema": {
               "type": "string"
             }
@@ -6078,16 +6078,16 @@
                   }
                 },
                 "example": {
-                  "firstName": "Bastien",
-                  "lastName": "Velitchkine",
+                  "firstName": "John",
+                  "lastName": "Doe",
                   "companyName": "lemlist",
                   "jobTitle": "GTM Engineer",
-                  "companyDomain": "bvelitchkine.com",
+                  "companyDomain": "example.com",
                   "email": "support@lemlist.com",
-                  "_id": "lea_mizMsAEkRrJuhouYe",
+                  "_id": "lea_fiDpiGV585wy3Oii2",
                   "isPaused": false,
-                  "campaignId": "cam_9NsHPnykWESTncCW8",
-                  "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                  "campaignId": "cam_bSn8EORHQxbWPjHvu",
+                  "contactId": "ctc_xW8Ou6C03Csv8vatp",
                   "emailStatus": "deliverable"
                 }
               }
@@ -6236,7 +6236,7 @@
                 },
                 "example": [
                   {
-                    "_id": "lea_mizMsAEkRrJuhouYe",
+                    "_id": "lea_fiDpiGV585wy3Oii2",
                     "updatedAt": "2025-10-28T00:40:39.230Z",
                     "isPaused": false,
                     "state": "scanned",
@@ -6244,19 +6244,19 @@
                     "personalized": false,
                     "source": "api",
                     "variables": {
-                      "firstName": "Bastien",
-                      "lastName": "Velitchkine",
+                      "firstName": "John",
+                      "lastName": "Doe",
                       "companyName": "lemlist",
                       "jobTitle": "GTM Engineer",
-                      "companyDomain": "bvelitchkine.com",
+                      "companyDomain": "example.com",
                       "email": "support@lemlist.com"
                     },
-                    "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                    "contactId": "ctc_xW8Ou6C03Csv8vatp",
                     "enrichment": {
                       "emailStatus": "deliverable"
                     },
                     "campaign": {
-                      "id": "cam_9NsHPnykWESTncCW8",
+                      "id": "cam_bSn8EORHQxbWPjHvu",
                       "name": "NEW TO DELETE",
                       "status": "draft"
                     },
@@ -6542,17 +6542,17 @@
                   }
                 },
                 "example": {
-                  "campaignId": "cam_9NsHPnykWESTncCW8",
+                  "campaignId": "cam_bSn8EORHQxbWPjHvu",
                   "campaignName": "NEW TO DELETE",
-                  "firstName": "Bastien",
-                  "lastName": "Velitchkine",
+                  "firstName": "John",
+                  "lastName": "Doe",
                   "companyName": "lemlist",
                   "jobTitle": "GTM Engineer",
-                  "companyDomain": "bvelitchkine.com",
+                  "companyDomain": "example.com",
                   "email": "support@lemlist.com",
-                  "_id": "lea_mizMsAEkRrJuhouYe",
+                  "_id": "lea_fiDpiGV585wy3Oii2",
                   "isPaused": false,
-                  "contactId": "ctc_Rofmb6uNGyaPNZ2ni"
+                  "contactId": "ctc_xW8Ou6C03Csv8vatp"
                 }
               }
             }
@@ -6628,7 +6628,7 @@
                   "email": "john.doe@domain.com",
                   "firstName": "John",
                   "lastName": "Doe",
-                  "_id": "lea_7kMNQwplxvvD2hf5z",
+                  "_id": "lea_8xJSc7sV7ggpiVnXe",
                   "isPaused": false,
                   "campaignId": "cam_A1B2C3D4E5F6G7H8I9"
                 }
@@ -6675,7 +6675,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier of the lead",
-          "example": "lea_7kMNQwplxvvD2hf5z",
+          "example": "lea_8xJSc7sV7ggpiVnXe",
           "schema": {
             "type": "string"
           }
@@ -6774,19 +6774,19 @@
                   }
                 },
                 "example": {
-                  "campaignId": "cam_9NsHPnykWESTncCW8",
+                  "campaignId": "cam_bSn8EORHQxbWPjHvu",
                   "campaignName": "NEW TO DELETE",
-                  "leadUrl": "https://api.lemlist.com/api/leads/bvelitchkine%40gmail.com",
-                  "firstName": "Bastien",
-                  "lastName": "Velitchkine",
-                  "companyName": "Bastien VELITCHKINE EI",
+                  "leadUrl": "https://api.lemlist.com/api/leads/alex.doe%40example.com",
+                  "firstName": "John",
+                  "lastName": "Doe",
+                  "companyName": "Acme Inc",
                   "jobTitle": "Growth Engineer",
-                  "companyDomain": "bvelitchkine.com",
+                  "companyDomain": "example.com",
                   "email": "support@lemlist.com",
                   "preferredContactMethod": "email",
-                  "_id": "lea_mizMsAEkRrJuhouYe",
+                  "_id": "lea_fiDpiGV585wy3Oii2",
                   "isPaused": false,
-                  "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                  "contactId": "ctc_xW8Ou6C03Csv8vatp",
                   "emailStatus": "deliverable"
                 }
               }
@@ -6891,19 +6891,19 @@
                   }
                 },
                 "example": {
-                  "firstName": "Bastien",
-                  "lastName": "Velitchkine",
-                  "companyName": "Bastien VELITCHKINE EI",
+                  "firstName": "John",
+                  "lastName": "Doe",
+                  "companyName": "Acme Inc",
                   "jobTitle": "Growth Engineer",
-                  "companyDomain": "bvelitchkine.com",
+                  "companyDomain": "example.com",
                   "email": "support@lemlist.com",
                   "preferredContactMethod": "email",
                   "industry": "Technology",
-                  "Company name": "Bastien Velitchkine",
-                  "_id": "lea_mizMsAEkRrJuhouYe",
+                  "Company name": "John Doe",
+                  "_id": "lea_fiDpiGV585wy3Oii2",
                   "isPaused": false,
-                  "campaignId": "cam_9NsHPnykWESTncCW8",
-                  "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                  "campaignId": "cam_bSn8EORHQxbWPjHvu",
+                  "contactId": "ctc_xW8Ou6C03Csv8vatp",
                   "emailStatus": "deliverable"
                 }
               }
@@ -6948,7 +6948,7 @@
           "in": "path",
           "required": true,
           "description": "The email of the lead",
-          "example": "bvelitchkine@gmail.com",
+          "example": "alex.doe@example.com",
           "schema": {
             "type": "string"
           }
@@ -6986,11 +6986,11 @@
                   }
                 },
                 "example": {
-                  "email": "bvelitchkine@gmail.com",
-                  "_id": "lea_o3uCcHsibhy9id8qD",
+                  "email": "alex.doe@example.com",
+                  "_id": "lea_8RmJYElD9S5Jp2kyv",
                   "isPaused": false,
-                  "campaignId": "cam_eMZnxqs9Z9nqGxzwT",
-                  "contactId": "ctc_ARyApP88xS286tgsY"
+                  "campaignId": "cam_8qJ1qAE5tekBYkJac",
+                  "contactId": "ctc_joap8q9YGlV45Ypc6"
                 }
               }
             }
@@ -7024,7 +7024,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier of the lead",
-          "example": "lea_7kMNQwplxvvD2hf5z",
+          "example": "lea_8xJSc7sV7ggpiVnXe",
           "schema": {
             "type": "string"
           }
@@ -7096,19 +7096,19 @@
                 },
                 "example": [
                   {
-                    "firstName": "Bastien",
-                    "lastName": "Velitchkine",
-                    "companyName": "Bastien VELITCHKINE EI",
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "companyName": "Acme Inc",
                     "jobTitle": "Growth Engineer",
-                    "companyDomain": "bvelitchkine.com",
+                    "companyDomain": "example.com",
                     "email": "support@lemlist.com",
                     "preferredContactMethod": "email",
                     "industry": "Technology",
-                    "Company name": "Bastien Velitchkine",
-                    "_id": "lea_mizMsAEkRrJuhouYe",
+                    "Company name": "John Doe",
+                    "_id": "lea_fiDpiGV585wy3Oii2",
                     "isPaused": false,
-                    "campaignId": "cam_9NsHPnykWESTncCW8",
-                    "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                    "campaignId": "cam_bSn8EORHQxbWPjHvu",
+                    "contactId": "ctc_xW8Ou6C03Csv8vatp",
                     "emailStatus": "deliverable"
                   }
                 ]
@@ -7140,7 +7140,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier of the lead",
-          "example": "lea_7kMNQwplxvvD2hf5z",
+          "example": "lea_8xJSc7sV7ggpiVnXe",
           "schema": {
             "type": "string"
           }
@@ -7224,19 +7224,19 @@
                 },
                 "example": [
                   {
-                    "firstName": "Bastien",
-                    "lastName": "Velitchkine",
-                    "companyName": "Bastien VELITCHKINE EI",
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "companyName": "Acme Inc",
                     "jobTitle": "Growth Engineer",
-                    "companyDomain": "bvelitchkine.com",
+                    "companyDomain": "example.com",
                     "email": "support@lemlist.com",
                     "preferredContactMethod": "email",
                     "industry": "Technology",
-                    "Company name": "Bastien Velitchkine",
-                    "_id": "lea_mizMsAEkRrJuhouYe",
+                    "Company name": "John Doe",
+                    "_id": "lea_fiDpiGV585wy3Oii2",
                     "isPaused": true,
-                    "campaignId": "cam_9NsHPnykWESTncCW8",
-                    "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                    "campaignId": "cam_bSn8EORHQxbWPjHvu",
+                    "contactId": "ctc_xW8Ou6C03Csv8vatp",
                     "emailStatus": "deliverable"
                   }
                 ]
@@ -7267,7 +7267,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier or email of the lead",
-          "example": "lea_7kMNQwplxvvD2hf5z",
+          "example": "lea_8xJSc7sV7ggpiVnXe",
           "schema": {
             "type": "string"
           }
@@ -7340,19 +7340,19 @@
                 },
                 "example": [
                   {
-                    "firstName": "Bastien",
-                    "lastName": "Velitchkine",
-                    "companyName": "Bastien VELITCHKINE EI",
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "companyName": "Acme Inc",
                     "jobTitle": "Growth Engineer",
-                    "companyDomain": "bvelitchkine.com",
+                    "companyDomain": "example.com",
                     "email": "support@lemlist.com",
                     "preferredContactMethod": "email",
                     "industry": "Technology",
-                    "Company name": "Bastien Velitchkine",
-                    "_id": "lea_mizMsAEkRrJuhouYe",
+                    "Company name": "John Doe",
+                    "_id": "lea_fiDpiGV585wy3Oii2",
                     "isPaused": false,
-                    "campaignId": "cam_9NsHPnykWESTncCW8",
-                    "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                    "campaignId": "cam_bSn8EORHQxbWPjHvu",
+                    "contactId": "ctc_xW8Ou6C03Csv8vatp",
                     "emailStatus": "deliverable"
                   }
                 ]
@@ -7384,7 +7384,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier or email of the lead",
-          "example": "lea_7kMNQwplxvvD2hf5z",
+          "example": "lea_8xJSc7sV7ggpiVnXe",
           "schema": {
             "type": "string"
           }
@@ -7457,19 +7457,19 @@
                 },
                 "example": [
                   {
-                    "firstName": "Bastien",
-                    "lastName": "Velitchkine",
-                    "companyName": "Bastien VELITCHKINE EI",
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "companyName": "Acme Inc",
                     "jobTitle": "Growth Engineer",
-                    "companyDomain": "bvelitchkine.com",
+                    "companyDomain": "example.com",
                     "email": "support@lemlist.com",
                     "preferredContactMethod": "email",
                     "industry": "Technology",
-                    "Company name": "Bastien Velitchkine",
-                    "_id": "lea_mizMsAEkRrJuhouYe",
+                    "Company name": "John Doe",
+                    "_id": "lea_fiDpiGV585wy3Oii2",
                     "isPaused": false,
-                    "campaignId": "cam_9NsHPnykWESTncCW8",
-                    "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                    "campaignId": "cam_bSn8EORHQxbWPjHvu",
+                    "contactId": "ctc_xW8Ou6C03Csv8vatp",
                     "emailStatus": "deliverable"
                   }
                 ]
@@ -7511,7 +7511,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier or email of the lead",
-          "example": "lea_7kMNQwplxvvD2hf5z",
+          "example": "lea_8xJSc7sV7ggpiVnXe",
           "schema": {
             "type": "string"
           }
@@ -7579,19 +7579,19 @@
                   }
                 },
                 "example": {
-                  "firstName": "Bastien",
-                  "lastName": "Velitchkine",
-                  "companyName": "Bastien VELITCHKINE EI",
+                  "firstName": "John",
+                  "lastName": "Doe",
+                  "companyName": "Acme Inc",
                   "jobTitle": "Growth Engineer",
-                  "companyDomain": "bvelitchkine.com",
+                  "companyDomain": "example.com",
                   "email": "support@lemlist.com",
                   "preferredContactMethod": "email",
                   "industry": "Technology",
-                  "Company name": "Bastien Velitchkine",
-                  "_id": "lea_mizMsAEkRrJuhouYe",
+                  "Company name": "John Doe",
+                  "_id": "lea_fiDpiGV585wy3Oii2",
                   "isPaused": false,
-                  "campaignId": "cam_9NsHPnykWESTncCW8",
-                  "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                  "campaignId": "cam_bSn8EORHQxbWPjHvu",
+                  "contactId": "ctc_xW8Ou6C03Csv8vatp",
                   "emailStatus": "deliverable"
                 }
               }
@@ -7632,7 +7632,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier or email of the lead",
-          "example": "lea_7kMNQwplxvvD2hf5z",
+          "example": "lea_8xJSc7sV7ggpiVnXe",
           "schema": {
             "type": "string"
           }
@@ -7700,19 +7700,19 @@
                   }
                 },
                 "example": {
-                  "firstName": "Bastien",
-                  "lastName": "Velitchkine",
-                  "companyName": "Bastien VELITCHKINE EI",
+                  "firstName": "John",
+                  "lastName": "Doe",
+                  "companyName": "Acme Inc",
                   "jobTitle": "Growth Engineer",
-                  "companyDomain": "bvelitchkine.com",
+                  "companyDomain": "example.com",
                   "email": "support@lemlist.com",
                   "preferredContactMethod": "email",
                   "industry": "Technology",
-                  "Company name": "Bastien Velitchkine",
-                  "_id": "lea_mizMsAEkRrJuhouYe",
+                  "Company name": "John Doe",
+                  "_id": "lea_fiDpiGV585wy3Oii2",
                   "isPaused": false,
-                  "campaignId": "cam_9NsHPnykWESTncCW8",
-                  "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                  "campaignId": "cam_bSn8EORHQxbWPjHvu",
+                  "contactId": "ctc_xW8Ou6C03Csv8vatp",
                   "emailStatus": "deliverable"
                 }
               }
@@ -7743,7 +7743,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier of the lead",
-          "example": "lea_7kMNQwplxvvD2hf5z",
+          "example": "lea_8xJSc7sV7ggpiVnXe",
           "schema": {
             "type": "string"
           }
@@ -7981,7 +7981,7 @@
             "in": "query",
             "required": true,
             "description": "The unique identifier of the lead",
-            "example": "lea_7kMNQwplxvvD2hf5z",
+            "example": "lea_8xJSc7sV7ggpiVnXe",
             "schema": {
               "type": "string"
             }
@@ -7991,7 +7991,7 @@
             "in": "query",
             "required": true,
             "description": "The unique identifier of the voice message step",
-            "example": "stp_ZrcCuR6cwi5qFnQQQ",
+            "example": "stp_xflJG8ZxUjc9vb2ce",
             "schema": {
               "type": "string"
             }
@@ -8049,10 +8049,10 @@
                 "example": {
                   "ok": true,
                   "status": {
-                    "url": "https://lemlist-dev.s3.eu-west-1.amazonaws.com/fil_bECTszeFQMneA43D2.m4a",
-                    "teamId": "tea_KWvTf2CypcBqG4QG2",
-                    "campaignId": "cam_B3MJETF3YxvGaR4dC",
-                    "leadId": "lea_CgfmTDCPC43gwPgYk",
+                    "url": "https://example.com/files/fil_CD7M60ym74aR0e57f.m4a",
+                    "teamId": "tea_Sh11ph1qHfjSpLKGT",
+                    "campaignId": "cam_R9mwDo0iZRwNEHUcW",
+                    "leadId": "lea_jZKIJ1Jn1SaMsP83s",
                     "fileName": "file2"
                   }
                 }
@@ -8095,7 +8095,7 @@
             "in": "query",
             "required": true,
             "description": "Connected user ID",
-            "example": "usr_h47tiJr87Zn7XtQHi",
+            "example": "usr_FU6yAd3UdBFel0UDy",
             "schema": {
               "type": "string"
             }
@@ -8207,7 +8207,7 @@
               },
               "example": {
                 "crm": "hubspot",
-                "userId": "usr_h47tiJr87Zn7XtQHi",
+                "userId": "usr_FU6yAd3UdBFel0UDy",
                 "filterId": "16",
                 "deduplicate": true
               }
@@ -8432,10 +8432,10 @@
                   "results": [
                     {
                       "lead_id": 434482354,
-                      "canonical_shorthand_name": "gabrielcianelli",
+                      "canonical_shorthand_name": "alexdoe",
                       "connections_count": 500,
                       "country": "France",
-                      "full_name": "Gabriel Cianelli",
+                      "full_name": "Alex Doe",
                       "education": [],
                       "experience_count": 3,
                       "experiences": [
@@ -8468,8 +8468,8 @@
                           "proficiency": "Professional working proficiency"
                         }
                       ],
-                      "lead_linkedin_url": "https://www.linkedin.com/in/gabriel-cianelli-16447612b",
-                      "linkedin_short": "gabriel-cianelli-16447612b",
+                      "lead_linkedin_url": "https://www.linkedin.com/in/alex-doe",
+                      "linkedin_short": "alex-doe",
                       "skills": [],
                       "summary": "Passionate about helping sales teams book more meetings @lemlist",
                       "headline": "Helping RevOps scale outbound @lemlist",
@@ -8488,9 +8488,9 @@
                   "took": 24,
                   "page": 1,
                   "size": 1,
-                  "search": "lsh_62r7ZDq9xJcKiAcjK",
+                  "search": "lsh_Lra0u9F7WXn3XKzB9",
                   "limitation": 1999,
-                  "team": "tea_b4rMsi2trB42WyuWP"
+                  "team": "tea_8QvkOiBfPdb2ZRhHi"
                 }
               }
             }
@@ -8898,20 +8898,20 @@
                   "results": [
                     {
                       "company_id": "88945664",
-                      "company_website_url": "http://codetentaclestechnologies.com",
-                      "company_name": "Codetentacles Technologies",
-                      "company_linkedin_url": "https://www.linkedin.com/company/codetentacles-technologies",
+                      "company_website_url": "http://acme-tech.example.com",
+                      "company_name": "Acme Technologies",
+                      "company_linkedin_url": "https://www.linkedin.com/company/acme-technologies",
                       "last_updated": "2025-09-07 02:11:32 UTC",
-                      "company_headquarters_city": "Pune, Maharashtra",
+                      "company_headquarters_city": "Example City",
                       "company_headquarters_country": "India",
-                      "company_logo_url": "https://media.licdn.com/dms/image/v2/D560BAQH70W3TXccPPA/company-logo_200_200/company-logo_200_200/0/1719993740432/codetentacles_technologies_logo?e=2147483647&v=beta&t=Eehfy0lIdDuBL17dzRAYAFu4LdLHb6cUaLjeuBGBUic",
-                      "company_description": "CodeTentacles, established on Aug-2015 with the idea \"Make Your Imagination Come True\". Which means anyone who came up with their idea, we will give a closely realistic solutions to them. \nCodeTentacles Technologies is a new Generation Software Company, with young people with creative mind and immersive energy. We are a team of dedicated and highly skilled software professionals focused on providing world class IT solutions. We offer a variety of services in the area of:\nWebsite Designing & Development, Web Maintenance, E-Business Solutions, Android & iOS app, Blockchain Development, Software Development, Hosting Services.",
+                      "company_logo_url": "https://example.com/logo1.png",
+                      "company_description": "Acme, established on Aug-2015 with the idea \"Make Your Imagination Come True\". Which means anyone who came up with their idea, we will give a closely realistic solutions to them. \nAcme Technologies is a new Generation Software Company, with young people with creative mind and immersive energy. We are a team of dedicated and highly skilled software professionals focused on providing world class IT solutions. We offer a variety of services in the area of:\nWebsite Designing & Development, Web Maintenance, E-Business Solutions, Android & iOS app, Blockchain Development, Software Development, Hosting Services.",
                       "company_employee_count": "31",
                       "company_type": "Public Company",
                       "company_founded": "2015",
                       "company_followers_count": "3958",
                       "company_size": "11-50",
-                      "company_domain": "codetentaclestechnologies.com",
+                      "company_domain": "acme-tech.example.com",
                       "employees_count_growth": -3,
                       "techno_used_array": [
                         "Apache HTTP Server",
@@ -8992,7 +8992,7 @@
                       "company_industry": "Technology, Information and Media",
                       "company_subindustry": "Technology, Information and Internet",
                       "company_subsubindustry": "Software Development",
-                      "company_location": "Office no.704 , 7th floor , City Avenue , Wakad - Pune , Maharashtra - 411057; Pune, Maharashtra 411057, IN",
+                      "company_location": "123 Example Street, Suite 100, Example City, Example Country",
                       "company_location_geopoint_array": [
                         73.92,
                         18.64
@@ -9003,21 +9003,21 @@
                     },
                     {
                       "company_id": "9903838",
-                      "company_website_url": "http://www.welkinhealth.com",
-                      "company_name": "Welkin Health",
-                      "company_linkedin_url": "https://www.linkedin.com/company/welkin-health",
+                      "company_website_url": "http://www.acme-care.example.com",
+                      "company_name": "Acme Care",
+                      "company_linkedin_url": "https://www.linkedin.com/company/acme-care",
                       "last_updated": "2025-09-04 14:24:45 UTC",
                       "company_headquarters_city": "San Francisco, California",
                       "company_headquarters_country": "United States",
-                      "company_logo_url": "https://media.licdn.com/dms/image/v2/C560BAQFer8fNEEjF0g/company-logo_200_200/company-logo_200_200/0/1630650291916/welkin_health_logo?e=2147483647&v=beta&t=UxMa3A4iEELS9VwczFLyANlOgqjpaKtsXtZ6WncExR8",
-                      "company_description": "Welkin Health is an automated care management platform that facilitates a team based approach to care for those who treat and manage preventative, follow-up and chronic conditions. To learn more, write us at contact@welkinhealth.com.",
+                      "company_logo_url": "https://example.com/logo2.png",
+                      "company_description": "Acme Care provides an automated platform for team-based care management. To learn more, write us at contact@acme-care.example.com.",
                       "company_employee_count": "33",
                       "company_type": "Privately Held",
                       "company_founded": "2013",
                       "company_followers_count": "2651",
                       "company_size": "11-50",
                       "revenue_bucket": "$5M - $10M",
-                      "company_domain": "welkinhealth.com",
+                      "company_domain": "acme-care.example.com",
                       "employees_count_growth": 6,
                       "last_funding_round_at": "More than 6 months",
                       "techno_used_array": [
@@ -9095,7 +9095,7 @@
                       "company_industry": "Technology, Information and Media",
                       "company_subindustry": "Technology, Information and Internet",
                       "company_subsubindustry": "Software Development",
-                      "company_location": "San Francisco, California 94104, US",
+                      "company_location": "San Francisco, California, US",
                       "company_location_geopoint_array": [
                         -122.42,
                         37.78
@@ -9109,9 +9109,9 @@
                   "took": 17,
                   "page": 1,
                   "size": 2,
-                  "search": "lsh_pDkyi3YizHKLHvEPK",
+                  "search": "lsh_8LBpZPgGpxGswp5G7",
                   "limitation": 1998,
-                  "team": "tea_b4rMsi2trB42WyuWP"
+                  "team": "tea_8QvkOiBfPdb2ZRhHi"
                 }
               }
             }
@@ -9188,21 +9188,21 @@
                 "example": {
                   "schema": {
                     "company_id": "88945664",
-                    "company_website_url": "http://codetentaclestechnologies.com",
-                    "company_name": "Codetentacles Technologies",
-                    "company_linkedin_url": "https://www.linkedin.com/company/codetentacles-technologies",
+                    "company_website_url": "http://acme-tech.example.com",
+                    "company_name": "Acme Technologies",
+                    "company_linkedin_url": "https://www.linkedin.com/company/acme-technologies",
                     "last_updated": "2025-09-07 02:11:32 UTC",
-                    "company_headquarters_city": "Pune, Maharashtra",
+                    "company_headquarters_city": "Example City",
                     "company_headquarters_country": "India",
-                    "company_logo_url": "https://media.licdn.com/dms/image/v2/D560BAQH70W3TXccPPA/company-logo_200_200/company-logo_200_200/0/1719993740432/codetentacles_technologies_logo?e=2147483647&v=beta&t=Eehfy0lIdDuBL17dzRAYAFu4LdLHb6cUaLjeuBGBUic",
-                    "company_description": "CodeTentacles, established on Aug-2015 with the idea \"Make Your Imagination Come True\". Which means anyone who came up with their idea, we will give a closely realistic solutions to them.",
+                    "company_logo_url": "https://example.com/logo1.png",
+                    "company_description": "Acme, established on Aug-2015 with the idea \"Make Your Imagination Come True\". Which means anyone who came up with their idea, we will give a closely realistic solutions to them.",
                     "company_employee_count": "31",
                     "company_type": "Public Company",
                     "company_founded": "2015",
                     "company_size": "11-50",
                     "company_followers_count": "3958",
                     "revenue_bucket": "$5M - $10M",
-                    "company_domain": "codetentaclestechnologies.com",
+                    "company_domain": "acme-tech.example.com",
                     "employees_count_growth": -3,
                     "last_funding_round_at": "More than 6 months",
                     "techno_used_array": [
@@ -9220,7 +9220,7 @@
                     "company_industry": "Technology, Information and Media",
                     "company_subindustry": "Technology, Information and Internet",
                     "company_subsubindustry": "Software Development",
-                    "company_location": "Office no.704 , 7th floor , City Avenue , Wakad - Pune , Maharashtra - 411057; Pune, Maharashtra 411057, IN",
+                    "company_location": "123 Example Street, Suite 100, Example City, Example Country",
                     "company_location_geopoint_array": [
                       73.92,
                       18.64
@@ -9342,24 +9342,24 @@
                 "example": {
                   "results": [
                     {
-                      "_id": "opp_ouYzdLYGs4RcrHTfm",
+                      "_id": "opp_LyXDV8KHzctQdLFpG",
                       "type": "manual",
                       "title": "Keep an eye on him",
                       "priority": 1,
-                      "leadId": "lea_mizMsAEkRrJuhouYe",
-                      "campaignId": "cam_9NsHPnykWESTncCW8",
-                      "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                      "leadId": "lea_fiDpiGV585wy3Oii2",
+                      "campaignId": "cam_bSn8EORHQxbWPjHvu",
+                      "contactId": "ctc_xW8Ou6C03Csv8vatp",
                       "dueDate": "2025-11-10T09:58:57.169Z",
-                      "userId": "usr_gmHgNGRcGPSTJrDbT",
+                      "userId": "usr_ahfFktBBHUIxbVG5P",
                       "content": "does he have bandwidth to help us? would be grand"
                     },
                     {
-                      "_id": "opp_muTZMDjKf7vtanEk9",
+                      "_id": "opp_KNQOrrlGnLvEXDDS9",
                       "type": "manual",
                       "title": "API Reference Illustration",
                       "priority": 2,
                       "dueDate": "2025-10-31T07:58:00.000Z",
-                      "userId": "usr_gmHgNGRcGPSTJrDbT",
+                      "userId": "usr_ahfFktBBHUIxbVG5P",
                       "content": ""
                     }
                   ],
@@ -9452,11 +9452,11 @@
               },
               "example": {
                 "type": "phone",
-                "assignedTo": "usr_6Y58qbtsYv2rCHQiJ",
+                "assignedTo": "usr_7YzNqVRMCfdeHEzMn",
                 "dueDate": "2025-02-10T09:58:57.169Z",
                 "message": "this is my message",
                 "title": "this is my title",
-                "leadId": "lea_QerTQT4gtxsXpLHK3"
+                "leadId": "lea_zUwSUPSxozD9fLVGw"
               }
             }
           }
@@ -9470,15 +9470,15 @@
                   "$ref": "#/components/schemas/Task"
                 },
                 "example": {
-                  "_id": "opp_ouYzdLYGs4RcrHTfm",
+                  "_id": "opp_LyXDV8KHzctQdLFpG",
                   "type": "manual",
                   "title": "Keep an eye on him",
                   "priority": 1,
-                  "leadId": "lea_mizMsAEkRrJuhouYe",
-                  "campaignId": "cam_9NsHPnykWESTncCW8",
-                  "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                  "leadId": "lea_fiDpiGV585wy3Oii2",
+                  "campaignId": "cam_bSn8EORHQxbWPjHvu",
+                  "contactId": "ctc_xW8Ou6C03Csv8vatp",
                   "dueDate": "2025-11-10T09:58:57.169Z",
-                  "userId": "usr_gmHgNGRcGPSTJrDbT",
+                  "userId": "usr_ahfFktBBHUIxbVG5P",
                   "content": "does he have bandwidth to help us? would be grand"
                 }
               }
@@ -9559,7 +9559,7 @@
                 ]
               },
               "example": {
-                "id": "opp_AbkAqfvTJtdR7mdZ5",
+                "id": "opp_0Ieq2qRMg5EIeUMFV",
                 "title": "My new title"
               }
             }
@@ -9574,12 +9574,12 @@
                   "$ref": "#/components/schemas/Task"
                 },
                 "example": {
-                  "_id": "opp_muTZMDjKf7vtanEk9",
+                  "_id": "opp_KNQOrrlGnLvEXDDS9",
                   "type": "manual",
                   "title": "Check him out",
                   "priority": 2,
                   "dueDate": "2025-10-31T07:58:00.000Z",
-                  "userId": "usr_gmHgNGRcGPSTJrDbT",
+                  "userId": "usr_ahfFktBBHUIxbVG5P",
                   "content": "Really glad we started using lemlist"
                 }
               }
@@ -9702,7 +9702,7 @@
             "in": "query",
             "required": true,
             "description": "Filter by user ID",
-            "example": "usr_vvv9vehz2Ghvgbedv",
+            "example": "usr_dG0cI7mRz7wadvioF",
             "schema": {
               "type": "string"
             }
@@ -9752,23 +9752,23 @@
                 "example": {
                   "data": [
                     {
-                      "_id": "ibx_gpcNQfmQx6CAjgXqA",
+                      "_id": "ibx_RsROKFC3gmowgc74P",
                       "opportunities": [],
                       "lastActivityAt": "2024-12-17T09:42:32.971Z",
-                      "createdBy": "act_mjdoySn9mkfbcMS5e",
+                      "createdBy": "act_gKmkJOLCfUl4TkhIl",
                       "channels": [
                         "email"
                       ],
-                      "teamId": "tea_b4rMsi2trB42WyuWP",
-                      "contactId": "ctc_wfKeM8EmiTikud7QE",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "contactId": "ctc_Ds0IaxECSACsbLMzA",
                       "users": [
                         {
-                          "userId": "usr_t2KCwPen66NrrqGtQ",
+                          "userId": "usr_xtJHBMYJSOHzI3ZFb",
                           "sender": true,
                           "read": true
                         },
                         {
-                          "userId": "usr_7RCLS4LdYP2oc8jmE",
+                          "userId": "usr_bcPQCObkKptmHw2Rp",
                           "sender": true,
                           "read": true
                         }
@@ -9778,29 +9778,29 @@
                       "lastRepliedAt": "2024-12-03T10:12:20.620Z",
                       "lastRepliedChannel": "email",
                       "contact": {
-                        "_id": "ctc_wfKeM8EmiTikud7QE",
-                        "fullName": "Victoire",
-                        "email": "victoire@lemlist.co"
+                        "_id": "ctc_Ds0IaxECSACsbLMzA",
+                        "fullName": "Alex",
+                        "email": "alex@example.com"
                       }
                     },
                     {
-                      "_id": "ibx_6MFTZSkNxYDG8cEBt",
+                      "_id": "ibx_M1qunaOcugoqSEnNY",
                       "opportunities": [],
                       "lastActivityAt": "2024-12-17T09:42:30.430Z",
-                      "createdBy": "act_otgjsMTZFLXc3t344",
+                      "createdBy": "act_AzW7OkDzo7GZzfBYq",
                       "channels": [
                         "email"
                       ],
-                      "teamId": "tea_b4rMsi2trB42WyuWP",
-                      "contactId": "ctc_miqxedLWeYvaZJGmj",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "contactId": "ctc_p66lDxuCdb9ZUMSN2",
                       "users": [
                         {
-                          "userId": "usr_t2KCwPen66NrrqGtQ",
+                          "userId": "usr_xtJHBMYJSOHzI3ZFb",
                           "sender": true,
                           "read": false
                         },
                         {
-                          "userId": "usr_7RCLS4LdYP2oc8jmE",
+                          "userId": "usr_bcPQCObkKptmHw2Rp",
                           "sender": true,
                           "read": true
                         }
@@ -9810,28 +9810,28 @@
                       "lastRepliedAt": "2024-12-03T14:14:00.848Z",
                       "lastRepliedChannel": "email",
                       "contact": {
-                        "_id": "ctc_miqxedLWeYvaZJGmj",
-                        "email": "ahmed@lemlist.co"
+                        "_id": "ctc_p66lDxuCdb9ZUMSN2",
+                        "email": "casey@example.com"
                       }
                     },
                     {
-                      "_id": "ibx_NyELBcEGyqw8p63WR",
+                      "_id": "ibx_6vBhQEot19XAsTKvr",
                       "opportunities": [],
                       "lastActivityAt": "2024-12-17T09:42:17.682Z",
-                      "createdBy": "act_Xwdkdj3RLeE3ubf6P",
+                      "createdBy": "act_38dXN8dzn6D8LU9dp",
                       "channels": [
                         "email"
                       ],
-                      "teamId": "tea_b4rMsi2trB42WyuWP",
-                      "contactId": "ctc_pywvuxsduA3T22NGR",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "contactId": "ctc_rtlWNMHykdtwjih7i",
                       "users": [
                         {
-                          "userId": "usr_t2KCwPen66NrrqGtQ",
+                          "userId": "usr_xtJHBMYJSOHzI3ZFb",
                           "sender": true,
                           "read": true
                         },
                         {
-                          "userId": "usr_7RCLS4LdYP2oc8jmE",
+                          "userId": "usr_bcPQCObkKptmHw2Rp",
                           "sender": true,
                           "read": true
                         }
@@ -9841,28 +9841,28 @@
                       "lastRepliedAt": "2024-12-02T16:38:35.875Z",
                       "lastRepliedChannel": "email",
                       "contact": {
-                        "_id": "ctc_pywvuxsduA3T22NGR",
-                        "email": "ariadne@lemlist.co"
+                        "_id": "ctc_rtlWNMHykdtwjih7i",
+                        "email": "morgan@example.com"
                       }
                     },
                     {
-                      "_id": "ibx_LB58k3Fy6y6rhvfS9",
+                      "_id": "ibx_wemRUwJQXZLRTjG8F",
                       "opportunities": [],
                       "lastActivityAt": "2024-12-04T16:58:53.629Z",
-                      "createdBy": "act_iEfKLEB93nf7a5P9t",
+                      "createdBy": "act_GjM4hNyXjAm29XGa2",
                       "channels": [
                         "email"
                       ],
-                      "teamId": "tea_b4rMsi2trB42WyuWP",
-                      "contactId": "ctc_FdjS5TF5v47H53YPh",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "contactId": "ctc_POL1cAPMvKzr851KU",
                       "users": [
                         {
-                          "userId": "usr_t2KCwPen66NrrqGtQ",
+                          "userId": "usr_xtJHBMYJSOHzI3ZFb",
                           "sender": true,
                           "read": true
                         },
                         {
-                          "userId": "usr_7RCLS4LdYP2oc8jmE",
+                          "userId": "usr_bcPQCObkKptmHw2Rp",
                           "sender": true,
                           "read": true
                         }
@@ -9872,9 +9872,9 @@
                       "lastRepliedAt": "2024-12-04T15:47:00.816Z",
                       "lastRepliedChannel": "email",
                       "contact": {
-                        "_id": "ctc_FdjS5TF5v47H53YPh",
-                        "fullName": "Mickael",
-                        "email": "mickael@lemlist.co"
+                        "_id": "ctc_POL1cAPMvKzr851KU",
+                        "fullName": "Jordan",
+                        "email": "jordan@example.com"
                       }
                     }
                   ],
@@ -9919,7 +9919,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier of the contact",
-          "example": "ctc_yHXD3NWjPg7Z9MuWZ",
+          "example": "ctc_ei6zVayP9B2ugwUPN",
           "schema": {
             "type": "string"
           }
@@ -10015,64 +10015,64 @@
                 "example": {
                   "data": [
                     {
-                      "_id": "act_vRoP8AMFMxqfSeDjR",
+                      "_id": "act_vQJUQw4OMGqp25aTi",
                       "type": "emailsSent",
                       "messageId": "<CAPLqhUKnWmszLsJxMO3osKL7YgU3-b_5kC+f4SvqYOVfzRc28g@mail.gmail.com>",
                       "createdAt": "2024-12-05T16:39:41.416Z",
-                      "teamId": "tea_b4rMsi2trB42WyuWP",
-                      "leadId": "lea_jcw2hneu7qs7iYKBr",
-                      "campaignId": "cam_JnZqKnuSvoD4jsQuo",
-                      "sequenceId": "seq_BMMzxq84R32u4oNvQ",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "leadId": "lea_tmOgcDHB5wWwStNtN",
+                      "campaignId": "cam_pijDVnytN5S7frriD",
+                      "sequenceId": "seq_KnckIbUtWVFAsdCBG",
                       "sequenceStep": 0,
-                      "sendUserId": "usr_7RCLS4LdYP2oc8jmE",
-                      "sendUserName": "Camille INGOUF",
-                      "sendUserEmail": "camille@lemtest.com",
-                      "sendUserMailboxId": "usm_bn6KxhSrHZEak2NM6",
-                      "leadEmail": "victoire@lemlist.co",
-                      "contactId": "ctc_wfKeM8EmiTikud7QE",
-                      "message": "<html><div style=\"min-width: 360px\"></div><div dir=\"ltr\">\n    <div>Hello lemlist Team! 😎<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">I joined lemlist last Monday, and I am humbly offering you the chance to meet me (and probably my cat, Megatron 😽🤖) through a 15-minute call at your convenience! You can book it <span style=\"cursor: pointer; background: var(--tertiary2-color-100); color: var(--alert); box-sizing: border-box;\" data-error=\"true\">[here]</span>(https://app.lemcal.com/@camille-ingouf/reunion-de-15-minute?leadId=lea_jcw2hneu7qs7iYKBr).<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">See you soon!<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">Camille INGOUF</div>\n    <div class=\"gmail_extra\">\n      <div class=\"gmail_signature\" data-smartmail=\"gmail_signature\"><div dir=\"ltr\"><div><div dir=\"ltr\"></div></div></div></div>\n      \n    </div>\n    </div>\n<span summary=\"/api/reply/data-ll-tsk_ke6Bo8Az5E68mzhbS\"></span>\n<img alt=\"logo\" src=\"https://zr0.lemlst.org/api/track/open/usr_7RCLS4LdYP2oc8jmE/tsk_ke6Bo8Az5E68mzhbS\" height=\"1\" width=\"1\"></html>",
+                      "sendUserId": "usr_bcPQCObkKptmHw2Rp",
+                      "sendUserName": "Alex DOE",
+                      "sendUserEmail": "alex.doe@example.com",
+                      "sendUserMailboxId": "usm_05P73WrvTqHY8OAee",
+                      "leadEmail": "alex@example.com",
+                      "contactId": "ctc_Ds0IaxECSACsbLMzA",
+                      "message": "<html><div style=\"min-width: 360px\"></div><div dir=\"ltr\">\n    <div>Hello lemlist Team! 😎<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">I joined lemlist last Monday, and I am humbly offering you the chance to meet me (and probably my cat, Megatron 😽🤖) through a 15-minute call at your convenience! You can book it <span style=\"cursor: pointer; background: var(--tertiary2-color-100); color: var(--alert); box-sizing: border-box;\" data-error=\"true\">[here]</span>(https://app.lemcal.com/@alex-doe/quick-meeting?leadId=lea_tmOgcDHB5wWwStNtN).<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">See you soon!<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">Alex DOE</div>\n    <div class=\"gmail_extra\">\n      <div class=\"gmail_signature\" data-smartmail=\"gmail_signature\"><div dir=\"ltr\"><div><div dir=\"ltr\"></div></div></div></div>\n      \n    </div>\n    </div>\n<span summary=\"/api/reply/data-ll-tsk_lxY7QI0bYAop5cPBU\"></span>\n<img alt=\"logo\" src=\"https://zr0.lemlst.org/api/track/open/usr_bcPQCObkKptmHw2Rp/tsk_lxY7QI0bYAop5cPBU\" height=\"1\" width=\"1\"></html>",
                       "subject": "Meet me !",
                       "attachments": []
                     },
                     {
-                      "_id": "act_7yfGhxmPfKbxZaWHa",
+                      "_id": "act_HXQTqg6L29jdy3b6K",
                       "type": "emailsReplied",
                       "messageId": "<CAKs+3EYjH0POGz0H-rS1XHH1YnG9LtN2m4y8LocddFWWMm8HBw@mail.gmail.com>",
                       "createdAt": "2024-12-03T10:10:45.000Z",
-                      "fromEmail": "victoire@lemlist.co",
-                      "teamId": "tea_b4rMsi2trB42WyuWP",
-                      "leadId": "lea_WoeA2FAw8jemE2Mex",
-                      "campaignId": "cam_FYRAZMW5utAA7LXCN",
-                      "sequenceId": "seq_L9e465mzuwq3R63NC",
+                      "fromEmail": "alex@example.com",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "leadId": "lea_lzfQLRbKAZdKvjCwg",
+                      "campaignId": "cam_UBbMt30jHq0vNJKJr",
+                      "sequenceId": "seq_ZDRIjDniOznJJLcKO",
                       "sequenceStep": 0,
-                      "sendUserId": "usr_t2KCwPen66NrrqGtQ",
-                      "sendUserName": "Christophe OPOIX",
-                      "sendUserEmail": "christophe.o@lemtest.com",
-                      "sendUserMailboxId": "usm_zs86Mc8ZbHXfkLBAC",
-                      "leadEmail": "victoire@lemlist.co",
-                      "contactId": "ctc_wfKeM8EmiTikud7QE",
-                      "message": "<div dir=\"ltr\">Haha Welcome Christophe, j&#39;adore cette campagne ! <br><br>A très vite, <div>Victoire </div></div><br><div class=\"gmail_quote gmail_quote_container\"><div dir=\"ltr\" class=\"gmail_attr\">On Tue, Dec 3, 2024 at 10:52 AM Christophe OPOIX &lt;<a href=\"mailto:christophe.o@lemtest.com\">christophe.o@lemtest.com</a>&gt; wrote:<br></div><blockquote class=\"gmail_quote\" style=\"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex\"><div style=\"min-width:360px\"></div><div dir=\"ltr\">\n    <div><p style=\"margin:0px;box-sizing:border-box\">Hey Victoire  , </p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">I hope this email finds you well!</p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">Have you ever heard about Christophe Opoix? <br> <br>🇫🇷 He was a member of the French Parliament during the French Revolution, <br>🏘️ He has a street named after him<br><strong style=\"font-weight:700;box-sizing:border-box\">📙 </strong>He authored the famous &quot;Beurre frais épuré, et conservant longtemps ses bonnes qualités, sans devenir rance&quot;.<br style=\"box-sizing:border-box\"><br style=\"box-sizing:border-box\"><img width=\"134\" style=\"width: 134px; display: block; vertical-align: top; margin: 5px auto; text-align: center; border-style: none; padding: 0px 1px; box-sizing: border-box;\" src=\"https://zr0.lemlst.org/api/files/Files/fil_gGjMMAcLNwc7q654u.png\"></p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">Unfortunately, this brilliant man died ages ago...</p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">But wait, there&#39;s another Christophe Opoix you might be interested in meeting—one who is very much alive and well! Yes, that&#39;s me. I&#39;ve just joined Lemlist, and I&#39;m looking forward to meeting everyone for a quick chat.</p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">☑️ Book an appointment on 📅 <a style=\"color:rgb(51,138,241);text-decoration:none;background-color:transparent;box-sizing:border-box;font-weight:500\" href=\"https://app.lemcal.com/@christophe-opoix/15-min-chat?leadId=lea_WoeA2FAw8jemE2Mex\" target=\"_blank\">my lemcal</a> !</p><p style=\"margin:0px;box-sizing:border-box\"><br></p><p style=\"margin:0px;box-sizing:border-box\">Feel free to reach out and get to know me better. I'm excited to be part of the team and eager to contribute to our collective success.</p><p style=\"margin:0px;box-sizing:border-box\">Looking forward to seeing you all soon!<br style=\"box-sizing:border-box\"><br style=\"box-sizing:border-box\">Best regards, as your contemporary, Christophe Opoix</p></div>\n    <div class=\"gmail_extra\">\n      <div class=\"gmail_signature\"><div dir=\"ltr\"><div><div dir=\"ltr\"></div></div></div></div>\n      \n    </div>\n    </div>\n<span summary=\"/api/reply/data-ll-tsk_FvpBdB4NwuyG7GGTf\"></span>\n<img alt=\"logo\" src=\"https://zr0.lemlst.org/api/track/open/usr_t2KCwPen66NrrqGtQ/tsk_FvpBdB4NwuyG7GGTf\" height=\"1\" width=\"1\">\n</blockquote></div>\n",
-                      "subject": "Re: Have you heard about Christophe Opoix ?",
+                      "sendUserId": "usr_xtJHBMYJSOHzI3ZFb",
+                      "sendUserName": "Jordan DOE",
+                      "sendUserEmail": "jordan.doe@example.com",
+                      "sendUserMailboxId": "usm_CT2BPoHic0I1cmitZ",
+                      "leadEmail": "alex@example.com",
+                      "contactId": "ctc_Ds0IaxECSACsbLMzA",
+                      "message": "<div dir=\"ltr\">Haha Welcome Jordan, j&#39;adore cette campagne ! <br><br>A très vite, <div>Alex </div></div><br><div class=\"gmail_quote gmail_quote_container\"><div dir=\"ltr\" class=\"gmail_attr\">On Tue, Dec 3, 2024 at 10:52 AM Jordan DOE &lt;<a href=\"mailto:jordan.doe@example.com\">jordan.doe@example.com</a>&gt; wrote:<br></div><blockquote class=\"gmail_quote\" style=\"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex\"><div style=\"min-width:360px\"></div><div dir=\"ltr\">\n    <div><p style=\"margin:0px;box-sizing:border-box\">Hey Alex  , </p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">I hope this email finds you well!</p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">Have you ever heard about Jordan Doe? <br> <br>🇫🇷 He was a member of the French Parliament during the French Revolution, <br>🏘️ He has a street named after him<br><strong style=\"font-weight:700;box-sizing:border-box\">📙 </strong>He authored the famous &quot;Beurre frais épuré, et conservant longtemps ses bonnes qualités, sans devenir rance&quot;.<br style=\"box-sizing:border-box\"><br style=\"box-sizing:border-box\"><img width=\"134\" style=\"width: 134px; display: block; vertical-align: top; margin: 5px auto; text-align: center; border-style: none; padding: 0px 1px; box-sizing: border-box;\" src=\"https://zr0.lemlst.org/api/files/Files/fil_3WlQwHwsxgZZCRnu3.png\"></p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">Unfortunately, this brilliant man died ages ago...</p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">But wait, there&#39;s another Jordan Doe you might be interested in meeting—one who is very much alive and well! Yes, that&#39;s me. I&#39;ve just joined Lemlist, and I&#39;m looking forward to meeting everyone for a quick chat.</p><p style=\"margin:0px;box-sizing:border-box\"><br style=\"box-sizing:border-box\"></p><p style=\"margin:0px;box-sizing:border-box\">☑️ Book an appointment on 📅 <a style=\"color:rgb(51,138,241);text-decoration:none;background-color:transparent;box-sizing:border-box;font-weight:500\" href=\"https://app.lemcal.com/@jordan-doe/15-min-chat?leadId=lea_lzfQLRbKAZdKvjCwg\" target=\"_blank\">my lemcal</a> !</p><p style=\"margin:0px;box-sizing:border-box\"><br></p><p style=\"margin:0px;box-sizing:border-box\">Feel free to reach out and get to know me better. I'm excited to be part of the team and eager to contribute to our collective success.</p><p style=\"margin:0px;box-sizing:border-box\">Looking forward to seeing you all soon!<br style=\"box-sizing:border-box\"><br style=\"box-sizing:border-box\">Best regards, as your contemporary, Jordan Doe</p></div>\n    <div class=\"gmail_extra\">\n      <div class=\"gmail_signature\"><div dir=\"ltr\"><div><div dir=\"ltr\"></div></div></div></div>\n      \n    </div>\n    </div>\n<span summary=\"/api/reply/data-ll-tsk_IMjjv5uq8YIsjuDSw\"></span>\n<img alt=\"logo\" src=\"https://zr0.lemlst.org/api/track/open/usr_xtJHBMYJSOHzI3ZFb/tsk_IMjjv5uq8YIsjuDSw\" height=\"1\" width=\"1\">\n</blockquote></div>\n",
+                      "subject": "Re: Have you heard about Jordan Doe ?",
                       "attachments": []
                     },
                     {
-                      "_id": "act_mjdoySn9mkfbcMS5e",
+                      "_id": "act_gKmkJOLCfUl4TkhIl",
                       "type": "emailsSent",
                       "messageId": "<CADuPnhJfe0BDrR47w4DNsvQT9kStS3DHQ9B4cP2=8AciE_M42w@mail.gmail.com>",
                       "createdAt": "2024-12-03T09:52:55.319Z",
-                      "teamId": "tea_b4rMsi2trB42WyuWP",
-                      "leadId": "lea_WoeA2FAw8jemE2Mex",
-                      "campaignId": "cam_FYRAZMW5utAA7LXCN",
-                      "sequenceId": "seq_L9e465mzuwq3R63NC",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "leadId": "lea_lzfQLRbKAZdKvjCwg",
+                      "campaignId": "cam_UBbMt30jHq0vNJKJr",
+                      "sequenceId": "seq_ZDRIjDniOznJJLcKO",
                       "sequenceStep": 0,
-                      "sendUserId": "usr_t2KCwPen66NrrqGtQ",
-                      "sendUserName": "Christophe OPOIX",
-                      "sendUserEmail": "christophe.o@lemtest.com",
-                      "sendUserMailboxId": "usm_zs86Mc8ZbHXfkLBAC",
-                      "leadEmail": "victoire@lemlist.co",
-                      "contactId": "ctc_wfKeM8EmiTikud7QE",
-                      "message": "<html><div style=\"min-width: 360px\"></div><div dir=\"ltr\">\n    <div><p style=\"margin: 0px; box-sizing: border-box;\">Hey Victoire  ,&nbsp;</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">I hope this email finds you well!</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">Have you ever heard about Christophe Opoix? <br> <br>🇫🇷 He was a member of the French Parliament during the French Revolution, <br>🏘️ He has a street named after him<br><strong style=\"font-weight: 700; box-sizing: border-box;\">📙&nbsp;</strong>He authored the famous \"Beurre frais épuré, et conservant longtemps ses bonnes qualités, sans devenir rance\".<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"><img  width=\"134\" style=\"width: 134px; display: block; vertical-align: top; margin: 5px auto; text-align: center; border-style: none; cursor: pointer; padding: 0px 1px; box-sizing: border-box;\" src=\"https://zr0.lemlst.org/api/files/Files/fil_gGjMMAcLNwc7q654u.png\"></p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">Unfortunately, this brilliant man died ages ago...</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">But wait, there's another Christophe Opoix you might be interested in meeting—one who is very much alive and well! Yes, that's me. I've just joined Lemlist, and I'm looking forward to meeting everyone for a quick chat.</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">☑️ Book an appointment on 📅 <a style=\"color: rgb(51, 138, 241); text-decoration: none; background-color: transparent; user-select: auto; box-sizing: border-box; font-weight: 500;\" href=\"https://app.lemcal.com/@christophe-opoix/15-min-chat?leadId=lea_WoeA2FAw8jemE2Mex\">my lemcal</a> !</p><p style=\"margin: 0px; box-sizing: border-box;\"><br></p><p style=\"margin: 0px; box-sizing: border-box;\">Feel free to reach out and get to know me better. I'm excited to be part of the team and eager to contribute to our collective success.</p><p style=\"margin: 0px; box-sizing: border-box;\">Looking forward to seeing you all soon!<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">Best regards, as your contemporary, Christophe Opoix</p></div>\n    <div class=\"gmail_extra\">\n      <div class=\"gmail_signature\" data-smartmail=\"gmail_signature\"><div dir=\"ltr\"><div><div dir=\"ltr\"></div></div></div></div>\n      \n    </div>\n    </div>\n<span summary=\"/api/reply/data-ll-tsk_FvpBdB4NwuyG7GGTf\"></span>\n<img alt=\"logo\" src=\"https://zr0.lemlst.org/api/track/open/usr_t2KCwPen66NrrqGtQ/tsk_FvpBdB4NwuyG7GGTf\" height=\"1\" width=\"1\"></html>",
-                      "subject": "Have you heard about Christophe Opoix  ?",
+                      "sendUserId": "usr_xtJHBMYJSOHzI3ZFb",
+                      "sendUserName": "Jordan DOE",
+                      "sendUserEmail": "jordan.doe@example.com",
+                      "sendUserMailboxId": "usm_CT2BPoHic0I1cmitZ",
+                      "leadEmail": "alex@example.com",
+                      "contactId": "ctc_Ds0IaxECSACsbLMzA",
+                      "message": "<html><div style=\"min-width: 360px\"></div><div dir=\"ltr\">\n    <div><p style=\"margin: 0px; box-sizing: border-box;\">Hey Alex  ,&nbsp;</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">I hope this email finds you well!</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">Have you ever heard about Jordan Doe? <br> <br>🇫🇷 He was a member of the French Parliament during the French Revolution, <br>🏘️ He has a street named after him<br><strong style=\"font-weight: 700; box-sizing: border-box;\">📙&nbsp;</strong>He authored the famous \"Beurre frais épuré, et conservant longtemps ses bonnes qualités, sans devenir rance\".<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"><img  width=\"134\" style=\"width: 134px; display: block; vertical-align: top; margin: 5px auto; text-align: center; border-style: none; cursor: pointer; padding: 0px 1px; box-sizing: border-box;\" src=\"https://zr0.lemlst.org/api/files/Files/fil_3WlQwHwsxgZZCRnu3.png\"></p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">Unfortunately, this brilliant man died ages ago...</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">But wait, there's another Jordan Doe you might be interested in meeting—one who is very much alive and well! Yes, that's me. I've just joined Lemlist, and I'm looking forward to meeting everyone for a quick chat.</p><p style=\"margin: 0px; box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p><p style=\"margin: 0px; box-sizing: border-box;\">☑️ Book an appointment on 📅 <a style=\"color: rgb(51, 138, 241); text-decoration: none; background-color: transparent; user-select: auto; box-sizing: border-box; font-weight: 500;\" href=\"https://app.lemcal.com/@jordan-doe/15-min-chat?leadId=lea_lzfQLRbKAZdKvjCwg\">my lemcal</a> !</p><p style=\"margin: 0px; box-sizing: border-box;\"><br></p><p style=\"margin: 0px; box-sizing: border-box;\">Feel free to reach out and get to know me better. I'm excited to be part of the team and eager to contribute to our collective success.</p><p style=\"margin: 0px; box-sizing: border-box;\">Looking forward to seeing you all soon!<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">Best regards, as your contemporary, Jordan Doe</p></div>\n    <div class=\"gmail_extra\">\n      <div class=\"gmail_signature\" data-smartmail=\"gmail_signature\"><div dir=\"ltr\"><div><div dir=\"ltr\"></div></div></div></div>\n      \n    </div>\n    </div>\n<span summary=\"/api/reply/data-ll-tsk_IMjjv5uq8YIsjuDSw\"></span>\n<img alt=\"logo\" src=\"https://zr0.lemlst.org/api/track/open/usr_xtJHBMYJSOHzI3ZFb/tsk_IMjjv5uq8YIsjuDSw\" height=\"1\" width=\"1\"></html>",
+                      "subject": "Have you heard about Jordan Doe  ?",
                       "attachments": []
                     }
                   ],
@@ -10169,11 +10169,11 @@
                 ]
               },
               "example": {
-                "sendUserId": "usr_h47tiJr87Zn7XtQHi",
+                "sendUserId": "usr_FU6yAd3UdBFel0UDy",
                 "sendUserEmail": "john@example.com",
-                "sendUserMailboxId": "usm_CE8QtNtgMjTHjfaL8",
-                "contactId": "ctc_yHXD3NWjPg7Z9MuWZ",
-                "leadId": "lea_7HAh3odqPKamkBTv9",
+                "sendUserMailboxId": "usm_pmZsNNO1gl5nwCQ07",
+                "contactId": "ctc_ei6zVayP9B2ugwUPN",
+                "leadId": "lea_wadZOcDDSFWSbFaCf",
                 "subject": "Follow up",
                 "message": "<p>Hello,</p><p>Following up on our conversation...</p>",
                 "cc": []
@@ -10256,9 +10256,9 @@
                 ]
               },
               "example": {
-                "sendUserId": "usr_h47tiJr87Zn7XtQHi",
-                "leadId": "lea_7HAh3odqPKamkBTv9",
-                "contactId": "ctc_yHXD3NWjPg7Z9MuWZ",
+                "sendUserId": "usr_FU6yAd3UdBFel0UDy",
+                "leadId": "lea_wadZOcDDSFWSbFaCf",
+                "contactId": "ctc_ei6zVayP9B2ugwUPN",
                 "message": "Hi, I wanted to follow up..."
               }
             }
@@ -10348,10 +10348,10 @@
                 ]
               },
               "example": {
-                "sendUserId": "usr_h47tiJr87Zn7XtQHi",
+                "sendUserId": "usr_FU6yAd3UdBFel0UDy",
                 "sendUserWhatsappAccountId": "wha_ABC123",
-                "contactId": "ctc_yHXD3NWjPg7Z9MuWZ",
-                "leadId": "lea_7HAh3odqPKamkBTv9",
+                "contactId": "ctc_ei6zVayP9B2ugwUPN",
+                "leadId": "lea_wadZOcDDSFWSbFaCf",
                 "message": "Hi, following up on our conversation"
               }
             }
@@ -10404,7 +10404,7 @@
                 },
                 "example": [
                   {
-                    "_id": "lbl_3bgE97gvicZ888wz4",
+                    "_id": "lbl_uPAAgsi4oi9juBHfW",
                     "name": "Interested",
                     "color": "#F9A2A2",
                     "createdAt": "2025-11-26T15:49:23.470Z",
@@ -10469,7 +10469,7 @@
                   "$ref": "#/components/schemas/Label"
                 },
                 "example": {
-                  "_id": "lbl_3bgE97gvicZ888wz4",
+                  "_id": "lbl_uPAAgsi4oi9juBHfW",
                   "name": "Interested",
                   "color": "#F9A2A2",
                   "createdAt": "2025-11-26T15:49:23.470Z"
@@ -10521,7 +10521,7 @@
             "in": "path",
             "required": true,
             "description": "Label ID",
-            "example": "lbl_3bgE97gvicZ888wz4",
+            "example": "lbl_uPAAgsi4oi9juBHfW",
             "schema": {
               "type": "string"
             }
@@ -10536,7 +10536,7 @@
                   "$ref": "#/components/schemas/Label"
                 },
                 "example": {
-                  "_id": "lbl_3bgE97gvicZ888wz4",
+                  "_id": "lbl_uPAAgsi4oi9juBHfW",
                   "name": "Interested",
                   "color": "#F9A2A2",
                   "createdAt": "2025-11-26T15:49:23.470Z",
@@ -10588,7 +10588,7 @@
             "in": "path",
             "required": true,
             "description": "Contact ID",
-            "example": "ctc_yHXD3NWjPg7Z9MuWZ",
+            "example": "ctc_ei6zVayP9B2ugwUPN",
             "schema": {
               "type": "string"
             }
@@ -10619,8 +10619,8 @@
               },
               "example": {
                 "labelIds": [
-                  "lbl_3bgE97gvicZ888wz4",
-                  "lbl_5kfD28hvjdA777xy9"
+                  "lbl_uPAAgsi4oi9juBHfW",
+                  "lbl_oZCShmPCP2L43b8qf"
                 ],
                 "appendLabels": true
               }
@@ -10687,7 +10687,7 @@
             "in": "path",
             "required": true,
             "description": "Contact ID",
-            "example": "ctc_yHXD3NWjPg7Z9MuWZ",
+            "example": "ctc_ei6zVayP9B2ugwUPN",
             "schema": {
               "type": "string"
             }
@@ -10713,7 +10713,7 @@
               },
               "example": {
                 "labelIds": [
-                  "lbl_3bgE97gvicZ888wz4"
+                  "lbl_uPAAgsi4oi9juBHfW"
                 ]
               }
             }
@@ -10781,7 +10781,7 @@
             "in": "path",
             "required": true,
             "description": "Contact ID",
-            "example": "ctc_yHXD3NWjPg7Z9MuWZ",
+            "example": "ctc_ei6zVayP9B2ugwUPN",
             "schema": {
               "type": "string"
             }
@@ -10904,7 +10904,7 @@
             "in": "path",
             "required": true,
             "description": "Contact ID",
-            "example": "ctc_yHXD3NWjPg7Z9MuWZ",
+            "example": "ctc_ei6zVayP9B2ugwUPN",
             "schema": {
               "type": "string"
             }
@@ -11055,7 +11055,7 @@
             "in": "path",
             "required": true,
             "description": "Contact ID",
-            "example": "ctc_yHXD3NWjPg7Z9MuWZ",
+            "example": "ctc_ei6zVayP9B2ugwUPN",
             "schema": {
               "type": "string"
             }
@@ -11221,7 +11221,7 @@
             "in": "path",
             "required": true,
             "description": "Contact ID",
-            "example": "ctc_yHXD3NWjPg7Z9MuWZ",
+            "example": "ctc_ei6zVayP9B2ugwUPN",
             "schema": {
               "type": "string"
             }
@@ -11446,7 +11446,7 @@
             "in": "path",
             "required": true,
             "description": "Contact ID",
-            "example": "ctc_yHXD3NWjPg7Z9MuWZ",
+            "example": "ctc_ei6zVayP9B2ugwUPN",
             "schema": {
               "type": "string"
             }
@@ -11534,7 +11534,7 @@
             "in": "query",
             "required": false,
             "description": "A comma separated string of either valid contact IDs (MongoDB ObjectId) or valid email addresses. At least one of `idsOrEmails`, `search`, `email`, `listId`, or `notInAnyCampaign` is required.",
-            "example": "ctc_Rofmb6uNGyaPNZ2ni,chafik@lemlist.co",
+            "example": "ctc_xW8Ou6C03Csv8vatp,riley@example.com",
             "schema": {
               "type": "string"
             },
@@ -11617,14 +11617,14 @@
                 },
                 "example": [
                   {
-                    "_id": "ctc_Rofmb6uNGyaPNZ2ni",
-                    "teamId": "tea_b4rMsi2trB42WyuWP",
-                    "fullName": "Bastien Velitchkine",
+                    "_id": "ctc_xW8Ou6C03Csv8vatp",
+                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                    "fullName": "John Doe",
                     "email": "support@lemlist.com",
                     "fields": {
-                      "firstName": "Bastien",
+                      "firstName": "John",
                       "jobTitle": "Growth Engineer",
-                      "lastName": "Velitchkine",
+                      "lastName": "Doe",
                       "industry": "Technology",
                       "isActiveInCampaigns": false,
                       "lastCampaign": "NEW TO DELETE",
@@ -11633,55 +11633,55 @@
                     },
                     "campaigns": [
                       {
-                        "campaignId": "cam_9NsHPnykWESTncCW8",
+                        "campaignId": "cam_bSn8EORHQxbWPjHvu",
                         "campaignState": "running",
                         "leadState": "review",
-                        "leadId": "lea_mizMsAEkRrJuhouYe"
+                        "leadId": "lea_fiDpiGV585wy3Oii2"
                       }
                     ],
-                    "ownerId": "usr_gmHgNGRcGPSTJrDbT",
+                    "ownerId": "usr_ahfFktBBHUIxbVG5P",
                     "createdAt": "2025-10-28T00:40:37.917Z",
-                    "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                    "createdBy": "usr_ahfFktBBHUIxbVG5P",
                     "unsubscribed": false
                   },
                   {
-                    "_id": "ctc_8aECJTHfPfbMy6mSG",
-                    "teamId": "tea_b4rMsi2trB42WyuWP",
-                    "fullName": "Chafik",
-                    "email": "chafik@lemlist.co",
+                    "_id": "ctc_a9RxJNa7pmMd85H9b",
+                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                    "fullName": "Casey",
+                    "email": "riley@example.com",
                     "fields": {
-                      "firstName": "Chafik",
+                      "firstName": "Casey",
                       "isActiveInCampaigns": false
                     },
                     "campaigns": [
                       {
-                        "campaignId": "cam_aMkkjon7Ggb86v4qk",
+                        "campaignId": "cam_jwm7THjgGFE3ylR85",
                         "campaignState": "running",
                         "leadState": "done",
-                        "leadId": "lea_etnTnRnnGPzayGdMm"
+                        "leadId": "lea_XKjAytuJhBKZhxhWh"
                       },
                       {
-                        "campaignId": "cam_HjAXkn4woJgvRgj7Q",
+                        "campaignId": "cam_eF4DlNERV0CW1TwRd",
                         "campaignState": "running",
                         "leadState": "done",
-                        "leadId": "lea_5KQh7BKpiCicxTZsG"
+                        "leadId": "lea_fJcS9D3UtEqZcDcAG"
                       },
                       {
-                        "campaignId": "cam_FYRAZMW5utAA7LXCN",
+                        "campaignId": "cam_UBbMt30jHq0vNJKJr",
                         "campaignState": "running",
                         "leadState": "done",
-                        "leadId": "lea_CG8KkGEKYMpZFREgp"
+                        "leadId": "lea_GlaMfjxlUYuwEDL0w"
                       },
                       {
-                        "campaignId": "cam_JnZqKnuSvoD4jsQuo",
+                        "campaignId": "cam_pijDVnytN5S7frriD",
                         "campaignState": "running",
                         "leadState": "review",
-                        "leadId": "lea_K5Kcyg2vSN4PLZunL"
+                        "leadId": "lea_Bs9aMGCcjdzTDvixY"
                       }
                     ],
-                    "ownerId": "usr_4YGm9ez7gMd2okyRp",
+                    "ownerId": "usr_Emu1g29BMtBixhMSP",
                     "createdAt": "2024-10-01T09:00:13.831Z",
-                    "createdBy": "usr_4YGm9ez7gMd2okyRp",
+                    "createdBy": "usr_Emu1g29BMtBixhMSP",
                     "unsubscribed": true
                   }
                 ]
@@ -11940,8 +11940,8 @@
                 "example": {
                   "success": true,
                   "data": {
-                    "_id": "ctc_Rofmb6uNGyaPNZ2ni",
-                    "teamId": "tea_b4rMsi2trB42WyuWP",
+                    "_id": "ctc_xW8Ou6C03Csv8vatp",
+                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
                     "emails": [
                       {
                         "value": "jane.smith@example.com"
@@ -11953,14 +11953,14 @@
                       "lastName": "Smith",
                       "jobTitle": "Product Manager"
                     },
-                    "ownerId": "usr_gmHgNGRcGPSTJrDbT",
+                    "ownerId": "usr_ahfFktBBHUIxbVG5P",
                     "source": "api",
                     "createdAt": "2025-10-28T00:40:37.917Z",
-                    "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                    "createdBy": "usr_ahfFktBBHUIxbVG5P",
                     "unsubscribed": false,
                     "created": true,
                     "companyLinked": true,
-                    "companyId": "cpn_8H6uDPbNcNfZjkcSP"
+                    "companyId": "cpn_gG7PsmZFpEAnpMCHO"
                   }
                 }
               }
@@ -11985,8 +11985,8 @@
                 "example": {
                   "success": true,
                   "data": {
-                    "_id": "ctc_Rofmb6uNGyaPNZ2ni",
-                    "teamId": "tea_b4rMsi2trB42WyuWP",
+                    "_id": "ctc_xW8Ou6C03Csv8vatp",
+                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
                     "emails": [
                       {
                         "value": "jane.smith@example.com"
@@ -11997,10 +11997,10 @@
                       "lastName": "Smith",
                       "jobTitle": "Product Manager"
                     },
-                    "ownerId": "usr_gmHgNGRcGPSTJrDbT",
+                    "ownerId": "usr_ahfFktBBHUIxbVG5P",
                     "source": "api",
                     "createdAt": "2025-10-28T00:40:37.917Z",
-                    "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                    "createdBy": "usr_ahfFktBBHUIxbVG5P",
                     "unsubscribed": false,
                     "created": false,
                     "updated": true,
@@ -12063,7 +12063,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier or email of the contact",
-          "example": "ctc_Ri5gMtaeDGufRQ3M2",
+          "example": "ctc_XXBXpAxmxwg24IzBI",
           "schema": {
             "type": "string"
           }
@@ -12083,14 +12083,14 @@
                   "$ref": "#/components/schemas/Contact"
                 },
                 "example": {
-                  "_id": "ctc_Rofmb6uNGyaPNZ2ni",
-                  "teamId": "tea_b4rMsi2trB42WyuWP",
-                  "fullName": "Bastien Velitchkine",
+                  "_id": "ctc_xW8Ou6C03Csv8vatp",
+                  "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                  "fullName": "John Doe",
                   "email": "support@lemlist.com",
                   "fields": {
-                    "firstName": "Bastien",
+                    "firstName": "John",
                     "jobTitle": "Growth Engineer",
-                    "lastName": "Velitchkine",
+                    "lastName": "Doe",
                     "industry": "Technology",
                     "isActiveInCampaigns": false,
                     "lastCampaign": "NEW TO DELETE",
@@ -12099,15 +12099,15 @@
                   },
                   "campaigns": [
                     {
-                      "campaignId": "cam_9NsHPnykWESTncCW8",
+                      "campaignId": "cam_bSn8EORHQxbWPjHvu",
                       "campaignState": "running",
                       "leadState": "review",
-                      "leadId": "lea_mizMsAEkRrJuhouYe"
+                      "leadId": "lea_fiDpiGV585wy3Oii2"
                     }
                   ],
-                  "ownerId": "usr_gmHgNGRcGPSTJrDbT",
+                  "ownerId": "usr_ahfFktBBHUIxbVG5P",
                   "createdAt": "2025-10-28T00:40:37.917Z",
-                  "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                  "createdBy": "usr_ahfFktBBHUIxbVG5P",
                   "unsubscribed": false
                 }
               }
@@ -12464,7 +12464,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier of the user mailbox",
-          "example": "usm_bsdepN6jb8zftK9Ns",
+          "example": "usm_2mkqJNUjnJQiyVBht",
           "schema": {
             "type": "string"
           }
@@ -12524,7 +12524,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier of the user mailbox",
-          "example": "usm_bsdepN6jb8zftK9Ns",
+          "example": "usm_2mkqJNUjnJQiyVBht",
           "schema": {
             "type": "string"
           }
@@ -12584,7 +12584,7 @@
           "in": "path",
           "required": true,
           "description": "The unique identifier of the user mailbox",
-          "example": "usm_bsdepN6jb8zftK9Ns",
+          "example": "usm_2mkqJNUjnJQiyVBht",
           "schema": {
             "type": "string"
           }
@@ -12719,7 +12719,7 @@
             "in": "query",
             "required": false,
             "description": "Comma-separated list of company IDs or domains to fetch. When provided, returns only matching companies (no pagination). Each value is classified as a company ID (e.g. `cpn_xxx`) or a domain (e.g. `example.com`). URLs are normalized automatically (e.g. `https://example.com/path` → `example.com`). Invalid values are silently skipped. Maximum 100 values.",
-            "example": "cpn_8H6uDPbNcNfZjkcSP,persana.ai",
+            "example": "cpn_gG7PsmZFpEAnpMCHO,persana.ai",
             "schema": {
               "type": "string"
             }
@@ -12818,49 +12818,49 @@
                 "example": {
                   "data": [
                     {
-                      "_id": "cpn_8H6uDPbNcNfZjkcSP",
+                      "_id": "cpn_gG7PsmZFpEAnpMCHO",
                       "createdAt": "2025-10-26T11:54:27.387Z",
-                      "createdBy": "usr_69Fdorq5viufKjmaC",
+                      "createdBy": "usr_iGBmhLaxZmL0s7k1G",
                       "domain": "persana.ai",
                       "fields": {
                         "name": "Persana AI",
-                        "picture": "https://na1.hubspot-logos.com/5ebdfc36-78f7-4b08-807b-a9ad16bedffe"
+                        "picture": "https://example.com/logos/company-1.png"
                       },
-                      "ownerId": "usr_69Fdorq5viufKjmaC"
+                      "ownerId": "usr_iGBmhLaxZmL0s7k1G"
                     },
                     {
-                      "_id": "cpn_SsDjkMjBGcWuSwfY9",
+                      "_id": "cpn_FEWCjzMWXo5StjpDa",
                       "createdAt": "2025-10-26T11:45:18.773Z",
-                      "createdBy": "usr_69Fdorq5viufKjmaC",
+                      "createdBy": "usr_iGBmhLaxZmL0s7k1G",
                       "domain": "duno.ai",
                       "fields": {
                         "industry": "IT Services and IT Consulting",
                         "name": "Duno.ai",
-                        "picture": "https://na1.hubspot-logos.com/ff51951b-e4f7-4690-9064-7a5b3b869b03"
+                        "picture": "https://example.com/logos/company-2.png"
                       },
-                      "ownerId": "usr_69Fdorq5viufKjmaC"
+                      "ownerId": "usr_iGBmhLaxZmL0s7k1G"
                     },
                     {
-                      "_id": "cpn_7EhAXrxYotchvscLZ",
+                      "_id": "cpn_2STz8x5Bexmd0nvIz",
                       "createdAt": "2025-10-25T21:37:45.741Z",
-                      "createdBy": "usr_69Fdorq5viufKjmaC",
+                      "createdBy": "usr_iGBmhLaxZmL0s7k1G",
                       "domain": "tally.so",
                       "fields": {
                         "industry": "Computer Software",
                         "name": "lemlist family",
-                        "picture": "https://media.licdn.com/dms/image/v2/C4E0BAQHp6ggzmz_Fww/company-logo_400_400/company-logo_400_400/0/1669824907832/lemlist_family_logo?e=1758758400&v=beta&t=NA5CZv7ZovCDRmlp4VR6GGU88VO9VJPCGbqDf2nANSI"
+                        "picture": "https://example.com/logos/lemlist.png"
                       },
-                      "ownerId": "usr_69Fdorq5viufKjmaC"
+                      "ownerId": "usr_iGBmhLaxZmL0s7k1G"
                     },
                     {
-                      "_id": "cpn_9Q9wjZR9R7rs3HE53",
+                      "_id": "cpn_Qf4CJuUrNUNmHm6uZ",
                       "createdAt": "2025-10-24T07:26:34.956Z",
-                      "createdBy": "usr_gmHgNGRcGPSTJrDbT",
-                      "domain": "bvelitchkine.com",
+                      "createdBy": "usr_ahfFktBBHUIxbVG5P",
+                      "domain": "example.com",
                       "fields": {
                         "name": "Growth & GTM Engineering"
                       },
-                      "ownerId": "usr_gmHgNGRcGPSTJrDbT"
+                      "ownerId": "usr_ahfFktBBHUIxbVG5P"
                     }
                   ],
                   "total": 59310
@@ -13068,8 +13068,8 @@
                 "example": {
                   "success": true,
                   "data": {
-                    "_id": "cpn_8H6uDPbNcNfZjkcSP",
-                    "teamId": "tea_b4rMsi2trB42WyuWP",
+                    "_id": "cpn_gG7PsmZFpEAnpMCHO",
+                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
                     "domain": "acme.com",
                     "linkedinUrl": "https://www.linkedin.com/company/acme",
                     "fields": {
@@ -13077,10 +13077,10 @@
                       "industry": "Technology",
                       "location": "San Francisco, CA"
                     },
-                    "ownerId": "usr_gmHgNGRcGPSTJrDbT",
+                    "ownerId": "usr_ahfFktBBHUIxbVG5P",
                     "source": "api",
                     "createdAt": "2025-10-28T00:40:37.917Z",
-                    "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                    "createdBy": "usr_ahfFktBBHUIxbVG5P",
                     "created": true
                   }
                 }
@@ -13106,18 +13106,18 @@
                 "example": {
                   "success": true,
                   "data": {
-                    "_id": "cpn_8H6uDPbNcNfZjkcSP",
-                    "teamId": "tea_b4rMsi2trB42WyuWP",
+                    "_id": "cpn_gG7PsmZFpEAnpMCHO",
+                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
                     "domain": "acme.com",
                     "fields": {
                       "name": "Acme Corp",
                       "industry": "Technology",
                       "location": "San Francisco, CA"
                     },
-                    "ownerId": "usr_gmHgNGRcGPSTJrDbT",
+                    "ownerId": "usr_ahfFktBBHUIxbVG5P",
                     "source": "api",
                     "createdAt": "2025-10-28T00:40:37.917Z",
-                    "createdBy": "usr_gmHgNGRcGPSTJrDbT",
+                    "createdBy": "usr_ahfFktBBHUIxbVG5P",
                     "created": false,
                     "updated": true
                   }
@@ -13264,20 +13264,20 @@
                 "example": {
                   "data": [
                     {
-                      "_id": "act_42k26Chi3iya8rfjX",
-                      "teamId": "tea_b4rMsi2trB42WyuWP",
-                      "companyId": "cpn_9Q9wjZR9R7rs3HE53",
+                      "_id": "act_j0NrG6rYEPP9TMmWC",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "companyId": "cpn_Qf4CJuUrNUNmHm6uZ",
                       "createdAt": "2025-10-28T04:25:00.653Z",
                       "note": "could help our GTM team be more productive",
-                      "userId": "usr_gmHgNGRcGPSTJrDbT"
+                      "userId": "usr_ahfFktBBHUIxbVG5P"
                     },
                     {
-                      "_id": "act_QTehBr844jD2a72hn",
-                      "teamId": "tea_b4rMsi2trB42WyuWP",
-                      "companyId": "cpn_9Q9wjZR9R7rs3HE53",
+                      "_id": "act_BYF2j06u0wgeLncub",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "companyId": "cpn_Qf4CJuUrNUNmHm6uZ",
                       "createdAt": "2025-10-24T12:42:40.605Z",
                       "note": "Note created from the API!",
-                      "userId": "usr_gmHgNGRcGPSTJrDbT"
+                      "userId": "usr_ahfFktBBHUIxbVG5P"
                     }
                   ],
                   "total": 2
@@ -13349,14 +13349,14 @@
                   "$ref": "#/components/schemas/CompanyNote"
                 },
                 "example": {
-                  "_id": "act_42k26Chi3iya8rfjX",
-                  "teamId": "tea_b4rMsi2trB42WyuWP",
-                  "companyId": "cpn_9Q9wjZR9R7rs3HE53",
+                  "_id": "act_j0NrG6rYEPP9TMmWC",
+                  "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                  "companyId": "cpn_Qf4CJuUrNUNmHm6uZ",
                   "type": "annotated",
                   "createdAt": "2025-10-28T04:25:00.653Z",
                   "note": "could help our GTM team be more productive",
-                  "sendUserId": "usr_gmHgNGRcGPSTJrDbT",
-                  "userId": "usr_gmHgNGRcGPSTJrDbT"
+                  "sendUserId": "usr_ahfFktBBHUIxbVG5P",
+                  "userId": "usr_ahfFktBBHUIxbVG5P"
                 }
               }
             }
@@ -13486,45 +13486,45 @@
                 },
                 "example": [
                   {
-                    "_id": "act_6AgzAuEtMzTF7X8Yf",
+                    "_id": "act_PbKqTGpQqSlPcoOZ5",
                     "type": "manualDone",
-                    "userId": "usr_4YGm9ez7gMd2okyRp",
+                    "userId": "usr_Emu1g29BMtBixhMSP",
                     "userName": "Guillaume Moubeche",
                     "bot": false,
                     "createdAt": "2025-10-28T08:07:38.375Z",
-                    "leadFirstName": "Bastien",
-                    "leadLastName": "Velitchkine",
+                    "leadFirstName": "John",
+                    "leadLastName": "Doe",
                     "leadEmail": "support@lemlist.com",
-                    "leadCompanyName": "Bastien VELITCHKINE EI",
-                    "leadId": "lea_mizMsAEkRrJuhouYe",
-                    "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
-                    "campaignId": "cam_9NsHPnykWESTncCW8",
-                    "teamId": "tea_b4rMsi2trB42WyuWP",
-                    "opportunityId": "opp_ouYzdLYGs4RcrHTfm",
+                    "leadCompanyName": "Acme Inc",
+                    "leadId": "lea_fiDpiGV585wy3Oii2",
+                    "contactId": "ctc_xW8Ou6C03Csv8vatp",
+                    "campaignId": "cam_bSn8EORHQxbWPjHvu",
+                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                    "opportunityId": "opp_LyXDV8KHzctQdLFpG",
                     "metaData": {
-                      "teamId": "tea_b4rMsi2trB42WyuWP",
-                      "campaignId": "cam_9NsHPnykWESTncCW8",
-                      "leadId": "lea_mizMsAEkRrJuhouYe",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "campaignId": "cam_bSn8EORHQxbWPjHvu",
+                      "leadId": "lea_fiDpiGV585wy3Oii2",
                       "type": "manualDone"
                     },
                     "lead": {
-                      "_id": "lea_mizMsAEkRrJuhouYe",
+                      "_id": "lea_fiDpiGV585wy3Oii2",
                       "isPaused": false,
                       "state": "manualNotInterested",
                       "personalized": false,
                       "source": "api",
                       "variables": {
-                        "firstName": "Bastien",
-                        "lastName": "Velitchkine",
-                        "companyName": "Bastien VELITCHKINE EI",
+                        "firstName": "John",
+                        "lastName": "Doe",
+                        "companyName": "Acme Inc",
                         "jobTitle": "Growth Engineer",
-                        "companyDomain": "bvelitchkine.com",
+                        "companyDomain": "example.com",
                         "email": "support@lemlist.com",
                         "preferredContactMethod": "email",
                         "industry": "Technology",
-                        "Company name": "Bastien Velitchkine"
+                        "Company name": "John Doe"
                       },
-                      "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                      "contactId": "ctc_xW8Ou6C03Csv8vatp",
                       "enrichment": {
                         "emailStatus": "deliverable"
                       }
@@ -13533,55 +13533,55 @@
                     "sequenceTested": "B"
                   },
                   {
-                    "_id": "act_42k26Chi3iya8rfjX",
-                    "teamId": "tea_b4rMsi2trB42WyuWP",
-                    "companyId": "cpn_9Q9wjZR9R7rs3HE53",
+                    "_id": "act_j0NrG6rYEPP9TMmWC",
+                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                    "companyId": "cpn_Qf4CJuUrNUNmHm6uZ",
                     "type": "annotated",
                     "createdAt": "2025-10-28T04:25:00.653Z",
                     "note": "could help our GTM team be more productive",
-                    "sendUserId": "usr_gmHgNGRcGPSTJrDbT",
-                    "userId": "usr_gmHgNGRcGPSTJrDbT"
+                    "sendUserId": "usr_ahfFktBBHUIxbVG5P",
+                    "userId": "usr_ahfFktBBHUIxbVG5P"
                   },
                   {
-                    "_id": "act_kWM8HEhSBK6RumfFi",
+                    "_id": "act_WeKrlIaQlBnM3LZ6G",
                     "type": "manualNotInterested",
-                    "teamId": "tea_b4rMsi2trB42WyuWP",
+                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
                     "userName": "api",
                     "isFirst": false,
                     "bot": false,
                     "createdAt": "2025-10-28T02:14:34.834Z",
                     "name": "NEW TO DELETE",
-                    "leadFirstName": "Bastien",
-                    "leadLastName": "Velitchkine",
+                    "leadFirstName": "John",
+                    "leadLastName": "Doe",
                     "leadEmail": "support@lemlist.com",
-                    "leadCompanyName": "Bastien VELITCHKINE EI",
-                    "leadId": "lea_mizMsAEkRrJuhouYe",
-                    "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
-                    "campaignId": "cam_9NsHPnykWESTncCW8",
+                    "leadCompanyName": "Acme Inc",
+                    "leadId": "lea_fiDpiGV585wy3Oii2",
+                    "contactId": "ctc_xW8Ou6C03Csv8vatp",
+                    "campaignId": "cam_bSn8EORHQxbWPjHvu",
                     "metaData": {
-                      "teamId": "tea_b4rMsi2trB42WyuWP",
-                      "campaignId": "cam_9NsHPnykWESTncCW8",
-                      "leadId": "lea_mizMsAEkRrJuhouYe",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "campaignId": "cam_bSn8EORHQxbWPjHvu",
+                      "leadId": "lea_fiDpiGV585wy3Oii2",
                       "type": "manualNotInterested"
                     },
                     "lead": {
-                      "_id": "lea_mizMsAEkRrJuhouYe",
+                      "_id": "lea_fiDpiGV585wy3Oii2",
                       "isPaused": false,
                       "state": "manualNotInterested",
                       "personalized": false,
                       "source": "api",
                       "variables": {
-                        "firstName": "Bastien",
-                        "lastName": "Velitchkine",
-                        "companyName": "Bastien VELITCHKINE EI",
+                        "firstName": "John",
+                        "lastName": "Doe",
+                        "companyName": "Acme Inc",
                         "jobTitle": "Growth Engineer",
-                        "companyDomain": "bvelitchkine.com",
+                        "companyDomain": "example.com",
                         "email": "support@lemlist.com",
                         "preferredContactMethod": "email",
                         "industry": "Technology",
-                        "Company name": "Bastien Velitchkine"
+                        "Company name": "John Doe"
                       },
-                      "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                      "contactId": "ctc_xW8Ou6C03Csv8vatp",
                       "enrichment": {
                         "emailStatus": "deliverable"
                       }
@@ -13590,44 +13590,44 @@
                     "sequenceTested": "B"
                   },
                   {
-                    "_id": "act_REyJHTd9Qmv7ToEap",
+                    "_id": "act_zktTG4HXXXSOQya5U",
                     "type": "paused",
                     "userName": "api",
                     "bot": false,
                     "createdAt": "2025-10-28T01:54:56.099Z",
                     "name": "NEW TO DELETE",
-                    "leadFirstName": "Bastien",
-                    "leadLastName": "Velitchkine",
+                    "leadFirstName": "John",
+                    "leadLastName": "Doe",
                     "leadEmail": "support@lemlist.com",
-                    "leadCompanyName": "Bastien VELITCHKINE EI",
-                    "leadId": "lea_mizMsAEkRrJuhouYe",
-                    "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
-                    "campaignId": "cam_9NsHPnykWESTncCW8",
-                    "teamId": "tea_b4rMsi2trB42WyuWP",
+                    "leadCompanyName": "Acme Inc",
+                    "leadId": "lea_fiDpiGV585wy3Oii2",
+                    "contactId": "ctc_xW8Ou6C03Csv8vatp",
+                    "campaignId": "cam_bSn8EORHQxbWPjHvu",
+                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
                     "metaData": {
-                      "teamId": "tea_b4rMsi2trB42WyuWP",
-                      "campaignId": "cam_9NsHPnykWESTncCW8",
-                      "leadId": "lea_mizMsAEkRrJuhouYe",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "campaignId": "cam_bSn8EORHQxbWPjHvu",
+                      "leadId": "lea_fiDpiGV585wy3Oii2",
                       "type": "paused"
                     },
                     "lead": {
-                      "_id": "lea_mizMsAEkRrJuhouYe",
+                      "_id": "lea_fiDpiGV585wy3Oii2",
                       "isPaused": false,
                       "state": "manualNotInterested",
                       "personalized": false,
                       "source": "api",
                       "variables": {
-                        "firstName": "Bastien",
-                        "lastName": "Velitchkine",
-                        "companyName": "Bastien VELITCHKINE EI",
+                        "firstName": "John",
+                        "lastName": "Doe",
+                        "companyName": "Acme Inc",
                         "jobTitle": "Growth Engineer",
-                        "companyDomain": "bvelitchkine.com",
+                        "companyDomain": "example.com",
                         "email": "support@lemlist.com",
                         "preferredContactMethod": "email",
                         "industry": "Technology",
-                        "Company name": "Bastien Velitchkine"
+                        "Company name": "John Doe"
                       },
-                      "contactId": "ctc_Rofmb6uNGyaPNZ2ni",
+                      "contactId": "ctc_xW8Ou6C03Csv8vatp",
                       "enrichment": {
                         "emailStatus": "deliverable"
                       }
@@ -13636,49 +13636,49 @@
                     "sequenceTested": "B"
                   },
                   {
-                    "_id": "act_cKQJPK2gPSgk43tMq",
+                    "_id": "act_x6esGLhoPa2SMHCZ7",
                     "type": "emailsOpened",
                     "isFirst": false,
                     "stopped": false,
                     "createdAt": "2025-10-27T20:20:59.696Z",
                     "bot": false,
-                    "teamId": "tea_b4rMsi2trB42WyuWP",
-                    "leadId": "lea_3J63e27CjNMBmSgzb",
-                    "campaignId": "cam_qmMMRtncnJMGwsfQD",
-                    "sequenceId": "seq_orKX7zmrfcei54SMf",
+                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                    "leadId": "lea_wj47uWhDbbN6Qq6oT",
+                    "campaignId": "cam_oxeGg6paG3ZVxjHkH",
+                    "sequenceId": "seq_ODjsLXkxXiySRw6dK",
                     "sequenceStep": 1,
-                    "emailTemplateId": "etp_WDmCaPfpeqNf4Sus9",
-                    "createdBy": "usr_AWTf5MbJvH9QA34Yy",
-                    "sendUserId": "usr_AWTf5MbJvH9QA34Yy",
+                    "emailTemplateId": "etp_z3nAbjdHuewVEjIl5",
+                    "createdBy": "usr_EvXz6JqPSJJL9lHkp",
+                    "sendUserId": "usr_EvXz6JqPSJJL9lHkp",
                     "name": "Unicorn campaign",
-                    "leadFirstName": "Ilya",
-                    "leadLastName": "Azovtsev",
-                    "leadEmail": "ilya@lemlist.com",
+                    "leadFirstName": "Sam",
+                    "leadLastName": "Taylor",
+                    "leadEmail": "sam@example.com",
                     "leadCompanyName": "lemlist",
-                    "contactId": "ctc_MXGusaii6F8rDXDeS",
+                    "contactId": "ctc_FkeUdQHEfhqG2HMbK",
                     "relatedSentAt": "2020-12-07T11:49:14.830Z",
                     "metaData": {
-                      "teamId": "tea_b4rMsi2trB42WyuWP",
-                      "campaignId": "cam_qmMMRtncnJMGwsfQD",
-                      "leadId": "lea_3J63e27CjNMBmSgzb",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "campaignId": "cam_oxeGg6paG3ZVxjHkH",
+                      "leadId": "lea_wj47uWhDbbN6Qq6oT",
                       "type": "emailsOpened",
-                      "createdBy": "usr_AWTf5MbJvH9QA34Yy",
-                      "taskId": "tsk_mtWFoseksGFzxRvyZ"
+                      "createdBy": "usr_EvXz6JqPSJJL9lHkp",
+                      "taskId": "tsk_namMcIQnA6gxQIupP"
                     },
                     "lead": {
-                      "_id": "lea_3J63e27CjNMBmSgzb",
+                      "_id": "lea_wj47uWhDbbN6Qq6oT",
                       "isPaused": false,
                       "state": "emailsUnsubscribed",
                       "personalized": false,
                       "source": "manually",
                       "variables": {
-                        "firstName": "Ilya ",
-                        "lastName": "Azovtsev",
-                        "email": "ilya@lemlist.com",
+                        "firstName": "Sam ",
+                        "lastName": "Taylor",
+                        "email": "sam@example.com",
                         "companyName": "lemlist",
-                        "linkedinUrl": "https://www.linkedin.com/in/ilya-azovtsev"
+                        "linkedinUrl": "https://www.linkedin.com/in/sam-doe"
                       },
-                      "contactId": "ctc_MXGusaii6F8rDXDeS",
+                      "contactId": "ctc_FkeUdQHEfhqG2HMbK",
                       "enrichment": {}
                     },
                     "campaignName": "Unicorn campaign",
@@ -13686,49 +13686,49 @@
                     "emailTemplateName": "Blank"
                   },
                   {
-                    "_id": "act_vwBugHpPwLhnDJpMG",
+                    "_id": "act_q4tnlXNdXsBeQceYW",
                     "type": "emailsOpened",
                     "isFirst": false,
                     "stopped": false,
                     "createdAt": "2025-10-27T20:17:24.119Z",
                     "bot": false,
-                    "teamId": "tea_b4rMsi2trB42WyuWP",
-                    "leadId": "lea_3J63e27CjNMBmSgzb",
-                    "campaignId": "cam_qmMMRtncnJMGwsfQD",
-                    "sequenceId": "seq_orKX7zmrfcei54SMf",
+                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                    "leadId": "lea_wj47uWhDbbN6Qq6oT",
+                    "campaignId": "cam_oxeGg6paG3ZVxjHkH",
+                    "sequenceId": "seq_ODjsLXkxXiySRw6dK",
                     "sequenceStep": 1,
-                    "emailTemplateId": "etp_WDmCaPfpeqNf4Sus9",
-                    "createdBy": "usr_AWTf5MbJvH9QA34Yy",
-                    "sendUserId": "usr_AWTf5MbJvH9QA34Yy",
+                    "emailTemplateId": "etp_z3nAbjdHuewVEjIl5",
+                    "createdBy": "usr_EvXz6JqPSJJL9lHkp",
+                    "sendUserId": "usr_EvXz6JqPSJJL9lHkp",
                     "name": "Unicorn campaign",
-                    "leadFirstName": "Ilya",
-                    "leadLastName": "Azovtsev",
-                    "leadEmail": "ilya@lemlist.com",
+                    "leadFirstName": "Sam",
+                    "leadLastName": "Taylor",
+                    "leadEmail": "sam@example.com",
                     "leadCompanyName": "lemlist",
-                    "contactId": "ctc_MXGusaii6F8rDXDeS",
+                    "contactId": "ctc_FkeUdQHEfhqG2HMbK",
                     "relatedSentAt": "2020-12-07T11:49:14.830Z",
                     "metaData": {
-                      "teamId": "tea_b4rMsi2trB42WyuWP",
-                      "campaignId": "cam_qmMMRtncnJMGwsfQD",
-                      "leadId": "lea_3J63e27CjNMBmSgzb",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "campaignId": "cam_oxeGg6paG3ZVxjHkH",
+                      "leadId": "lea_wj47uWhDbbN6Qq6oT",
                       "type": "emailsOpened",
-                      "createdBy": "usr_AWTf5MbJvH9QA34Yy",
-                      "taskId": "tsk_mtWFoseksGFzxRvyZ"
+                      "createdBy": "usr_EvXz6JqPSJJL9lHkp",
+                      "taskId": "tsk_namMcIQnA6gxQIupP"
                     },
                     "lead": {
-                      "_id": "lea_3J63e27CjNMBmSgzb",
+                      "_id": "lea_wj47uWhDbbN6Qq6oT",
                       "isPaused": false,
                       "state": "emailsUnsubscribed",
                       "personalized": false,
                       "source": "manually",
                       "variables": {
-                        "firstName": "Ilya ",
-                        "lastName": "Azovtsev",
-                        "email": "ilya@lemlist.com",
+                        "firstName": "Sam ",
+                        "lastName": "Taylor",
+                        "email": "sam@example.com",
                         "companyName": "lemlist",
-                        "linkedinUrl": "https://www.linkedin.com/in/ilya-azovtsev"
+                        "linkedinUrl": "https://www.linkedin.com/in/sam-doe"
                       },
-                      "contactId": "ctc_MXGusaii6F8rDXDeS",
+                      "contactId": "ctc_FkeUdQHEfhqG2HMbK",
                       "enrichment": {}
                     },
                     "campaignName": "Unicorn campaign",
@@ -13853,7 +13853,7 @@
             "in": "query",
             "required": false,
             "description": "Filter stats by send user. Format: `sendUserId|sendUserEmail`. The sendUserId should begin with 'usr_' and the sendUserEmail should be a valid sender email. If the param is specified, both sendUserId and sendUserEmail are mandatory.",
-            "example": "usr_b62rnsjxu236ttSH3|email@example.com",
+            "example": "usr_OcIHizJyIeaDxicQP|email@example.com",
             "schema": {
               "type": "string"
             }
@@ -14070,7 +14070,7 @@
                   "steps": [
                     {
                       "index": 1,
-                      "sequenceId": "seq_JiYPY37b43uJg2hfA",
+                      "sequenceId": "seq_rH5RD3fMkkt2gM3YC",
                       "sequenceStep": 0,
                       "taskType": "linkedinSend",
                       "invited": 0,
@@ -14085,7 +14085,7 @@
                     },
                     {
                       "index": 2,
-                      "sequenceId": "seq_JiYPY37b43uJg2hfA",
+                      "sequenceId": "seq_rH5RD3fMkkt2gM3YC",
                       "sequenceStep": 1,
                       "invited": 0,
                       "sent": 20,
@@ -14099,7 +14099,7 @@
                     },
                     {
                       "index": 3,
-                      "sequenceId": "seq_JiYPY37b43uJg2hfA",
+                      "sequenceId": "seq_rH5RD3fMkkt2gM3YC",
                       "sequenceStep": 2,
                       "invited": 0,
                       "sent": 20,
@@ -14220,7 +14220,7 @@
                   "sendUser": {
                     "type": "string",
                     "description": "Filter stats by send user. Format: `sendUserId|sendUserEmail`. The sendUserId should begin with 'usr_' and the sendUserEmail should be a valid sender email. If the param is specified, both sendUserId and sendUserEmail are mandatory.",
-                    "example": "usr_b62rnsjxu236ttSH3|email@example.com"
+                    "example": "usr_OcIHizJyIeaDxicQP|email@example.com"
                   },
                   "ABSelected": {
                     "type": "string",
@@ -14467,7 +14467,7 @@
                       "steps": [
                         {
                           "index": 1,
-                          "sequenceId": "seq_JiYPY37b43uJg2hfA",
+                          "sequenceId": "seq_rH5RD3fMkkt2gM3YC",
                           "sequenceStep": 0,
                           "taskType": "linkedinSend",
                           "invited": 0,
@@ -14581,7 +14581,7 @@
                 },
                 "example": [
                   {
-                    "_id": "uns_Y9Lf5R2mpNWs8x0cz",
+                    "_id": "uns_ZfdZWc7dvCqXdgQmb",
                     "createdAt": "2023-06-12T10:45:21.367Z",
                     "value": "john.doe@example.com",
                     "source": "user"
@@ -14701,7 +14701,7 @@
                 },
                 "example": [
                   {
-                    "_id": "uns_Y9Lf5R2mpNWs8x0cz",
+                    "_id": "uns_ZfdZWc7dvCqXdgQmb",
                     "value": "john.doe@example.com",
                     "source": "user",
                     "createdAt": "2023-06-12T10:45:21.367Z"
@@ -14835,7 +14835,7 @@
                   }
                 },
                 "example": {
-                  "_id": "uns_Y9Lf5R2mpNWs8x0cz",
+                  "_id": "uns_ZfdZWc7dvCqXdgQmb",
                   "value": "john.doe@example.com",
                   "variable": "john.doe@example.com",
                   "source": "user"
@@ -14916,7 +14916,7 @@
                   }
                 },
                 "example": {
-                  "_id": "uns_Y9Lf5R2mpNWs8x0cz",
+                  "_id": "uns_ZfdZWc7dvCqXdgQmb",
                   "value": "john.doe@example.com",
                   "variable": "john.doe@example.com",
                   "source": "api"
@@ -15158,7 +15158,7 @@
             "description": "Success",
             "content": {
               "text/csv": {
-                "example": "_id,value,source,createdAt\nuns_Y9Lf5R2mpNWs8x0cz,john.doe@example.com,user,2023-06-12T10:45:21.367Z\nuns_QB3xQGhw6qJCyWXF9,@example.org,api,2023-07-21T09:14:25.521Z"
+                "example": "_id,value,source,createdAt\nuns_ZfdZWc7dvCqXdgQmb,john.doe@example.com,user,2023-06-12T10:45:21.367Z\nuns_fH5gNhZnIpnwRlxZw,@example.org,api,2023-07-21T09:14:25.521Z"
               }
             }
           },
@@ -15254,7 +15254,7 @@
                   }
                 },
                 "example": {
-                  "_id": "uns_Y9Lf5R2mpNWs8x0cz",
+                  "_id": "uns_ZfdZWc7dvCqXdgQmb",
                   "createdAt": "2023-06-12T10:45:21.367Z",
                   "value": "john.doe@example.com",
                   "source": "user"
@@ -15347,7 +15347,7 @@
                   ]
                 },
                 "example": {
-                  "_id": "uns_QB3xQGhw6qJCyWXF9",
+                  "_id": "uns_fH5gNhZnIpnwRlxZw",
                   "value": "user@domain.com",
                   "email": "user@domain.com"
                 }
@@ -15418,7 +15418,7 @@
                   ]
                 },
                 "example": {
-                  "_id": "uns_NiaRzPzj6nB8sAGFD",
+                  "_id": "uns_QCXCLzEfEuEOlCVIu",
                   "value": "john.doe@example.com"
                 }
               }
@@ -15465,77 +15465,77 @@
                 },
                 "example": [
                   {
-                    "_id": "hoo_7bNbHKmFcpDiNACg6",
+                    "_id": "hoo_Ib5jfViX9hn3FzNqr",
                     "targetUrl": "https://hooks.zapier.com/hooks/standard/{accountId}/{webhookId}/",
                     "createdAt": "2018-06-05T09:07:07.761Z",
                     "zapId": 37709957,
                     "type": "emailsReplied",
-                    "campaignId": "cam_TgyErJgFcvAebRsE6",
+                    "campaignId": "cam_FlN1hrYhADZUfspMs",
                     "isFirst": true
                   },
                   {
-                    "_id": "hoo_agftPLA7RovPXuvet",
+                    "_id": "hoo_SDRr2w4JigZDL7OB2",
                     "targetUrl": "https://hooks.zapier.com/hooks/standard/{accountId}/{webhookId}/",
                     "createdAt": "2019-06-05T14:38:56.535Z",
                     "zapId": 59825555,
                     "type": "emailsReplied",
-                    "campaignId": "cam_J2M3P9Z8wKFKRWeeE"
+                    "campaignId": "cam_h3jptAEeqFFpve5mr"
                   },
                   {
-                    "_id": "hoo_PN8TP9Ny9qEJRytrm",
+                    "_id": "hoo_IYAPP4HnSyU7UTH3E",
                     "targetUrl": "https://hooks.zapier.com/hooks/standard/{accountId}/{webhookId}/",
                     "createdAt": "2019-06-05T15:49:36.624Z",
                     "zapId": 59831776,
                     "type": "emailsReplied",
-                    "campaignId": "cam_fdyDRgEwMiCJnj5Sx",
+                    "campaignId": "cam_qBNYaIFXA77eXM1Ey",
                     "isFirst": true
                   },
                   {
-                    "_id": "hoo_G9kFf7syYHJiCZTu7",
+                    "_id": "hoo_OQ1eCPucttlQV6uB4",
                     "targetUrl": "https://hooks.zapier.com/hooks/standard/{accountId}/{webhookId}/",
                     "createdAt": "2019-06-05T19:28:49.130Z",
                     "zapId": 59852716,
                     "type": "emailsReplied",
-                    "campaignId": "cam_CfqoHNx2c6WfbZnY6",
+                    "campaignId": "cam_vRotI1zB0rgqEe0Hg",
                     "isFirst": true
                   },
                   {
-                    "_id": "hoo_YJ7A6yAZvtAMXWBou",
+                    "_id": "hoo_bOucNGG13uJhhIQ8g",
                     "targetUrl": "https://hooks.zapier.com/hooks/standard/{accountId}/{webhookId}/",
                     "createdAt": "2019-10-15T09:53:50.839Z",
                     "zapId": 47004696,
                     "type": "emailsOpened",
-                    "campaignId": "cam_a34tYDyt8qootnhFT"
+                    "campaignId": "cam_K6XNvvamP9QTotBC3"
                   },
                   {
-                    "_id": "hoo_Y3KPKKNYoKJE3NT45",
+                    "_id": "hoo_hZSI1GetoYUKu76TX",
                     "targetUrl": "https://hooks.zapier.com/hooks/standard/{accountId}/{webhookId}/",
                     "createdAt": "2019-10-15T09:56:24.197Z",
                     "zapId": 47004696,
                     "type": "emailsOpened",
-                    "campaignId": "cam_a34tYDyt8qootnhFT"
+                    "campaignId": "cam_K6XNvvamP9QTotBC3"
                   },
                   {
-                    "_id": "hoo_N3xFk92zZ8MNkcJBw",
+                    "_id": "hoo_anErg4PUSFTd3r3dX",
                     "targetUrl": "https://hooks.zapier.com/hooks/standard/{accountId}/{webhookId}/",
                     "createdAt": "2020-04-27T14:04:33.424Z",
                     "zapId": 85466371,
                     "type": "emailsReplied",
-                    "campaignId": "cam_v4Rr87ixxAtqStEPJ"
+                    "campaignId": "cam_rpejDXyLkA2TSbXyC"
                   },
                   {
-                    "_id": "hoo_7oNJxuvJubxPyLN5E",
+                    "_id": "hoo_Y3nL7UuQn85hIFTRV",
                     "targetUrl": "https://hooks.zapier.com/hooks/standard/{accountId}/{webhookId}/",
                     "createdAt": "2020-04-27T14:06:38.375Z",
                     "zapId": 85466371,
                     "type": "emailsReplied",
-                    "campaignId": "cam_v4Rr87ixxAtqStEPJ"
+                    "campaignId": "cam_rpejDXyLkA2TSbXyC"
                   },
                   {
-                    "_id": "hoo_GXALX6diEW5bovH7e",
+                    "_id": "hoo_UAtwcPAd0tK9U6hKG",
                     "targetUrl": "https://example.com/webhooks/{id}",
                     "createdAt": "2022-02-10T16:45:28.216Z",
-                    "campaignId": "cam_i6Cy2zKTw5LZpu6K5"
+                    "campaignId": "cam_7BE8IZRaqahU44Wp6"
                   }
                 ]
               }
@@ -15676,7 +15676,7 @@
                 ]
               },
               "example": {
-                "targetUrl": "https://webhook.site/1d50ac35-2755-42cc-964c-9acbb4ebca30",
+                "targetUrl": "https://webhook.site/00000000-0000-0000-0000-000000000000",
                 "type": "linkedinInterested"
               }
             }
@@ -15710,8 +15710,8 @@
                   }
                 },
                 "example": {
-                  "_id": "hoo_ekxJgaAx32Garv2uJ",
-                  "targetUrl": "https://n8n.bvelitchkine.com/webhook/lemlist-webhook-surprise",
+                  "_id": "hoo_GvYkkWIcdPf2WsBDY",
+                  "targetUrl": "https://n8n.example.com/webhook/lemlist-webhook-surprise",
                   "createdAt": "2025-10-29T00:47:42.035Z",
                   "type": "linkedinInterested"
                 }
@@ -15790,8 +15790,8 @@
                   }
                 },
                 "example": {
-                  "_id": "hoo_orQP33YrZgeKkswJK",
-                  "targetUrl": "https://n8n.bvelitchkine.com/webhook/lemlist-webhook-surprise",
+                  "_id": "hoo_fmpVMoBhrEHtw3cgy",
+                  "targetUrl": "https://n8n.example.com/webhook/lemlist-webhook-surprise",
                   "createdAt": "2024-07-11T13:55:06.276Z",
                   "type": "linkedinInterested",
                   "campaignId": "cam_A1B2C3D4E5F6G7H8I9"
@@ -15848,7 +15848,7 @@
                   "type": "object"
                 },
                 "example": {
-                  "enrichmentId": "enr_Peve9ExBG9XqwrmeM",
+                  "enrichmentId": "enr_FPgMU8ZUVBnOZBuZ6",
                   "enrichmentStatus": "done",
                   "input": {
                     "firstName": "John",
@@ -16022,7 +16022,7 @@
                   "type": "object"
                 },
                 "example": {
-                  "id": "enr_pRSGEaMP7rrCfFPx5"
+                  "id": "enr_CzQDYYcS5vDG1ZvQi"
                 }
               }
             }
@@ -16062,7 +16062,7 @@
             "in": "query",
             "required": false,
             "description": "Webhook URL for enrichment events",
-            "example": "https://n8n.bvelitchkine.com/webhook/lemlist-webhook-surprise",
+            "example": "https://n8n.example.com/webhook/lemlist-webhook-surprise",
             "schema": {
               "type": "string"
             }
@@ -16271,7 +16271,7 @@
                           "id": {
                             "type": "string",
                             "description": "Enrichment ID",
-                            "example": "enr_cawQhM9N3pWkqw2Yt"
+                            "example": "enr_KzCb0f9dbIjtRqyEO"
                           },
                           "metadata": {
                             "description": "The metadata provided in the request",
@@ -16315,13 +16315,13 @@
                     "summary": "Find email response",
                     "value": [
                       {
-                        "id": "enr_7y2vszPS5F6C9qLEg",
+                        "id": "enr_rt3yG1uvSOAmNgsOm",
                         "metadata": {
                           "id": "some_id"
                         }
                       },
                       {
-                        "id": "enr_4e1vEfOA3F7D9dJHd",
+                        "id": "enr_KdG7p3VNyiCgmcYTv",
                         "metadata": "some_id"
                       },
                       {
@@ -16334,7 +16334,7 @@
                     "summary": "Find phone response",
                     "value": [
                       {
-                        "id": "enr_5BJxyBn5MbZx9NSBp",
+                        "id": "enr_bPawymIrM37F6yHBe",
                         "metadata": {
                           "id": "some_id"
                         }
@@ -16349,7 +16349,7 @@
                     "summary": "Verify email response",
                     "value": [
                       {
-                        "id": "enr_mp7zdHiLLXEBWCkxX",
+                        "id": "enr_N84uOiUB0RYx5LIEb",
                         "metadata": {
                           "id": "some_id"
                         }
@@ -16364,7 +16364,7 @@
                     "summary": "LinkedIn enrichment response",
                     "value": [
                       {
-                        "id": "enr_HanCDh8G4P3bjkksq",
+                        "id": "enr_zsHo0j5j6HNC0MXgQ",
                         "metadata": {
                           "id": "some_id"
                         }
@@ -16538,7 +16538,7 @@
             "in": "query",
             "required": false,
             "description": "Webhook URL for enrichment events",
-            "example": "https://n8n.bvelitchkine.com/webhook/lemlist-webhook-surprise",
+            "example": "https://n8n.example.com/webhook/lemlist-webhook-surprise",
             "schema": {
               "type": "string"
             }
@@ -16559,7 +16559,7 @@
                   }
                 },
                 "example": {
-                  "id": "enr_gLpC97CBdER2kpn7z"
+                  "id": "enr_Ohbs0mEsWmDjTnxTi"
                 }
               }
             }
@@ -17258,7 +17258,7 @@
                     "available": true,
                     "accounts": [
                       {
-                        "id": "usm_bsdepN6jb8zftK9Ns",
+                        "id": "usm_2mkqJNUjnJQiyVBht",
                         "email": "john@acme.com",
                         "provider": "google"
                       }
