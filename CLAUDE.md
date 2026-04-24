@@ -39,6 +39,14 @@ or a teammate's workspace.
 The key for IDs is *origin*, not shape: an ID you invented is fine; an ID
 you pasted from somewhere is not, even if "it looked synthetic enough".
 
+## Same rules for commits, PR titles/descriptions, and review comments
+
+Commit messages, PR titles and bodies, and PR/issue comments are all
+public on this repo. Apply the same rules there: don't name real
+employees, don't cite real entity IDs (even in "look what leaked"
+comments), don't quote real emails or URLs. Describe in generic terms
+("a teammate", "a production-looking ID", "a real customer's domain").
+
 ## If you're adapting a real API response
 
 Run through this checklist before committing:
