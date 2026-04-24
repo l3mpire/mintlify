@@ -1,0 +1,33 @@
+name: Check API samples
+
+# Fails a PR if it adds real lemlist PII (employee names, internal emails)
+# or production-like entity IDs to the OpenAPI spec / MDX docs.
+#
+# Only inspects lines ADDED in the PR vs its base — pre-existing content is
+# ignored so the repo's current state doesn't break every PR.
+#
+# Detection rules live in .github/scripts/check-api-samples.py.
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "api-reference/**"
+      - "**/*.mdx"
+      - "docs.json"
+      - "**/*.json"
+      - ".github/workflows/check-api-samples.yml"
+      - ".github/scripts/check-api-samples.py"
+
+jobs:
+  check-samples:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          # Need enough history to diff against the PR base.
+          fetch-depth: 0
+
+      - name: Scan added lines for leaks
+        run: python3 .github/scripts/check-api-samples.py "${{ github.event.pull_request.base.sha }}"
