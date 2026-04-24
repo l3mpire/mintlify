@@ -29,21 +29,21 @@ or a teammate's workspace.
 
 | Kind | Placeholder |
 |---|---|
-| Entity ID | `<prefix>_Example<Entity>0N` — e.g. `cam_ExampleCampaign01`, `usr_ExampleUser02`, `seq_ExampleSequence01` |
+| Entity ID | Generate a synthetic ID matching the lemlist format (`<prefix>_<17 mixed-case alphanumerics>`) **from scratch**. Don't reuse or slightly-edit an ID from a real response — generate a new random body each time. |
 | Email | `john@example.com`, `jane@example.com`, `alex@example.com` |
 | Name | John Doe, Jane Smith, Alex Johnson |
 | Company | Acme Inc, Example Corp |
 | Domain | `example.com`, `acme.com` |
 | URL | `https://example.com/...` |
 
-Use a small pool of 2–4 distinct placeholders per entity type so arrays
-still look varied (`ExampleCampaign01`, `02`, `03`, `04`).
+The key for IDs is *origin*, not shape: an ID you invented is fine; an ID
+you pasted from somewhere is not, even if "it looked synthetic enough".
 
 ## If you're adapting a real API response
 
 Run through this checklist before committing:
 
-1. Replace every ID with `<prefix>_Example<Entity>0N`.
+1. Replace every ID with a freshly-generated synthetic one (don't keep the original characters).
 2. Replace every email with an `@example.com` variant.
 3. Replace every first/last name with a generic (John Doe, Jane Smith, …).
 4. Replace real company names, URLs, domains, LinkedIn slugs, webhook URLs.
