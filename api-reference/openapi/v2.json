@@ -15669,6 +15669,10 @@
                       "callRecordingDone",
                       "callTranscriptDone"
                     ]
+                  },
+                  "secret": {
+                    "type": "string",
+                    "description": "Optional shared secret. Stored encrypted, never returned by GET, and immutable once set. Sent back to your endpoint as a `secret` field in the body of every webhook call so you can verify the request originated from lemlist."
                   }
                 },
                 "required": [
@@ -15677,7 +15681,8 @@
               },
               "example": {
                 "targetUrl": "https://webhook.site/00000000-0000-0000-0000-000000000000",
-                "type": "linkedinInterested"
+                "type": "linkedinInterested",
+                "secret": "s3cret-shared-with-my-endpoint"
               }
             }
           }

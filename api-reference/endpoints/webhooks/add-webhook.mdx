@@ -13,6 +13,15 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 Optionally, you can scope a webhook to a single campaign and/or only trigger it the first time an event happens.
 
+## Verifying webhook authenticity
+
+You can pass an optional `secret` in the request body when creating the webhook. It works like a shared password between lemlist and your endpoint:
+
+- Stored encrypted at rest.
+- Never returned by `GET /hooks` or any other endpoint.
+- Immutable — it cannot be changed after creation. To rotate it, delete the webhook and create a new one.
+- Sent back to your endpoint as a `secret` field in the JSON body of every webhook call, so you can verify the request originated from lemlist.
+
 ## Examples
 
 <CodeGroup>
@@ -28,6 +37,13 @@ Optionally, you can scope a webhook to a single campaign and/or only trigger it 
 	"type": "linkedinInterested",
 	"campaignId": "cam_A1B2C3D4E5F6G7H8I9",
 	"isFirst": true
+}
+```
+
+```json with shared secret
+{
+	"targetUrl": "https://webhook.site/your-id",
+	"secret": "s3cret-shared-with-my-endpoint"
 }
 ```
 </CodeGroup>
