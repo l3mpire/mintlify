@@ -100,6 +100,6 @@ In conditional steps, if the `delayType` is not `"within"`, the `delay` field is
 | `title` (String, Conditional) | A title or label used in `manual` steps. Maximum 400 characters |
 | `method` (String, Conditional) | The HTTP method to use for API steps. Allowed values: `GET`, `POST`, `PUT`, `DELETE`, `PATCH` |
 | `url` (String, Conditional) | The URL of the API endpoint to call. Must be a valid URL (starting with `http://` or `https://`) |
-| `conditionKey` (String, Conditional) | For conditional steps only. Defines the condition key. Allowed values: `emailsOpened`, `emailsClicked`, `emailsUnsubscribed`, `meetingBooked`, `linkedinInviteAccepted`, `hasWhatsappAccount` |
+| `conditionKey` (String, Conditional) | For conditional steps only. Defines the condition key. Allowed values: `hasEmailAddress`, `hasLinkedinUrl`, `hasPhoneNumber`, `hasScore`, `emailsOpened`, `emailsClicked`, `emailsUnsubscribed`, `meetingBooked`, `linkedinInviteAccepted`, `linkedinOpened`, `aircallDone`, `linkedinNetworkCheck`, `hasWhatsappAccount` |
 | `delayType` (String, Conditional) | For conditional steps only. Specifies the delay type. Allowed values: `within`, `waitUntil` |
 | `campaignId` (String, Conditional) | For steps of type `sendToAnotherCampaign` only. The target campaign ID to which a lead should be sent. The specified campaign must exist in the team and not be archived |

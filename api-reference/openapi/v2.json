@@ -4724,11 +4724,18 @@
                     "type": "string",
                     "description": "Condition key for conditional steps",
                     "enum": [
+                      "hasEmailAddress",
+                      "hasLinkedinUrl",
+                      "hasPhoneNumber",
+                      "hasScore",
                       "emailsOpened",
                       "emailsClicked",
                       "emailsUnsubscribed",
                       "meetingBooked",
                       "linkedinInviteAccepted",
+                      "linkedinOpened",
+                      "aircallDone",
+                      "linkedinNetworkCheck",
                       "hasWhatsappAccount"
                     ]
                   },
@@ -4983,12 +4990,18 @@
                     "type": "string",
                     "description": "Condition key for conditional steps",
                     "enum": [
+                      "hasEmailAddress",
+                      "hasLinkedinUrl",
+                      "hasPhoneNumber",
+                      "hasScore",
                       "emailsOpened",
                       "emailsClicked",
                       "emailsUnsubscribed",
                       "meetingBooked",
                       "linkedinInviteAccepted",
                       "linkedinOpened",
+                      "aircallDone",
+                      "linkedinNetworkCheck",
                       "hasWhatsappAccount"
                     ]
                   },
