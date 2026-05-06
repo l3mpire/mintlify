@@ -167,6 +167,15 @@ These events have been removed from the API. Use the replacements below.
 | `emailsSendFailed` | Use `emailsFailed` instead |
 | `opportunitiesDone` | Use `annotated` or task-level webhooks instead |
 
+## Verifying webhook authenticity
+
+You can pass an optional `secret` in the request body when creating the webhook. It works like a shared password between lemlist and your endpoint:
+
+- Stored encrypted at rest.
+- Never returned by `GET /hooks` or any other endpoint.
+- Immutable — it cannot be changed after creation. To rotate it, delete the webhook and create a new one.
+- Sent back to your endpoint as a `secret` field in the JSON body of every webhook call, so you can verify the request originated from lemlist.
+
 ## Examples
 
 <CodeGroup>
@@ -196,6 +205,10 @@ These events have been removed from the API. Use the replacements below.
 {
 	"targetUrl": "https://webhook.site/your-id",
 	"type": "signalRegistered"
+```json with shared secret
+{
+	"targetUrl": "https://webhook.site/your-id",
+	"secret": "s3cret-shared-with-my-endpoint"
 }
 ```
 </CodeGroup>

@@ -8,4 +8,6 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 When you create a new campaign, an empty sequence and default schedule are automatically added. You can specify a name, or one will be assigned by default. 
 
+You can optionally set a `timezone` (IANA format, e.g. `America/New_York`) to control the campaign schedule's timezone. If omitted, it defaults to `Europe/Paris`.
+
 The returned data includes the campaign, sequence, and schedule IDs, which you can use later to update campaign settings, add sequence steps, or modify the schedule.

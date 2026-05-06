@@ -216,7 +216,8 @@
                   "api-reference/endpoints/contacts/get-many-contacts",
                   "api-reference/endpoints/contacts/get-contact-lists",
                   "api-reference/endpoints/contacts/create-contact-list",
-                  "api-reference/endpoints/contacts/add-contacts-to-list"
+                  "api-reference/endpoints/contacts/add-contacts-to-list",
+                  "api-reference/endpoints/contacts/export-contact-list"
                 ]
               },
               {
@@ -254,7 +255,8 @@
                 "group": "Activities",
                 "expanded": false,
                 "pages": [
-                  "api-reference/endpoints/activities/get-many-activities"
+                  "api-reference/endpoints/activities/get-many-activities",
+                  "api-reference/endpoints/activities/delete-activity-recording-transcript"
                 ]
               },
               {
