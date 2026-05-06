@@ -6,12 +6,166 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Webhook" objectPath="webhook" />
 
-## What you can subscribe to
+## Available event types
 
-- Activities by type (e.g., emailsSent, emailsOpened, emailsReplied, linkedinInterested). See the full list in the API reference for this endpoint’s request body.
-- Operational alerts (e.g., customDomainErrors, connectionIssue, sendLimitReached, lemwarmPaused, campaignComplete).
+When creating a webhook, you can subscribe to specific events using the `type` field. Events are organized by category below.
 
-Optionally, you can scope a webhook to a single campaign and/or only trigger it the first time an event happens.
+### Lead state groups
+
+These aggregate multiple activity types into a single lead-state change event.
+
+| Event | Description |
+| ----- | ----------- |
+| `contacted` | Lead was contacted (email sent, LinkedIn message, API call, etc.) |
+| `hooked` | Lead opened a message (email, LinkedIn, WhatsApp) |
+| `attracted` | Lead clicked a link or accepted a LinkedIn invite |
+| `warmed` | Lead replied (email, LinkedIn, WhatsApp, SMS) |
+| `interested` | Lead marked as interested |
+| `notInterested` | Lead marked as not interested |
+
+### Email activities
+
+| Event | Description |
+| ----- | ----------- |
+| `emailsSent` | Email sent |
+| `emailsOpened` | Email opened |
+| `emailsClicked` | Link clicked in email |
+| `emailsReplied` | Email replied |
+| `emailsBounced` | Email bounced |
+| `emailsFailed` | Email failed to send |
+| `emailsInterested` | Lead marked as interested via email |
+| `emailsNotInterested` | Lead marked as not interested via email |
+| `emailsUnsubscribed` | Lead unsubscribed via email |
+
+### LinkedIn activities
+
+| Event | Description |
+| ----- | ----------- |
+| `linkedinSent` | LinkedIn message sent |
+| `linkedinOpened` | LinkedIn message opened |
+| `linkedinReplied` | LinkedIn message replied |
+| `linkedinInterested` | Lead marked as interested via LinkedIn |
+| `linkedinNotInterested` | Lead marked as not interested via LinkedIn |
+| `linkedinSendFailed` | LinkedIn message failed to send |
+| `linkedinVisitDone` | LinkedIn profile visit completed |
+| `linkedinVisitFailed` | LinkedIn profile visit failed |
+| `linkedinFollowDone` | LinkedIn follow completed |
+| `linkedinFollowFailed` | LinkedIn follow failed |
+| `linkedinFollowSkipped` | LinkedIn follow skipped |
+| `linkedinInviteDone` | LinkedIn invite sent |
+| `linkedinInviteFailed` | LinkedIn invite failed |
+| `linkedinInviteAccepted` | LinkedIn invite accepted |
+| `linkedinEndorseDone` | LinkedIn endorsement completed |
+| `linkedinEndorseFailed` | LinkedIn endorsement failed |
+| `linkedinEndorseSkipped` | LinkedIn endorsement skipped |
+| `linkedinVoiceNoteDone` | LinkedIn voice note sent |
+| `linkedinVoiceNoteFailed` | LinkedIn voice note failed |
+| `linkedinLikeLastPostDone` | LinkedIn like last post completed |
+| `linkedinLikeLastPostNoPost` | LinkedIn like last post — no post found |
+| `linkedinLikeLastPostFailed` | LinkedIn like last post failed |
+| `linkedinWithdrawInvitationDone` | LinkedIn invite withdrawn |
+| `linkedinWithdrawInvitationFailed` | LinkedIn invite withdrawal failed |
+
+### WhatsApp activities
+
+| Event | Description |
+| ----- | ----------- |
+| `whatsappMessageSent` | WhatsApp message sent |
+| `whatsappMessageDelivered` | WhatsApp message delivered |
+| `whatsappMessageOpened` | WhatsApp message opened |
+| `whatsappReplied` | WhatsApp message replied |
+| `whatsappMessageFailed` | WhatsApp message failed |
+
+### SMS activities
+
+| Event | Description |
+| ----- | ----------- |
+| `smsSent` | SMS sent |
+| `smsDelivered` | SMS delivered |
+| `smsReplied` | SMS replied |
+| `smsFailed` | SMS failed |
+
+### Call activities
+
+| Event | Description |
+| ----- | ----------- |
+| `aircallCreated` | Call created |
+| `aircallEnded` | Call ended |
+| `aircallDone` | Call task completed |
+| `aircallInterested` | Lead marked as interested via call |
+| `aircallNotInterested` | Lead marked as not interested via call |
+| `callRecordingDone` | Call recording ready |
+| `callTranscriptDone` | Call transcript ready |
+
+### API activities
+
+| Event | Description |
+| ----- | ----------- |
+| `apiDone` | API step executed |
+| `apiInterested` | Lead marked as interested via API |
+| `apiNotInterested` | Lead marked as not interested via API |
+| `apiFailed` | API step failed |
+
+### Manual activities
+
+| Event | Description |
+| ----- | ----------- |
+| `manualInterested` | Lead marked as interested manually |
+| `manualNotInterested` | Lead marked as not interested manually |
+
+### Task activities
+
+| Event | Description |
+| ----- | ----------- |
+| `annotated` | Lead annotated |
+
+### Workspace activities
+
+| Event | Description |
+| ----- | ----------- |
+| `paused` | Lead paused |
+| `resumed` | Lead resumed |
+| `stopped` | Lead stopped |
+| `campaignComplete` | Campaign completed |
+| `customDomainErrors` | Custom domain error detected |
+| `connectionIssue` | Email account connection issue |
+| `sendLimitReached` | Daily send limit reached |
+| `lemwarmPaused` | Lemwarm paused |
+
+### Enrichment
+
+| Event | Description |
+| ----- | ----------- |
+| `enrichmentDone` | Enrichment completed |
+| `enrichmentError` | Enrichment failed |
+
+### Inbox activities
+
+| Event | Description |
+| ----- | ----------- |
+| `inboxLabelUpdated` | Inbox conversation label changed |
+
+### Watchlists
+
+| Event | Description |
+| ----- | ----------- |
+| `signalRegistered` | New signal detected on a watchlist |
+
+### Deliverability hub
+
+| Event | Description |
+| ----- | ----------- |
+| `deliverabilityAlertTriggered` | Deliverability alert triggered |
+
+### Deprecated events
+
+These events have been removed from the API. Use the replacements below.
+
+| Removed event | Replacement |
+| ------------- | ----------- |
+| `skipped` | No direct replacement |
+| `emailsSendFailed` | Use `emailsFailed` instead |
+| `opportunitiesDone` | Use `annotated` or task-level webhooks instead |
 
 ## Verifying webhook authenticity
 
@@ -40,6 +194,17 @@ You can pass an optional `secret` in the request body when creating the webhook.
 }
 ```
 
+```json whatsapp events
+{
+	"targetUrl": "https://webhook.site/your-id",
+	"type": "whatsappReplied"
+}
+```
+
+```json watchlist signals
+{
+	"targetUrl": "https://webhook.site/your-id",
+	"type": "signalRegistered"
 ```json with shared secret
 {
 	"targetUrl": "https://webhook.site/your-id",

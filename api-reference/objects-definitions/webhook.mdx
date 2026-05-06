@@ -4,9 +4,11 @@ openapi-schema: Webhook
 ---
 import {SnippetObjectScreenshot} from '/snippets/snippet-object-screenshot.jsx'
 
-<Note>
-In the screenshot below, we only configured Zapier webhooks. Once configured, Lemlist will send specified events data to the webhook of the corresponding Zapier ID (hidden in below screenshot).
-</Note>
+Webhooks let you receive real-time `POST` callbacks whenever specific events occur in your lemlist workspace.
+
+You can subscribe to individual activity events (e.g. `emailsOpened`, `linkedinReplied`, `whatsappMessageSent`) or to lead-state groups (e.g. `contacted`, `warmed`, `interested`) that aggregate multiple activity types.
+
+For the full categorized list of available events, see [Add Webhook](/api-reference/endpoints/webhooks/add-webhook#available-event-types).
 
 <SnippetObjectScreenshot
   objectName="webhook"
