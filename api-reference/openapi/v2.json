@@ -2957,7 +2957,7 @@
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "enum": ["deliverable", "risky", "unknown", "undeliverable", "unverified"]
+                      "enum": ["deliverable", "risky", "undeliverable", "unverified"]
                     },
                     "description": "Email deliverability statuses for which a lead is auto-launched when `autoReview` is enabled. Only leads whose email verification matches one of these statuses are launched automatically. Invalid values are rejected with a `400` error."
                   }
@@ -2970,7 +2970,7 @@
                 "name": "My new campaign",
                 "timezone": "America/New_York",
                 "autoReview": true,
-                "autoReviewConditions": ["deliverable", "unknown"]
+                "autoReviewConditions": ["deliverable", "risky"]
               }
             }
           }
@@ -3342,7 +3342,7 @@
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "enum": ["deliverable", "risky", "unknown", "undeliverable", "unverified"]
+                      "enum": ["deliverable", "risky", "undeliverable", "unverified"]
                     },
                     "description": "Email deliverability statuses for which a lead is auto-launched when `autoReview` is enabled. Only leads whose email verification matches one of these statuses are launched automatically. Invalid values are rejected with a `400` error."
                   }
@@ -3367,7 +3367,7 @@
                   "usr_7xYzAbCdEfGhIjKlM"
                 ],
                 "autoReview": true,
-                "autoReviewConditions": ["deliverable", "unknown"]
+                "autoReviewConditions": ["deliverable", "risky"]
               }
             }
           }
