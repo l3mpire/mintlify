@@ -16603,6 +16603,16 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "force",
+            "in": "query",
+            "required": false,
+            "description": "Re-run an enrichment that would otherwise be skipped. Bypasses skips caused by data already present on the contact: existing email, existing phone, LinkedIn enrichment already done for the same `linkedinUrl` / `linkedinUrlSalesNav`, or email already having a deliverability status.\n\nDoes **not** bypass:\n- **Enrichment currently in progress** — if another enrichment is already running for this contact, the request is still skipped (no parallel enrichments, no double billing).\n- **Previously returned not-found** — for `findEmail` and `findPhone`, if a prior enrichment with the same inputs (`linkedinUrl`, `linkedinUrlSalesNav`, first / last name, company name / domain / LinkedIn URL) already returned not-found, the request is still skipped. Changing any of those inputs on the lead lifts the block without needing `force`.",
+            "example": "true",
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -16637,15 +16647,62 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Lead not found",
+            "description": "Lead or contact not found",
             "content": {
-              "text/plain": {
-                "example": "Lead not found"
+              "application/json": {
+                "examples": {
+                  "leadNotFound": {
+                    "summary": "Lead does not exist",
+                    "value": {
+                      "error": "Lead not found",
+                      "code": "LEAD_NOT_FOUND"
+                    }
+                  },
+                  "contactNotFound": {
+                    "summary": "Lead exists but its underlying contact is missing",
+                    "value": {
+                      "error": "Contact not found for this lead",
+                      "code": "CONTACT_NOT_FOUND"
+                    }
+                  }
+                }
               }
             }
           },
           "405": {
             "description": "Method not allowed"
+          },
+          "409": {
+            "description": "Enrichment cannot proceed because of the current state of the lead/contact",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "alreadyEnriched": {
+                    "summary": "Contact already has the requested data — retry with ?force=true to override",
+                    "value": {
+                      "error": "Enrichment skipped: contact already has the requested data or was recently enriched",
+                      "code": "ALREADY_ENRICHED"
+                    }
+                  },
+                  "inProgress": {
+                    "summary": "An enrichment is already running for this lead — wait for it to complete",
+                    "value": {
+                      "error": "lead is already being enriched"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Enrichment failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Failed to enrich lead"
+                }
+              }
+            }
           }
         }
       }
