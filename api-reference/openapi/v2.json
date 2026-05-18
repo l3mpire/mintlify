@@ -2948,6 +2948,18 @@
                   "timezone": {
                     "type": "string",
                     "description": "IANA timezone for the campaign schedule (e.g. `America/New_York`). Defaults to `Europe/Paris` if omitted."
+                  },
+                  "autoReview": {
+                    "type": "boolean",
+                    "description": "Automatically launch (review) leads as soon as they are added to the campaign, instead of requiring manual review. Defaults to `false`."
+                  },
+                  "autoReviewConditions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": ["deliverable", "risky", "unknown", "undeliverable", "unverified"]
+                    },
+                    "description": "Email deliverability statuses for which a lead is auto-launched when `autoReview` is enabled. Only leads whose email verification matches one of these statuses are launched automatically. Invalid values are rejected with a `400` error."
                   }
                 },
                 "required": [
@@ -2956,7 +2968,9 @@
               },
               "example": {
                 "name": "My new campaign",
-                "timezone": "America/New_York"
+                "timezone": "America/New_York",
+                "autoReview": true,
+                "autoReviewConditions": ["deliverable", "unknown"]
               }
             }
           }
@@ -3319,6 +3333,18 @@
                       "type": "string"
                     },
                     "description": "Array of user IDs (usr_xxx format) to assign as campaign senders. Cannot be used on campaigns with a dynamic sender strategy (contactOwner, leadImporter, customField). Each sender is validated against the campaign's sending channels (email, LinkedIn, SMS, WhatsApp): senders without capabilities for at least one channel are excluded, and all channels must be covered by at least one sender."
+                  },
+                  "autoReview": {
+                    "type": "boolean",
+                    "description": "Automatically launch (review) leads as soon as they are added to the campaign, instead of requiring manual review."
+                  },
+                  "autoReviewConditions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": ["deliverable", "risky", "unknown", "undeliverable", "unverified"]
+                    },
+                    "description": "Email deliverability statuses for which a lead is auto-launched when `autoReview` is enabled. Only leads whose email verification matches one of these statuses are launched automatically. Invalid values are rejected with a `400` error."
                   }
                 }
               },
@@ -3339,7 +3365,9 @@
                 "sendUserIds": [
                   "usr_2aBCdEfGHiJkLmNOp",
                   "usr_7xYzAbCdEfGhIjKlM"
-                ]
+                ],
+                "autoReview": true,
+                "autoReviewConditions": ["deliverable", "unknown"]
               }
             }
           }

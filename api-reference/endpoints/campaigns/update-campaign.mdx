@@ -5,3 +5,5 @@ description: Updates the settings and configuration of an existing campaign.
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Campaign" objectPath="campaign" />
+
+Set `autoReview` to `true` to automatically launch leads as soon as they are added to the campaign, skipping manual review. Use `autoReviewConditions` to restrict auto-launch to leads whose email verification matches one of the given deliverability statuses (`deliverable`, `risky`, `unknown`, `undeliverable`, `unverified`).
