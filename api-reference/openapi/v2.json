@@ -1794,7 +1794,7 @@
       },
       "SignalSchema": {
         "type": "object",
-        "description": "A watchlist signal representing a tracked event (hiring, LinkedIn activity, website visit, etc.)",
+        "description": "A signal detected by a Signal Agent representing a tracked event (hiring, LinkedIn activity, website visit, etc.)",
         "required": [
           "_id",
           "teamId",
@@ -1816,11 +1816,11 @@
           },
           "watchListId": {
             "type": "string",
-            "description": "Associated watchlist ID"
+            "description": "ID of the Signal Agent associated with this signal"
           },
           "watchListName": {
             "type": "string",
-            "description": "Name of the associated watchlist"
+            "description": "Name of the Signal Agent associated with this signal"
           },
           "type": {
             "type": "string",
@@ -1982,7 +1982,7 @@
       },
       "WatchListApiFetchSignalsResponse": {
         "type": "object",
-        "description": "Paginated response containing watchlist signals",
+        "description": "Paginated response containing signals detected by Signal Agents",
         "properties": {
           "signals": {
             "type": "array",
@@ -16709,9 +16709,9 @@
     },
     "/watchlist/signals": {
       "get": {
-        "summary": "Get Watchlist Signals",
+        "summary": "Get Signal Agent signals",
         "tags": [
-          "Watchlist"
+          "Signal Agents"
         ],
         "parameters": [
           {
@@ -16842,7 +16842,7 @@
             "name": "watchListId",
             "in": "query",
             "required": false,
-            "description": "Filter signals by specific watchlist ID",
+            "description": "Filter signals by specific Signal Agent ID",
             "example": "wl_abc123",
             "schema": {
               "type": "string",

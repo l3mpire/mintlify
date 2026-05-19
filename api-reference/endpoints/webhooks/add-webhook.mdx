@@ -145,11 +145,11 @@ These aggregate multiple activity types into a single lead-state change event.
 | ----- | ----------- |
 | `inboxLabelUpdated` | Inbox conversation label changed |
 
-### Watchlists
+### Signal Agents
 
 | Event | Description |
 | ----- | ----------- |
-| `signalRegistered` | New signal detected on a watchlist |
+| `signalRegistered` | New signal detected by a Signal Agent |
 
 ### Deliverability hub
 
@@ -201,7 +201,7 @@ You can pass an optional `secret` in the request body when creating the webhook.
 }
 ```
 
-```json watchlist signals
+```json signal agent signals
 {
 	"targetUrl": "https://webhook.site/your-id",
 	"type": "signalRegistered"
