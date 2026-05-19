@@ -344,7 +344,7 @@
                 ]
               },
               {
-                "group": "Watch list / signals",
+                "group": "Signal Agents",
                 "expanded": false,
                 "pages": ["api-reference/endpoints/watch-list/get-signals"]
               },
