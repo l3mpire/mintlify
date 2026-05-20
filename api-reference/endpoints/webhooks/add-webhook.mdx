@@ -176,6 +176,56 @@ You can pass an optional `secret` in the request body when creating the webhook.
 - Immutable — it cannot be changed after creation. To rotate it, delete the webhook and create a new one.
 - Sent back to your endpoint as a `secret` field in the JSON body of every webhook call, so you can verify the request originated from lemlist.
 
+## Webhook payload
+
+Each event is delivered as a `POST` to your `targetUrl` with a JSON body that mirrors the underlying activity record. Common fields:
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `_id` | string | Unique activity identifier (`act_…`) |
+| `type` | string | Event type (e.g. `emailsSent`, `emailsReplied`) |
+| `teamId` | string | Team the activity belongs to |
+| `createdAt` | ISO date | When the activity happened |
+| `campaignId` | string | Source campaign (absent for non-campaign events) |
+| `campaignName` | string | Campaign display name |
+| `sequenceId` | string | Sequence the task belonged to |
+| `sequenceStep` | number | 0-based step index in the sequence |
+| `leadId` | string | Lead targeted by the activity |
+| `leadEmail`, `leadFirstName`, `leadLastName` | string | Denormalized lead identity |
+| `sendUserId`, `sendUserEmail`, `sendUserName` | string | Sender (lemlist user) identity |
+| `subject` | string | Email subject (email events only) |
+| `secret` | string | Echoed back if a `secret` was set on the webhook |
+
+### Email recipients (`to` / `cc` / `bcc`)
+
+Email events (`emailsSent`, `emailsReplied`, `emailsBounced`) carry the full recipient lists as arrays of `{address, name}`. Addresses are lowercased. Fields are omitted when empty.
+
+```json
+{
+  "type": "emailsSent",
+  "to":  [{ "address": "lead@example.com", "name": "Alice Doe" }],
+  "cc":  [{ "address": "manager@example.com", "name": "" }],
+  "bcc": [{ "address": "archive@crm.io", "name": "" }]
+}
+```
+
+- `to` — primary recipient(s). For outbound sends, this is the lead. For inbound replies, this is the mailbox owner; multi-recipient `to` lines (e.g. reply-all where the lead manually added people) are preserved.
+- `cc` — explicit CC recipients on the email.
+- `bcc` — only present for outbound `emailsSent` events when the sender has a hidden BCC configured in **Settings → Integrations** (`users.lemlist.bcc`). Inbound BCC is never visible because SMTP strips it for non-BCC'd recipients.
+
+### Third-party reply flag
+
+When a reply on a thread comes from an address that does **not** match the original lead's known contact emails, lemlist attributes the reply to the third-party sender rather than to the lead, and the event carries an extra flag:
+
+```json
+{
+  "type": "emailsReplied",
+  "isThirdPartyReply": true
+}
+```
+
+Third-party reply payloads omit `campaignId`, `leadId`, and `sequenceId` (since the reply is no longer attached to the original campaign flow). Use the flag to route these events differently if needed.
+
 ## Examples
 
 <CodeGroup>
