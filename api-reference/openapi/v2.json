@@ -7620,6 +7620,7 @@
                     "description": "Array of filters (required)",
                     "items": {
                       "type": "object",
+                      "required": ["in", "out"],
                       "properties": {
                         "filterId": {
                           "type": "string",
@@ -7630,14 +7631,14 @@
                           "items": {
                             "type": "string"
                           },
-                          "description": "List of the values you want to include"
+                          "description": "List of the values you want to include. Pass an empty array `[]` if you don't want to include anything."
                         },
                         "out": {
                           "type": "array",
                           "items": {
                             "type": "string"
                           },
-                          "description": "List of the values you want to exclude"
+                          "description": "List of the values you want to exclude. Pass an empty array `[]` if you don't want to exclude anything."
                         }
                       }
                     }
@@ -7896,6 +7897,7 @@
                     "description": "Array of filters (required)",
                     "items": {
                       "type": "object",
+                      "required": ["in", "out"],
                       "properties": {
                         "filterId": {
                           "type": "string",
@@ -7906,14 +7908,14 @@
                           "items": {
                             "type": "string"
                           },
-                          "description": "List of the values you want to include"
+                          "description": "List of the values you want to include. Pass an empty array `[]` if you don't want to include anything."
                         },
                         "out": {
                           "type": "array",
                           "items": {
                             "type": "string"
                           },
-                          "description": "List of the values you want to exclude"
+                          "description": "List of the values you want to exclude. Pass an empty array `[]` if you don't want to exclude anything."
                         }
                       }
                     }
