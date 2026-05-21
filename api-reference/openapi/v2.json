@@ -7316,7 +7316,7 @@
       ],
       "post": {
         "summary": "Launch Lead",
-        "description": "Manually launches (reviews) a single lead in its campaign. Bypasses the campaign's `autoReview` setting and deliverability filter, but still enforces every other launch guard (campaign step errors, AI variables, sender availability). Requires an `emailPro` plan or higher.",
+        "description": "Use this endpoint to launch a lead that is waiting for review, without having to enable campaign-wide auto-review.\n\nYou're auto launching this specific lead, while still enforcing every other launch guard: the campaign must have no step errors, any AI variables required by the campaign must be valid for the lead, and a sender must be available.\n\nNo need to enable autolaunch in the campaign.\n\nThis endpoint requires an `emailPro` plan or higher.",
         "tags": [
           "Leads"
         ],

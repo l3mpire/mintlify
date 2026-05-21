@@ -3,13 +3,13 @@ openapi: post /leads/review/{leadId}
 description: Manually launches (reviews) a single lead in its campaign.
 ---
 
-Use this endpoint to launch a lead that is waiting for review, without enabling
-campaign-wide auto-review.
+Use this endpoint to launch a lead that is waiting for review, without having
+to enable campaign-wide auto-review.
 
-It bypasses the campaign's `autoReview` setting and the email deliverability
-filter — you are opting in for this specific lead — but still enforces every
-other launch guard: the campaign must have no step errors, any AI variables
-required by the campaign must be valid for the lead, and a sender must be
-available.
+You're auto launching this specific lead, while still enforcing every other
+launch guard: the campaign must have no step errors, any AI variables required
+by the campaign must be valid for the lead, and a sender must be available.
+
+No need to enable autolaunch in the campaign.
 
 This endpoint requires an `emailPro` plan or higher.
