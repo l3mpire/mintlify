@@ -2969,6 +2969,18 @@
                   "timezone": {
                     "type": "string",
                     "description": "IANA timezone for the campaign schedule (e.g. `America/New_York`). Defaults to `Europe/Paris` if omitted."
+                  },
+                  "autoReview": {
+                    "type": "boolean",
+                    "description": "Automatically launch (review) leads as soon as they are added to the campaign, instead of requiring manual review. Defaults to `false`."
+                  },
+                  "autoReviewConditions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": ["deliverable", "risky", "undeliverable", "unverified"]
+                    },
+                    "description": "Email deliverability statuses for which a lead is auto-launched when `autoReview` is enabled. Only leads whose email verification matches one of these statuses are launched automatically. Invalid values are rejected with a `400` error."
                   }
                 },
                 "required": [
@@ -2977,7 +2989,9 @@
               },
               "example": {
                 "name": "My new campaign",
-                "timezone": "America/New_York"
+                "timezone": "America/New_York",
+                "autoReview": true,
+                "autoReviewConditions": ["deliverable", "risky"]
               }
             }
           }
@@ -3340,6 +3354,18 @@
                       "type": "string"
                     },
                     "description": "Array of user IDs (usr_xxx format) to assign as campaign senders. Cannot be used on campaigns with a dynamic sender strategy (contactOwner, leadImporter, customField). Each sender is validated against the campaign's sending channels (email, LinkedIn, SMS, WhatsApp): senders without capabilities for at least one channel are excluded, and all channels must be covered by at least one sender."
+                  },
+                  "autoReview": {
+                    "type": "boolean",
+                    "description": "Automatically launch (review) leads as soon as they are added to the campaign, instead of requiring manual review."
+                  },
+                  "autoReviewConditions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": ["deliverable", "risky", "undeliverable", "unverified"]
+                    },
+                    "description": "Email deliverability statuses for which a lead is auto-launched when `autoReview` is enabled. Only leads whose email verification matches one of these statuses are launched automatically. Invalid values are rejected with a `400` error."
                   }
                 }
               },
@@ -3360,7 +3386,9 @@
                 "sendUserIds": [
                   "usr_2aBCdEfGHiJkLmNOp",
                   "usr_7xYzAbCdEfGhIjKlM"
-                ]
+                ],
+                "autoReview": true,
+                "autoReviewConditions": ["deliverable", "risky"]
               }
             }
           }
@@ -7285,6 +7313,97 @@
             "content": {
               "text/plain": {
                 "example": "Lead not found"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      }
+    },
+    "/leads/review/{leadId}": {
+      "parameters": [
+        {
+          "name": "leadId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the lead to launch",
+          "example": "lea_8xJSc7sV7ggpiVnXe",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Launch Lead",
+        "description": "Use this endpoint to launch a lead that is waiting for review, without having to enable campaign-wide auto-review.\n\nYou're auto launching this specific lead, while still enforcing every other launch guard: the campaign must have no step errors, any AI variables required by the campaign must be valid for the lead, and a sender must be available.\n\nNo need to enable autolaunch in the campaign.\n\nThis endpoint requires an `emailPro` plan or higher.",
+        "tags": [
+          "Leads"
+        ],
+        "responses": {
+          "200": {
+            "description": "Lead launched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "ok": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The lead cannot be launched. Possible `error` codes: `CAMPAIGN_LEAD_REVIEW_LEAD_PAUSED` (lead is paused), `CAMPAIGN_LEAD_REVIEW_LEAD_ALREADY_LAUNCHED` (lead is already launched), `CAMPAIGN_LEAD_REVIEW_LEAD_AI_VARIABLE_INVALID` (missing or invalid AI variables required by the campaign), `CAMPAIGN_LEAD_REVIEW_LEAD_NO_SENDER_AVAILABLE` (no sender available), `CAMPAIGN_LEAD_REVIEW_CAMPAIGN_STEP_ERRORS` (campaign has step errors).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "CAMPAIGN_LEAD_REVIEW_LEAD_ALREADY_LAUNCHED",
+                  "message": "Lead is already launched"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Lead or campaign not found. Possible `error` codes: `CAMPAIGN_LEAD_REVIEW_LEAD_NOT_FOUND`, `CAMPAIGN_LEAD_REVIEW_CAMPAIGN_NOT_FOUND`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "CAMPAIGN_LEAD_REVIEW_LEAD_NOT_FOUND",
+                  "message": "Lead not found"
+                }
               }
             }
           },

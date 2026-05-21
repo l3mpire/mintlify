@@ -189,6 +189,7 @@
                   "api-reference/endpoints/leads/unsubscribe-lead-from-campaign",
                   "api-reference/endpoints/leads/pause-lead",
                   "api-reference/endpoints/leads/resume-paused-lead",
+                  "api-reference/endpoints/leads/launch-lead",
                   "api-reference/endpoints/leads/mark-lead-as-interested",
                   "api-reference/endpoints/leads/mark-lead-as-not-interested",
                   "api-reference/endpoints/leads/mark-lead-as-interested-in-campaign",
