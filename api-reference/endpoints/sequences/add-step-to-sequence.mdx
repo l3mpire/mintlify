@@ -77,8 +77,8 @@ The table below summarizes the required and optional fields for each step type. 
 | `phone` | - | `message`, `index`, `delay` |
 | `api` | `method`, `url` | `index`, `delay` |
 | `linkedinVisit` | - | `index`, `delay` |
-| `linkedinInvite` | - | `message`, `index`, `delay` |
-| `linkedinSend` | `message` | `altMessage`, `index`, `delay` |
+| `linkedinInvite` | - | `message`, `images`, `videos`, `index`, `delay` |
+| `linkedinSend` | `message` | `altMessage`, `images`, `videos`, `index`, `delay` |
 | `sendToAnotherCampaign` | `campaignId` | `index`, `delay` |
 | `conditional` | `conditionKey`, `delayType` (and `delay` when `delayType` is `within`) | `index` |
 | `whatsappMessage` | `message` | `index`, `delay` |
@@ -103,3 +103,29 @@ In conditional steps, if the `delayType` is not `"within"`, the `delay` field is
 | `conditionKey` (String, Conditional) | For conditional steps only. Defines the condition key. Allowed values: `hasEmailAddress`, `hasLinkedinUrl`, `hasPhoneNumber`, `hasScore`, `emailsOpened`, `emailsClicked`, `emailsUnsubscribed`, `meetingBooked`, `linkedinInviteAccepted`, `linkedinOpened`, `aircallDone`, `linkedinNetworkCheck`, `hasWhatsappAccount` |
 | `delayType` (String, Conditional) | For conditional steps only. Specifies the delay type. Allowed values: `within`, `waitUntil` |
 | `campaignId` (String, Conditional) | For steps of type `sendToAnotherCampaign` only. The target campaign ID to which a lead should be sent. The specified campaign must exist in the team and not be archived |
+| `images` (Array of strings, Optional) | For `linkedinInvite` and `linkedinSend` steps only. Public HTTPS URLs of images to attach to the LinkedIn message. lemlist downloads each file and re-hosts it. See the [LinkedIn media constraints](#linkedin-media-constraints) below |
+| `videos` (Array of strings, Optional) | For `linkedinInvite` and `linkedinSend` steps only. Public HTTPS URLs of videos to attach to the LinkedIn message. lemlist downloads each file and re-hosts it. See the [LinkedIn media constraints](#linkedin-media-constraints) below |
+
+## LinkedIn media constraints
+
+When you pass `images` or `videos` to a `linkedinInvite` or `linkedinSend` step, each URL must be a publicly reachable HTTPS URL. lemlist fetches the file, validates it, and re-hosts it before attaching it to the LinkedIn message.
+
+| Constraint | Value |
+| --- | --- |
+| Maximum items per step | 6 (combined across `images` + `videos`) |
+| Maximum file size | 20 MB per file |
+| Allowed image MIME types | `image/png`, `image/jpeg`, `image/gif` |
+| Allowed video MIME types | `video/mp4`, `video/quicktime` |
+
+If ingestion fails, the API returns a `4xx`/`5xx` status with one of the following error codes:
+
+| Code | HTTP status | Meaning |
+| --- | --- | --- |
+| `LINKEDIN_MEDIA_TOO_MANY` | 400 | More than 6 items submitted |
+| `LINKEDIN_MEDIA_UNSAFE_URL` | 400 | URL is not HTTPS or not publicly reachable |
+| `LINKEDIN_MEDIA_TOO_LARGE` | 413 | File exceeds 20 MB |
+| `LINKEDIN_MEDIA_INVALID_TYPE` | 415 | File MIME type is not allowed |
+| `LINKEDIN_MEDIA_GIF_INVALID` | 422 | GIF does not meet LinkedIn's constraints |
+| `LINKEDIN_MEDIA_DOWNLOAD_FAILED` | 502 | lemlist could not download the file |
+| `LINKEDIN_MEDIA_AV_UNAVAILABLE` | 503 | Antivirus scanner is unavailable |
+| `LINKEDIN_MEDIA_TIMEOUT` | 504 | Ingestion took longer than 45 seconds |

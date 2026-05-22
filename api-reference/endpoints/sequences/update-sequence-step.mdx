@@ -28,8 +28,8 @@ However, you **need** to add the `type` field in the request body even if you ca
 | `phone` | `message`, `delay` | Reminder to make a phone call |
 | `api` | `method`, `url`, `delay` | Makes an API call |
 | `linkedinVisit` | `delay` | Simulates a profile visit on LinkedIn |
-| `linkedinInvite` | `message`, `delay` | Sends a LinkedIn invite with message |
-| `linkedinSend` | `message`, `altMessage`, `delay` | Sends a LinkedIn message |
+| `linkedinInvite` | `message`, `images`, `videos`, `delay` | Sends a LinkedIn invite with message |
+| `linkedinSend` | `message`, `altMessage`, `images`, `videos`, `delay` | Sends a LinkedIn message |
 | `sendToAnotherCampaign` | `campaignId` | Sends the lead to another campaign |
 | `conditional` | `conditionKey`, `delayType`, `delay` | Triggers the next step based on lead behavior |
 | `whatsappMessage` | `message`, `delay` | Sends a WhatsApp message |
@@ -50,6 +50,8 @@ Only include the fields you want to update. Required fields are not enforced her
 | `delayType` | string | `conditional` | One of `within`, `waitUntil` |
 | `conditionKey` | string | `conditional` | See supported condition keys below |
 | `campaignId` | string | `sendToAnotherCampaign` | ID of destination campaign |
+| `images` | array of strings | `linkedinInvite`, `linkedinSend` | Public HTTPS URLs of images to attach. Replaces the step's current images — pass `[]` to clear them. See the [LinkedIn media constraints](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-media-constraints) on Add Step |
+| `videos` | array of strings | `linkedinInvite`, `linkedinSend` | Public HTTPS URLs of videos to attach. Replaces the step's current videos — pass `[]` to clear them. See the [LinkedIn media constraints](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-media-constraints) on Add Step |
 
 ## Supported Condition Keys
 

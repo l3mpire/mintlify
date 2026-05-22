@@ -4799,6 +4799,22 @@
                   "campaignId": {
                     "type": "string",
                     "description": "Target campaign ID for sendToAnotherCampaign steps. The campaign must exist and not be archived"
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "description": "Public HTTPS URLs of images to attach to a `linkedinInvite` or `linkedinSend` step. lemlist downloads each file and re-hosts it. Allowed MIME types: `image/png`, `image/jpeg`, `image/gif`. Up to 20 MB per file, and up to 6 items total combined with `videos`."
+                  },
+                  "videos": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "description": "Public HTTPS URLs of videos to attach to a `linkedinInvite` or `linkedinSend` step. lemlist downloads each file and re-hosts it. Allowed MIME types: `video/mp4`, `video/quicktime`. Up to 20 MB per file, and up to 6 items total combined with `images`."
                   }
                 }
               },
@@ -4823,6 +4839,19 @@
                   "value": {
                     "type": "linkedinSend",
                     "message": "Hey {{firstName}}, thanks for connecting! I wanted to reach out about...",
+                    "delay": 2
+                  }
+                },
+                "LinkedIn Send with Media": {
+                  "value": {
+                    "type": "linkedinSend",
+                    "message": "Hey {{firstName}}, sharing a quick overview of what we're building.",
+                    "images": [
+                      "https://example.com/assets/overview.png"
+                    ],
+                    "videos": [
+                      "https://example.com/assets/demo.mp4"
+                    ],
                     "delay": 2
                   }
                 },
@@ -5065,6 +5094,22 @@
                   "campaignId": {
                     "type": "string",
                     "description": "Target campaign ID for sendToAnotherCampaign steps. The campaign must exist and not be archived"
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "description": "Public HTTPS URLs of images to attach to a `linkedinInvite` or `linkedinSend` step. Replaces the step's current images — pass an empty array to clear them. Allowed MIME types: `image/png`, `image/jpeg`, `image/gif`. Up to 20 MB per file, and up to 6 items total combined with `videos`."
+                  },
+                  "videos": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "description": "Public HTTPS URLs of videos to attach to a `linkedinInvite` or `linkedinSend` step. Replaces the step's current videos — pass an empty array to clear them. Allowed MIME types: `video/mp4`, `video/quicktime`. Up to 20 MB per file, and up to 6 items total combined with `images`."
                   }
                 }
               },
@@ -5090,6 +5135,15 @@
                     "message": "Thanks for accepting my invite, {{firstName}}! I wanted to reach out about...",
                     "altMessage": "Alternative message if the main one fails",
                     "delay": 3
+                  }
+                },
+                "Update LinkedIn Send Media": {
+                  "value": {
+                    "type": "linkedinSend",
+                    "images": [
+                      "https://example.com/assets/overview.png"
+                    ],
+                    "videos": []
                   }
                 },
                 "Update Manual Task": {
@@ -9594,6 +9648,22 @@
                       "2"
                     ],
                     "default": ""
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "description": "Public HTTPS URLs of images to attach to a `linkedin` task. lemlist downloads each file and re-hosts it. Ignored when `type` is not `linkedin`. Allowed MIME types: `image/png`, `image/jpeg`, `image/gif`. Up to 20 MB per file, and up to 6 items total combined with `videos`."
+                  },
+                  "videos": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "description": "Public HTTPS URLs of videos to attach to a `linkedin` task. lemlist downloads each file and re-hosts it. Ignored when `type` is not `linkedin`. Allowed MIME types: `video/mp4`, `video/quicktime`. Up to 20 MB per file, and up to 6 items total combined with `images`."
                   }
                 },
                 "required": [
@@ -9705,6 +9775,22 @@
                   "done": {
                     "type": "boolean",
                     "description": "Mark task as completed"
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "description": "Public HTTPS URLs of images to attach to a LinkedIn task. Replaces the task's current images — pass an empty array to clear them. Returns `400` (`LINKEDIN_MEDIA_INVALID_TYPE`) when the target task is not a LinkedIn task. Allowed MIME types: `image/png`, `image/jpeg`, `image/gif`. Up to 20 MB per file, and up to 6 items total combined with `videos`."
+                  },
+                  "videos": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "description": "Public HTTPS URLs of videos to attach to a LinkedIn task. Replaces the task's current videos — pass an empty array to clear them. Returns `400` (`LINKEDIN_MEDIA_INVALID_TYPE`) when the target task is not a LinkedIn task. Allowed MIME types: `video/mp4`, `video/quicktime`. Up to 20 MB per file, and up to 6 items total combined with `images`."
                   }
                 },
                 "required": [
