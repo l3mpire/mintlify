@@ -81,9 +81,15 @@ The table below summarizes the required and optional fields for each step type. 
 | `linkedinSend` | `message` | `altMessage`, `images`, `videos`, `index`, `delay` |
 | `linkedinVoiceNote` | - | `index`, `delay` |
 | `linkedinVoiceNoteAi` | - | `index`, `delay` |
+| `linkedinFollow` | - | `index`, `delay` |
+| `linkedinLikeLastPost` | - | `index`, `delay` |
+| `linkedinCommentLastPost` | - | `index`, `delay` |
+| `linkedinEndorse` | - | `index`, `delay`, `skillName`, `endorseAnyFallback` |
+| `linkedinWithdrawInvitation` | - | `index`, `delay` |
 | `sendToAnotherCampaign` | `campaignId` | `index`, `delay` |
 | `conditional` | `conditionKey`, `delayType` (and `delay` when `delayType` is `within`) | `index` |
 | `whatsappMessage` | `message` | `index`, `delay` |
+| `sms` | `message` | `index`, `delay` |
 
 <Note>
 In conditional steps, if the `delayType` is not `"within"`, the `delay` field is not required.
@@ -97,11 +103,11 @@ In conditional steps, if the `delayType` is not `"within"`, the `delay` field is
 
 | Field | Description |
 | --- | --- |
-| `type` (String, Required) | The type of step to create. Allowed values: `email`, `manual`, `phone`, `api`, `linkedinVisit`, `linkedinInvite`, `linkedinSend`, `linkedinVoiceNote`, `linkedinVoiceNoteAi`, `sendToAnotherCampaign`, `conditional`, `whatsappMessage` |
+| `type` (String, Required) | The type of step to create. Allowed values: `email`, `manual`, `phone`, `api`, `linkedinVisit`, `linkedinInvite`, `linkedinSend`, `linkedinVoiceNote`, `linkedinVoiceNoteAi`, `linkedinFollow`, `linkedinLikeLastPost`, `linkedinCommentLastPost`, `linkedinEndorse`, `linkedinWithdrawInvitation`, `sendToAnotherCampaign`, `conditional`, `whatsappMessage`, `sms` |
 | `index` (Integer, Optional) | The position within the sequence to insert the new step. Must be an integer ≥ -1. If omitted or if the index is greater than the number of steps, the new step is added to the end |
 | `delay` (Integer, Optional) | The delay (in seconds) before executing the step. Defaults to 0 for the first step and to 1 for subsequent steps (except for certain conditional configurations) |
 | `subject` (String, Conditional) | The email subject. Required for steps of type `email`. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
-| `message` (String, Conditional) | Content of the email or message. Used for `email`, `linkedinInvite`, and `linkedinSend` step types, or the note of `manual` and `phone` step types |
+| `message` (String, Conditional) | Content of the email or message. Used for `email`, `linkedinInvite`, `linkedinSend`, `whatsappMessage`, and `sms` step types, or the note of `manual` and `phone` step types. Required for `linkedinSend`, `whatsappMessage`, and `sms` |
 | `altMessage` (String, Conditional) | An alternate message for steps of type `linkedinSend` |
 | `title` (String, Conditional) | A title or label used in `manual` steps. Maximum 400 characters |
 | `method` (String, Conditional) | The HTTP method to use for API steps. Allowed values: `GET`, `POST`, `PUT`, `DELETE`, `PATCH` |
@@ -111,6 +117,8 @@ In conditional steps, if the `delayType` is not `"within"`, the `delay` field is
 | `campaignId` (String, Conditional) | For steps of type `sendToAnotherCampaign` only. The target campaign ID to which a lead should be sent. The specified campaign must exist in the team and not be archived |
 | `images` (Array of strings, Optional) | For `linkedinInvite` and `linkedinSend` steps only. Public HTTPS URLs of images to attach to the LinkedIn message. lemlist downloads each file and re-hosts it. See the [LinkedIn media constraints](#linkedin-media-constraints) below |
 | `videos` (Array of strings, Optional) | For `linkedinInvite` and `linkedinSend` steps only. Public HTTPS URLs of videos to attach to the LinkedIn message. lemlist downloads each file and re-hosts it. See the [LinkedIn media constraints](#linkedin-media-constraints) below |
+| `skillName` (String, Optional) | For `linkedinEndorse` steps only. Name of the LinkedIn skill to endorse on the lead's profile |
+| `endorseAnyFallback` (Boolean, Optional) | For `linkedinEndorse` steps only. When `true` and the named skill is not on the lead's profile, lemlist falls back to endorsing any available skill |
 
 ## LinkedIn media constraints
 
