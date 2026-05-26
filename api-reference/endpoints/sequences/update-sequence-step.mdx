@@ -54,7 +54,7 @@ Only include the fields you want to update. Required fields are not enforced her
 | `title` | string | `manual` | Title for manual task. Maximum 400 characters |
 | `method` | string | `api` | One of `GET`, `POST`, `PUT`, `DELETE`, `PATCH` |
 | `url` | string | `api` | Valid HTTP/HTTPS URL |
-| `delay` | integer | all except `sendToAnotherCampaign` | Delay before this step in hours |
+| `delay` | integer | all except `sendToAnotherCampaign` | Delay before this step, in days. Must be between 0 and 1500 |
 | `delayType` | string | `conditional` | One of `within`, `waitUntil` |
 | `conditionKey` | string | `conditional` | See supported condition keys below |
 | `campaignId` | string | `sendToAnotherCampaign` | ID of destination campaign |

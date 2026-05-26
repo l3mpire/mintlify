@@ -105,7 +105,7 @@ In conditional steps, if the `delayType` is not `"within"`, the `delay` field is
 | --- | --- |
 | `type` (String, Required) | The type of step to create. Allowed values: `email`, `manual`, `phone`, `api`, `linkedinVisit`, `linkedinInvite`, `linkedinSend`, `linkedinVoiceNote`, `linkedinVoiceNoteAi`, `linkedinFollow`, `linkedinLikeLastPost`, `linkedinCommentLastPost`, `linkedinEndorse`, `linkedinWithdrawInvitation`, `sendToAnotherCampaign`, `conditional`, `whatsappMessage`, `sms` |
 | `index` (Integer, Optional) | The position within the sequence to insert the new step. Must be an integer ≥ -1. If omitted or if the index is greater than the number of steps, the new step is added to the end |
-| `delay` (Integer, Optional) | The delay (in seconds) before executing the step. Defaults to 0 for the first step and to 1 for subsequent steps (except for certain conditional configurations) |
+| `delay` (Integer, Optional) | The delay (in days) before executing the step. Must be between 0 and 1500. Defaults to 0 for the first step and to 1 for subsequent steps (except for certain conditional configurations) |
 | `subject` (String, Conditional) | The email subject. Required for steps of type `email`. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
 | `message` (String, Conditional) | Content of the email or message. Used for `email`, `linkedinInvite`, `linkedinSend`, `whatsappMessage`, and `sms` step types, or the note of `manual` and `phone` step types. Required for `linkedinSend`, `whatsappMessage`, and `sms` |
 | `altMessage` (String, Conditional) | An alternate message for steps of type `linkedinSend` |
