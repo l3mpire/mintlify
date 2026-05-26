@@ -4725,9 +4725,16 @@
                       "linkedinVisit",
                       "linkedinInvite",
                       "linkedinSend",
+                      "linkedinVoiceNote",
+                      "linkedinFollow",
+                      "linkedinLikeLastPost",
+                      "linkedinCommentLastPost",
+                      "linkedinEndorse",
+                      "linkedinWithdrawInvitation",
                       "sendToAnotherCampaign",
                       "conditional",
-                      "whatsappMessage"
+                      "whatsappMessage",
+                      "sms"
                     ]
                   },
                   "index": {
@@ -4744,7 +4751,7 @@
                   },
                   "message": {
                     "type": "string",
-                    "description": "Content of the email or message (used for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage steps)"
+                    "description": "Content of the email or message (used for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage, sms steps). Required for linkedinSend, whatsappMessage, and sms"
                   },
                   "altMessage": {
                     "type": "string",
@@ -4815,6 +4822,22 @@
                       "format": "uri"
                     },
                     "description": "Public HTTPS URLs of videos to attach to a `linkedinInvite` or `linkedinSend` step. lemlist downloads each file and re-hosts it. Allowed MIME types: `video/mp4`, `video/quicktime`. Up to 20 MB per file, and up to 6 items total combined with `images`."
+                  },
+                  "skillName": {
+                    "type": "string",
+                    "description": "Name of the LinkedIn skill to endorse on the lead's profile. Applies to `linkedinEndorse` steps only."
+                  },
+                  "endorseAnyFallback": {
+                    "type": "boolean",
+                    "description": "Applies to `linkedinEndorse` steps only. When `true` and the named skill is not on the lead's profile, lemlist falls back to endorsing any available skill."
+                  },
+                  "recordMode": {
+                    "type": "string",
+                    "description": "Applies to `linkedinVoiceNote` steps only. Determines how the audio is sourced. `manual` (default) means the user records the audio themselves from the lemlist UI after step creation; `ai` means lemlist generates the audio from a text template provided in the lemlist UI.",
+                    "enum": [
+                      "manual",
+                      "ai"
+                    ]
                   }
                 }
               },
@@ -5024,9 +5047,16 @@
                       "linkedinVisit",
                       "linkedinInvite",
                       "linkedinSend",
+                      "linkedinVoiceNote",
+                      "linkedinFollow",
+                      "linkedinLikeLastPost",
+                      "linkedinCommentLastPost",
+                      "linkedinEndorse",
+                      "linkedinWithdrawInvitation",
                       "sendToAnotherCampaign",
                       "conditional",
-                      "whatsappMessage"
+                      "whatsappMessage",
+                      "sms"
                     ]
                   },
                   "delay": {
@@ -5039,7 +5069,7 @@
                   },
                   "message": {
                     "type": "string",
-                    "description": "Content of the email or message (for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage steps)"
+                    "description": "Content of the email or message (for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage, sms steps)"
                   },
                   "altMessage": {
                     "type": "string",
@@ -5110,6 +5140,22 @@
                       "format": "uri"
                     },
                     "description": "Public HTTPS URLs of videos to attach to a `linkedinInvite` or `linkedinSend` step. Replaces the step's current videos — pass an empty array to clear them. Allowed MIME types: `video/mp4`, `video/quicktime`. Up to 20 MB per file, and up to 6 items total combined with `images`."
+                  },
+                  "skillName": {
+                    "type": "string",
+                    "description": "Name of the LinkedIn skill to endorse on the lead's profile. Applies to `linkedinEndorse` steps only."
+                  },
+                  "endorseAnyFallback": {
+                    "type": "boolean",
+                    "description": "Applies to `linkedinEndorse` steps only. When `true` and the named skill is not on the lead's profile, lemlist falls back to endorsing any available skill."
+                  },
+                  "recordMode": {
+                    "type": "string",
+                    "description": "Applies to `linkedinVoiceNote` steps only. Determines how the audio is sourced. `manual` (default) means the user records the audio themselves from the lemlist UI after step creation; `ai` means lemlist generates the audio from a text template provided in the lemlist UI.",
+                    "enum": [
+                      "manual",
+                      "ai"
+                    ]
                   }
                 }
               },
