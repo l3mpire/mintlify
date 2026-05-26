@@ -79,8 +79,7 @@ The table below summarizes the required and optional fields for each step type. 
 | `linkedinVisit` | - | `index`, `delay` |
 | `linkedinInvite` | - | `message`, `images`, `videos`, `index`, `delay` |
 | `linkedinSend` | `message` | `altMessage`, `images`, `videos`, `index`, `delay` |
-| `linkedinVoiceNote` | - | `index`, `delay` |
-| `linkedinVoiceNoteAi` | - | `index`, `delay` |
+| `linkedinVoiceNote` | - | `index`, `delay`, `recordMode` |
 | `linkedinFollow` | - | `index`, `delay` |
 | `linkedinLikeLastPost` | - | `index`, `delay` |
 | `linkedinCommentLastPost` | - | `index`, `delay` |
@@ -96,14 +95,14 @@ In conditional steps, if the `delayType` is not `"within"`, the `delay` field is
 </Note>
 
 <Note>
-`linkedinVoiceNote` and `linkedinVoiceNoteAi` steps are created as skeletons via the API: the audio payload itself is not accepted here and must be added afterwards from the lemlist UI. For `linkedinVoiceNote`, a user records the note manually. For `linkedinVoiceNoteAi`, a user binds a text template (EmailTemplate) to the step, which is then converted to audio via ElevenLabs at send time.
+`linkedinVoiceNote` steps are created as skeletons via the API: the audio payload itself is not accepted here and must be added afterwards from the lemlist UI. The `recordMode` field controls how the audio is sourced — with `manual` (default), a user records the note themselves; with `ai`, a user provides a text template that lemlist converts to audio at send time.
 </Note>
 
 ## All Request Body Fields
 
 | Field | Description |
 | --- | --- |
-| `type` (String, Required) | The type of step to create. Allowed values: `email`, `manual`, `phone`, `api`, `linkedinVisit`, `linkedinInvite`, `linkedinSend`, `linkedinVoiceNote`, `linkedinVoiceNoteAi`, `linkedinFollow`, `linkedinLikeLastPost`, `linkedinCommentLastPost`, `linkedinEndorse`, `linkedinWithdrawInvitation`, `sendToAnotherCampaign`, `conditional`, `whatsappMessage`, `sms` |
+| `type` (String, Required) | The type of step to create. Allowed values: `email`, `manual`, `phone`, `api`, `linkedinVisit`, `linkedinInvite`, `linkedinSend`, `linkedinVoiceNote`, `linkedinFollow`, `linkedinLikeLastPost`, `linkedinCommentLastPost`, `linkedinEndorse`, `linkedinWithdrawInvitation`, `sendToAnotherCampaign`, `conditional`, `whatsappMessage`, `sms` |
 | `index` (Integer, Optional) | The position within the sequence to insert the new step. Must be an integer ≥ -1. If omitted or if the index is greater than the number of steps, the new step is added to the end |
 | `delay` (Integer, Optional) | The delay (in days) before executing the step. Must be between 0 and 1500. Defaults to 0 for the first step and to 1 for subsequent steps (except for certain conditional configurations) |
 | `subject` (String, Conditional) | The email subject. Required for steps of type `email`. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
@@ -119,6 +118,7 @@ In conditional steps, if the `delayType` is not `"within"`, the `delay` field is
 | `videos` (Array of strings, Optional) | For `linkedinInvite` and `linkedinSend` steps only. Public HTTPS URLs of videos to attach to the LinkedIn message. lemlist downloads each file and re-hosts it. See the [LinkedIn media constraints](#linkedin-media-constraints) below |
 | `skillName` (String, Optional) | For `linkedinEndorse` steps only. Name of the LinkedIn skill to endorse on the lead's profile |
 | `endorseAnyFallback` (Boolean, Optional) | For `linkedinEndorse` steps only. When `true` and the named skill is not on the lead's profile, lemlist falls back to endorsing any available skill |
+| `recordMode` (String, Optional) | For `linkedinVoiceNote` steps only. Determines how the audio is sourced. Allowed values: `manual` (user records the audio after step creation; default), `ai` (audio is generated from a text template provided in the lemlist UI) |
 
 ## LinkedIn media constraints
 

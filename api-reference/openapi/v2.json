@@ -4726,7 +4726,6 @@
                       "linkedinInvite",
                       "linkedinSend",
                       "linkedinVoiceNote",
-                      "linkedinVoiceNoteAi",
                       "linkedinFollow",
                       "linkedinLikeLastPost",
                       "linkedinCommentLastPost",
@@ -4831,6 +4830,14 @@
                   "endorseAnyFallback": {
                     "type": "boolean",
                     "description": "Applies to `linkedinEndorse` steps only. When `true` and the named skill is not on the lead's profile, lemlist falls back to endorsing any available skill."
+                  },
+                  "recordMode": {
+                    "type": "string",
+                    "description": "Applies to `linkedinVoiceNote` steps only. Determines how the audio is sourced. `manual` (default) means the user records the audio themselves from the lemlist UI after step creation; `ai` means lemlist generates the audio from a text template provided in the lemlist UI.",
+                    "enum": [
+                      "manual",
+                      "ai"
+                    ]
                   }
                 }
               },
@@ -5041,7 +5048,6 @@
                       "linkedinInvite",
                       "linkedinSend",
                       "linkedinVoiceNote",
-                      "linkedinVoiceNoteAi",
                       "linkedinFollow",
                       "linkedinLikeLastPost",
                       "linkedinCommentLastPost",
@@ -5142,6 +5148,14 @@
                   "endorseAnyFallback": {
                     "type": "boolean",
                     "description": "Applies to `linkedinEndorse` steps only. When `true` and the named skill is not on the lead's profile, lemlist falls back to endorsing any available skill."
+                  },
+                  "recordMode": {
+                    "type": "string",
+                    "description": "Applies to `linkedinVoiceNote` steps only. Determines how the audio is sourced. `manual` (default) means the user records the audio themselves from the lemlist UI after step creation; `ai` means lemlist generates the audio from a text template provided in the lemlist UI.",
+                    "enum": [
+                      "manual",
+                      "ai"
+                    ]
                   }
                 }
               },

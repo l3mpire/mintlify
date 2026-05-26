@@ -30,8 +30,7 @@ However, you **need** to add the `type` field in the request body even if you ca
 | `linkedinVisit` | `delay` | Simulates a profile visit on LinkedIn |
 | `linkedinInvite` | `message`, `images`, `videos`, `delay` | Sends a LinkedIn invite with message |
 | `linkedinSend` | `message`, `altMessage`, `images`, `videos`, `delay` | Sends a LinkedIn message |
-| `linkedinVoiceNote` | `delay` | Sends a LinkedIn voice note. Audio is recorded manually from the lemlist UI before launch |
-| `linkedinVoiceNoteAi` | `delay` | Sends an AI-generated LinkedIn voice note. Text content is bound to the step from the lemlist UI and converted to audio via ElevenLabs at send time |
+| `linkedinVoiceNote` | `delay`, `recordMode` | Sends a LinkedIn voice note. Audio is either recorded manually or AI-generated from a text template, depending on `recordMode` |
 | `linkedinFollow` | `delay` | Follows the lead on LinkedIn |
 | `linkedinLikeLastPost` | `delay` | Likes the lead's most recent LinkedIn post |
 | `linkedinCommentLastPost` | `delay` | Posts an AI-generated comment on the lead's most recent LinkedIn post |
@@ -62,6 +61,7 @@ Only include the fields you want to update. Required fields are not enforced her
 | `videos` | array of strings | `linkedinInvite`, `linkedinSend` | Public HTTPS URLs of videos to attach. Replaces the step's current videos — pass `[]` to clear them. See the [LinkedIn media constraints](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-media-constraints) on Add Step |
 | `skillName` | string | `linkedinEndorse` | Name of the LinkedIn skill to endorse on the lead's profile |
 | `endorseAnyFallback` | boolean | `linkedinEndorse` | When `true` and the named skill is not on the lead's profile, lemlist falls back to endorsing any available skill |
+| `recordMode` | string | `linkedinVoiceNote` | One of `manual` (user records the audio after step creation; default) or `ai` (audio is generated from a text template provided in the lemlist UI) |
 
 ## Supported Condition Keys
 
