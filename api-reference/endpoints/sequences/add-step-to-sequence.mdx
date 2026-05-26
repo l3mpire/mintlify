@@ -79,6 +79,8 @@ The table below summarizes the required and optional fields for each step type. 
 | `linkedinVisit` | - | `index`, `delay` |
 | `linkedinInvite` | - | `message`, `images`, `videos`, `index`, `delay` |
 | `linkedinSend` | `message` | `altMessage`, `images`, `videos`, `index`, `delay` |
+| `linkedinVoiceNote` | - | `index`, `delay` |
+| `linkedinVoiceNoteAi` | - | `index`, `delay` |
 | `sendToAnotherCampaign` | `campaignId` | `index`, `delay` |
 | `conditional` | `conditionKey`, `delayType` (and `delay` when `delayType` is `within`) | `index` |
 | `whatsappMessage` | `message` | `index`, `delay` |
@@ -87,11 +89,15 @@ The table below summarizes the required and optional fields for each step type. 
 In conditional steps, if the `delayType` is not `"within"`, the `delay` field is not required.
 </Note>
 
+<Note>
+`linkedinVoiceNote` and `linkedinVoiceNoteAi` steps are created as skeletons via the API: the audio payload itself is not accepted here and must be added afterwards from the lemlist UI. For `linkedinVoiceNote`, a user records the note manually. For `linkedinVoiceNoteAi`, a user binds a text template (EmailTemplate) to the step, which is then converted to audio via ElevenLabs at send time.
+</Note>
+
 ## All Request Body Fields
 
 | Field | Description |
 | --- | --- |
-| `type` (String, Required) | The type of step to create. Allowed values: `email`, `manual`, `phone`, `api`, `linkedinVisit`, `linkedinInvite`, `linkedinSend`, `sendToAnotherCampaign`, `conditional`, `whatsappMessage` |
+| `type` (String, Required) | The type of step to create. Allowed values: `email`, `manual`, `phone`, `api`, `linkedinVisit`, `linkedinInvite`, `linkedinSend`, `linkedinVoiceNote`, `linkedinVoiceNoteAi`, `sendToAnotherCampaign`, `conditional`, `whatsappMessage` |
 | `index` (Integer, Optional) | The position within the sequence to insert the new step. Must be an integer ≥ -1. If omitted or if the index is greater than the number of steps, the new step is added to the end |
 | `delay` (Integer, Optional) | The delay (in seconds) before executing the step. Defaults to 0 for the first step and to 1 for subsequent steps (except for certain conditional configurations) |
 | `subject` (String, Conditional) | The email subject. Required for steps of type `email`. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
