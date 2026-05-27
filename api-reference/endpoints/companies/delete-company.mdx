@@ -1,0 +1,21 @@
+---
+openapi: delete /companies/{companyId}
+description: Deletes a lemlist company. Use `force=true` to detach attached contacts before deletion.
+---
+
+Removes a lemlist company. Only the lemlist record is deleted — **no CRM-side propagation** is performed.
+
+By default, the request fails with `400 COMPANY_HAS_CONTACTS` if any contact is still attached to the company. Pass `?force=true` to detach those contacts (their `companyId` is unset) before deletion.
+
+## Remapping duplicates: typical workflow
+
+This endpoint is the final step of the contact-to-company remapping flow used to resolve `UNIQUE_INDEX_ERROR_COMPANY` sync failures:
+
+1. `GET /companies?crmSyncStatus=unique_index_error_company` — list lemlist companies that fail to sync because another lemlist company already occupies their CRM record. Each result exposes `crmSync.errors[].metadata.alreadyExistingCompanyId` — the **canonical** lemlist company already linked to the CRM record.
+2. `GET /contacts?companyId={duplicateCompanyId}` — list contacts attached to the duplicate.
+3. `POST /contacts/{idOrEmail}` with `companyId: {canonicalCompanyId}` — reassign each contact to the canonical lemlist company.
+4. `DELETE /companies/{duplicateCompanyId}` — drop the now-empty duplicate. If step 3 was completed for every contact, the call succeeds without `force`. Otherwise use `?force=true` to detach the remaining contacts as part of the deletion.
+
+<Warning>
+There is no soft-delete or undo. Once deleted, the lemlist company record is gone. Contacts detached via `force=true` keep all their other data — only their `companyId` is unset.
+</Warning>

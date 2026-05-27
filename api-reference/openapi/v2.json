@@ -701,6 +701,54 @@
             "type": "string",
             "format": "date-time",
             "description": "Creation timestamp"
+          },
+          "crmSync": {
+            "type": "object",
+            "nullable": true,
+            "description": "CRM sync status for the company, resolved against the team's active CRM provider (Hubspot, Salesforce, or Pipedrive). Only present when a CRM is connected. Use this block to monitor sync state and resolve duplicates (e.g. via `GET /companies?crmSyncStatus=unique_index_error_company`).",
+            "properties": {
+              "provider": {
+                "type": "string",
+                "enum": ["hubspot", "salesforce", "pipedrive"],
+                "description": "Active CRM provider for the team."
+              },
+              "crmRecordId": {
+                "type": "string",
+                "nullable": true,
+                "description": "Identifier of the company record on the CRM side. `null` when the lemlist company has not been synced yet."
+              },
+              "syncDisabled": {
+                "type": "boolean",
+                "description": "When `true`, automatic sync is paused for this company."
+              },
+              "errors": {
+                "type": "array",
+                "description": "List of recent sync errors. Empty when the company is synced cleanly.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Coarse error category (e.g. `CONNECT_FAILED`, `CREATE_FAILED`, `UPDATE_FAILED`)."
+                    },
+                    "reason": {
+                      "type": "string",
+                      "description": "Specific error reason. Matches the lowercase form accepted by the `crmSyncStatus` query param (e.g. `UNIQUE_INDEX_ERROR_COMPANY`, `PROPERTY_DOESNT_EXIST`, `REQUIRED_FIELD_MISSING`)."
+                    },
+                    "raisedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp when the error was last raised."
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "additionalProperties": true,
+                      "description": "Extra context. For `UNIQUE_INDEX_ERROR_COMPANY`, contains `alreadyExistingCompanyId` — the lemlist company that already occupies the conflicting CRM record. Use it to remap contacts onto the right lemlist company before deleting the duplicate."
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -11809,7 +11857,7 @@
     "/contacts": {
       "get": {
         "summary": "Get Many Contacts",
-        "description": "Retrieves contacts by IDs/emails, or searches/lists contacts by name, email, contact list, or campaign membership.\n\nWhen using `idsOrEmails`, returns an array of matching contacts directly.\n\nWhen using `search`, `email`, `listId`, `notInAnyCampaign`, or no filter at all, returns a paginated response with `contacts`, `total`, `limit`, and `offset` fields. You can combine filters together to narrow results (e.g. `listId` with `search`, or `notInAnyCampaign` with `search`). Calling the endpoint without any filter returns all contacts of the team, paginated.",
+        "description": "Retrieves contacts by IDs/emails, or searches/lists contacts by name, email, contact list, campaign membership, or company link.\n\nWhen using `idsOrEmails`, returns an array of matching contacts directly.\n\nWhen using `search`, `email`, `listId`, `notInAnyCampaign`, any of the `company*` filters, or no filter at all, returns a paginated response with `contacts`, `total`, `limit`, and `offset` fields. You can combine filters together to narrow results (e.g. `listId` with `search`, or `notInAnyCampaign` with `companyId`). Calling the endpoint without any filter returns all contacts of the team, paginated.\n\nThe `company*` filters (`companyId`, `companyDomain`, `companyLinkedinUrl`, `companySalesnavUrl`) are mutually exclusive — use only one at a time. `companyDomain` / `companyLinkedinUrl` / `companySalesnavUrl` are resolved to a `companyId` through the Companies collection; if no matching company exists, the endpoint returns an empty list with `total: 0` (not an error), which keeps automation flows simple.",
         "tags": [
           "Contacts"
         ],
@@ -11863,6 +11911,47 @@
             "description": "When set to `true`, only returns contacts that are not part of any campaign (orphan contacts). Can be used alone or combined with other filters such as `search`, `email`, or `listId`.",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "companyId",
+            "in": "query",
+            "required": false,
+            "description": "Filter contacts by attached company ID (`cpn_xxx` format). Use this when you already know the lemlist company id (for example after fetching `GET /companies?crmSyncStatus=unique_index_error_company`). Mutually exclusive with `companyDomain`, `companyLinkedinUrl`, and `companySalesnavUrl`.",
+            "example": "cpn_A1B2C3D4E5F6G7H8I",
+            "schema": {
+              "type": "string",
+              "pattern": "^cpn_[a-zA-Z0-9]+$"
+            }
+          },
+          {
+            "name": "companyDomain",
+            "in": "query",
+            "required": false,
+            "description": "Filter contacts by their company's website domain. Resolved to a `companyId` against the Companies collection. If no company matches, the endpoint returns an empty list (`total: 0`). Mutually exclusive with the other `company*` filters.",
+            "example": "acme.com",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "companyLinkedinUrl",
+            "in": "query",
+            "required": false,
+            "description": "Filter contacts by their company's LinkedIn URL. Resolved to a `companyId` against the Companies collection. If no company matches, the endpoint returns an empty list (`total: 0`). Mutually exclusive with the other `company*` filters.",
+            "example": "https://www.linkedin.com/company/acme",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "companySalesnavUrl",
+            "in": "query",
+            "required": false,
+            "description": "Filter contacts by their company's LinkedIn Sales Navigator URL. Resolved to a `companyId` against the Companies collection. If no company matches, the endpoint returns an empty list (`total: 0`). Mutually exclusive with the other `company*` filters.",
+            "example": "https://www.linkedin.com/sales/company/12345678",
+            "schema": {
+              "type": "string"
             }
           },
           {
@@ -13075,6 +13164,26 @@
             "schema": {
               "type": "integer"
             }
+          },
+          {
+            "name": "crmSyncStatus",
+            "in": "query",
+            "required": false,
+            "description": "Filter companies by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, or Pipedrive) to be connected — otherwise the request returns `400 NO_CRM_CONNECTED`. Common values:\n- `synced` — the company has a CRM record and no sync errors.\n- `not_synced` — the company has no CRM record yet.\n- `error` — at least one sync error is currently raised.\n- A specific error reason (lowercase form), to filter by root cause: `unique_index_error_company`, `property_doesnt_exist`, `required_field_missing`, `company_already_exists_with_name`, `company_already_exists_with_linkedin_url`.\n\nFor each returned company, see `crmSync.errors[].metadata.alreadyExistingCompanyId` to identify the lemlist company that already occupies the conflicting CRM record (useful to remap contacts before deleting the duplicate).",
+            "example": "unique_index_error_company",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "synced",
+                "not_synced",
+                "error",
+                "unique_index_error_company",
+                "property_doesnt_exist",
+                "required_field_missing",
+                "company_already_exists_with_name",
+                "company_already_exists_with_linkedin_url"
+              ]
+            }
           }
         ],
         "responses": {
@@ -13146,6 +13255,31 @@
                         "name": "Growth & GTM Engineering"
                       },
                       "ownerId": "usr_ahfFktBBHUIxbVG5P"
+                    },
+                    {
+                      "_id": "cpn_A1B2C3D4E5F6G7H8I",
+                      "createdAt": "2025-11-02T09:14:08.512Z",
+                      "createdBy": "usr_A1B2C3D4E5F6G7H8I",
+                      "domain": "acme.com",
+                      "fields": {
+                        "name": "Acme Inc"
+                      },
+                      "ownerId": "usr_A1B2C3D4E5F6G7H8I",
+                      "crmSync": {
+                        "provider": "hubspot",
+                        "crmRecordId": null,
+                        "syncDisabled": false,
+                        "errors": [
+                          {
+                            "type": "CONNECT_FAILED",
+                            "reason": "UNIQUE_INDEX_ERROR_COMPANY",
+                            "raisedAt": "2025-11-02T09:14:12.034Z",
+                            "metadata": {
+                              "alreadyExistingCompanyId": "cpn_J1K2L3M4N5O6P7Q8R"
+                            }
+                          }
+                        ]
+                      }
                     }
                   ],
                   "total": 59310
@@ -13454,6 +13588,146 @@
           }
         },
         "parameters": []
+      }
+    },
+    "/companies/{companyId}": {
+      "delete": {
+        "summary": "Delete Company",
+        "description": "Deletes a lemlist company. Refuses by default when contacts are still attached — pass `force=true` to detach them (the `companyId` field is unset on each contact) before deleting the company.\n\n**No CRM-side propagation:** only the lemlist record is removed. Designed for the contact-to-company remapping workflow: after reassigning the contacts of a duplicate company to the canonical one (via `POST /contacts/{idOrEmail}`), call this endpoint to drop the now-empty duplicate.",
+        "tags": [
+          "Companies"
+        ],
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "description": "The lemlist company ID to delete.",
+            "example": "cpn_A1B2C3D4E5F6G7H8I",
+            "schema": {
+              "type": "string",
+              "pattern": "^cpn_[a-zA-Z0-9]+$"
+            }
+          },
+          {
+            "name": "force",
+            "in": "query",
+            "required": false,
+            "description": "When `true`, detaches contacts attached to this company (unsets their `companyId`) before deleting it. When omitted or `false`, the request fails with `400 COMPANY_HAS_CONTACTS` if any contact is still attached.",
+            "example": "true",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Company deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "deletedCompanyId": {
+                      "type": "string",
+                      "description": "ID of the deleted lemlist company."
+                    },
+                    "unlinkedContacts": {
+                      "type": "integer",
+                      "description": "Number of contacts whose `companyId` was unset before deletion. Only present when `force=true`."
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "deletedCompanyId"
+                  ]
+                },
+                "examples": {
+                  "no contacts attached": {
+                    "value": {
+                      "success": true,
+                      "deletedCompanyId": "cpn_A1B2C3D4E5F6G7H8I"
+                    }
+                  },
+                  "force=true with attached contacts": {
+                    "value": {
+                      "success": true,
+                      "deletedCompanyId": "cpn_A1B2C3D4E5F6G7H8I",
+                      "unlinkedContacts": 3
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request. Possible error codes: `INVALID_COMPANY_ID` (malformed ID), `COMPANY_HAS_CONTACTS` (contacts still attached and `force` not set).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "contactCount": {
+                          "type": "integer",
+                          "description": "Only on `COMPANY_HAS_CONTACTS` — how many contacts are still attached."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "COMPANY_HAS_CONTACTS",
+                    "message": "Company still has contacts attached. Pass ?force=true to detach them before deletion. (3 contacts attached)",
+                    "contactCount": 3
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect.",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "Company not found (`COMPANY_NOT_FOUND_BY_ID`).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "COMPANY_NOT_FOUND_BY_ID",
+                    "message": "Company not found by ID"
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed."
+          }
+        }
       }
     },
     "/companies/{companyId}/notes": {
