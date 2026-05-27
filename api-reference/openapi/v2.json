@@ -4773,9 +4773,16 @@
                       "linkedinVisit",
                       "linkedinInvite",
                       "linkedinSend",
+                      "linkedinVoiceNote",
+                      "linkedinFollow",
+                      "linkedinLikeLastPost",
+                      "linkedinCommentLastPost",
+                      "linkedinEndorse",
+                      "linkedinWithdrawInvitation",
                       "sendToAnotherCampaign",
                       "conditional",
-                      "whatsappMessage"
+                      "whatsappMessage",
+                      "sms"
                     ]
                   },
                   "index": {
@@ -4792,7 +4799,7 @@
                   },
                   "message": {
                     "type": "string",
-                    "description": "Content of the email or message (used for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage steps)"
+                    "description": "Content of the email or message (used for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage, sms steps). Required for linkedinSend, whatsappMessage, and sms"
                   },
                   "altMessage": {
                     "type": "string",
@@ -4863,6 +4870,22 @@
                       "format": "uri"
                     },
                     "description": "Public HTTPS URLs of videos to attach to a `linkedinInvite` or `linkedinSend` step. lemlist downloads each file and re-hosts it. Allowed MIME types: `video/mp4`, `video/quicktime`. Up to 20 MB per file, and up to 6 items total combined with `images`."
+                  },
+                  "skillName": {
+                    "type": "string",
+                    "description": "Name of the LinkedIn skill to endorse on the lead's profile. Applies to `linkedinEndorse` steps only."
+                  },
+                  "endorseAnyFallback": {
+                    "type": "boolean",
+                    "description": "Applies to `linkedinEndorse` steps only. When `true` and the named skill is not on the lead's profile, lemlist falls back to endorsing any available skill."
+                  },
+                  "recordMode": {
+                    "type": "string",
+                    "description": "Applies to `linkedinVoiceNote` steps only. Determines how the audio is sourced. `manual` (default) means the user records the audio themselves from the lemlist UI after step creation; `ai` means lemlist generates the audio from a text template provided in the lemlist UI.",
+                    "enum": [
+                      "manual",
+                      "ai"
+                    ]
                   }
                 }
               },
@@ -5072,9 +5095,16 @@
                       "linkedinVisit",
                       "linkedinInvite",
                       "linkedinSend",
+                      "linkedinVoiceNote",
+                      "linkedinFollow",
+                      "linkedinLikeLastPost",
+                      "linkedinCommentLastPost",
+                      "linkedinEndorse",
+                      "linkedinWithdrawInvitation",
                       "sendToAnotherCampaign",
                       "conditional",
-                      "whatsappMessage"
+                      "whatsappMessage",
+                      "sms"
                     ]
                   },
                   "delay": {
@@ -5087,7 +5117,7 @@
                   },
                   "message": {
                     "type": "string",
-                    "description": "Content of the email or message (for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage steps)"
+                    "description": "Content of the email or message (for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage, sms steps)"
                   },
                   "altMessage": {
                     "type": "string",
@@ -5158,6 +5188,22 @@
                       "format": "uri"
                     },
                     "description": "Public HTTPS URLs of videos to attach to a `linkedinInvite` or `linkedinSend` step. Replaces the step's current videos — pass an empty array to clear them. Allowed MIME types: `video/mp4`, `video/quicktime`. Up to 20 MB per file, and up to 6 items total combined with `images`."
+                  },
+                  "skillName": {
+                    "type": "string",
+                    "description": "Name of the LinkedIn skill to endorse on the lead's profile. Applies to `linkedinEndorse` steps only."
+                  },
+                  "endorseAnyFallback": {
+                    "type": "boolean",
+                    "description": "Applies to `linkedinEndorse` steps only. When `true` and the named skill is not on the lead's profile, lemlist falls back to endorsing any available skill."
+                  },
+                  "recordMode": {
+                    "type": "string",
+                    "description": "Applies to `linkedinVoiceNote` steps only. Determines how the audio is sourced. `manual` (default) means the user records the audio themselves from the lemlist UI after step creation; `ai` means lemlist generates the audio from a text template provided in the lemlist UI.",
+                    "enum": [
+                      "manual",
+                      "ai"
+                    ]
                   }
                 }
               },
@@ -11811,7 +11857,7 @@
     "/contacts": {
       "get": {
         "summary": "Get Many Contacts",
-        "description": "Retrieves contacts by IDs/emails, or searches contacts by name, email, contact list, campaign membership, or company link.\n\nWhen using `idsOrEmails`, returns an array of matching contacts directly.\n\nWhen using `search`, `email`, `listId`, `notInAnyCampaign`, or any of the `company*` filters, returns a paginated response with `contacts`, `total`, `limit`, and `offset` fields. You can combine filters together to narrow results (e.g. `listId` with `search`, or `notInAnyCampaign` with `companyId`).\n\nThe `company*` filters (`companyId`, `companyDomain`, `companyLinkedinUrl`, `companySalesnavUrl`) are mutually exclusive — use only one at a time. `companyDomain` / `companyLinkedinUrl` / `companySalesnavUrl` are resolved to a `companyId` through the Companies collection; if no matching company exists, the endpoint returns an empty list with `total: 0` (not an error), which keeps automation flows simple.",
+        "description": "Retrieves contacts by IDs/emails, or searches/lists contacts by name, email, contact list, campaign membership, or company link.\n\nWhen using `idsOrEmails`, returns an array of matching contacts directly.\n\nWhen using `search`, `email`, `listId`, `notInAnyCampaign`, any of the `company*` filters, or no filter at all, returns a paginated response with `contacts`, `total`, `limit`, and `offset` fields. You can combine filters together to narrow results (e.g. `listId` with `search`, or `notInAnyCampaign` with `companyId`). Calling the endpoint without any filter returns all contacts of the team, paginated.\n\nThe `company*` filters (`companyId`, `companyDomain`, `companyLinkedinUrl`, `companySalesnavUrl`) are mutually exclusive — use only one at a time. `companyDomain` / `companyLinkedinUrl` / `companySalesnavUrl` are resolved to a `companyId` through the Companies collection; if no matching company exists, the endpoint returns an empty list with `total: 0` (not an error), which keeps automation flows simple.",
         "tags": [
           "Contacts"
         ],
@@ -11820,7 +11866,7 @@
             "name": "idsOrEmails",
             "in": "query",
             "required": false,
-            "description": "A comma separated string of either valid contact IDs (MongoDB ObjectId) or valid email addresses. At least one of `idsOrEmails`, `search`, `email`, `listId`, or `notInAnyCampaign` is required.",
+            "description": "A comma separated string of either valid contact IDs (MongoDB ObjectId) or valid email addresses. Optional — when omitted, returns the paginated list of all contacts of the team.",
             "example": "ctc_xW8Ou6C03Csv8vatp,riley@example.com",
             "schema": {
               "type": "string"
@@ -11832,7 +11878,7 @@
             "name": "search",
             "in": "query",
             "required": false,
-            "description": "Search contacts by name or other text fields. Must be at least 2 characters. At least one of `idsOrEmails`, `search`, `email`, `listId`, or `notInAnyCampaign` is required.",
+            "description": "Search contacts by name or other text fields. Must be at least 2 characters.",
             "schema": {
               "type": "string"
             }
@@ -11841,7 +11887,7 @@
             "name": "email",
             "in": "query",
             "required": false,
-            "description": "Search contacts by exact email address. At least one of `idsOrEmails`, `search`, `email`, `listId`, or `notInAnyCampaign` is required.",
+            "description": "Search contacts by exact email address.",
             "schema": {
               "type": "string",
               "format": "email"
@@ -12017,10 +12063,10 @@
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / at least one query parameter is required / search query too short / invalid listId format",
+            "description": "Possible errors: Bad team / search query too short / invalid listId format",
             "content": {
               "text/plain": {
-                "example": "idsOrEmails, search, email, listId, or notInAnyCampaign parameter is required"
+                "example": "Search query must be at least 2 characters"
               }
             }
           },

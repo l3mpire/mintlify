@@ -30,9 +30,16 @@ However, you **need** to add the `type` field in the request body even if you ca
 | `linkedinVisit` | `delay` | Simulates a profile visit on LinkedIn |
 | `linkedinInvite` | `message`, `images`, `videos`, `delay` | Sends a LinkedIn invite with message |
 | `linkedinSend` | `message`, `altMessage`, `images`, `videos`, `delay` | Sends a LinkedIn message |
+| `linkedinVoiceNote` | `delay`, `recordMode` | Sends a LinkedIn voice note. Audio is either recorded manually or AI-generated from a text template, depending on `recordMode` |
+| `linkedinFollow` | `delay` | Follows the lead on LinkedIn |
+| `linkedinLikeLastPost` | `delay` | Likes the lead's most recent LinkedIn post |
+| `linkedinCommentLastPost` | `delay` | Posts an AI-generated comment on the lead's most recent LinkedIn post |
+| `linkedinEndorse` | `delay`, `skillName`, `endorseAnyFallback` | Endorses a skill on the lead's LinkedIn profile |
+| `linkedinWithdrawInvitation` | `delay` | Withdraws a pending LinkedIn invite |
 | `sendToAnotherCampaign` | `campaignId` | Sends the lead to another campaign |
 | `conditional` | `conditionKey`, `delayType`, `delay` | Triggers the next step based on lead behavior |
 | `whatsappMessage` | `message`, `delay` | Sends a WhatsApp message |
+| `sms` | `message`, `delay` | Sends an SMS to the lead |
 
 ## Request Body
 
@@ -41,17 +48,20 @@ Only include the fields you want to update. Required fields are not enforced her
 | Field | Type | Applies To | Description |
 | --- | --- | --- | --- |
 | `subject` | string | `email` | Email subject line. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
-| `message` | string | `email`, `linkedin*`, `manual`, `phone`, `whatsappMessage` | Message text |
+| `message` | string | `email`, `linkedin*`, `manual`, `phone`, `whatsappMessage`, `sms` | Message text |
 | `altMessage` | string | `linkedinSend` | Fallback LinkedIn message |
 | `title` | string | `manual` | Title for manual task. Maximum 400 characters |
 | `method` | string | `api` | One of `GET`, `POST`, `PUT`, `DELETE`, `PATCH` |
 | `url` | string | `api` | Valid HTTP/HTTPS URL |
-| `delay` | integer | all except `sendToAnotherCampaign` | Delay before this step in hours |
+| `delay` | integer | all except `sendToAnotherCampaign` | Delay before this step, in days. Must be between 0 and 1500 |
 | `delayType` | string | `conditional` | One of `within`, `waitUntil` |
 | `conditionKey` | string | `conditional` | See supported condition keys below |
 | `campaignId` | string | `sendToAnotherCampaign` | ID of destination campaign |
 | `images` | array of strings | `linkedinInvite`, `linkedinSend` | Public HTTPS URLs of images to attach. Replaces the step's current images — pass `[]` to clear them. See the [LinkedIn media constraints](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-media-constraints) on Add Step |
 | `videos` | array of strings | `linkedinInvite`, `linkedinSend` | Public HTTPS URLs of videos to attach. Replaces the step's current videos — pass `[]` to clear them. See the [LinkedIn media constraints](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-media-constraints) on Add Step |
+| `skillName` | string | `linkedinEndorse` | Name of the LinkedIn skill to endorse on the lead's profile |
+| `endorseAnyFallback` | boolean | `linkedinEndorse` | When `true` and the named skill is not on the lead's profile, lemlist falls back to endorsing any available skill |
+| `recordMode` | string | `linkedinVoiceNote` | One of `manual` (user records the audio after step creation; default) or `ai` (audio is generated from a text template provided in the lemlist UI) |
 
 ## Supported Condition Keys
 
