@@ -14030,6 +14030,46 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "minDate",
+            "in": "query",
+            "required": false,
+            "description": "Filter activities by `createdAt >= minDate`. Accepts either a Unix timestamp in seconds (e.g. `1715385600`) or an ISO 8601 datetime (e.g. `2026-05-11T00:00:00Z`). `minDate` is the primary name; `startDate` is accepted as an alias and `minDate` takes precedence when both are provided.",
+            "example": "2026-05-01T00:00:00Z",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "maxDate",
+            "in": "query",
+            "required": false,
+            "description": "Filter activities by `createdAt <= maxDate`. Accepts either a Unix timestamp in seconds (e.g. `1715385600`) or an ISO 8601 datetime (e.g. `2026-05-11T00:00:00Z`). Must be strictly greater than `minDate` when both are provided. `maxDate` is the primary name; `endDate` is accepted as an alias and `maxDate` takes precedence when both are provided.",
+            "example": "2026-05-31T23:59:59Z",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": false,
+            "description": "Alias for `minDate`, provided for consistency with sibling endpoints (e.g. `/campaigns/{campaignId}/stats`). Accepts either a Unix timestamp in seconds or an ISO 8601 datetime. Ignored when `minDate` is also provided.",
+            "example": "2026-05-01T00:00:00Z",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": false,
+            "description": "Alias for `maxDate`, provided for consistency with sibling endpoints (e.g. `/campaigns/{campaignId}/stats`). Accepts either a Unix timestamp in seconds or an ISO 8601 datetime. Ignored when `maxDate` is also provided.",
+            "example": "2026-05-31T23:59:59Z",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
