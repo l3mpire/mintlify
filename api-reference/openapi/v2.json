@@ -16563,7 +16563,7 @@
             "in": "query",
             "required": false,
             "description": "Email address",
-            "example": "john.doe@fake.com",
+            "example": "john@example.com",
             "schema": {
               "type": "string"
             }
@@ -16603,7 +16603,7 @@
             "in": "query",
             "required": false,
             "description": "Company domain",
-            "example": "fakecompany.com",
+            "example": "example.com",
             "schema": {
               "type": "string"
             }
@@ -16613,7 +16613,17 @@
             "in": "query",
             "required": false,
             "description": "Company name",
-            "example": "Fake company",
+            "example": "Acme Inc",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobTitle",
+            "in": "query",
+            "required": false,
+            "description": "Job title of the person. Optional hint that improves the find rate when matching the right person.",
+            "example": "Marketing Manager",
             "schema": {
               "type": "string"
             }
@@ -16740,6 +16750,11 @@
                           "type": "string",
                           "description": "The last name of the person",
                           "example": "Doe"
+                        },
+                        "jobTitle": {
+                          "type": "string",
+                          "description": "The job title of the person. Optional hint that improves the find rate when matching the right person.",
+                          "example": "Marketing Manager"
                         }
                       }
                     },
@@ -16864,7 +16879,8 @@
                         "companyName": "Example Company",
                         "companyDomain": "example.com",
                         "firstName": "John",
-                        "lastName": "Doe"
+                        "lastName": "Doe",
+                        "jobTitle": "Marketing Manager"
                       },
                       "enrichmentRequests": [
                         "find_email",
