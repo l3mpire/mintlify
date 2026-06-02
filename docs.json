@@ -496,6 +496,7 @@
   },
   "contextual": {
     "options": [
+      "assistant",
       "copy",
       "view",
       "chatgpt",
