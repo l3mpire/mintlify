@@ -11442,7 +11442,7 @@
     "/contacts": {
       "get": {
         "summary": "Get Many Contacts",
-        "description": "Retrieves contacts by IDs/emails, or searches/lists contacts by name, email, contact list, campaign membership, or company link.\n\nWhen using `idsOrEmails`, returns an array of matching contacts directly.\n\nWhen using `search`, `email`, `listId`, `notInAnyCampaign`, any of the `company*` filters, or no filter at all, returns a paginated response with `contacts`, `total`, `limit`, and `offset` fields. You can combine filters together to narrow results (e.g. `listId` with `search`, or `notInAnyCampaign` with `companyId`). Calling the endpoint without any filter returns all contacts of the team, paginated.\n\nThe `company*` filters (`companyId`, `companyDomain`, `companyLinkedinUrl`, `companySalesnavUrl`) are mutually exclusive — use only one at a time. `companyDomain` / `companyLinkedinUrl` / `companySalesnavUrl` are resolved to a `companyId` through the Companies collection; if no matching company exists, the endpoint returns an empty list with `total: 0` (not an error), which keeps automation flows simple.",
+        "description": "Retrieves contacts by IDs/emails, or searches/lists contacts by name, email, contact list, campaign membership, or company link.\n\nWhen using `idsOrEmails`, returns an array of matching contacts directly.\n\nWhen using `search`, `email`, `listId`, `notInAnyCampaign`, any of the `company*` filters, or no filter at all, returns a paginated response with `data`, `total`, `limit`, and `offset` fields. You can combine filters together to narrow results (e.g. `listId` with `search`, or `notInAnyCampaign` with `companyId`). Calling the endpoint without any filter returns all contacts of the team, paginated.\n\nThe `company*` filters (`companyId`, `companyDomain`, `companyLinkedinUrl`, `companySalesnavUrl`) are mutually exclusive — use only one at a time. `companyDomain` / `companyLinkedinUrl` / `companySalesnavUrl` are resolved to a `companyId` through the Companies collection; if no matching company exists, the endpoint returns an empty list with `total: 0` (not an error), which keeps automation flows simple.",
         "tags": [
           "Contacts"
         ],
@@ -11543,12 +11543,12 @@
             "name": "limit",
             "in": "query",
             "required": false,
-            "description": "Maximum number of contacts to return (1–100). Defaults to 20.",
+            "description": "Maximum number of contacts to return (1–500). Defaults to 100.",
             "schema": {
               "type": "integer",
               "minimum": 1,
-              "maximum": 100,
-              "default": 20
+              "maximum": 500,
+              "default": 100
             }
           },
           {
@@ -11565,14 +11565,44 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "Success. When using `idsOrEmails`, returns an array of contacts. Otherwise, returns a paginated object with `data`, `total`, `limit`, and `offset`.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Contact"
-                  }
+                  "oneOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Contact"
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Contact"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        },
+                        "offset": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "data",
+                        "total",
+                        "limit",
+                        "offset"
+                      ]
+                    }
+                  ]
                 },
                 "example": [
                   {
@@ -12684,13 +12714,14 @@
             }
           },
           {
-            "name": "page",
+            "name": "offset",
             "in": "query",
             "required": false,
-            "description": "Page number to retrieve. Ignored when `idsOrDomains` is provided.",
-            "example": "1",
+            "description": "Number of companies to skip for pagination. Defaults to 0. Ignored when `idsOrDomains` is provided.",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
             }
           },
           {
@@ -12744,10 +12775,13 @@
             "name": "limit",
             "in": "query",
             "required": false,
-            "description": "Number of companies to retrieve. Default: 100. Maximum: 100",
+            "description": "Number of companies to retrieve. Default: 100. Maximum: 500",
             "example": "10",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
             }
           },
           {
@@ -12787,11 +12821,19 @@
                     },
                     "total": {
                       "type": "integer"
+                    },
+                    "limit": {
+                      "type": "integer"
+                    },
+                    "offset": {
+                      "type": "integer"
                     }
                   },
                   "required": [
                     "data",
-                    "total"
+                    "total",
+                    "limit",
+                    "offset"
                   ]
                 },
                 "example": {
@@ -12867,7 +12909,9 @@
                       }
                     }
                   ],
-                  "total": 59310
+                  "total": 59310,
+                  "limit": 100,
+                  "offset": 0
                 }
               }
             }
