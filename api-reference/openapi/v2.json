@@ -12391,6 +12391,111 @@
           },
           "405": {
             "description": "Method not allowed"
+          },
+          "500": {
+            "description": "Internal error while adding contacts to the list",
+            "content": {
+              "text/plain": {
+                "example": "Failed to add contacts to list"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove Contacts from List",
+        "description": "Removes existing CRM contacts from a static contact list. Contacts that are not in the list are silently skipped. The `removedCount` field reflects the number of list associations that were actually removed. Removing contacts only affects list membership: the contacts themselves are not deleted from your CRM. Cannot be used with dynamic lists.",
+        "tags": [
+          "Contacts"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "contactIds"
+                ],
+                "properties": {
+                  "contactIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^ctc_[a-zA-Z0-9]+$"
+                    },
+                    "maxItems": 1000,
+                    "description": "Array of contact IDs to remove from the list (`ctc_xxx` format). Maximum 1,000 per request."
+                  }
+                }
+              },
+              "example": {
+                "contactIds": [
+                  "ctc_abc123def456ghi78",
+                  "ctc_xyz789uvw012rst34"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contacts removed from list successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "removedCount": {
+                      "type": "integer",
+                      "description": "Number of list associations actually removed. Contacts that were not in the list are not counted."
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Contacts removed from list successfully",
+                  "removedCount": 2
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible errors: Bad team / invalid listId / contactIds required / invalid contact ID format / list is not a contact list / cannot remove from dynamic list",
+            "content": {
+              "text/plain": {
+                "example": "contactIds is required and must be a non-empty array"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "Contact list not found",
+            "content": {
+              "text/plain": {
+                "example": "Contact list not found"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          },
+          "500": {
+            "description": "Internal error while removing contacts from the list",
+            "content": {
+              "text/plain": {
+                "example": "Failed to remove contacts from list"
+              }
+            }
           }
         }
       }
