@@ -7,3 +7,5 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <SnippetObjectReference objectName="Campaign" objectPath="campaign" />
 
 Set `autoReview` to `true` to automatically launch leads as soon as they are added to the campaign, skipping manual review. Use `autoReviewConditions` to restrict auto-launch to leads whose email verification matches one of the given deliverability statuses (`deliverable`, `risky`, `undeliverable`, `unverified`).
+
+To configure reply handling and tracking, the preferred way is to send the structured sections (`aiFeatures`, `tracking`, `onReplied`, `onLinkClicked`, `onMeetingBooked`); each is applied as a partial update, so only the flags you include are changed. The legacy flat fields (e.g. `autoLeadInterest`, `stopOnEmailReplied`) remain supported for back-compat.

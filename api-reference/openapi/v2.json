@@ -3414,6 +3414,142 @@
                       "enum": ["deliverable", "risky", "undeliverable", "unverified"]
                     },
                     "description": "Email deliverability statuses for which a lead is auto-launched when `autoReview` is enabled. Only leads whose email verification matches one of these statuses are launched automatically. Invalid values are rejected with a `400` error."
+                  },
+                  "aiFeatures": {
+                    "type": "object",
+                    "description": "AI reply-handling settings. Provide only the flags to change; omitted flags keep their current value.",
+                    "properties": {
+                      "scoreReplies": {
+                        "type": "boolean",
+                        "description": "Enable AI reply scoring for this campaign."
+                      },
+                      "onInterestedReply": {
+                        "type": "object",
+                        "description": "AI action when a reply is detected as INTERESTED.",
+                        "properties": {
+                          "enabled": {
+                            "type": "boolean",
+                            "description": "Enable the interested-reply AI action."
+                          },
+                          "pauseAllCampaignsForLead": {
+                            "type": "boolean",
+                            "description": "Pause all campaigns for this lead."
+                          },
+                          "pauseCampaignForCompany": {
+                            "type": "boolean",
+                            "description": "Pause this campaign for other leads in the same company."
+                          },
+                          "pauseAllCampaignsForCompany": {
+                            "type": "boolean",
+                            "description": "Pause all campaigns for leads in the same company."
+                          }
+                        }
+                      },
+                      "onNotInterestedReply": {
+                        "type": "object",
+                        "description": "AI action when a reply is detected as NOT interested.",
+                        "properties": {
+                          "enabled": {
+                            "type": "boolean",
+                            "description": "Enable the not-interested-reply AI action."
+                          },
+                          "pauseAllCampaignsForLead": {
+                            "type": "boolean",
+                            "description": "Pause all campaigns for this lead."
+                          },
+                          "pauseCampaignForCompany": {
+                            "type": "boolean",
+                            "description": "Pause this campaign for other leads in the same company."
+                          },
+                          "pauseAllCampaignsForCompany": {
+                            "type": "boolean",
+                            "description": "Pause all campaigns for leads in the same company."
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "tracking": {
+                    "type": "object",
+                    "description": "Open / click / reply tracking toggles.",
+                    "properties": {
+                      "trackOpens": {
+                        "type": "boolean",
+                        "description": "Whether email open tracking is enabled."
+                      },
+                      "trackClicks": {
+                        "type": "boolean",
+                        "description": "Whether link click tracking is enabled."
+                      },
+                      "trackReplies": {
+                        "type": "boolean",
+                        "description": "Whether reply tracking is enabled."
+                      }
+                    }
+                  },
+                  "onReplied": {
+                    "type": "object",
+                    "description": "Behavior when a lead replies.",
+                    "properties": {
+                      "createNewTask": {
+                        "type": "boolean",
+                        "description": "Create a task when a lead replies."
+                      },
+                      "campaignProgress": {
+                        "type": "string",
+                        "enum": ["continue", "pause", "stop"],
+                        "description": "What happens to the lead on reply."
+                      },
+                      "propagateProgressToCompany": {
+                        "type": "boolean",
+                        "description": "Apply the same action to other leads in the same company."
+                      },
+                      "disableOutOfOffice": {
+                        "type": "boolean",
+                        "description": "Whether out-of-office detection is disabled."
+                      }
+                    }
+                  },
+                  "onLinkClicked": {
+                    "type": "object",
+                    "description": "Behavior when a lead clicks a tracked link.",
+                    "properties": {
+                      "createNewTask": {
+                        "type": "boolean",
+                        "description": "Create a task when a lead clicks a link."
+                      },
+                      "campaignProgress": {
+                        "type": "string",
+                        "enum": ["continue", "pause", "stop"],
+                        "description": "What happens to the lead on link click."
+                      },
+                      "propagateProgressToCompany": {
+                        "type": "boolean",
+                        "description": "Apply the same action to other leads in the same company."
+                      },
+                      "specificLinks": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "If non-empty, only these link URLs trigger the action (empty = all links)."
+                      }
+                    }
+                  },
+                  "onMeetingBooked": {
+                    "type": "object",
+                    "description": "Behavior when a meeting is booked.",
+                    "properties": {
+                      "campaignProgress": {
+                        "type": "string",
+                        "enum": ["continue", "pause", "stop"],
+                        "description": "What happens to the lead when a meeting is booked."
+                      },
+                      "propagateProgressToCompany": {
+                        "type": "boolean",
+                        "description": "Apply the same action to other leads in the same company."
+                      }
+                    }
                   }
                 }
               },
