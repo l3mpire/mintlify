@@ -218,8 +218,7 @@
                   "api-reference/endpoints/contacts/get-many-contacts",
                   "api-reference/endpoints/contacts/get-contact-lists",
                   "api-reference/endpoints/contacts/create-contact-list",
-                  "api-reference/endpoints/contacts/add-contacts-to-list",
-                  "api-reference/endpoints/contacts/remove-contacts-from-list",
+                  "api-reference/endpoints/contacts/manage-contact-list-entities",
                   "api-reference/endpoints/contacts/export-contact-list"
                 ]
               },

@@ -12433,8 +12433,8 @@
           "name": "listId",
           "in": "path",
           "required": true,
-          "description": "The unique identifier of the contact list (`clt_xxx` format)",
-          "example": "clt_abc123def456ghi78",
+          "description": "The unique identifier of the contact list (`clt_xxx` format). Must be a **static** contact list.",
+          "example": "clt_xxxxxxxxxxxxxxxxx",
           "schema": {
             "type": "string",
             "pattern": "^clt_[a-zA-Z0-9]+$"
@@ -12442,10 +12442,25 @@
         }
       ],
       "post": {
-        "summary": "Add Contacts to List",
-        "description": "Adds existing CRM contacts to a static contact list. Contacts already in the list are silently skipped (no duplicates created). Cannot be used with dynamic lists.",
+        "summary": "Add or Remove Contacts in a List",
+        "description": "Adds existing CRM contacts to a static contact list, or removes them when `?action=remove` is set.\n\n- **Add** (default): send a `POST` with a `contactIds` body. Contacts already in the list are silently skipped (no duplicates) and reported in `alreadyInList`.\n- **Remove**: send a `POST` with `?action=remove` and a `contactIds` body. Contacts that are not in the list are silently skipped; `removedCount` reflects the associations actually removed. This only affects list membership, the contacts are not deleted from your CRM.\n\nThe list must be a **static** contact list (`clt_xxx`). Dynamic lists (auto-populated by filter rules) and company lists are rejected.\n\n**Removal uses `POST ?action=remove` on purpose:** a `DELETE` request body is dropped by our stack, so `DELETE` on this path is **not supported** and returns `405 Method Not Allowed`.",
         "tags": [
           "Contacts"
+        ],
+        "parameters": [
+          {
+            "name": "action",
+            "in": "query",
+            "required": false,
+            "description": "Omit to **add** the contacts to the list. Set to `remove` to **remove** them from the list.",
+            "example": "remove",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "remove"
+              ]
+            }
+          }
         ],
         "requestBody": {
           "required": true,
@@ -12463,15 +12478,16 @@
                       "type": "string",
                       "pattern": "^ctc_[a-zA-Z0-9]+$"
                     },
+                    "minItems": 1,
                     "maxItems": 1000,
-                    "description": "Array of contact IDs to add to the list (`ctc_xxx` format). Maximum 1,000 per request."
+                    "description": "Array of contact IDs (`ctc_xxx` format) to add to or remove from the list. Required, non-empty, maximum 1,000 per request."
                   }
                 }
               },
               "example": {
                 "contactIds": [
-                  "ctc_abc123def456ghi78",
-                  "ctc_xyz789uvw012rst34"
+                  "ctc_xxxxxxxxxxxxxxxxx",
+                  "ctc_yyyyyyyyyyyyyyyyy"
                 ]
               }
             }
@@ -12479,7 +12495,7 @@
         },
         "responses": {
           "200": {
-            "description": "Contacts added to list successfully",
+            "description": "Contacts added to or removed from the list successfully. The response body depends on `action`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12490,116 +12506,40 @@
                     },
                     "addedCount": {
                       "type": "integer",
-                      "description": "Number of contacts added to the list"
-                    }
-                  }
-                },
-                "example": {
-                  "message": "Contacts added to list successfully",
-                  "addedCount": 2
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Possible errors: Bad team / invalid listId / contactIds required / invalid contact ID format / list is not a contact list / cannot add to dynamic list",
-            "content": {
-              "text/plain": {
-                "example": "contactIds is required and must be a non-empty array"
-              }
-            }
-          },
-          "401": {
-            "description": "The authentication you supplied is incorrect",
-            "content": {
-              "text/plain": {
-                "example": "The authentication you supplied is incorrect"
-              }
-            }
-          },
-          "404": {
-            "description": "Contact list not found",
-            "content": {
-              "text/plain": {
-                "example": "Contact list not found"
-              }
-            }
-          },
-          "405": {
-            "description": "Method not allowed"
-          },
-          "500": {
-            "description": "Internal error while adding contacts to the list",
-            "content": {
-              "text/plain": {
-                "example": "Failed to add contacts to list"
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Remove Contacts from List",
-        "description": "Removes existing CRM contacts from a static contact list. Contacts that are not in the list are silently skipped. The `removedCount` field reflects the number of list associations that were actually removed. Removing contacts only affects list membership: the contacts themselves are not deleted from your CRM. Cannot be used with dynamic lists.",
-        "tags": [
-          "Contacts"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "contactIds"
-                ],
-                "properties": {
-                  "contactIds": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "pattern": "^ctc_[a-zA-Z0-9]+$"
+                      "description": "Number of contacts added to the list (add only)."
                     },
-                    "maxItems": 1000,
-                    "description": "Array of contact IDs to remove from the list (`ctc_xxx` format). Maximum 1,000 per request."
-                  }
-                }
-              },
-              "example": {
-                "contactIds": [
-                  "ctc_abc123def456ghi78",
-                  "ctc_xyz789uvw012rst34"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Contacts removed from list successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string"
+                    "alreadyInList": {
+                      "type": "integer",
+                      "description": "Number of contacts that were already in the list and therefore skipped (add only)."
                     },
                     "removedCount": {
                       "type": "integer",
-                      "description": "Number of list associations actually removed. Contacts that were not in the list are not counted."
+                      "description": "Number of list associations actually removed (remove only). Contacts that were not in the list are not counted."
                     }
                   }
                 },
-                "example": {
-                  "message": "Contacts removed from list successfully",
-                  "removedCount": 2
+                "examples": {
+                  "add": {
+                    "summary": "Add contacts (no action)",
+                    "value": {
+                      "message": "Contacts added to list successfully",
+                      "addedCount": 2,
+                      "alreadyInList": 0
+                    }
+                  },
+                  "remove": {
+                    "summary": "Remove contacts (action=remove)",
+                    "value": {
+                      "message": "Contacts removed from list successfully",
+                      "removedCount": 2
+                    }
+                  }
                 }
               }
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / invalid listId / contactIds required / invalid contact ID format / list is not a contact list / cannot remove from dynamic list",
+            "description": "Possible errors: Bad team / Invalid listId format (expected clt_xxx) / contactIds is required and must be a non-empty array / Maximum 1,000 contacts per request / All contactIds must be in ctc_xxx format / List is not a contact list / Cannot manually add contacts to a dynamic list / Cannot manually remove contacts from a dynamic list.",
             "content": {
               "text/plain": {
                 "example": "contactIds is required and must be a non-empty array"
@@ -12623,13 +12563,18 @@
             }
           },
           "405": {
-            "description": "Method not allowed"
-          },
-          "500": {
-            "description": "Internal error while removing contacts from the list",
+            "description": "Method not allowed. `DELETE` on this path is not supported because the request body is dropped by our stack. Use `POST ?action=remove` to remove contacts.",
             "content": {
               "text/plain": {
-                "example": "Failed to remove contacts from list"
+                "example": "Method not allowed"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error while updating the list",
+            "content": {
+              "text/plain": {
+                "example": "Failed to add contacts to list"
               }
             }
           }

@@ -1,0 +1,27 @@
+---
+openapi: post /contacts/lists/{listId}/entities
+description: Add contacts to a static contact list, or remove them with ?action=remove.
+---
+
+Adds existing CRM contacts to a **static** contact list, or removes them when you set `?action=remove`. The list must be a static contact list (`clt_xxx`); dynamic lists (auto-populated by filter rules) and company lists are rejected.
+
+<Warning>
+**Removal uses `POST ?action=remove`, not `DELETE`.** A `DELETE` request body is dropped by our stack, so `DELETE` on this path is not supported and returns `405 Method Not Allowed`.
+</Warning>
+
+<Note>
+Removing a contact from a list only affects list **membership** — it does not delete the contact from your CRM.
+</Note>
+
+## Add vs remove
+
+| Action | Request | Result |
+| --- | --- | --- |
+| **Add** | `POST` with `{ "contactIds": [...] }` | Contacts are added. Those already in the list are silently skipped (counted in `alreadyInList`). |
+| **Remove** | `POST ?action=remove` with `{ "contactIds": [...] }` | Contacts are removed. Those not in the list are silently skipped (`removedCount` reflects associations actually removed). |
+
+## Typical workflow
+
+1. **Find or create a list** — use `GET /contacts/lists` to find an existing static list, or `POST /contacts/lists` to create one (`clt_xxx`).
+2. **Find contacts** — use `GET /contacts` with `search`, `email`, or `listId` to get contact IDs (`ctc_xxx`).
+3. **Add or remove** — call this endpoint with the contact IDs and list ID. Up to 1,000 contacts per request.
