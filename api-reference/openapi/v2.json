@@ -10231,7 +10231,8 @@
                 "leadId": "lea_wadZOcDDSFWSbFaCf",
                 "subject": "Follow up",
                 "message": "<p>Hello,</p><p>Following up on our conversation...</p>",
-                "cc": []
+                "cc": [],
+                "replyToActivityId": "latest"
               }
             }
           }
