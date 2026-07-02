@@ -10198,7 +10198,7 @@
                   },
                   "subject": {
                     "type": "string",
-                    "description": "Email subject"
+                    "description": "Email subject. Required for a standalone email; on a reply (replyToActivityId set) omit to reuse the thread's subject."
                   },
                   "message": {
                     "type": "string",
@@ -10209,7 +10209,11 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "CC email addresses"
+                    "description": "CC email addresses. On a reply, omit to inherit the thread's CC; pass a list to override, or an empty array to send without CC."
+                  },
+                  "replyToActivityId": {
+                    "type": "string",
+                    "description": "Reply within an existing email thread. Pass a specific email activity ID (act_...) or \"latest\" for the contact's most recent email. Threads the message (In-Reply-To) and reuses the thread's subject. Omit to send a standalone email. If \"latest\" and the contact has no prior email, a standalone email is sent."
                   }
                 },
                 "required": [
