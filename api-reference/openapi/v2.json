@@ -10190,11 +10190,11 @@
                   },
                   "contactId": {
                     "type": "string",
-                    "description": "Contact ID"
+                    "description": "Contact ID. Required unless leadId is provided."
                   },
                   "leadId": {
                     "type": "string",
-                    "description": "Lead ID"
+                    "description": "Lead ID. Required unless contactId is provided."
                   },
                   "subject": {
                     "type": "string",
@@ -10220,9 +10220,6 @@
                   "sendUserId",
                   "sendUserEmail",
                   "sendUserMailboxId",
-                  "contactId",
-                  "leadId",
-                  "subject",
                   "message"
                 ]
               },
