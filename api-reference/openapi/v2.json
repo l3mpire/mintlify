@@ -10190,11 +10190,11 @@
                   },
                   "contactId": {
                     "type": "string",
-                    "description": "Contact ID. Required unless leadId is provided."
+                    "description": "Contact ID. Provide either contactId or leadId (not both required). Returned in the response."
                   },
                   "leadId": {
                     "type": "string",
-                    "description": "Lead ID. Required unless contactId is provided."
+                    "description": "Lead ID. Provide either contactId or leadId; when only leadId is sent, its contact is resolved and returned as contactId in the response."
                   },
                   "subject": {
                     "type": "string",
@@ -10243,10 +10243,21 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "description": "True when the email was sent."
+                    },
+                    "contactId": {
+                      "type": "string",
+                      "description": "The contact the email was sent to (resolved from leadId when only a lead was provided)."
+                    }
+                  },
                   "additionalProperties": true
                 },
                 "example": {
-                  "ok": true
+                  "ok": true,
+                  "contactId": "ctc_JgrwGbHKgFoEnunBA"
                 }
               }
             }
