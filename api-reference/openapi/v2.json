@@ -114,6 +114,32 @@
           "customDomain": {
             "type": "string",
             "description": "Custom domain for the team"
+          },
+          "users": {
+            "type": "array",
+            "description": "Team members with their basic details. Only returned when the request includes the `version=v2` query parameter.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "description": "Unique user identifier"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "User's full name"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "description": "User's primary email address"
+                },
+                "role": {
+                  "type": "string",
+                  "description": "User's role in the team"
+                }
+              }
+            }
           }
         }
       },
@@ -2066,7 +2092,20 @@
         "tags": [
           "Team"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "version",
+            "in": "query",
+            "required": false,
+            "description": "Set to `v2` to include the `users` array, listing each team member's `userId`, `name`, `email`, and `role`. This lets you retrieve the team and its members in a single request.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "v2"
+              ]
+            }
+          }
+        ],
         "responses": {
           "200": {
             "headers": {
@@ -2154,7 +2193,21 @@
                     }
                   ],
                   "agency": "usr_4YGm9ez7gMd2123456",
-                  "customDomain": "custom.domain.com"
+                  "customDomain": "custom.domain.com",
+                  "users": [
+                    {
+                      "userId": "usr_4YGm9ez7gMdyhahaha",
+                      "name": "John Doe",
+                      "email": "john@lemlist.com",
+                      "role": "admin"
+                    },
+                    {
+                      "userId": "usr_5GdFEgSLCN4hahaha",
+                      "name": "Jane Doe",
+                      "email": "jane@lemlist.com",
+                      "role": "member"
+                    }
+                  ]
                 }
               }
             }
