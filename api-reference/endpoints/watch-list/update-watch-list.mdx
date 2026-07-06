@@ -1,0 +1,11 @@
+---
+openapi: patch /watchlist
+description: Updates an existing Signal Agent (watch list).
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Watch List" objectPath="watch-list" />
+
+<Note>
+The signal `type` is immutable — it cannot be changed after creation. When you send `filters`, they replace the existing ones and are validated against the agent's signal type.
+</Note>

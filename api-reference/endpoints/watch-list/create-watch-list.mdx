@@ -1,0 +1,11 @@
+---
+openapi: post /watchlist
+description: Creates a new Signal Agent (watch list).
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Watch List" objectPath="watch-list" />
+
+<Note>
+A Signal Agent is created as a draft by default. Pass `segmentType`, `signalProcessingType` and `activate: true` to run the full setup and start monitoring immediately. `filters` are validated against the chosen `type` — use [List allowed filters](/api-reference/endpoints/watch-list/get-filters) to discover which filters a type accepts.
+</Note>
