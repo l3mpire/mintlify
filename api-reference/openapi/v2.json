@@ -8713,6 +8713,15 @@
                     ],
                     "type": "text",
                     "helper": "Use free text search"
+                  },
+                  {
+                    "filterId": "department",
+                    "description": "Filter by department",
+                    "mode": [
+                      "leads"
+                    ],
+                    "type": "select",
+                    "helper": "Allowed values: Sales, Customer service, Engineering, Marketing, Operations, Human Resources, Finance / Legal / Admin, Other"
                   }
                 ]
               }
@@ -8744,7 +8753,7 @@
     "/database/people": {
       "post": {
         "summary": "Search People Database",
-        "description": "This endpoint allows you to query our People database. To do so, you may use the following parameters: filters (required), page (optional), size (optional), and excludes (optional). Each filter should have the following properties: filterId (filter identifier), in (list of the values you want to include), and out (list of the values you want to exclude). To know which filters you are able to use, refer to the GET Filters section.",
+        "description": "This endpoint allows you to query our People database. To do so, you may use the following parameters: filters (required), page (optional), size (optional), and excludes (optional). Each filter should have the following properties: filterId (filter identifier), in (list of the values you want to include), and out (list of the values you want to exclude). To know which filters you are able to use, refer to the GET Filters section.\n\nThe `department` filter accepts the following values: `Sales`, `Customer service`, `Engineering`, `Marketing`, `Operations`, `Human Resources`, `Finance / Legal / Admin`, `Other`.",
         "operationId": "searchPeopleDatabase",
         "tags": [
           "People Database"
