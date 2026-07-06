@@ -1,7 +1,17 @@
 ---
-openapi: post /campaigns/{campaignId}/leads/
-description: Creates a new lead and adds it to a specific campaign.
+title: "create-lead-in-campaign"
+openapi: "post /campaigns/{campaignId}/leads/"
+description: "Creates a new lead and adds it to a specific campaign."
 ---
+
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Lead" objectPath="lead" />
+
+<Note>
+  Beyond the standard fields above, **any additional key/value pair you send in the body is stored as a custom variable** on the lead and can be used in your campaign with `{{yourVariableName}}`.
+
+  In the example, `companySize` and `customVariable1` are custom variables.
+
+  Naming rules: only letters, digits, `_`, `-`, space and `#` are kept — any other character (e.g. `.` or `$`) is replaced by `_`. Values are stored as text.
+</Note>
