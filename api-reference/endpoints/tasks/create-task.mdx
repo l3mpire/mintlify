@@ -7,3 +7,16 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <SnippetObjectReference objectName="Task" objectPath="task" />
 
 Create a manual task (opportunity) associated with a contact/company or lead. The task must be assigned to a team member and have a due date. Optional fields let you set a title, message, and priority.
+
+## LinkedIn task attachments
+
+When creating a task with `type: "linkedin"`, you can attach images and videos to the LinkedIn message by passing public HTTPS URLs in the `images` and `videos` arrays. lemlist downloads each file and re-hosts it before attaching it to the task.
+
+| Constraint | Value |
+| --- | --- |
+| Maximum items per task | 6 (combined across `images` + `videos`) |
+| Maximum file size | 20 MB per file |
+| Allowed image MIME types | `image/png`, `image/jpeg`, `image/gif` |
+| Allowed video MIME types | `video/mp4`, `video/quicktime` |
+
+The `images` and `videos` fields are ignored when `type` is not `linkedin`. Ingestion errors return the same `LINKEDIN_MEDIA_*` codes documented on [Add Step to Sequence](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-media-constraints).

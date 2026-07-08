@@ -316,6 +316,32 @@
           "customDomain": {
             "type": "string",
             "description": "Custom domain for the team"
+          },
+          "users": {
+            "type": "array",
+            "description": "Team members with their basic details. Only returned when the request includes the `version=v2` query parameter.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "description": "Unique user identifier"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "User's full name"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "description": "User's primary email address"
+                },
+                "role": {
+                  "type": "string",
+                  "description": "User's role in the team"
+                }
+              }
+            }
           }
         }
       },
@@ -903,6 +929,54 @@
             "type": "string",
             "format": "date-time",
             "description": "Creation timestamp"
+          },
+          "crmSync": {
+            "type": "object",
+            "nullable": true,
+            "description": "CRM sync status for the company, resolved against the team's active CRM provider (Hubspot, Salesforce, or Pipedrive). Only present when a CRM is connected. Use this block to monitor sync state and resolve duplicates (e.g. via `GET /companies?crmSyncStatus=unique_index_error_company`).",
+            "properties": {
+              "provider": {
+                "type": "string",
+                "enum": ["hubspot", "salesforce", "pipedrive"],
+                "description": "Active CRM provider for the team."
+              },
+              "crmRecordId": {
+                "type": "string",
+                "nullable": true,
+                "description": "Identifier of the company record on the CRM side. `null` when the lemlist company has not been synced yet."
+              },
+              "syncDisabled": {
+                "type": "boolean",
+                "description": "When `true`, automatic sync is paused for this company."
+              },
+              "errors": {
+                "type": "array",
+                "description": "List of recent sync errors. Empty when the company is synced cleanly.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Coarse error category (e.g. `CONNECT_FAILED`, `CREATE_FAILED`, `UPDATE_FAILED`)."
+                    },
+                    "reason": {
+                      "type": "string",
+                      "description": "Specific error reason. Matches the lowercase form accepted by the `crmSyncStatus` query param (e.g. `UNIQUE_INDEX_ERROR_COMPANY`, `PROPERTY_DOESNT_EXIST`, `REQUIRED_FIELD_MISSING`)."
+                    },
+                    "raisedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp when the error was last raised."
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "additionalProperties": true,
+                      "description": "Extra context. For `UNIQUE_INDEX_ERROR_COMPANY`, contains `alreadyExistingCompanyId` — the lemlist company that already occupies the conflicting CRM record. Use it to remap contacts onto the right lemlist company before deleting the duplicate."
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -1996,7 +2070,7 @@
       },
       "SignalSchema": {
         "type": "object",
-        "description": "A watchlist signal representing a tracked event (hiring, LinkedIn activity, website visit, etc.)",
+        "description": "A signal detected by a Signal Agent representing a tracked event (hiring, LinkedIn activity, website visit, etc.)",
         "required": [
           "_id",
           "teamId",
@@ -2018,11 +2092,11 @@
           },
           "watchListId": {
             "type": "string",
-            "description": "Associated watchlist ID"
+            "description": "ID of the Signal Agent associated with this signal"
           },
           "watchListName": {
             "type": "string",
-            "description": "Name of the associated watchlist"
+            "description": "Name of the Signal Agent associated with this signal"
           },
           "type": {
             "type": "string",
@@ -2184,7 +2258,7 @@
       },
       "WatchListApiFetchSignalsResponse": {
         "type": "object",
-        "description": "Paginated response containing watchlist signals",
+        "description": "Paginated response containing signals detected by Signal Agents",
         "properties": {
           "signals": {
             "type": "array",
@@ -2458,7 +2532,20 @@
         "tags": [
           "Team"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "version",
+            "in": "query",
+            "required": false,
+            "description": "Set to `v2` to include the `users` array, listing each team member's `userId`, `name`, `email`, and `role`. This lets you retrieve the team and its members in a single request.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "v2"
+              ]
+            }
+          }
+        ],
         "responses": {
           "200": {
             "headers": {
@@ -2546,7 +2633,21 @@
                     }
                   ],
                   "agency": "usr_4YGm9ez7gMd2123456",
-                  "customDomain": "custom.domain.com"
+                  "customDomain": "custom.domain.com",
+                  "users": [
+                    {
+                      "userId": "usr_4YGm9ez7gMdyhahaha",
+                      "name": "John Doe",
+                      "email": "john@lemlist.com",
+                      "role": "admin"
+                    },
+                    {
+                      "userId": "usr_5GdFEgSLCN4hahaha",
+                      "name": "Jane Doe",
+                      "email": "jane@lemlist.com",
+                      "role": "member"
+                    }
+                  ]
                 }
               }
             }
@@ -3409,6 +3510,18 @@
                   "timezone": {
                     "type": "string",
                     "description": "IANA timezone for the campaign schedule (e.g. `America/New_York`). Defaults to `Europe/Paris` if omitted."
+                  },
+                  "autoReview": {
+                    "type": "boolean",
+                    "description": "Automatically launch (review) leads as soon as they are added to the campaign, instead of requiring manual review. Defaults to `false`."
+                  },
+                  "autoReviewConditions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": ["deliverable", "risky", "undeliverable", "unverified"]
+                    },
+                    "description": "Email deliverability statuses for which a lead is auto-launched when `autoReview` is enabled. Only leads whose email verification matches one of these statuses are launched automatically. Invalid values are rejected with a `400` error."
                   }
                 },
                 "required": [
@@ -3417,7 +3530,9 @@
               },
               "example": {
                 "name": "My new campaign",
-                "timezone": "America/New_York"
+                "timezone": "America/New_York",
+                "autoReview": true,
+                "autoReviewConditions": ["deliverable", "risky"]
               }
             }
           }
@@ -3780,6 +3895,154 @@
                       "type": "string"
                     },
                     "description": "Array of user IDs (usr_xxx format) to assign as campaign senders. Cannot be used on campaigns with a dynamic sender strategy (contactOwner, leadImporter, customField). Each sender is validated against the campaign's sending channels (email, LinkedIn, SMS, WhatsApp): senders without capabilities for at least one channel are excluded, and all channels must be covered by at least one sender."
+                  },
+                  "autoReview": {
+                    "type": "boolean",
+                    "description": "Automatically launch (review) leads as soon as they are added to the campaign, instead of requiring manual review."
+                  },
+                  "autoReviewConditions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": ["deliverable", "risky", "undeliverable", "unverified"]
+                    },
+                    "description": "Email deliverability statuses for which a lead is auto-launched when `autoReview` is enabled. Only leads whose email verification matches one of these statuses are launched automatically. Invalid values are rejected with a `400` error."
+                  },
+                  "aiFeatures": {
+                    "type": "object",
+                    "description": "AI reply-handling settings. Provide only the flags to change; omitted flags keep their current value.",
+                    "properties": {
+                      "scoreReplies": {
+                        "type": "boolean",
+                        "description": "Enable AI reply scoring for this campaign."
+                      },
+                      "onInterestedReply": {
+                        "type": "object",
+                        "description": "AI action when a reply is detected as INTERESTED.",
+                        "properties": {
+                          "enabled": {
+                            "type": "boolean",
+                            "description": "Enable the interested-reply AI action."
+                          },
+                          "pauseAllCampaignsForLead": {
+                            "type": "boolean",
+                            "description": "Pause all campaigns for this lead."
+                          },
+                          "pauseCampaignForCompany": {
+                            "type": "boolean",
+                            "description": "Pause this campaign for other leads in the same company."
+                          },
+                          "pauseAllCampaignsForCompany": {
+                            "type": "boolean",
+                            "description": "Pause all campaigns for leads in the same company."
+                          }
+                        }
+                      },
+                      "onNotInterestedReply": {
+                        "type": "object",
+                        "description": "AI action when a reply is detected as NOT interested.",
+                        "properties": {
+                          "enabled": {
+                            "type": "boolean",
+                            "description": "Enable the not-interested-reply AI action."
+                          },
+                          "pauseAllCampaignsForLead": {
+                            "type": "boolean",
+                            "description": "Pause all campaigns for this lead."
+                          },
+                          "pauseCampaignForCompany": {
+                            "type": "boolean",
+                            "description": "Pause this campaign for other leads in the same company."
+                          },
+                          "pauseAllCampaignsForCompany": {
+                            "type": "boolean",
+                            "description": "Pause all campaigns for leads in the same company."
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "tracking": {
+                    "type": "object",
+                    "description": "Open / click / reply tracking toggles.",
+                    "properties": {
+                      "trackOpens": {
+                        "type": "boolean",
+                        "description": "Whether email open tracking is enabled."
+                      },
+                      "trackClicks": {
+                        "type": "boolean",
+                        "description": "Whether link click tracking is enabled."
+                      },
+                      "trackReplies": {
+                        "type": "boolean",
+                        "description": "Whether reply tracking is enabled."
+                      }
+                    }
+                  },
+                  "onReplied": {
+                    "type": "object",
+                    "description": "Behavior when a lead replies.",
+                    "properties": {
+                      "createNewTask": {
+                        "type": "boolean",
+                        "description": "Create a task when a lead replies."
+                      },
+                      "campaignProgress": {
+                        "type": "string",
+                        "enum": ["continue", "pause", "stop"],
+                        "description": "What happens to the lead on reply."
+                      },
+                      "propagateProgressToCompany": {
+                        "type": "boolean",
+                        "description": "Apply the same action to other leads in the same company."
+                      },
+                      "disableOutOfOffice": {
+                        "type": "boolean",
+                        "description": "Whether out-of-office detection is disabled."
+                      }
+                    }
+                  },
+                  "onLinkClicked": {
+                    "type": "object",
+                    "description": "Behavior when a lead clicks a tracked link.",
+                    "properties": {
+                      "createNewTask": {
+                        "type": "boolean",
+                        "description": "Create a task when a lead clicks a link."
+                      },
+                      "campaignProgress": {
+                        "type": "string",
+                        "enum": ["continue", "pause", "stop"],
+                        "description": "What happens to the lead on link click."
+                      },
+                      "propagateProgressToCompany": {
+                        "type": "boolean",
+                        "description": "Apply the same action to other leads in the same company."
+                      },
+                      "specificLinks": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "If non-empty, only these link URLs trigger the action (empty = all links)."
+                      }
+                    }
+                  },
+                  "onMeetingBooked": {
+                    "type": "object",
+                    "description": "Behavior when a meeting is booked.",
+                    "properties": {
+                      "campaignProgress": {
+                        "type": "string",
+                        "enum": ["continue", "pause", "stop"],
+                        "description": "What happens to the lead when a meeting is booked."
+                      },
+                      "propagateProgressToCompany": {
+                        "type": "boolean",
+                        "description": "Apply the same action to other leads in the same company."
+                      }
+                    }
                   }
                 }
               },
@@ -3800,7 +4063,9 @@
                 "sendUserIds": [
                   "usr_2aBCdEfGHiJkLmNOp",
                   "usr_7xYzAbCdEfGhIjKlM"
-                ]
+                ],
+                "autoReview": true,
+                "autoReviewConditions": ["deliverable", "risky"]
               }
             }
           }
@@ -5137,9 +5402,16 @@
                       "linkedinVisit",
                       "linkedinInvite",
                       "linkedinSend",
+                      "linkedinVoiceNote",
+                      "linkedinFollow",
+                      "linkedinLikeLastPost",
+                      "linkedinCommentLastPost",
+                      "linkedinEndorse",
+                      "linkedinWithdrawInvitation",
                       "sendToAnotherCampaign",
                       "conditional",
-                      "whatsappMessage"
+                      "whatsappMessage",
+                      "sms"
                     ]
                   },
                   "index": {
@@ -5156,7 +5428,7 @@
                   },
                   "message": {
                     "type": "string",
-                    "description": "Content of the email or message (used for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage steps)"
+                    "description": "Content of the email or message (used for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage, sms steps). Required for linkedinSend, whatsappMessage, and sms"
                   },
                   "altMessage": {
                     "type": "string",
@@ -5211,6 +5483,38 @@
                   "campaignId": {
                     "type": "string",
                     "description": "Target campaign ID for sendToAnotherCampaign steps. The campaign must exist and not be archived"
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "description": "Public HTTPS URLs of images to attach to a `linkedinInvite` or `linkedinSend` step. lemlist downloads each file and re-hosts it. Allowed MIME types: `image/png`, `image/jpeg`, `image/gif`. Up to 20 MB per file, and up to 6 items total combined with `videos`."
+                  },
+                  "videos": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "description": "Public HTTPS URLs of videos to attach to a `linkedinInvite` or `linkedinSend` step. lemlist downloads each file and re-hosts it. Allowed MIME types: `video/mp4`, `video/quicktime`. Up to 20 MB per file, and up to 6 items total combined with `images`."
+                  },
+                  "skillName": {
+                    "type": "string",
+                    "description": "Name of the LinkedIn skill to endorse on the lead's profile. Applies to `linkedinEndorse` steps only."
+                  },
+                  "endorseAnyFallback": {
+                    "type": "boolean",
+                    "description": "Applies to `linkedinEndorse` steps only. When `true` and the named skill is not on the lead's profile, lemlist falls back to endorsing any available skill."
+                  },
+                  "recordMode": {
+                    "type": "string",
+                    "description": "Applies to `linkedinVoiceNote` steps only. Determines how the audio is sourced. `manual` (default) means the user records the audio themselves from the lemlist UI after step creation; `ai` means lemlist generates the audio from a text template provided in the lemlist UI.",
+                    "enum": [
+                      "manual",
+                      "ai"
+                    ]
                   }
                 }
               },
@@ -5235,6 +5539,19 @@
                   "value": {
                     "type": "linkedinSend",
                     "message": "Hey {{firstName}}, thanks for connecting! I wanted to reach out about...",
+                    "delay": 2
+                  }
+                },
+                "LinkedIn Send with Media": {
+                  "value": {
+                    "type": "linkedinSend",
+                    "message": "Hey {{firstName}}, sharing a quick overview of what we're building.",
+                    "images": [
+                      "https://example.com/assets/overview.png"
+                    ],
+                    "videos": [
+                      "https://example.com/assets/demo.mp4"
+                    ],
                     "delay": 2
                   }
                 },
@@ -5407,9 +5724,16 @@
                       "linkedinVisit",
                       "linkedinInvite",
                       "linkedinSend",
+                      "linkedinVoiceNote",
+                      "linkedinFollow",
+                      "linkedinLikeLastPost",
+                      "linkedinCommentLastPost",
+                      "linkedinEndorse",
+                      "linkedinWithdrawInvitation",
                       "sendToAnotherCampaign",
                       "conditional",
-                      "whatsappMessage"
+                      "whatsappMessage",
+                      "sms"
                     ]
                   },
                   "delay": {
@@ -5422,7 +5746,7 @@
                   },
                   "message": {
                     "type": "string",
-                    "description": "Content of the email or message (for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage steps)"
+                    "description": "Content of the email or message (for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage, sms steps)"
                   },
                   "altMessage": {
                     "type": "string",
@@ -5477,6 +5801,38 @@
                   "campaignId": {
                     "type": "string",
                     "description": "Target campaign ID for sendToAnotherCampaign steps. The campaign must exist and not be archived"
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "description": "Public HTTPS URLs of images to attach to a `linkedinInvite` or `linkedinSend` step. Replaces the step's current images — pass an empty array to clear them. Allowed MIME types: `image/png`, `image/jpeg`, `image/gif`. Up to 20 MB per file, and up to 6 items total combined with `videos`."
+                  },
+                  "videos": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "description": "Public HTTPS URLs of videos to attach to a `linkedinInvite` or `linkedinSend` step. Replaces the step's current videos — pass an empty array to clear them. Allowed MIME types: `video/mp4`, `video/quicktime`. Up to 20 MB per file, and up to 6 items total combined with `images`."
+                  },
+                  "skillName": {
+                    "type": "string",
+                    "description": "Name of the LinkedIn skill to endorse on the lead's profile. Applies to `linkedinEndorse` steps only."
+                  },
+                  "endorseAnyFallback": {
+                    "type": "boolean",
+                    "description": "Applies to `linkedinEndorse` steps only. When `true` and the named skill is not on the lead's profile, lemlist falls back to endorsing any available skill."
+                  },
+                  "recordMode": {
+                    "type": "string",
+                    "description": "Applies to `linkedinVoiceNote` steps only. Determines how the audio is sourced. `manual` (default) means the user records the audio themselves from the lemlist UI after step creation; `ai` means lemlist generates the audio from a text template provided in the lemlist UI.",
+                    "enum": [
+                      "manual",
+                      "ai"
+                    ]
                   }
                 }
               },
@@ -5502,6 +5858,15 @@
                     "message": "Thanks for accepting my invite, {{firstName}}! I wanted to reach out about...",
                     "altMessage": "Alternative message if the main one fails",
                     "delay": 3
+                  }
+                },
+                "Update LinkedIn Send Media": {
+                  "value": {
+                    "type": "linkedinSend",
+                    "images": [
+                      "https://example.com/assets/overview.png"
+                    ],
+                    "videos": []
                   }
                 },
                 "Update Manual Task": {
@@ -6953,6 +7318,9 @@
                     "type": "string",
                     "description": "Contact owner (user ID or user login email)"
                   }
+                },
+                "additionalProperties": {
+                  "type": "string"
                 }
               },
               "example": {
@@ -6964,7 +7332,9 @@
                 "linkedinUrl": "https://www.linkedin.com/in/johndoe",
                 "phone": "+33 123456789",
                 "timezone": "Europe/Paris",
-                "contactOwner": "login_email@lemlist.com"
+                "contactOwner": "login_email@lemlist.com",
+                "companySize": "50-100",
+                "customVariable1": "any value you want"
               }
             }
           }
@@ -7725,6 +8095,97 @@
             "content": {
               "text/plain": {
                 "example": "Lead not found"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      }
+    },
+    "/leads/review/{leadId}": {
+      "parameters": [
+        {
+          "name": "leadId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the lead to launch",
+          "example": "lea_8xJSc7sV7ggpiVnXe",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Launch Lead",
+        "description": "Use this endpoint to launch a lead that is waiting for review, without having to enable campaign-wide auto-review.\n\nYou're auto launching this specific lead, while still enforcing every other launch guard: the campaign must have no step errors, any AI variables required by the campaign must be valid for the lead, and a sender must be available.\n\nNo need to enable autolaunch in the campaign.\n\nThis endpoint requires an `emailPro` plan or higher.",
+        "tags": [
+          "Leads"
+        ],
+        "responses": {
+          "200": {
+            "description": "Lead launched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "ok": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The lead cannot be launched. Possible `error` codes: `CAMPAIGN_LEAD_REVIEW_LEAD_PAUSED` (lead is paused), `CAMPAIGN_LEAD_REVIEW_LEAD_ALREADY_LAUNCHED` (lead is already launched), `CAMPAIGN_LEAD_REVIEW_LEAD_AI_VARIABLE_INVALID` (missing or invalid AI variables required by the campaign), `CAMPAIGN_LEAD_REVIEW_LEAD_NO_SENDER_AVAILABLE` (no sender available), `CAMPAIGN_LEAD_REVIEW_CAMPAIGN_STEP_ERRORS` (campaign has step errors).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "CAMPAIGN_LEAD_REVIEW_LEAD_ALREADY_LAUNCHED",
+                  "message": "Lead is already launched"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Lead or campaign not found. Possible `error` codes: `CAMPAIGN_LEAD_REVIEW_LEAD_NOT_FOUND`, `CAMPAIGN_LEAD_REVIEW_CAMPAIGN_NOT_FOUND`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "CAMPAIGN_LEAD_REVIEW_LEAD_NOT_FOUND",
+                  "message": "Lead not found"
+                }
               }
             }
           },
@@ -8745,6 +9206,15 @@
                     ],
                     "type": "text",
                     "helper": "Use free text search"
+                  },
+                  {
+                    "filterId": "department",
+                    "description": "Filter by department",
+                    "mode": [
+                      "leads"
+                    ],
+                    "type": "select",
+                    "helper": "Allowed values: Sales, Customer service, Engineering, Marketing, Operations, Human Resources, Finance / Legal / Admin, Other"
                   }
                 ]
               }
@@ -8776,7 +9246,7 @@
     "/database/people": {
       "post": {
         "summary": "Search People Database",
-        "description": "This endpoint allows you to query our People database. To do so, you may use the following parameters: filters (required), page (optional), size (optional), and excludes (optional). Each filter should have the following properties: filterId (filter identifier), in (list of the values you want to include), and out (list of the values you want to exclude). To know which filters you are able to use, refer to the GET Filters section.",
+        "description": "This endpoint allows you to query our People database. To do so, you may use the following parameters: filters (required), page (optional), size (optional), and excludes (optional). Each filter should have the following properties: filterId (filter identifier), in (list of the values you want to include), and out (list of the values you want to exclude). To know which filters you are able to use, refer to the GET Filters section.\n\nThe `department` filter accepts the following values: `Sales`, `Customer service`, `Engineering`, `Marketing`, `Operations`, `Human Resources`, `Finance / Legal / Admin`, `Other`.",
         "operationId": "searchPeopleDatabase",
         "tags": [
           "People Database"
@@ -8971,269 +9441,6 @@
           },
           "400": {
             "description": "Possible errors: Bad team / Parameter filters is invalid",
-            "content": {
-              "text/plain": {
-                "example": "Bad team"
-              }
-            }
-          },
-          "401": {
-            "description": "The authentication you supplied is incorrect",
-            "content": {
-              "text/plain": {
-                "example": "The authentication you supplied is incorrect"
-              }
-            }
-          },
-          "405": {
-            "description": "Method not allowed"
-          }
-        },
-        "parameters": []
-      }
-    },
-    "/schema/people": {
-      "get": {
-        "summary": "Get People Schema",
-        "tags": [
-          "People Database"
-        ],
-        "description": "Get the schema definition for people in the database",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "schema": {
-                      "$ref": "#/components/schemas/PeopleSchema"
-                    },
-                    "version": {
-                      "type": "object",
-                      "properties": {
-                        "since": {
-                          "type": "integer",
-                          "description": "Version date in YYYYMMDD"
-                        },
-                        "type": {
-                          "type": "string",
-                          "enum": [
-                            "date"
-                          ]
-                        }
-                      },
-                      "required": [
-                        "since",
-                        "type"
-                      ]
-                    },
-                    "properties": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  },
-                  "required": [
-                    "schema",
-                    "version"
-                  ]
-                },
-                "example": {
-                  "schema": {
-                    "lead_id": 231488528,
-                    "canonical_shorthand_name": "john-doe",
-                    "connections_count": 500,
-                    "country": "United States",
-                    "full_name": "John Doe",
-                    "education": [
-                      {
-                        "activities_and_societies": "ACM, AI Club",
-                        "created": "2020-08-15T00:00:00.000Z",
-                        "date_from": "2016-09-01",
-                        "date_to": "2020-06-01",
-                        "deleted": "",
-                        "description": "BSc in Computer Science",
-                        "id": "edu_1",
-                        "last_updated": "2021-08-15T00:00:00.000Z",
-                        "member_id": "mem_123",
-                        "school_url": "https://www.stanford.edu/",
-                        "subtitle": "School of Engineering",
-                        "title": "Stanford University"
-                      }
-                    ],
-                    "experience_count": 2,
-                    "experiences": [
-                      {
-                        "company_id": 123456,
-                        "company_description": "AI-powered customer engagement platform",
-                        "company_employee_count": 250,
-                        "company_followers_count": 5000,
-                        "company_founded": 2015,
-                        "company_headquarters_city": "San Francisco",
-                        "company_headquarters_country": "United States",
-                        "company_industry": "Computer Software",
-                        "company_linkedin_url": "https://www.linkedin.com/company/techcorp/",
-                        "company_logo_url": "https://example.com/logo.png",
-                        "company_name": "TechCorp Inc.",
-                        "company_size": "201-500 employees",
-                        "company_type": "Privately Held",
-                        "company_url": "https://www.techcorp.com",
-                        "company_website_url": "https://www.techcorp.com",
-                        "revenue_bucket": "$50M - $100M",
-                        "company_domain": "techcorp.com",
-                        "employees_count_growth": 18,
-                        "last_funding_round_at": "2022-06-01",
-                        "business_business_customer": "B2B",
-                        "current_exp_bucket": "3-5 years",
-                        "created": "2021-01-10T00:00:00.000Z",
-                        "date_from": "2020-02-01",
-                        "date_to": "",
-                        "description": "Leading ML feature teams and MLOps initiatives",
-                        "duration": "4 yrs",
-                        "id": "exp_1",
-                        "last_updated": "2024-09-01T00:00:00.000Z",
-                        "location": "San Francisco Bay Area",
-                        "member_id": "mem_123",
-                        "order_in_profile": 0,
-                        "title": "Senior Machine Learning Engineer",
-                        "title_normalized": "Machine Learning Engineer",
-                        "main_in_profile": true
-                      },
-                      {
-                        "company_id": 98765,
-                        "company_description": "Cloud infrastructure and developer tools",
-                        "company_employee_count": 1500,
-                        "company_followers_count": 20000,
-                        "company_founded": 2010,
-                        "company_headquarters_city": "Seattle",
-                        "company_headquarters_country": "United States",
-                        "company_industry": "Information Technology",
-                        "company_linkedin_url": "https://www.linkedin.com/company/cloudco/",
-                        "company_logo_url": "https://example.com/logo2.png",
-                        "company_name": "CloudCo",
-                        "company_size": "1001-5000 employees",
-                        "company_type": "Public Company",
-                        "company_url": "https://www.cloudco.com",
-                        "company_website_url": "https://www.cloudco.com",
-                        "revenue_bucket": ">$1B",
-                        "company_domain": "cloudco.com",
-                        "employees_count_growth": 25,
-                        "last_funding_round_at": "2019-05-01",
-                        "business_business_customer": "B2B",
-                        "current_exp_bucket": "1-2 years",
-                        "created": "2018-07-10T00:00:00.000Z",
-                        "date_from": "2018-07-01",
-                        "date_to": "2020-01-01",
-                        "description": "Worked on distributed systems and observability",
-                        "duration": "1 yr 6 mos",
-                        "id": "exp_2",
-                        "last_updated": "2020-01-10T00:00:00.000Z",
-                        "location": "Seattle, WA",
-                        "member_id": "mem_123",
-                        "order_in_profile": 1,
-                        "title": "Software Engineer",
-                        "title_normalized": "Software Engineer",
-                        "main_in_profile": false
-                      }
-                    ],
-                    "interests": [
-                      {
-                        "interest": "Artificial Intelligence",
-                        "interest_id": "int_ai"
-                      },
-                      {
-                        "interest": "Open Source",
-                        "interest_id": "int_oss"
-                      }
-                    ],
-                    "languages": [
-                      {
-                        "language": "English",
-                        "proficiency": "native"
-                      },
-                      {
-                        "language": "French",
-                        "proficiency": "professional"
-                      }
-                    ],
-                    "last_updated": "2024-10-31T12:00:00.000Z",
-                    "lead_industry": "Computer Software",
-                    "lead_linkedin_url": "https://www.linkedin.com/in/john-doe/",
-                    "lead_logo_url": "https://example.com/john.png",
-                    "linkedin_short": "john-doe",
-                    "location": "San Francisco Bay Area",
-                    "skills": [
-                      {
-                        "skill": "Machine Learning",
-                        "skill_id": "sk_ml"
-                      },
-                      {
-                        "skill": "Python",
-                        "skill_id": "sk_py"
-                      },
-                      {
-                        "skill": "MLOps",
-                        "skill_id": "sk_mlops"
-                      }
-                    ],
-                    "summary": "Engineer focused on building ML systems that ship to production.",
-                    "title": "Senior Machine Learning Engineer",
-                    "lead_quality_score": 87,
-                    "seniority": "senior",
-                    "department": "engineering",
-                    "connections_count_bucket": "500+",
-                    "years_of_exp_bucket": "6-10 years",
-                    "current_exp_company_name": "TechCorp Inc.",
-                    "geopoint": [
-                      37.7749,
-                      -122.4194
-                    ],
-                    "_score": 0.98123,
-                    "_id": "people_abc123"
-                  },
-                  "version": {
-                    "since": 20241031,
-                    "type": "date"
-                  },
-                  "properties": [
-                    "lead_id",
-                    "canonical_shorthand_name",
-                    "connections_count",
-                    "country",
-                    "full_name",
-                    "education",
-                    "experience_count",
-                    "experiences",
-                    "interests",
-                    "languages",
-                    "last_updated",
-                    "lead_industry",
-                    "lead_linkedin_url",
-                    "lead_logo_url",
-                    "linkedin_short",
-                    "location",
-                    "skills",
-                    "summary",
-                    "title",
-                    "lead_quality_score",
-                    "seniority",
-                    "department",
-                    "connections_count_bucket",
-                    "years_of_exp_bucket",
-                    "current_exp_company_name",
-                    "geopoint",
-                    "_score",
-                    "_id"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad team",
             "content": {
               "text/plain": {
                 "example": "Bad team"
@@ -9613,158 +9820,6 @@
         "parameters": []
       }
     },
-    "/schema/companies": {
-      "get": {
-        "summary": "Get Companies Schema",
-        "tags": [
-          "People Database"
-        ],
-        "description": "Get the schema definition for companies in the database",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "schema": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/CompaniesSchema"
-                    },
-                    "version": {
-                      "type": "object",
-                      "properties": {
-                        "since": {
-                          "type": "integer",
-                          "description": "Version date in YYYYMMDD"
-                        },
-                        "type": {
-                          "type": "string",
-                          "enum": [
-                            "date"
-                          ]
-                        }
-                      },
-                      "required": [
-                        "since",
-                        "type"
-                      ]
-                    },
-                    "properties": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                },
-                "example": {
-                  "schema": {
-                    "company_id": "88945664",
-                    "company_website_url": "http://acme-tech.example.com",
-                    "company_name": "Acme Technologies",
-                    "company_linkedin_url": "https://www.linkedin.com/company/acme-technologies",
-                    "last_updated": "2025-09-07 02:11:32 UTC",
-                    "company_headquarters_city": "Example City",
-                    "company_headquarters_country": "India",
-                    "company_logo_url": "https://example.com/logo1.png",
-                    "company_description": "Acme, established on Aug-2015 with the idea \"Make Your Imagination Come True\". Which means anyone who came up with their idea, we will give a closely realistic solutions to them.",
-                    "company_employee_count": "31",
-                    "company_type": "Public Company",
-                    "company_founded": "2015",
-                    "company_size": "11-50",
-                    "company_followers_count": "3958",
-                    "revenue_bucket": "$5M - $10M",
-                    "company_domain": "acme-tech.example.com",
-                    "employees_count_growth": -3,
-                    "last_funding_round_at": "More than 6 months",
-                    "techno_used_array": [
-                      "Apache HTTP Server",
-                      "Lightbox",
-                      "LinkedIn Sales Navigator",
-                      "Postman",
-                      "React",
-                      "Node.js",
-                      "WordPress",
-                      "JavaScript"
-                    ],
-                    "business_business_customer": "B2B",
-                    "company_quality_score": "3",
-                    "company_industry": "Technology, Information and Media",
-                    "company_subindustry": "Technology, Information and Internet",
-                    "company_subsubindustry": "Software Development",
-                    "company_location": "123 Example Street, Suite 100, Example City, Example Country",
-                    "company_location_geopoint_array": [
-                      73.92,
-                      18.64
-                    ],
-                    "company_occ_lead": "60",
-                    "_score": 10.002095,
-                    "_id": "88945664"
-                  },
-                  "version": {
-                    "since": 20251031,
-                    "type": "date"
-                  },
-                  "properties": [
-                    "company_id",
-                    "company_website_url",
-                    "company_name",
-                    "company_linkedin_url",
-                    "last_updated",
-                    "company_headquarters_city",
-                    "company_headquarters_country",
-                    "company_logo_url",
-                    "company_description",
-                    "company_employee_count",
-                    "company_type",
-                    "company_founded",
-                    "company_size",
-                    "company_followers_count",
-                    "revenue_bucket",
-                    "company_domain",
-                    "employees_count_growth",
-                    "last_funding_round_at",
-                    "techno_used_array",
-                    "business_business_customer",
-                    "company_quality_score",
-                    "company_industry",
-                    "company_subindustry",
-                    "company_subsubindustry",
-                    "company_location",
-                    "company_location_geopoint_array",
-                    "company_occ_lead",
-                    "_score",
-                    "_id"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad team",
-            "content": {
-              "text/plain": {
-                "example": "Bad team"
-              }
-            }
-          },
-          "401": {
-            "description": "The authentication you supplied is incorrect",
-            "content": {
-              "text/plain": {
-                "example": "The authentication you supplied is incorrect"
-              }
-            }
-          },
-          "405": {
-            "description": "Method not allowed"
-          }
-        },
-        "parameters": []
-      }
-    },
     "/tasks": {
       "get": {
         "summary": "Get Many Tasks",
@@ -9915,6 +9970,22 @@
                       "2"
                     ],
                     "default": ""
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "description": "Public HTTPS URLs of images to attach to a `linkedin` task. lemlist downloads each file and re-hosts it. Ignored when `type` is not `linkedin`. Allowed MIME types: `image/png`, `image/jpeg`, `image/gif`. Up to 20 MB per file, and up to 6 items total combined with `videos`."
+                  },
+                  "videos": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "description": "Public HTTPS URLs of videos to attach to a `linkedin` task. lemlist downloads each file and re-hosts it. Ignored when `type` is not `linkedin`. Allowed MIME types: `video/mp4`, `video/quicktime`. Up to 20 MB per file, and up to 6 items total combined with `images`."
                   }
                 },
                 "required": [
@@ -10026,6 +10097,22 @@
                   "done": {
                     "type": "boolean",
                     "description": "Mark task as completed"
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "description": "Public HTTPS URLs of images to attach to a LinkedIn task. Replaces the task's current images — pass an empty array to clear them. Returns `400` (`LINKEDIN_MEDIA_INVALID_TYPE`) when the target task is not a LinkedIn task. Allowed MIME types: `image/png`, `image/jpeg`, `image/gif`. Up to 20 MB per file, and up to 6 items total combined with `videos`."
+                  },
+                  "videos": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "description": "Public HTTPS URLs of videos to attach to a LinkedIn task. Replaces the task's current videos — pass an empty array to clear them. Returns `400` (`LINKEDIN_MEDIA_INVALID_TYPE`) when the target task is not a LinkedIn task. Allowed MIME types: `video/mp4`, `video/quicktime`. Up to 20 MB per file, and up to 6 items total combined with `images`."
                   }
                 },
                 "required": [
@@ -10610,15 +10697,15 @@
                   },
                   "contactId": {
                     "type": "string",
-                    "description": "Contact ID"
+                    "description": "Contact ID. Provide either contactId or leadId (not both required). Returned in the response."
                   },
                   "leadId": {
                     "type": "string",
-                    "description": "Lead ID"
+                    "description": "Lead ID. Provide either contactId or leadId; when only leadId is sent, its contact is resolved and returned as contactId in the response."
                   },
                   "subject": {
                     "type": "string",
-                    "description": "Email subject"
+                    "description": "Email subject. Required for a standalone email; on a reply (replyToActivityId set) omit to reuse the thread's subject."
                   },
                   "message": {
                     "type": "string",
@@ -10629,16 +10716,17 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "CC email addresses"
+                    "description": "CC email addresses. On a reply, omit to inherit the thread's CC; pass a list to override, or an empty array to send without CC."
+                  },
+                  "replyToActivityId": {
+                    "type": "string",
+                    "description": "Reply within an existing email thread. Pass a specific email activity ID (act_...) or \"latest\" for the contact's most recent email. Threads the message (In-Reply-To) and reuses the thread's subject. Omit to send a standalone email. If \"latest\" and the contact has no prior email, a standalone email is sent."
                   }
                 },
                 "required": [
                   "sendUserId",
                   "sendUserEmail",
                   "sendUserMailboxId",
-                  "contactId",
-                  "leadId",
-                  "subject",
                   "message"
                 ]
               },
@@ -10650,7 +10738,8 @@
                 "leadId": "lea_wadZOcDDSFWSbFaCf",
                 "subject": "Follow up",
                 "message": "<p>Hello,</p><p>Following up on our conversation...</p>",
-                "cc": []
+                "cc": [],
+                "replyToActivityId": "latest"
               }
             }
           }
@@ -10662,10 +10751,21 @@
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "description": "True when the email was sent."
+                    },
+                    "contactId": {
+                      "type": "string",
+                      "description": "The contact the email was sent to (resolved from leadId when only a lead was provided)."
+                    }
+                  },
                   "additionalProperties": true
                 },
                 "example": {
-                  "ok": true
+                  "ok": true,
+                  "contactId": "ctc_JgrwGbHKgFoEnunBA"
                 }
               }
             }
@@ -11998,7 +12098,7 @@
     "/contacts": {
       "get": {
         "summary": "Get Many Contacts",
-        "description": "Retrieves contacts by IDs/emails, or searches contacts by name, email, contact list, or campaign membership.\n\nWhen using `idsOrEmails`, returns an array of matching contacts directly.\n\nWhen using `search`, `email`, `listId`, or `notInAnyCampaign`, returns a paginated response with `contacts`, `total`, `limit`, and `offset` fields. You can combine filters together to narrow results (e.g. `listId` with `search`, or `notInAnyCampaign` with `search`).",
+        "description": "Retrieves contacts by IDs/emails, or searches/lists contacts by name, email, contact list, campaign membership, or company link.\n\nWhen using `idsOrEmails`, returns an array of matching contacts directly.\n\nWhen using `search`, `email`, `listId`, `notInAnyCampaign`, any of the `company*` filters, or no filter at all, returns a paginated response with `data`, `total`, `limit`, and `offset` fields. You can combine filters together to narrow results (e.g. `listId` with `search`, or `notInAnyCampaign` with `companyId`). Calling the endpoint without any filter returns all contacts of the team, paginated.\n\nThe `company*` filters (`companyId`, `companyDomain`, `companyLinkedinUrl`, `companySalesnavUrl`) are mutually exclusive — use only one at a time. `companyDomain` / `companyLinkedinUrl` / `companySalesnavUrl` are resolved to a `companyId` through the Companies collection; if no matching company exists, the endpoint returns an empty list with `total: 0` (not an error), which keeps automation flows simple.",
         "tags": [
           "Contacts"
         ],
@@ -12007,7 +12107,7 @@
             "name": "idsOrEmails",
             "in": "query",
             "required": false,
-            "description": "A comma separated string of either valid contact IDs (MongoDB ObjectId) or valid email addresses. At least one of `idsOrEmails`, `search`, `email`, `listId`, or `notInAnyCampaign` is required.",
+            "description": "A comma separated string of either valid contact IDs (MongoDB ObjectId) or valid email addresses. Optional — when omitted, returns the paginated list of all contacts of the team.",
             "example": "ctc_xW8Ou6C03Csv8vatp,riley@example.com",
             "schema": {
               "type": "string"
@@ -12019,7 +12119,7 @@
             "name": "search",
             "in": "query",
             "required": false,
-            "description": "Search contacts by name or other text fields. Must be at least 2 characters. At least one of `idsOrEmails`, `search`, `email`, `listId`, or `notInAnyCampaign` is required.",
+            "description": "Search contacts by name or other text fields. Must be at least 2 characters.",
             "schema": {
               "type": "string"
             }
@@ -12028,7 +12128,7 @@
             "name": "email",
             "in": "query",
             "required": false,
-            "description": "Search contacts by exact email address. At least one of `idsOrEmails`, `search`, `email`, `listId`, or `notInAnyCampaign` is required.",
+            "description": "Search contacts by exact email address.",
             "schema": {
               "type": "string",
               "format": "email"
@@ -12055,15 +12155,56 @@
             }
           },
           {
+            "name": "companyId",
+            "in": "query",
+            "required": false,
+            "description": "Filter contacts by attached company ID (`cpn_xxx` format). Use this when you already know the lemlist company id (for example after fetching `GET /companies?crmSyncStatus=unique_index_error_company`). Mutually exclusive with `companyDomain`, `companyLinkedinUrl`, and `companySalesnavUrl`.",
+            "example": "cpn_A1B2C3D4E5F6G7H8I",
+            "schema": {
+              "type": "string",
+              "pattern": "^cpn_[a-zA-Z0-9]+$"
+            }
+          },
+          {
+            "name": "companyDomain",
+            "in": "query",
+            "required": false,
+            "description": "Filter contacts by their company's website domain. Resolved to a `companyId` against the Companies collection. If no company matches, the endpoint returns an empty list (`total: 0`). Mutually exclusive with the other `company*` filters.",
+            "example": "acme.com",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "companyLinkedinUrl",
+            "in": "query",
+            "required": false,
+            "description": "Filter contacts by their company's LinkedIn URL. Resolved to a `companyId` against the Companies collection. If no company matches, the endpoint returns an empty list (`total: 0`). Mutually exclusive with the other `company*` filters.",
+            "example": "https://www.linkedin.com/company/acme",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "companySalesnavUrl",
+            "in": "query",
+            "required": false,
+            "description": "Filter contacts by their company's LinkedIn Sales Navigator URL. Resolved to a `companyId` against the Companies collection. If no company matches, the endpoint returns an empty list (`total: 0`). Mutually exclusive with the other `company*` filters.",
+            "example": "https://www.linkedin.com/sales/company/12345678",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "limit",
             "in": "query",
             "required": false,
-            "description": "Maximum number of contacts to return (1–100). Defaults to 20.",
+            "description": "Maximum number of contacts to return (1–500). Defaults to 100.",
             "schema": {
               "type": "integer",
               "minimum": 1,
-              "maximum": 100,
-              "default": 20
+              "maximum": 500,
+              "default": 100
             }
           },
           {
@@ -12080,14 +12221,44 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "Success. When using `idsOrEmails`, returns an array of contacts. Otherwise, returns a paginated object with `data`, `total`, `limit`, and `offset`.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Contact"
-                  }
+                  "oneOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Contact"
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Contact"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        },
+                        "offset": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "data",
+                        "total",
+                        "limit",
+                        "offset"
+                      ]
+                    }
+                  ]
                 },
                 "example": [
                   {
@@ -12163,10 +12334,10 @@
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / at least one query parameter is required / search query too short / invalid listId format",
+            "description": "Possible errors: Bad team / search query too short / invalid listId format",
             "content": {
               "text/plain": {
-                "example": "idsOrEmails, search, email, listId, or notInAnyCampaign parameter is required"
+                "example": "Search query must be at least 2 characters"
               }
             }
           },
@@ -12782,8 +12953,8 @@
           "name": "listId",
           "in": "path",
           "required": true,
-          "description": "The unique identifier of the contact list (`clt_xxx` format)",
-          "example": "clt_abc123def456ghi78",
+          "description": "The unique identifier of the contact list (`clt_xxx` format). Must be a **static** contact list.",
+          "example": "clt_xxxxxxxxxxxxxxxxx",
           "schema": {
             "type": "string",
             "pattern": "^clt_[a-zA-Z0-9]+$"
@@ -12791,10 +12962,25 @@
         }
       ],
       "post": {
-        "summary": "Add Contacts to List",
-        "description": "Adds existing CRM contacts to a static contact list. Contacts already in the list are silently skipped (no duplicates created). Cannot be used with dynamic lists.",
+        "summary": "Add or Remove Contacts in a List",
+        "description": "Adds existing CRM contacts to a static contact list, or removes them when `?action=remove` is set.\n\n- **Add** (default): send a `POST` with a `contactIds` body. Contacts already in the list are silently skipped (no duplicates) and reported in `alreadyInList`.\n- **Remove**: send a `POST` with `?action=remove` and a `contactIds` body. Contacts that are not in the list are silently skipped; `removedCount` reflects the associations actually removed. This only affects list membership, the contacts are not deleted from your CRM.\n\nThe list must be a **static** contact list (`clt_xxx`). Dynamic lists (auto-populated by filter rules) and company lists are rejected.\n\n**Removal uses `POST ?action=remove` on purpose:** a `DELETE` request body is dropped by our stack, so `DELETE` on this path is **not supported** and returns `405 Method Not Allowed`.",
         "tags": [
           "Contacts"
+        ],
+        "parameters": [
+          {
+            "name": "action",
+            "in": "query",
+            "required": false,
+            "description": "Omit to **add** the contacts to the list. Set to `remove` to **remove** them from the list.",
+            "example": "remove",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "remove"
+              ]
+            }
+          }
         ],
         "requestBody": {
           "required": true,
@@ -12812,15 +12998,16 @@
                       "type": "string",
                       "pattern": "^ctc_[a-zA-Z0-9]+$"
                     },
+                    "minItems": 1,
                     "maxItems": 1000,
-                    "description": "Array of contact IDs to add to the list (`ctc_xxx` format). Maximum 1,000 per request."
+                    "description": "Array of contact IDs (`ctc_xxx` format) to add to or remove from the list. Required, non-empty, maximum 1,000 per request."
                   }
                 }
               },
               "example": {
                 "contactIds": [
-                  "ctc_abc123def456ghi78",
-                  "ctc_xyz789uvw012rst34"
+                  "ctc_xxxxxxxxxxxxxxxxx",
+                  "ctc_yyyyyyyyyyyyyyyyy"
                 ]
               }
             }
@@ -12828,7 +13015,7 @@
         },
         "responses": {
           "200": {
-            "description": "Contacts added to list successfully",
+            "description": "Contacts added to or removed from the list successfully. The response body depends on `action`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -12839,19 +13026,40 @@
                     },
                     "addedCount": {
                       "type": "integer",
-                      "description": "Number of contacts added to the list"
+                      "description": "Number of contacts added to the list (add only)."
+                    },
+                    "alreadyInList": {
+                      "type": "integer",
+                      "description": "Number of contacts that were already in the list and therefore skipped (add only)."
+                    },
+                    "removedCount": {
+                      "type": "integer",
+                      "description": "Number of list associations actually removed (remove only). Contacts that were not in the list are not counted."
                     }
                   }
                 },
-                "example": {
-                  "message": "Contacts added to list successfully",
-                  "addedCount": 2
+                "examples": {
+                  "add": {
+                    "summary": "Add contacts (no action)",
+                    "value": {
+                      "message": "Contacts added to list successfully",
+                      "addedCount": 2,
+                      "alreadyInList": 0
+                    }
+                  },
+                  "remove": {
+                    "summary": "Remove contacts (action=remove)",
+                    "value": {
+                      "message": "Contacts removed from list successfully",
+                      "removedCount": 2
+                    }
+                  }
                 }
               }
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / invalid listId / contactIds required / invalid contact ID format / list is not a contact list / cannot add to dynamic list",
+            "description": "Possible errors: Bad team / Invalid listId format (expected clt_xxx) / contactIds is required and must be a non-empty array / Maximum 1,000 contacts per request / All contactIds must be in ctc_xxx format / List is not a contact list / Cannot manually add contacts to a dynamic list / Cannot manually remove contacts from a dynamic list.",
             "content": {
               "text/plain": {
                 "example": "contactIds is required and must be a non-empty array"
@@ -12875,7 +13083,20 @@
             }
           },
           "405": {
-            "description": "Method not allowed"
+            "description": "Method not allowed. `DELETE` on this path is not supported because the request body is dropped by our stack. Use `POST ?action=remove` to remove contacts.",
+            "content": {
+              "text/plain": {
+                "example": "Method not allowed"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error while updating the list",
+            "content": {
+              "text/plain": {
+                "example": "Failed to add contacts to list"
+              }
+            }
           }
         }
       }
@@ -13199,13 +13420,14 @@
             }
           },
           {
-            "name": "page",
+            "name": "offset",
             "in": "query",
             "required": false,
-            "description": "Page number to retrieve. Ignored when `idsOrDomains` is provided.",
-            "example": "1",
+            "description": "Number of companies to skip for pagination. Defaults to 0. Ignored when `idsOrDomains` is provided.",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
             }
           },
           {
@@ -13259,10 +13481,33 @@
             "name": "limit",
             "in": "query",
             "required": false,
-            "description": "Number of companies to retrieve. Default: 100. Maximum: 100",
+            "description": "Number of companies to retrieve. Default: 100. Maximum: 500",
             "example": "10",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          },
+          {
+            "name": "crmSyncStatus",
+            "in": "query",
+            "required": false,
+            "description": "Filter companies by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, or Pipedrive) to be connected — otherwise the request returns `400 NO_CRM_CONNECTED`. Common values:\n- `synced` — the company has a CRM record and no sync errors.\n- `not_synced` — the company has no CRM record yet.\n- `error` — at least one sync error is currently raised.\n- A specific error reason (lowercase form), to filter by root cause: `unique_index_error_company`, `property_doesnt_exist`, `required_field_missing`, `company_already_exists_with_name`, `company_already_exists_with_linkedin_url`.\n\nFor each returned company, see `crmSync.errors[].metadata.alreadyExistingCompanyId` to identify the lemlist company that already occupies the conflicting CRM record (useful to remap contacts before deleting the duplicate).",
+            "example": "unique_index_error_company",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "synced",
+                "not_synced",
+                "error",
+                "unique_index_error_company",
+                "property_doesnt_exist",
+                "required_field_missing",
+                "company_already_exists_with_name",
+                "company_already_exists_with_linkedin_url"
+              ]
             }
           }
         ],
@@ -13282,11 +13527,19 @@
                     },
                     "total": {
                       "type": "integer"
+                    },
+                    "limit": {
+                      "type": "integer"
+                    },
+                    "offset": {
+                      "type": "integer"
                     }
                   },
                   "required": [
                     "data",
-                    "total"
+                    "total",
+                    "limit",
+                    "offset"
                   ]
                 },
                 "example": {
@@ -13335,9 +13588,36 @@
                         "name": "Growth & GTM Engineering"
                       },
                       "ownerId": "usr_ahfFktBBHUIxbVG5P"
+                    },
+                    {
+                      "_id": "cpn_A1B2C3D4E5F6G7H8I",
+                      "createdAt": "2025-11-02T09:14:08.512Z",
+                      "createdBy": "usr_A1B2C3D4E5F6G7H8I",
+                      "domain": "acme.com",
+                      "fields": {
+                        "name": "Acme Inc"
+                      },
+                      "ownerId": "usr_A1B2C3D4E5F6G7H8I",
+                      "crmSync": {
+                        "provider": "hubspot",
+                        "crmRecordId": null,
+                        "syncDisabled": false,
+                        "errors": [
+                          {
+                            "type": "CONNECT_FAILED",
+                            "reason": "UNIQUE_INDEX_ERROR_COMPANY",
+                            "raisedAt": "2025-11-02T09:14:12.034Z",
+                            "metadata": {
+                              "alreadyExistingCompanyId": "cpn_J1K2L3M4N5O6P7Q8R"
+                            }
+                          }
+                        ]
+                      }
                     }
                   ],
-                  "total": 59310
+                  "total": 59310,
+                  "limit": 100,
+                  "offset": 0
                 }
               }
             }
@@ -13645,6 +13925,146 @@
         "parameters": []
       }
     },
+    "/companies/{companyId}": {
+      "delete": {
+        "summary": "Delete Company",
+        "description": "Deletes a lemlist company. Refuses by default when contacts are still attached — pass `force=true` to detach them (the `companyId` field is unset on each contact) before deleting the company.\n\n**No CRM-side propagation:** only the lemlist record is removed. Designed for the contact-to-company remapping workflow: after reassigning the contacts of a duplicate company to the canonical one (via `POST /contacts/{idOrEmail}`), call this endpoint to drop the now-empty duplicate.",
+        "tags": [
+          "Companies"
+        ],
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "description": "The lemlist company ID to delete.",
+            "example": "cpn_A1B2C3D4E5F6G7H8I",
+            "schema": {
+              "type": "string",
+              "pattern": "^cpn_[a-zA-Z0-9]+$"
+            }
+          },
+          {
+            "name": "force",
+            "in": "query",
+            "required": false,
+            "description": "When `true`, detaches contacts attached to this company (unsets their `companyId`) before deleting it. When omitted or `false`, the request fails with `400 COMPANY_HAS_CONTACTS` if any contact is still attached.",
+            "example": "true",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Company deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "deletedCompanyId": {
+                      "type": "string",
+                      "description": "ID of the deleted lemlist company."
+                    },
+                    "unlinkedContacts": {
+                      "type": "integer",
+                      "description": "Number of contacts whose `companyId` was unset before deletion. Only present when `force=true`."
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "deletedCompanyId"
+                  ]
+                },
+                "examples": {
+                  "no contacts attached": {
+                    "value": {
+                      "success": true,
+                      "deletedCompanyId": "cpn_A1B2C3D4E5F6G7H8I"
+                    }
+                  },
+                  "force=true with attached contacts": {
+                    "value": {
+                      "success": true,
+                      "deletedCompanyId": "cpn_A1B2C3D4E5F6G7H8I",
+                      "unlinkedContacts": 3
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request. Possible error codes: `INVALID_COMPANY_ID` (malformed ID), `COMPANY_HAS_CONTACTS` (contacts still attached and `force` not set).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "contactCount": {
+                          "type": "integer",
+                          "description": "Only on `COMPANY_HAS_CONTACTS` — how many contacts are still attached."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "COMPANY_HAS_CONTACTS",
+                    "message": "Company still has contacts attached. Pass ?force=true to detach them before deletion. (3 contacts attached)",
+                    "contactCount": 3
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect.",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "Company not found (`COMPANY_NOT_FOUND_BY_ID`).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "COMPANY_NOT_FOUND_BY_ID",
+                    "message": "Company not found by ID"
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed."
+          }
+        }
+      }
+    },
     "/companies/{companyId}/notes": {
       "parameters": [
         {
@@ -13942,6 +14362,46 @@
             "required": false,
             "description": "Filter by lead ID",
             "example": "lea_123",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "minDate",
+            "in": "query",
+            "required": false,
+            "description": "Filter activities by `createdAt >= minDate`. Accepts either a Unix timestamp in seconds (e.g. `1715385600`) or an ISO 8601 datetime (e.g. `2026-05-11T00:00:00Z`). `minDate` is the primary name; `startDate` is accepted as an alias and `minDate` takes precedence when both are provided.",
+            "example": "2026-05-01T00:00:00Z",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "maxDate",
+            "in": "query",
+            "required": false,
+            "description": "Filter activities by `createdAt <= maxDate`. Accepts either a Unix timestamp in seconds (e.g. `1715385600`) or an ISO 8601 datetime (e.g. `2026-05-11T00:00:00Z`). Must be strictly greater than `minDate` when both are provided. `maxDate` is the primary name; `endDate` is accepted as an alias and `maxDate` takes precedence when both are provided.",
+            "example": "2026-05-31T23:59:59Z",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": false,
+            "description": "Alias for `minDate`, provided for consistency with sibling endpoints (e.g. `/campaigns/{campaignId}/stats`). Accepts either a Unix timestamp in seconds or an ISO 8601 datetime. Ignored when `minDate` is also provided.",
+            "example": "2026-05-01T00:00:00Z",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": false,
+            "description": "Alias for `maxDate`, provided for consistency with sibling endpoints (e.g. `/campaigns/{campaignId}/stats`). Accepts either a Unix timestamp in seconds or an ISO 8601 datetime. Ignored when `maxDate` is also provided.",
+            "example": "2026-05-31T23:59:59Z",
             "schema": {
               "type": "string"
             }
@@ -16438,7 +16898,7 @@
             "in": "query",
             "required": false,
             "description": "Email address",
-            "example": "john.doe@fake.com",
+            "example": "john@example.com",
             "schema": {
               "type": "string"
             }
@@ -16478,7 +16938,7 @@
             "in": "query",
             "required": false,
             "description": "Company domain",
-            "example": "fakecompany.com",
+            "example": "example.com",
             "schema": {
               "type": "string"
             }
@@ -16488,7 +16948,17 @@
             "in": "query",
             "required": false,
             "description": "Company name",
-            "example": "Fake company",
+            "example": "Acme Inc",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobTitle",
+            "in": "query",
+            "required": false,
+            "description": "Job title of the person. Optional hint that improves the find rate when matching the right person.",
+            "example": "Marketing Manager",
             "schema": {
               "type": "string"
             }
@@ -16615,6 +17085,11 @@
                           "type": "string",
                           "description": "The last name of the person",
                           "example": "Doe"
+                        },
+                        "jobTitle": {
+                          "type": "string",
+                          "description": "The job title of the person. Optional hint that improves the find rate when matching the right person.",
+                          "example": "Marketing Manager"
                         }
                       }
                     },
@@ -16739,7 +17214,8 @@
                         "companyName": "Example Company",
                         "companyDomain": "example.com",
                         "firstName": "John",
-                        "lastName": "Doe"
+                        "lastName": "Doe",
+                        "jobTitle": "Marketing Manager"
                       },
                       "enrichmentRequests": [
                         "find_email",
@@ -17043,6 +17519,16 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "force",
+            "in": "query",
+            "required": false,
+            "description": "Re-run an enrichment that would otherwise be skipped. Bypasses skips caused by data already present on the contact: existing email, existing phone, LinkedIn enrichment already done for the same `linkedinUrl` / `linkedinUrlSalesNav`, or email already having a deliverability status.\n\nDoes **not** bypass:\n- **Enrichment currently in progress** — if another enrichment is already running for this contact, the request is still skipped (no parallel enrichments, no double billing).\n- **Previously returned not-found** — for `findEmail` and `findPhone`, if a prior enrichment with the same inputs (`linkedinUrl`, `linkedinUrlSalesNav`, first / last name, company name / domain / LinkedIn URL) already returned not-found, the request is still skipped. Changing any of those inputs on the lead lifts the block without needing `force`.",
+            "example": "true",
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -17077,24 +17563,71 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Lead not found",
+            "description": "Lead or contact not found",
             "content": {
-              "text/plain": {
-                "example": "Lead not found"
+              "application/json": {
+                "examples": {
+                  "leadNotFound": {
+                    "summary": "Lead does not exist",
+                    "value": {
+                      "error": "Lead not found",
+                      "code": "LEAD_NOT_FOUND"
+                    }
+                  },
+                  "contactNotFound": {
+                    "summary": "Lead exists but its underlying contact is missing",
+                    "value": {
+                      "error": "Contact not found for this lead",
+                      "code": "CONTACT_NOT_FOUND"
+                    }
+                  }
+                }
               }
             }
           },
           "405": {
             "description": "Method not allowed"
+          },
+          "409": {
+            "description": "Enrichment cannot proceed because of the current state of the lead/contact",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "alreadyEnriched": {
+                    "summary": "Contact already has the requested data — retry with ?force=true to override",
+                    "value": {
+                      "error": "Enrichment skipped: contact already has the requested data or was recently enriched",
+                      "code": "ALREADY_ENRICHED"
+                    }
+                  },
+                  "inProgress": {
+                    "summary": "An enrichment is already running for this lead — wait for it to complete",
+                    "value": {
+                      "error": "lead is already being enriched"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Enrichment failed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Failed to enrich lead"
+                }
+              }
+            }
           }
         }
       }
     },
     "/watchlist/signals": {
       "get": {
-        "summary": "Get Watchlist Signals",
+        "summary": "Get Signal Agent signals",
         "tags": [
-          "Watchlist"
+          "Signal Agents"
         ],
         "parameters": [
           {
@@ -17225,7 +17758,7 @@
             "name": "watchListId",
             "in": "query",
             "required": false,
-            "description": "Filter signals by specific watchlist ID",
+            "description": "Filter signals by specific Signal Agent ID",
             "example": "wl_abc123",
             "schema": {
               "type": "string",

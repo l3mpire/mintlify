@@ -15,6 +15,11 @@ All fields are optional except `id`:
 - **Details**: Modify `title` or `message` content
 - **Priority**: Set priority level (0=low, 1=medium, 2=high, ""=none)
 - **Status**: Mark as complete with `done: true`
+- **LinkedIn media** (LinkedIn tasks only): Replace attached files via `images` and `videos`. Pass an empty array to clear them. See the [LinkedIn task attachments](/api-reference/endpoints/tasks/create-task#linkedin-task-attachments) section on Create Task for size, MIME, and count limits
+
+<Note>
+Passing `images` or `videos` to a non-LinkedIn task returns `400` with `LINKEDIN_MEDIA_INVALID_TYPE`.
+</Note>
 
 Examples:
 
@@ -31,6 +36,16 @@ Examples:
     "id": "opp_abc123",
     "assignedTo": "usr_xyz789",
     "dueDate": "2025-03-15T10:00:00.000Z"
+}
+```
+
+```json attach LinkedIn media
+{
+    "id": "opp_abc123",
+    "images": [
+        "https://example.com/assets/overview.png"
+    ],
+    "videos": []
 }
 ```
 </CodeGroup>

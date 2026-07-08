@@ -8,6 +8,22 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 This endpoint retrieves the history of all campaign activities and steps performed.
 
+## Filtering by date
+
+Activities can be filtered on their `createdAt` field using either of two
+naming conventions:
+
+- `minDate` / `maxDate` (primary)
+- `startDate` / `endDate` (aliases, kept consistent with sibling endpoints
+  such as `/campaigns/{campaignId}/stats`)
+
+Both pairs accept either a Unix timestamp in seconds (e.g. `1715385600`) or
+an ISO 8601 datetime (e.g. `2026-05-11T00:00:00Z`).
+
+When both names are provided, the primary one wins: `minDate` takes
+precedence over `startDate`, and `maxDate` over `endDate`. `maxDate` must
+be strictly greater than `minDate` when both are set.
+
 ## Response
 
 The response can include `sequenceStep` and `totalSequenceStep` fields, which are zero-indexed (starting at 0).

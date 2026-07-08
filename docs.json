@@ -189,6 +189,7 @@
                   "api-reference/endpoints/leads/unsubscribe-lead-from-campaign",
                   "api-reference/endpoints/leads/pause-lead",
                   "api-reference/endpoints/leads/resume-paused-lead",
+                  "api-reference/endpoints/leads/launch-lead",
                   "api-reference/endpoints/leads/mark-lead-as-interested",
                   "api-reference/endpoints/leads/mark-lead-as-not-interested",
                   "api-reference/endpoints/leads/mark-lead-as-interested-in-campaign",
@@ -203,6 +204,7 @@
                 "pages": [
                   "api-reference/endpoints/companies/upsert-company",
                   "api-reference/endpoints/companies/get-many-companies",
+                  "api-reference/endpoints/companies/delete-company",
                   "api-reference/endpoints/companies/create-company-note",
                   "api-reference/endpoints/companies/get-company-notes"
                 ]
@@ -216,7 +218,7 @@
                   "api-reference/endpoints/contacts/get-many-contacts",
                   "api-reference/endpoints/contacts/get-contact-lists",
                   "api-reference/endpoints/contacts/create-contact-list",
-                  "api-reference/endpoints/contacts/add-contacts-to-list",
+                  "api-reference/endpoints/contacts/manage-contact-list-entities",
                   "api-reference/endpoints/contacts/export-contact-list"
                 ]
               },
@@ -318,9 +320,7 @@
                 "pages": [
                   "api-reference/endpoints/people-database/search-people-database",
                   "api-reference/endpoints/people-database/search-companies-database",
-                  "api-reference/endpoints/people-database/get-database-filters",
-                  "api-reference/endpoints/people-database/get-people-schema",
-                  "api-reference/endpoints/people-database/get-companies-schema"
+                  "api-reference/endpoints/people-database/get-database-filters"
                 ]
               },
               {
@@ -353,7 +353,7 @@
                 ]
               },
               {
-                "group": "Watch list / signals",
+                "group": "Signal Agents",
                 "expanded": false,
                 "pages": ["api-reference/endpoints/watch-list/get-signals"]
               },

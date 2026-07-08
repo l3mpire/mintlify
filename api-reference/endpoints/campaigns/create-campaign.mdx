@@ -10,4 +10,6 @@ When you create a new campaign, an empty sequence and default schedule are autom
 
 You can optionally set a `timezone` (IANA format, e.g. `America/New_York`) to control the campaign schedule's timezone. If omitted, it defaults to `Europe/Paris`.
 
+Set `autoReview` to `true` to automatically launch leads as soon as they are added to the campaign, skipping manual review. Use `autoReviewConditions` to restrict auto-launch to leads whose email verification matches one of the given deliverability statuses (`deliverable`, `risky`, `undeliverable`, `unverified`). Passing an invalid status returns a `400` error.
+
 The returned data includes the campaign, sequence, and schedule IDs, which you can use later to update campaign settings, add sequence steps, or modify the schedule.
