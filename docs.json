@@ -344,6 +344,15 @@
                 ]
               },
               {
+                "group": "Self-recovery",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/self-recovery/get-config",
+                  "api-reference/endpoints/self-recovery/update-config",
+                  "api-reference/endpoints/self-recovery/get-history"
+                ]
+              },
+              {
                 "group": "Watch list / signals",
                 "expanded": false,
                 "pages": ["api-reference/endpoints/watch-list/get-signals"]
@@ -370,6 +379,8 @@
               "api-reference/objects-definitions/inbox-conversation",
               "api-reference/objects-definitions/inbox-message",
               "api-reference/objects-definitions/contact",
+              "api-reference/objects-definitions/self-recovery-config",
+              "api-reference/objects-definitions/self-recovery-case",
               {
                 "group": "People Database",
                 "expanded": false,

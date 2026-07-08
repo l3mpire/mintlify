@@ -1,0 +1,8 @@
+---
+title: Self-recovery config
+openapi-schema: SelfRecoveryConfig
+---
+
+The account-level self-recovery configuration. When `enabled`, self-recovery watches the `monitoredSignals` on your mailboxes and, for the strategies listed in `authorizedActions`, automatically runs the matching recovery action when a degradation is diagnosed.
+
+Only `fixDns` and `recover` can appear in `authorizedActions`. `provision`, `replace` and `listHygiene` are diagnosis-only and are never executed automatically.
