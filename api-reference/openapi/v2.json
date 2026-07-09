@@ -11814,7 +11814,7 @@
             "name": "fieldRejectionReason",
             "in": "query",
             "required": false,
-            "description": "Filter contacts to those carrying a field rejection with this reason — a value lemlist refused to write, prefixed by its origin (`enrichment_*` while enriching, `crm_sync_*` during CRM sync). Returns an empty list (`total: 0`) when no contact matches. Each returned contact exposes the full detail under `fieldRejections[]` (which field, why, and `conflictingContactId` for duplicates).\n\n**Contact-only reasons:** `enrichment_duplicate_linkedin_url`, `enrichment_duplicate_email`, `crm_sync_invalid_phone`, `crm_sync_duplicate_contact_blocked`, `crm_sync_duplicate_company_blocked`, `crm_sync_company_not_in_lemlist`, `crm_sync_custom_field_creation_failed`.\n\n**Shared with companies:** `crm_sync_duplicate_linkedin_url`, `crm_sync_invalid_linkedin_url`, `crm_sync_value_oscillating`, `crm_sync_owner_sync_loop`, `crm_sync_unmapped_user`, `crm_sync_value_incompatible`, `crm_sync_unknown_error`.",
+            "description": "Filter contacts to those carrying a field rejection with this reason — a value lemlist refused to write, prefixed by its origin (`enrichment_*` while enriching, `crm_sync_*` during CRM sync). Returns an empty list (`total: 0`) when no contact matches. Each returned contact exposes the full detail under `fieldRejections[]` (which field, why, and `conflictingContactId` for duplicates).",
             "example": "enrichment_duplicate_linkedin_url",
             "schema": {
               "type": "string",
@@ -13230,7 +13230,7 @@
             "name": "fieldRejectionReason",
             "in": "query",
             "required": false,
-            "description": "Filter companies to those carrying a field rejection with this reason — a value lemlist refused to write, raised during CRM sync (`crm_sync_*`). Returns an empty list (`total: 0`) when no company matches. Each returned company exposes the full detail under `fieldRejections[]` (which field, why, and `conflictingContactId` for duplicates). Independent of `crmSyncStatus` (which keys off the live provider errors); this filter reads the stored field rejections.\n\n**Company-only reasons:** `crm_sync_duplicate_company`, `crm_sync_invalid_domain`, `crm_sync_company_not_found`, `crm_sync_update_failed`.\n\n**Shared with contacts:** `crm_sync_duplicate_linkedin_url`, `crm_sync_invalid_linkedin_url`, `crm_sync_value_oscillating`, `crm_sync_owner_sync_loop`, `crm_sync_unmapped_user`, `crm_sync_value_incompatible`, `crm_sync_unknown_error`.",
+            "description": "Filter companies to those carrying a field rejection with this reason — a value lemlist refused to write, raised during CRM sync (`crm_sync_*`). Returns an empty list (`total: 0`) when no company matches. Each returned company exposes the full detail under `fieldRejections[]` (which field, why, and `conflictingContactId` for duplicates). Independent of `crmSyncStatus` (which keys off the live provider errors); this filter reads the stored field rejections.",
             "example": "crm_sync_duplicate_company",
             "schema": {
               "type": "string",
