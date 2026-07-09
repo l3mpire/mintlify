@@ -11814,7 +11814,7 @@
             "name": "fieldRejectionReason",
             "in": "query",
             "required": false,
-            "description": "Filter contacts to those carrying a field rejection with this reason — a value lemlist refused to write, prefixed by its origin (`enrichment_*` while enriching, `crm_sync_*` during CRM sync). Returns an empty list (`total: 0`) when no contact matches. Each returned contact exposes the full detail under `fieldRejections[]` (which field, why, and `conflictingRecordId` for duplicates).",
+            "description": "Filter contacts to those carrying a field rejection with this reason — a value lemlist refused to write, prefixed by its origin (`enrichment_*` while enriching, `crm_sync_*` during CRM sync). Returns an empty list (`total: 0`) when no contact matches. Each returned contact exposes the full detail under `fieldRejections[]` (which field, why, and `conflictingRecordId` for duplicates). Only applies to the paginated list — ignored when `idsOrEmails` is provided (that path returns the exact contacts requested, unfiltered).",
             "example": "enrichment_duplicate_linkedin_url",
             "schema": {
               "type": "string",
@@ -13230,7 +13230,7 @@
             "name": "fieldRejectionReason",
             "in": "query",
             "required": false,
-            "description": "Filter companies to those carrying a field rejection with this reason — a value lemlist refused to write, raised during CRM sync (`crm_sync_*`). Returns an empty list (`total: 0`) when no company matches. Each returned company exposes the full detail under `fieldRejections[]` (which field, why, and `conflictingRecordId` for duplicates). Independent of `crmSyncStatus` (which keys off the live provider errors); this filter reads the stored field rejections.",
+            "description": "Filter companies to those carrying a field rejection with this reason — a value lemlist refused to write, raised during CRM sync (`crm_sync_*`). Returns an empty list (`total: 0`) when no company matches. Each returned company exposes the full detail under `fieldRejections[]` (which field, why, and `conflictingRecordId` for duplicates). Independent of `crmSyncStatus` (which keys off the live provider errors); this filter reads the stored field rejections. Only applies to the paginated list — ignored when `idsOrDomains` is provided (that path returns the exact companies requested, unfiltered).",
             "example": "crm_sync_duplicate_company",
             "schema": {
               "type": "string",
