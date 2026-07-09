@@ -5,3 +5,16 @@ description: Retrieves all messages exchanged with a specific contact.
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Inbox/Contact Message" objectPath="inbox-message" />
+
+## Campaign-originated messages
+
+A message sent by a campaign carries the step it came from: `stepId`, the stable
+identifier of that step, alongside the `sequenceId`, the 0-based `sequenceStep`
+position, and `totalSequenceStep`. Prefer `stepId` when you store a reference —
+`sequenceStep` shifts when a sequence's steps are reordered.
+
+<Note>
+  `stepId` is present on every message recorded from now on; older messages gain
+  it progressively as historical records are backfilled. `sequenceStep` is
+  unchanged and keeps being returned.
+</Note>

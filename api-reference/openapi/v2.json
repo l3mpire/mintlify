@@ -435,7 +435,15 @@
           },
           "stepId": {
             "type": "string",
-            "description": "Step ID"
+            "description": "Stable identifier of the sequence step that produced this activity. Present on every activity created from now on; older activities gain it progressively as historical records are backfilled, so treat it as optional when reading history."
+          },
+          "sequenceStep": {
+            "type": "number",
+            "description": "0-based position of the step within the sequence. Still emitted on every activity, unchanged. Prefer `stepId` for a reference that survives steps being reordered."
+          },
+          "totalSequenceStep": {
+            "type": "number",
+            "description": "0-based count of the sequence steps already delivered to this lead."
           },
           "createdAt": {
             "type": "string",
