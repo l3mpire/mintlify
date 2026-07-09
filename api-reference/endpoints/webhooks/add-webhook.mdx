@@ -190,11 +190,20 @@ Each event is delivered as a `POST` to your `targetUrl` with a JSON body that mi
 | `campaignName` | string | Campaign display name |
 | `sequenceId` | string | Sequence the task belonged to |
 | `sequenceStep` | number | 0-based step index in the sequence |
+| `stepId` | string | Stable identifier of the step (survives a reorder — see note below) |
 | `leadId` | string | Lead targeted by the activity |
 | `leadEmail`, `leadFirstName`, `leadLastName` | string | Denormalized lead identity |
 | `sendUserId`, `sendUserEmail`, `sendUserName` | string | Sender (lemlist user) identity |
 | `subject` | string | Email subject (email events only) |
 | `secret` | string | Echoed back if a `secret` was set on the webhook |
+
+<Note>
+  `stepId` identifies the step itself, while `sequenceStep` is a position that
+  shifts when a sequence's steps are reordered — prefer `stepId` when you store a
+  reference. Both are sent: `sequenceStep` is unchanged. `stepId` is present on
+  every activity created from now on, and older activities gain it progressively
+  as historical records are backfilled.
+</Note>
 
 ### Email recipients (`to` / `cc` / `bcc`)
 
