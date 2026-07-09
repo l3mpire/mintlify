@@ -247,6 +247,10 @@
             "type": "string",
             "description": "Campaign name"
           },
+          "emoji": {
+            "type": "string",
+            "description": "Emoji shown next to the campaign name"
+          },
           "labels": {
             "type": "array",
             "description": "Categorization labels",
@@ -285,6 +289,10 @@
             "items": {
               "type": "string"
             }
+          },
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone the campaign schedule runs in (e.g. \"Europe/Paris\")"
           },
           "teamId": {
             "type": "string",
@@ -2814,6 +2822,8 @@
                   {
                     "_id": "cam_4HrZbi8xsez4QlrnL",
                     "name": "Product Launch Campaign",
+                    "emoji": "🚀",
+                    "timezone": "Europe/Paris",
                     "labels": [],
                     "createdAt": "2025-02-20T14:45:54.230Z",
                     "createdBy": "usr_zdTCrNFyXblc4mrYK",
