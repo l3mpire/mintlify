@@ -12357,7 +12357,7 @@
       ],
       "delete": {
         "summary": "Delete Contact",
-        "description": "Deletes a lemlist contact resolved by its id (`ctc_xxx`) or email. Cascades to the contact's leads, opportunities, list associations, inbox conversations and activities. **No CRM-side propagation** — only the lemlist record is removed. Fails with `409 CONTACT_DELETE_IN_PROGRESS` when an enrichment is still running on the contact (retry once it finishes).",
+        "description": "Deletes a lemlist contact resolved by its id (`ctc_xxx`) or email. Cascades to the contact's leads, opportunities, list associations, inbox conversations and activities. **No CRM-side propagation** — only the lemlist record is removed. Fails with `409 CONTACT_DELETE_BLOCKED` when the contact cannot be deleted right now — for example while an enrichment is still running (retry once it finishes); the response `error.message` states the specific reason.",
         "tags": [
           "Contacts"
         ],
@@ -12412,14 +12412,14 @@
             }
           },
           "409": {
-            "description": "The contact cannot be deleted right now because an enrichment is in progress (`CONTACT_DELETE_IN_PROGRESS`). Retry once it finishes.",
+            "description": "The contact cannot be deleted right now (`CONTACT_DELETE_BLOCKED`) — for example while an enrichment is in progress. The `error.message` states the specific reason; retry once it clears.",
             "content": {
               "application/json": {
                 "example": {
                   "success": false,
                   "error": {
-                    "code": "CONTACT_DELETE_IN_PROGRESS",
-                    "message": "Contact cannot be deleted while an enrichment is in progress"
+                    "code": "CONTACT_DELETE_BLOCKED",
+                    "message": "Contact cannot be removed if an enrichment is in progress"
                   }
                 }
               }

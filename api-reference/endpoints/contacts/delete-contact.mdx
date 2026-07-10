@@ -7,7 +7,7 @@ Removes a lemlist contact resolved by its id (`ctc_xxx`) or email. Only the leml
 
 Deletion cascades: the contact's leads, opportunities, contact-list associations, inbox conversations and activities are removed alongside it.
 
-The request fails with `409 CONTACT_DELETE_IN_PROGRESS` when an enrichment is still running on the contact — retry once it finishes. A missing contact returns `404 CONTACT_NOT_FOUND`.
+The request fails with `409 CONTACT_DELETE_BLOCKED` when the contact cannot be deleted right now — for example while an enrichment is still running on it (retry once it finishes); the response `error.message` states the specific reason. A missing contact returns `404 CONTACT_NOT_FOUND`.
 
 <Warning>
 There is no soft-delete or undo. Once deleted, the contact and its associated leads, opportunities, list memberships, inbox conversations and activities are gone.
