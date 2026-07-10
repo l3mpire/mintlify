@@ -632,6 +632,37 @@
           }
         }
       },
+      "FieldRejection": {
+        "type": "object",
+        "description": "A value lemlist refused to write on a Contact or Company, with the reason why. Surfaced under `fieldRejections[]` on those objects; filter a list endpoint to only flagged records via the `fieldRejectionReason` query param.",
+        "properties": {
+          "field": {
+            "type": "string",
+            "description": "The record field the rejected value targeted (e.g. `emails`, `linkedinUrl`, `domain`)."
+          },
+          "reason": {
+            "type": "string",
+            "description": "Why the value was rejected, prefixed by its origin — `enrichment_*` (raised while enriching) or `crm_sync_*` (raised during CRM sync). Same values accepted by the `fieldRejectionReason` query param."
+          },
+          "source": {
+            "type": "string",
+            "description": "Where the rejection came from — an enrichment source (`lemrich`) or a CRM provider (`hubspot`, `salesforce`, `pipedrive`)."
+          },
+          "conflictingRecordId": {
+            "type": "string",
+            "description": "For duplicate reasons, the id of the record that already holds the value — use it to merge or remap before resolving the duplicate. Omitted for non-duplicate reasons."
+          },
+          "rejectedValue": {
+            "type": "string",
+            "description": "The value that was refused."
+          },
+          "rejectedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the rejection was recorded."
+          }
+        }
+      },
       "Contact": {
         "type": "object",
         "description": "A contact record in your CRM. Not to be confused with a lead which is a contact specifically added to a campaign.",
@@ -695,6 +726,13 @@
           "unsubscribed": {
             "type": "boolean",
             "description": "Whether the contact is globally unsubscribed. When true, no outreach will be sent to this contact."
+          },
+          "fieldRejections": {
+            "type": "array",
+            "description": "Values lemlist refused to write on this contact, each with its reason. Empty when none. Filter the list endpoint to only flagged contacts via `GET /contacts?fieldRejectionReason=...`.",
+            "items": {
+              "$ref": "#/components/schemas/FieldRejection"
+            }
           }
         }
       },
@@ -743,6 +781,13 @@
             "type": "string",
             "format": "date-time",
             "description": "Creation timestamp"
+          },
+          "fieldRejections": {
+            "type": "array",
+            "description": "Values lemlist refused to write on this company, each with its reason. Empty when none. Filter the list endpoint to only flagged companies via `GET /companies?fieldRejectionReason=...`.",
+            "items": {
+              "$ref": "#/components/schemas/FieldRejection"
+            }
           },
           "crmSync": {
             "type": "object",
@@ -11685,7 +11730,7 @@
             "name": "idsOrEmails",
             "in": "query",
             "required": false,
-            "description": "A comma separated string of either valid contact IDs (MongoDB ObjectId) or valid email addresses. Optional — when omitted, returns the paginated list of all contacts of the team.",
+            "description": "A comma separated string of either valid contact IDs (MongoDB ObjectId) or valid email addresses. Optional — when omitted, returns the paginated list of all contacts of the team. Maximum 100 values.",
             "example": "ctc_xW8Ou6C03Csv8vatp,riley@example.com",
             "schema": {
               "type": "string"
@@ -11771,6 +11816,32 @@
             "example": "https://www.linkedin.com/sales/company/12345678",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "fieldRejectionReason",
+            "in": "query",
+            "required": false,
+            "description": "Filter contacts to those carrying a field rejection with this reason — a value lemlist refused to write, prefixed by its origin (`enrichment_*` while enriching, `crm_sync_*` during CRM sync). Returns an empty list (`total: 0`) when no contact matches. Each returned contact exposes the full detail under `fieldRejections[]` (which field, why, and `conflictingRecordId` for duplicates). Only applies to the paginated list — ignored when `idsOrEmails` is provided (that path returns the exact contacts requested, unfiltered).",
+            "example": "enrichment_duplicate_linkedin_url",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "enrichment_duplicate_linkedin_url",
+                "enrichment_duplicate_email",
+                "crm_sync_duplicate_linkedin_url",
+                "crm_sync_invalid_linkedin_url",
+                "crm_sync_invalid_phone",
+                "crm_sync_duplicate_contact_blocked",
+                "crm_sync_duplicate_company_blocked",
+                "crm_sync_company_not_in_lemlist",
+                "crm_sync_custom_field_creation_failed",
+                "crm_sync_value_oscillating",
+                "crm_sync_owner_sync_loop",
+                "crm_sync_unmapped_user",
+                "crm_sync_value_incompatible",
+                "crm_sync_unknown_error"
+              ]
             }
           },
           {
@@ -12292,6 +12363,81 @@
           }
         }
       ],
+      "delete": {
+        "summary": "Delete Contact",
+        "description": "Deletes a lemlist contact resolved by its id (`ctc_xxx`) or email. Cascades to the contact's leads, opportunities, list associations, inbox conversations and activities. **No CRM-side propagation** — only the lemlist record is removed. Fails with `409 CONTACT_DELETE_BLOCKED` when the contact cannot be deleted right now — for example while an enrichment is still running (retry once it finishes); the response `error.message` states the specific reason.",
+        "tags": [
+          "Contacts"
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "deletedContactId": {
+                      "type": "string",
+                      "description": "ID of the deleted lemlist contact."
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "deletedContactId"
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "deletedContactId": "ctc_xW8Ou6C03Csv8vatp"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect.",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "Contact not found (`CONTACT_NOT_FOUND`).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "CONTACT_NOT_FOUND",
+                    "message": "No contact found with the provided id or email"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The contact cannot be deleted right now (`CONTACT_DELETE_BLOCKED`) — for example while an enrichment is in progress. The `error.message` states the specific reason; retry once it clears.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "CONTACT_DELETE_BLOCKED",
+                    "message": "Contact cannot be removed if an enrichment is in progress"
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed."
+          }
+        }
+      },
       "get": {
         "summary": "Get Contact",
         "tags": [
@@ -13085,6 +13231,29 @@
                 "required_field_missing",
                 "company_already_exists_with_name",
                 "company_already_exists_with_linkedin_url"
+              ]
+            }
+          },
+          {
+            "name": "fieldRejectionReason",
+            "in": "query",
+            "required": false,
+            "description": "Filter companies to those carrying a field rejection with this reason — a value lemlist refused to write, raised during CRM sync (`crm_sync_*`). Returns an empty list (`total: 0`) when no company matches. Each returned company exposes the full detail under `fieldRejections[]` (which field, why, and `conflictingRecordId` for duplicates). Independent of `crmSyncStatus` (which keys off the live provider errors); this filter reads the stored field rejections. Only applies to the paginated list — ignored when `idsOrDomains` is provided (that path returns the exact companies requested, unfiltered).",
+            "example": "crm_sync_duplicate_company",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "crm_sync_duplicate_company",
+                "crm_sync_invalid_domain",
+                "crm_sync_company_not_found",
+                "crm_sync_update_failed",
+                "crm_sync_duplicate_linkedin_url",
+                "crm_sync_invalid_linkedin_url",
+                "crm_sync_value_oscillating",
+                "crm_sync_owner_sync_loop",
+                "crm_sync_unmapped_user",
+                "crm_sync_value_incompatible",
+                "crm_sync_unknown_error"
               ]
             }
           }

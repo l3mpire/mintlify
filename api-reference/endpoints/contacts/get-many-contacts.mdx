@@ -1,6 +1,6 @@
 ---
 openapi: get /contacts
-description: Retrieves contacts by IDs/emails, or searches by name, email, contact list, or campaign membership.
+description: Retrieves contacts from your CRM. Use `idsOrEmails` to fetch specific contacts by ID or email in a single request (max 100), or omit it to search/list contacts by name, email, contact list, or campaign membership.
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
