@@ -87,6 +87,7 @@
             "pages": [
               "api-reference/getting-started/overview",
               "api-reference/getting-started/authentication",
+              "api-reference/getting-started/multiple-accounts",
               "api-reference/getting-started/rate-limits"
             ]
           },

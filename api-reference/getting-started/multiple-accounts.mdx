@@ -1,0 +1,90 @@
+---
+title: 'Managing multiple accounts'
+description: 'Operate several lemlist accounts from a single integration — the agency setup.'
+---
+import SnippetFeedback from '/snippets/snippet-feedback.mdx';
+
+Agencies and power users often run many lemlist accounts at once. You do not
+need a separate tool for that: every request is already scoped to one account,
+and you pick the account simply by choosing which credential you send.
+
+## One key, one account
+
+A lemlist API key (or OAuth token) resolves to exactly **one** account. There is
+no `account` parameter and no separate login step — the credential *is* the
+account selector.
+
+To work across several accounts, generate **one API key per account** (each
+account owner creates their own key, see [Authentication](/api-reference/getting-started/authentication))
+and store them together. Switching account then means switching the key you
+send.
+
+<Note>
+Keep each key as securely as a password, and never mix them up between clients.
+</Note>
+
+## Switching account over the REST API
+
+Authentication is [HTTP Basic](/api-reference/getting-started/authentication)
+with an empty username and the API key as the password. Switching account is
+just switching the key:
+
+<CodeGroup>
+```bash Client X
+curl --location 'https://api.lemlist.com/api/campaigns' \
+  --user ":$CLIENT_X_API_KEY"
+```
+
+```bash Client Y
+curl --location 'https://api.lemlist.com/api/campaigns' \
+  --user ":$CLIENT_Y_API_KEY"
+```
+</CodeGroup>
+
+`curl --user ":$KEY"` builds the `:APIKey` string and Base64-encodes it into the
+`Authorization: Basic …` header for you.
+
+## Switching account over the MCP server
+
+The [MCP server](/mcp/setup) works the same way, and supports both
+authentication modes:
+
+- **API key** — send that account's key in the `X-API-Key` header. One key, one
+  account.
+- **OAuth** — the consent screen asks you to pick a team, so each connection is
+  bound to a single account. To manage several, add **one connector per
+  account** (name them `lemlist-client-x`, `lemlist-client-y`, …).
+
+## Looping over all your accounts
+
+Because the account is just the key, iterating over every client is a plain
+loop:
+
+```bash
+declare -A KEYS=(
+  [client-x]="$CLIENT_X_API_KEY"
+  [client-y]="$CLIENT_Y_API_KEY"
+  [client-z]="$CLIENT_Z_API_KEY"
+)
+
+for client in "${!KEYS[@]}"; do
+  curl --silent --location 'https://api.lemlist.com/api/campaigns' \
+    --user ":${KEYS[$client]}" > "sync/$client.json"
+done
+```
+
+## Is there a CLI?
+
+Not today. Everything above is already scriptable through the REST API and the
+MCP server, so a CLI is not required to build any of these workflows.
+
+What a dedicated CLI *would* add is ergonomics: a single command to store and
+switch between account profiles, built-in pagination and retries, and
+human-friendly output — instead of assembling the calls yourself. We think that
+is worth having, and a lemlist CLI is on our radar for a future addition.
+
+In the meantime, wrap these calls in your own script, or point an AI assistant
+(for example Claude with the [lemlist MCP server](/mcp/setup)) at these
+endpoints and let it drive them for you.
+
+<SnippetFeedback />
