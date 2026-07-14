@@ -73,18 +73,35 @@ for client in "${!KEYS[@]}"; do
 done
 ```
 
-## Is there a CLI?
+## The lemlist CLI
 
-Not today. Everything above is already scriptable through the REST API and the
-MCP server, so a CLI is not required to build any of these workflows.
+The [lemlist CLI](https://www.npmjs.com/package/@lemlist-official/cli) packages
+this whole page into one command, with named profiles per account:
 
-What a dedicated CLI *would* add is ergonomics: a single command to store and
-switch between account profiles, built-in pagination and retries, and
-human-friendly output — instead of assembling the calls yourself. We think that
-is worth having, and a lemlist CLI is on our radar for a future addition.
+```bash
+npm install -g @lemlist-official/cli
 
-In the meantime, wrap these calls in your own script, or point an AI assistant
-(for example Claude with the [lemlist MCP server](/mcp/setup)) at these
-endpoints and let it drive them for you.
+lemlist auth login                # OAuth: opens the browser, no key to copy
+lemlist auth add client-x <key>   # or store an API key under a profile
+lemlist auth list                 # * marks the active profile
+```
+
+Switching account becomes explicit instead of key juggling:
+
+```bash
+lemlist auth use client-x                       # set the active account
+lemlist --account client-y api GET /campaigns   # one-off override
+LEMLIST_PROFILE=client-y lemlist api GET /campaigns
+```
+
+Every endpoint of this API is reachable through `lemlist api <METHOD> <path>`
+(plus named subcommands like `lemlist campaigns list` — run
+`lemlist endpoints` to discover the surface). Output is JSON on stdout with
+stable exit codes, so it pipes into `jq`, scripts and AI agents, and transient
+failures (`429`, `5xx`) are retried with exponential backoff honoring
+[rate limits](/api-reference/getting-started/rate-limits).
+
+OAuth tokens refresh automatically; profiles are stored in
+`~/.lemlist/config.json` (file mode `0600`).
 
 <SnippetFeedback />
