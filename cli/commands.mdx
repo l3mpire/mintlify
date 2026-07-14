@@ -1,0 +1,79 @@
+---
+title: 'CLI Commands'
+description: 'Call any endpoint with the generic api command, or use the named subcommands generated from the OpenAPI spec.'
+---
+import SnippetFeedback from '/snippets/snippet-feedback.mdx';
+
+The CLI exposes two ways to reach the API: a generic escape hatch that reaches
+**any** endpoint, and named subcommands for the common flows. Both are derived
+from the lemlist OpenAPI specification, so a new endpoint surfaces without a CLI
+release.
+
+## Discover the surface
+
+```bash
+lemlist endpoints            # list every endpoint from the live catalog
+lemlist endpoints --refresh  # force a re-fetch of the spec
+lemlist endpoints --json     # machine-readable array
+```
+
+The spec is fetched once and cached locally (one-hour TTL). On a brand-new
+machine, run `lemlist endpoints` once to populate the cache before the named
+subcommands appear.
+
+## Call any endpoint
+
+```bash
+lemlist api GET /campaigns
+lemlist api GET "/campaigns?limit=10"
+lemlist api POST /campaigns/cam_9fK3mQ8sT2vB7nL4x/export/leads --data '{"state":"all"}'
+```
+
+`lemlist api <method> <path>` accepts any endpoint the live spec declares —
+including endpoints added after your CLI version shipped. Query strings in the
+path are forwarded as query parameters; request bodies go through `--data` as
+JSON.
+
+<Note>
+A path absent from the spec is rejected with an `UNKNOWN_ENDPOINT` error
+(exit code `5`) and the closest matching endpoints as `suggestions`. Run
+`lemlist endpoints --refresh` if you expect a newly deployed endpoint.
+</Note>
+
+## Named subcommands
+
+Every endpoint is also exposed as a named subcommand, grouped by resource:
+
+```bash
+lemlist campaigns list
+lemlist campaigns get cam_9fK3mQ8sT2vB7nL4x
+lemlist leads add cam_9fK3mQ8sT2vB7nL4x --data '{"email":"jane@acme.com"}'
+```
+
+Run `lemlist --help` for the full list, and `lemlist <group> --help` for the
+actions of one group.
+
+- **Path parameters** become positional arguments.
+- **Query parameters** become `--<name>` flags.
+- **Request bodies** always go through `--data`.
+
+<Note>
+Group and action names are derived from the spec's tags and operation ids,
+with path heuristics as a fallback — so the examples above are illustrative,
+not guaranteed. Run `lemlist <group> --help` to see the exact names your
+version generated. Everything not covered by a named subcommand is still
+reachable through `lemlist api`.
+</Note>
+
+## Global flags
+
+These flags apply to every command:
+
+| Flag | Effect |
+| ---- | ------ |
+| `--account <name>` | Use profile `<name>` for this call |
+| `--key <key>` | Use a raw API key, bypassing profiles |
+| `--json` | Compact single-line JSON output (for pipes and agents) |
+| `--base-url <url>` | API base URL override (e.g. a staging environment) |
+
+<SnippetFeedback />

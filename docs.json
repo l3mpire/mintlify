@@ -432,6 +432,20 @@
         ]
       },
       {
+        "tab": "CLI",
+        "groups": [
+          {
+            "group": "CLI",
+            "pages": [
+              "cli/overview",
+              "cli/authentication",
+              "cli/commands",
+              "cli/output"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Guides",
         "groups": [
           {
