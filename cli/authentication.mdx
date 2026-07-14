@@ -1,0 +1,107 @@
+---
+title: 'CLI Authentication'
+description: 'Log in with OAuth or an API key, and manage several lemlist accounts as named profiles.'
+---
+import SnippetFeedback from '/snippets/snippet-feedback.mdx';
+
+The CLI stores credentials as **profiles**. A profile holds either an OAuth
+token set or an API key, and each one resolves to exactly
+[one lemlist account](/api-reference/getting-started/multiple-accounts).
+
+## Log in with OAuth (recommended)
+
+The simplest way in: log in with your browser. No key to copy.
+
+```bash
+lemlist auth login              # opens the browser, stores tokens
+lemlist auth login client-x     # same, under a named profile
+```
+
+The consent screen lets you pick the team for each login, so one profile is
+bound to one account. Tokens refresh automatically shortly before they expire;
+when the session fully expires, run `lemlist auth login` again.
+
+## Log in with an API key
+
+Get your API key from lemlist (**Settings → Team → Integrations → Generate**),
+then store it under a profile name:
+
+```bash
+lemlist auth add default <your-api-key>
+lemlist auth add client-x <your-api-key>
+```
+
+## Managing several accounts
+
+Store one profile per team, then switch between them.
+
+```bash
+lemlist auth login client-x       # OAuth: pick client X's team in the browser
+lemlist auth add client-y <key>   # or store an API key under a profile
+lemlist auth list                 # * marks the active profile
+lemlist auth use client-x         # set the active profile
+```
+
+Override the active profile for a single call, or through an environment
+variable:
+
+```bash
+lemlist --account client-y campaigns list
+LEMLIST_PROFILE=client-y lemlist campaigns list
+```
+
+## See the team behind each profile
+
+Profile names are yours to choose, so `auth list` alone doesn't tell you which
+lemlist team a credential actually points to. Add `--verbose` to resolve each
+profile against the API and show the team name, its id, and its member count:
+
+```bash
+lemlist auth list --verbose
+```
+
+```text
+  default        oauth           Acme Inc (tea_9fK3mQ8sT2vB7nL4x) · 12 members
+* client-x       key_1a2b3c4…    Example Corp (tea_7hG2pR5mV9wQ4bK1x) · 5 members
+  client-y       oauth           <Invalid API key. Check the active profile with: lemlist auth list>
+```
+
+Each profile is resolved independently: a profile whose credential has expired
+is reported inline (as above) without aborting the others. Add `--json` for a
+structured array — each entry carries `profile`, `active`, `credential`, and
+either a `team` object or an `error` string.
+
+<Note>
+`--verbose` makes one API call per profile (`GET /team`), so it needs network
+access — and for OAuth profiles it may silently refresh an expired token. Plain
+`lemlist auth list` stays fully offline.
+</Note>
+
+## How the credential is resolved
+
+For each call, the CLI resolves which credential to use in this order:
+
+1. The `--key <key>` flag — a raw API key that bypasses profiles entirely.
+2. The profile named by the `--account <name>` flag.
+3. The `LEMLIST_PROFILE` environment variable.
+4. The active profile set with `lemlist auth use`.
+5. The `default` profile.
+
+<Note>
+Profiles are stored in `~/.lemlist/config.json` with file mode `0600`. The
+file holds either an API key or an OAuth token set per profile — keep it as
+secure as a password.
+</Note>
+
+## Command reference
+
+| Command | Effect |
+| ------- | ------ |
+| `lemlist auth login [name]` | Log in through the browser (OAuth) and store tokens |
+| `lemlist auth add <name> <key>` | Store an API key under a profile name |
+| `lemlist auth list` | List stored profiles (`*` marks the active one) |
+| `lemlist auth list --verbose` | List profiles and resolve each one's team (name, id, member count) |
+| `lemlist auth use <name>` | Set the active profile |
+| `lemlist auth remove <name>` | Delete a profile |
+
+<SnippetFeedback />

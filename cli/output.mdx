@@ -1,0 +1,73 @@
+---
+title: 'Output & exit codes'
+description: 'JSON on stdout, a structured error object on stderr, and stable exit codes an agent can branch on.'
+---
+import SnippetFeedback from '/snippets/snippet-feedback.mdx';
+
+The CLI is built to be driven by scripts and AI agents, so its output contract
+is deterministic and machine-readable.
+
+## Output
+
+- **Success**: JSON on stdout — indented by default (readable), compact
+  single-line with `--json` (for pipes and `jq`).
+- **Failure**: a structured error object on stderr, shaped
+  `{ "error", "message", "status", "details" }`. HTTP errors carry an
+  actionable message for `400`, `401`, `403`, `404` and `429`.
+
+```bash
+lemlist --json campaigns list | jq '.[0].name'
+```
+
+<Note>
+`lemlist endpoints` prints a text table by default, and a JSON array under
+`--json`. A richer human-readable table for endpoint responses is a future
+refinement — today the default is indented JSON.
+</Note>
+
+## Exit codes
+
+Every run ends with an exit code that signals the failure class, so an agent
+or script can branch without parsing stderr:
+
+| Code | Meaning |
+| ---- | ------- |
+| `0` | Success |
+| `1` | Validation error (bad arguments or malformed `--data` JSON) |
+| `2` | Authentication error (missing or invalid credential) |
+| `3` | Rate limit |
+| `4` | Network error or timeout |
+| `5` | Not found (unknown endpoint or missing resource) |
+| `6` | Unknown error |
+
+## Automatic retries
+
+Transient failures — network errors, `5xx` responses and `429` rate limits —
+are retried automatically with exponential backoff (a `Retry-After` header is
+honored).
+
+<Warning>
+Retries are safe by design: a `429` means the server rejected the request, so
+it is always replayed. A `5xx` or a network drop may land **after** a write was
+processed, so only idempotent methods (`GET`, `PUT`, `DELETE`) are replayed in
+that case — a `POST` or `PATCH` is never retried on those failures, to avoid
+double-creating a resource.
+</Warning>
+
+## Unknown endpoints
+
+When a path is missing from the OpenAPI spec, `lemlist api` returns
+`UNKNOWN_ENDPOINT` (exit code `5`) with the closest matching endpoints:
+
+```json
+{
+  "error": "UNKNOWN_ENDPOINT",
+  "message": "No GET /campaign in the OpenAPI spec.",
+  "suggestions": ["GET /campaigns", "GET /campaigns/{campaignId}"]
+}
+```
+
+Run `lemlist endpoints --refresh` if you expect a newly deployed endpoint that
+the cached spec does not yet know about.
+
+<SnippetFeedback />
