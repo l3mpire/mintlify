@@ -1,0 +1,27 @@
+---
+openapi: delete /sequences/{sequenceId}/steps/{stepId}/ab-test
+description: Deletes a variant of the A/B test and ends the test.
+---
+
+<Note>
+A/B testing requires at least the **Email Pro** plan.
+</Note>
+
+Deletes one variant of the A/B test on an email step and ends the test (the
+step keeps a single email template).
+
+- **Deleting `B`** (default) drops variant B; variant A remains the step's
+  template.
+- **Deleting `A`** promotes variant B to A — variant B's template becomes the
+  step's template.
+
+Pass the variant to remove via the `variant` query parameter (`A` or `B`,
+default `B`):
+
+```
+DELETE /api/sequences/{sequenceId}/steps/{stepId}/ab-test?variant=A
+```
+
+If the step does not run an A/B test, the endpoint returns `404`. As with other
+step edits, the variant cannot be deleted while the campaign is running on a
+non-editable sequence.

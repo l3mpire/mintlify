@@ -1,0 +1,23 @@
+---
+openapi: patch /sequences/{sequenceId}/steps/{stepId}/ab-test
+description: Edits variant B content and config of the A/B test on an email step.
+---
+
+<Note>
+A/B testing requires at least the **Email Pro** plan.
+</Note>
+
+Updates the **variant B** email template of the A/B test. Only the fields you
+include in the request body are changed; variant A is never touched.
+
+## Request Body
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `subject` | string | Variant B email subject. Maximum 400 characters |
+| `message` | string | Variant B email body (HTML) |
+| `altMessage` | string | Alternate message |
+| `cc` | array of strings | CC recipients |
+| `plainText` | boolean | Send as plain text |
+
+If the step does not run an A/B test, the endpoint returns `404`.

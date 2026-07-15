@@ -1,0 +1,17 @@
+---
+openapi: get /sequences/{sequenceId}/steps/{stepId}/ab-test
+description: Returns variant B (subject, content, config) of the A/B test on an email step.
+---
+
+<Note>
+A/B testing requires at least the **Email Pro** plan.
+</Note>
+
+Returns the **variant B** content of the A/B test on an email step: its
+`subject`, `message`, and config (`altMessage`, `cc`, `plainText`), along with
+the `abTest` flag and the `emailTemplateBId`.
+
+Variant A's content is available from
+[Get Campaign Sequences](/api-reference/endpoints/sequences/get-campaign-sequences).
+
+If the step does not run an A/B test, the endpoint returns `404`.
