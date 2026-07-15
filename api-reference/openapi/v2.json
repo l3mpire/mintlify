@@ -2969,6 +2969,173 @@
             }
           }
         }
+      },
+      "DeliverabilityAlert": {
+        "type": "object",
+        "description": "A deliverability alert configuration. The alert is evaluated periodically against your warm-up or outreach metrics and triggers notifications through the configured channels (in-app, email, webhook, Slack) when the threshold is breached.",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Unique alert configuration identifier (prefixed with `dac_`)."
+          },
+          "teamId": {
+            "type": "string",
+            "description": "ID of the team that owns the alert."
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "ID of the user who created the alert."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp."
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp."
+          },
+          "widget": {
+            "type": "string",
+            "description": "Data source the alert evaluates. `warmup` checks lemwarm metrics; `outreach` checks campaign-sending metrics.",
+            "enum": [
+              "warmup",
+              "outreach"
+            ]
+          },
+          "metric": {
+            "type": "string",
+            "description": "Metric being monitored. Valid combinations depend on `widget`: `warmup` supports `inboxRate`, `spamRate`, `score`; `outreach` supports `deliveryRate`, `bounceRate`.",
+            "enum": [
+              "inboxRate",
+              "spamRate",
+              "score",
+              "deliveryRate",
+              "bounceRate"
+            ]
+          },
+          "severity": {
+            "type": "string",
+            "description": "Alert severity.",
+            "enum": [
+              "warning",
+              "critical"
+            ]
+          },
+          "scope": {
+            "type": "string",
+            "description": "Aggregation level the metric is computed at. `global` covers all of the workspace's mailboxes (warm-up only); `mailbox` evaluates each mailbox individually; `domain` groups mailboxes by their sending domain.",
+            "enum": [
+              "global",
+              "mailbox",
+              "domain"
+            ]
+          },
+          "scopeEntities": {
+            "type": "array",
+            "description": "Restricts the alert to a subset of entities matching `scope`. When empty, all entities of that scope are checked. For `scope=mailbox`, each entry is a composite string `userId|email|mailboxId`. For `scope=domain`, each entry is a domain (e.g. `acme.com`). Ignored when `scope=global`.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "threshold": {
+            "type": "number",
+            "description": "Threshold value the metric is compared against (0–100, expressed as a percentage for rate metrics).",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "comparisonOperator": {
+            "type": "string",
+            "description": "How `threshold` is compared to the current value. `below` triggers when the value drops under the threshold; `above` triggers when it exceeds it; `equal` triggers on exact match.",
+            "enum": [
+              "equal",
+              "below",
+              "above"
+            ]
+          },
+          "periodDays": {
+            "type": "integer",
+            "description": "Length of the evaluation window, in days (1–30).",
+            "minimum": 1,
+            "maximum": 30
+          },
+          "periodMode": {
+            "type": "string",
+            "description": "How the metric is computed over `periodDays`. `rolling` averages the metric across the window; `consecutive` requires the condition to hold on every one of the most recent `periodDays`.",
+            "enum": [
+              "rolling",
+              "consecutive"
+            ]
+          },
+          "channelConfig": {
+            "type": "object",
+            "description": "Notification channels triggered when the alert fires. At least one channel must be enabled. If omitted on creation, defaults to `inapp` only.",
+            "properties": {
+              "email": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "addresses": {
+                    "type": "array",
+                    "description": "Required when `email.enabled` is `true`. At least one valid address.",
+                    "items": {
+                      "type": "string",
+                      "format": "email"
+                    }
+                  }
+                }
+              },
+              "inapp": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Show the alert in the lemlist app."
+                  }
+                }
+              },
+              "webhook": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Send a webhook callback. Requires a webhook subscribed to the `deliverabilityAlertTriggered` event (see [Add Webhook](/api-reference/endpoints/webhooks/add-webhook))."
+                  }
+                }
+              },
+              "slack": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Send a Slack message. Requires a Slack integration to be connected on the team."
+                  }
+                }
+              }
+            }
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the alert is currently active. Disabled alerts are not evaluated."
+          },
+          "lastCheckedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last time the alert was evaluated."
+          },
+          "lastTriggeredAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last time the alert fired."
+          },
+          "recheckDelayHours": {
+            "type": "integer",
+            "description": "Cool-down between re-evaluations after the alert has triggered, in hours. Defaults to 12."
+          }
+        }
       }
     }
   },
@@ -20175,6 +20342,559 @@
                 "example": "Internal server error"
               }
             }
+          }
+        }
+      }
+    },
+    "/deliverability/alerts": {
+      "get": {
+        "summary": "List Deliverability Alerts",
+        "tags": [
+          "Deliverability alerts"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "alerts": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/DeliverabilityAlert"
+                      }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "description": "Total number of alert configurations."
+                    }
+                  }
+                },
+                "example": {
+                  "alerts": [
+                    {
+                      "_id": "dac_A1B2C3D4E5F6G7H8I",
+                      "teamId": "tea_ExampleAcmeTeamId",
+                      "createdBy": "usr_ExampleAcmeUserId",
+                      "createdAt": "2026-04-12T09:30:00.000Z",
+                      "updatedAt": "2026-04-12T09:30:00.000Z",
+                      "widget": "outreach",
+                      "metric": "bounceRate",
+                      "severity": "critical",
+                      "scope": "mailbox",
+                      "scopeEntities": [
+                        "usr_ExampleAcmeUserId|john@example.com|usm_ExampleMailboxId"
+                      ],
+                      "threshold": 5,
+                      "comparisonOperator": "above",
+                      "periodDays": 1,
+                      "periodMode": "rolling",
+                      "channelConfig": {
+                        "inapp": {
+                          "enabled": true
+                        },
+                        "email": {
+                          "enabled": true,
+                          "addresses": [
+                            "alerts@example.com"
+                          ]
+                        },
+                        "webhook": {
+                          "enabled": false
+                        },
+                        "slack": {
+                          "enabled": false
+                        }
+                      },
+                      "enabled": true,
+                      "lastCheckedAt": "2026-05-07T07:00:00.000Z",
+                      "lastTriggeredAt": "2026-05-06T18:42:11.000Z",
+                      "recheckDelayHours": 12
+                    }
+                  ],
+                  "total": 1
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad team"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Deliverability Alert",
+        "tags": [
+          "Deliverability alerts"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "widget",
+                  "metric",
+                  "severity",
+                  "scope",
+                  "threshold",
+                  "comparisonOperator",
+                  "periodDays",
+                  "periodMode"
+                ],
+                "properties": {
+                  "widget": {
+                    "type": "string",
+                    "enum": [
+                      "warmup",
+                      "outreach"
+                    ]
+                  },
+                  "metric": {
+                    "type": "string",
+                    "enum": [
+                      "inboxRate",
+                      "spamRate",
+                      "score",
+                      "deliveryRate",
+                      "bounceRate"
+                    ]
+                  },
+                  "severity": {
+                    "type": "string",
+                    "enum": [
+                      "warning",
+                      "critical"
+                    ]
+                  },
+                  "scope": {
+                    "type": "string",
+                    "enum": [
+                      "global",
+                      "mailbox",
+                      "domain"
+                    ]
+                  },
+                  "scopeEntities": {
+                    "type": "array",
+                    "description": "Required when `scope` is `mailbox` or `domain` and you want to target specific entities. Mailbox entries use the format `userId|email|mailboxId`. Domain entries are bare domains (e.g. `acme.com`).",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "threshold": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "comparisonOperator": {
+                    "type": "string",
+                    "enum": [
+                      "equal",
+                      "below",
+                      "above"
+                    ]
+                  },
+                  "periodDays": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 30
+                  },
+                  "periodMode": {
+                    "type": "string",
+                    "enum": [
+                      "rolling",
+                      "consecutive"
+                    ]
+                  },
+                  "channelConfig": {
+                    "$ref": "#/components/schemas/DeliverabilityAlert/properties/channelConfig"
+                  },
+                  "recheckDelayHours": {
+                    "type": "integer",
+                    "description": "Cool-down between re-evaluations after the alert triggers, in hours. Defaults to 12."
+                  }
+                }
+              },
+              "examples": {
+                "outreachBounceRate": {
+                  "summary": "Critical alert on outreach bounce rate",
+                  "value": {
+                    "widget": "outreach",
+                    "metric": "bounceRate",
+                    "severity": "critical",
+                    "scope": "mailbox",
+                    "scopeEntities": [
+                      "usr_ExampleAcmeUserId|john@example.com|usm_ExampleMailboxId"
+                    ],
+                    "threshold": 5,
+                    "comparisonOperator": "above",
+                    "periodDays": 1,
+                    "periodMode": "rolling",
+                    "channelConfig": {
+                      "inapp": {
+                        "enabled": true
+                      },
+                      "email": {
+                        "enabled": true,
+                        "addresses": [
+                          "alerts@example.com"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "warmupInboxRateGlobal": {
+                  "summary": "Warning when global warm-up inbox rate drops",
+                  "value": {
+                    "widget": "warmup",
+                    "metric": "inboxRate",
+                    "severity": "warning",
+                    "scope": "global",
+                    "threshold": 85,
+                    "comparisonOperator": "below",
+                    "periodDays": 3,
+                    "periodMode": "rolling"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Alert created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliverabilityAlert"
+                },
+                "example": {
+                  "_id": "dac_A1B2C3D4E5F6G7H8I",
+                  "teamId": "tea_ExampleAcmeTeamId",
+                  "createdBy": "usr_ExampleAcmeUserId",
+                  "createdAt": "2026-04-12T09:30:00.000Z",
+                  "updatedAt": "2026-04-12T09:30:00.000Z",
+                  "widget": "outreach",
+                  "metric": "bounceRate",
+                  "severity": "critical",
+                  "scope": "mailbox",
+                  "scopeEntities": [
+                    "usr_ExampleAcmeUserId|john@example.com|usm_ExampleMailboxId"
+                  ],
+                  "threshold": 5,
+                  "comparisonOperator": "above",
+                  "periodDays": 1,
+                  "periodMode": "rolling",
+                  "channelConfig": {
+                    "inapp": {
+                      "enabled": true
+                    },
+                    "email": {
+                      "enabled": true,
+                      "addresses": [
+                        "alerts@example.com"
+                      ]
+                    },
+                    "webhook": {
+                      "enabled": false
+                    },
+                    "slack": {
+                      "enabled": false
+                    }
+                  },
+                  "enabled": true,
+                  "lastCheckedAt": "2026-05-07T07:00:00.000Z",
+                  "lastTriggeredAt": "2026-05-06T18:42:11.000Z",
+                  "recheckDelayHours": 12
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. The `error` field identifies which input was rejected — e.g. `DELIVERABILITY_ALERT_INVALID_WIDGET`, `DELIVERABILITY_ALERT_INVALID_METRIC`, `DELIVERABILITY_ALERT_INVALID_SCOPE`, `DELIVERABILITY_ALERT_INVALID_THRESHOLD`, `DELIVERABILITY_ALERT_INVALID_PERIOD_DAYS`, `DELIVERABILITY_ALERT_NO_CHANNEL_ENABLED`, `DELIVERABILITY_ALERT_EMAIL_REQUIRED`, `DELIVERABILITY_ALERT_INVALID_EMAIL`, `DELIVERABILITY_ALERT_INVALID_SCOPE_ENTITY_FORMAT`."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Beta feature not enabled for this team"
+          },
+          "409": {
+            "description": "An alert with the same widget, metric, severity, scope, scopeEntities, threshold, comparisonOperator, periodDays and periodMode already exists"
+          }
+        }
+      }
+    },
+    "/deliverability/alerts/{alertId}": {
+      "get": {
+        "summary": "Get Deliverability Alert",
+        "tags": [
+          "Deliverability alerts"
+        ],
+        "parameters": [
+          {
+            "name": "alertId",
+            "in": "path",
+            "required": true,
+            "description": "Unique alert configuration ID.",
+            "example": "dac_A1B2C3D4E5F6G7H8I",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliverabilityAlert"
+                },
+                "example": {
+                  "_id": "dac_A1B2C3D4E5F6G7H8I",
+                  "teamId": "tea_ExampleAcmeTeamId",
+                  "createdBy": "usr_ExampleAcmeUserId",
+                  "createdAt": "2026-04-12T09:30:00.000Z",
+                  "updatedAt": "2026-04-12T09:30:00.000Z",
+                  "widget": "outreach",
+                  "metric": "bounceRate",
+                  "severity": "critical",
+                  "scope": "mailbox",
+                  "scopeEntities": [
+                    "usr_ExampleAcmeUserId|john@example.com|usm_ExampleMailboxId"
+                  ],
+                  "threshold": 5,
+                  "comparisonOperator": "above",
+                  "periodDays": 1,
+                  "periodMode": "rolling",
+                  "channelConfig": {
+                    "inapp": {
+                      "enabled": true
+                    },
+                    "email": {
+                      "enabled": true,
+                      "addresses": [
+                        "alerts@example.com"
+                      ]
+                    },
+                    "webhook": {
+                      "enabled": false
+                    },
+                    "slack": {
+                      "enabled": false
+                    }
+                  },
+                  "enabled": true,
+                  "lastCheckedAt": "2026-05-07T07:00:00.000Z",
+                  "lastTriggeredAt": "2026-05-06T18:42:11.000Z",
+                  "recheckDelayHours": 12
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad team or invalid ID"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Alert not found"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Deliverability Alert",
+        "tags": [
+          "Deliverability alerts"
+        ],
+        "parameters": [
+          {
+            "name": "alertId",
+            "in": "path",
+            "required": true,
+            "description": "Unique alert configuration ID.",
+            "example": "dac_A1B2C3D4E5F6G7H8I",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "All fields are optional. Only the supplied fields are updated. `widget`, `metric`, `severity`, and `scope` cannot be changed after creation — create a new alert if you need different dimensions.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "threshold": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "comparisonOperator": {
+                    "type": "string",
+                    "enum": [
+                      "equal",
+                      "below",
+                      "above"
+                    ]
+                  },
+                  "periodDays": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 30
+                  },
+                  "periodMode": {
+                    "type": "string",
+                    "enum": [
+                      "rolling",
+                      "consecutive"
+                    ]
+                  },
+                  "channelConfig": {
+                    "$ref": "#/components/schemas/DeliverabilityAlert/properties/channelConfig"
+                  },
+                  "scopeEntities": {
+                    "type": "array",
+                    "description": "Same format as on creation. Only meaningful when the alert's `scope` is `mailbox` or `domain`.",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Pause or resume evaluation of this alert."
+                  }
+                }
+              },
+              "example": {
+                "threshold": 7,
+                "channelConfig": {
+                  "inapp": {
+                    "enabled": true
+                  },
+                  "email": {
+                    "enabled": true,
+                    "addresses": [
+                      "alerts@example.com",
+                      "ops@example.com"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Alert updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliverabilityAlert"
+                },
+                "example": {
+                  "_id": "dac_A1B2C3D4E5F6G7H8I",
+                  "teamId": "tea_ExampleAcmeTeamId",
+                  "createdBy": "usr_ExampleAcmeUserId",
+                  "createdAt": "2026-04-12T09:30:00.000Z",
+                  "updatedAt": "2026-05-07T10:15:00.000Z",
+                  "widget": "outreach",
+                  "metric": "bounceRate",
+                  "severity": "critical",
+                  "scope": "mailbox",
+                  "scopeEntities": [
+                    "usr_ExampleAcmeUserId|john@example.com|usm_ExampleMailboxId"
+                  ],
+                  "threshold": 7,
+                  "comparisonOperator": "above",
+                  "periodDays": 1,
+                  "periodMode": "rolling",
+                  "channelConfig": {
+                    "inapp": {
+                      "enabled": true
+                    },
+                    "email": {
+                      "enabled": true,
+                      "addresses": [
+                        "alerts@example.com",
+                        "ops@example.com"
+                      ]
+                    }
+                  },
+                  "enabled": true,
+                  "lastCheckedAt": "2026-05-07T07:00:00.000Z",
+                  "lastTriggeredAt": "2026-05-06T18:42:11.000Z",
+                  "recheckDelayHours": 12
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error (same codes as Create)"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Alert not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Deliverability Alert",
+        "tags": [
+          "Deliverability alerts"
+        ],
+        "parameters": [
+          {
+            "name": "alertId",
+            "in": "path",
+            "required": true,
+            "description": "Unique alert configuration ID.",
+            "example": "dac_A1B2C3D4E5F6G7H8I",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Alert deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "deleted": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "deleted": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad team or invalid ID"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Alert not found"
           }
         }
       }

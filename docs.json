@@ -361,6 +361,17 @@
                 ]
               },
               {
+                "group": "Deliverability alerts",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/deliverability-alerts/list-alerts",
+                  "api-reference/endpoints/deliverability-alerts/create-alert",
+                  "api-reference/endpoints/deliverability-alerts/get-alert",
+                  "api-reference/endpoints/deliverability-alerts/update-alert",
+                  "api-reference/endpoints/deliverability-alerts/delete-alert"
+                ]
+              },
+              {
                 "group": "Fields",
                 "expanded": false,
                 "pages": ["api-reference/endpoints/fields/list-fields"]
@@ -405,7 +416,8 @@
               "api-reference/objects-definitions/mailbox",
               "api-reference/objects-definitions/company-note",
               "api-reference/objects-definitions/signal",
-              "api-reference/objects-definitions/watch-list"
+              "api-reference/objects-definitions/watch-list",
+              "api-reference/objects-definitions/deliverability-alert"
             ]
           }
         ]

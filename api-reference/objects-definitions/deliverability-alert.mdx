@@ -1,0 +1,10 @@
+---
+title: Deliverability alert
+openapi-schema: DeliverabilityAlert
+---
+
+A deliverability alert watches one of your warm-up or outreach metrics on a recurring schedule and notifies you when the metric crosses a threshold you defined.
+
+Each alert is identified by the combination of `widget` (data source — `warmup` or `outreach`), `metric`, `severity`, `scope`, `threshold`, `comparisonOperator`, `periodDays`, `periodMode`, and `scopeEntities`. Two alerts with identical values across all of these fields cannot coexist on the same team.
+
+When an alert fires, it notifies you through the channels listed in `channelConfig` (in-app banner, email, Slack, and/or webhook). To receive webhook callbacks, register a webhook subscribed to the `deliverabilityAlertTriggered` event with [Add Webhook](/api-reference/endpoints/webhooks/add-webhook).
