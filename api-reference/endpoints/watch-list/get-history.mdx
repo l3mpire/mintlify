@@ -1,0 +1,7 @@
+---
+openapi: get /watchlist/history
+description: Retrieves the configuration history of a Signal Agent — each past config version with its active period and stats.
+---
+<Note>
+Each entry captures a past configuration version that was active during `[startDate, endDate)`. The current, live configuration stays on the Signal Agent itself and is not part of the history.
+</Note>

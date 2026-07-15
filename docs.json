@@ -348,7 +348,17 @@
               {
                 "group": "Signal Agents",
                 "expanded": false,
-                "pages": ["api-reference/endpoints/watch-list/get-signals"]
+                "pages": [
+                  "api-reference/endpoints/watch-list/list-watch-lists",
+                  "api-reference/endpoints/watch-list/create-watch-list",
+                  "api-reference/endpoints/watch-list/update-watch-list",
+                  "api-reference/endpoints/watch-list/delete-watch-list",
+                  "api-reference/endpoints/watch-list/get-history",
+                  "api-reference/endpoints/watch-list/get-signals",
+                  "api-reference/endpoints/watch-list/get-library",
+                  "api-reference/endpoints/watch-list/get-filters",
+                  "api-reference/endpoints/watch-list/get-filter-values"
+                ]
               },
               {
                 "group": "Fields",
@@ -394,7 +404,8 @@
               "api-reference/objects-definitions/webhook",
               "api-reference/objects-definitions/mailbox",
               "api-reference/objects-definitions/company-note",
-              "api-reference/objects-definitions/signal"
+              "api-reference/objects-definitions/signal",
+              "api-reference/objects-definitions/watch-list"
             ]
           }
         ]
