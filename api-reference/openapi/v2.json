@@ -796,7 +796,11 @@
             "properties": {
               "provider": {
                 "type": "string",
-                "enum": ["hubspot", "salesforce", "pipedrive"],
+                "enum": [
+                  "hubspot",
+                  "salesforce",
+                  "pipedrive"
+                ],
                 "description": "Active CRM provider for the team."
               },
               "crmRecordId": {
@@ -980,6 +984,29 @@
             "type": "string",
             "format": "date-time",
             "description": "Creation timestamp"
+          },
+          "abTest": {
+            "description": "A/B test state for this email step. `true` while the test runs (leads are split between variant A and B); `\"A\"` or `\"B\"` once a winner is selected (all remaining leads receive the winning template); absent/false when there is no A/B test.",
+            "oneOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "A",
+                  "B"
+                ]
+              }
+            ]
+          },
+          "emailTemplateId": {
+            "type": "string",
+            "description": "Email template ID of variant A"
+          },
+          "emailTemplateBId": {
+            "type": "string",
+            "description": "Email template ID of variant B (present when an A/B test exists on the step)"
           }
         }
       },
@@ -4135,7 +4162,12 @@
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "enum": ["deliverable", "risky", "undeliverable", "unverified"]
+                      "enum": [
+                        "deliverable",
+                        "risky",
+                        "undeliverable",
+                        "unverified"
+                      ]
                     },
                     "description": "Email deliverability statuses for which a lead is auto-launched when `autoReview` is enabled. Only leads whose email verification matches one of these statuses are launched automatically. Invalid values are rejected with a `400` error."
                   }
@@ -4148,7 +4180,10 @@
                 "name": "My new campaign",
                 "timezone": "America/New_York",
                 "autoReview": true,
-                "autoReviewConditions": ["deliverable", "risky"]
+                "autoReviewConditions": [
+                  "deliverable",
+                  "risky"
+                ]
               }
             }
           }
@@ -4520,7 +4555,12 @@
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "enum": ["deliverable", "risky", "undeliverable", "unverified"]
+                      "enum": [
+                        "deliverable",
+                        "risky",
+                        "undeliverable",
+                        "unverified"
+                      ]
                     },
                     "description": "Email deliverability statuses for which a lead is auto-launched when `autoReview` is enabled. Only leads whose email verification matches one of these statuses are launched automatically. Invalid values are rejected with a `400` error."
                   },
@@ -4681,7 +4721,10 @@
                   "usr_7xYzAbCdEfGhIjKlM"
                 ],
                 "autoReview": true,
-                "autoReviewConditions": ["deliverable", "risky"]
+                "autoReviewConditions": [
+                  "deliverable",
+                  "risky"
+                ]
               }
             }
           }
@@ -13822,7 +13865,9 @@
       "get": {
         "summary": "Export Contact List",
         "description": "Exports contacts or companies from a CRM list as a CSV file. The response is streamed as `text/csv` with a `Content-Disposition: attachment` header.\n\nThe exported columns depend on the `entity` type:\n- **contact**: firstName, lastName, email, linkedinUrl, companyName, jobTitle, phone, status, owner, campaigns, contactLists, and more.\n- **company**: name, domain, linkedinUrl, industry, website, status, size, owner, numberOfContacts, companyLists, and more.\n\nCustom fields are included as additional columns.",
-        "tags": ["Contacts"],
+        "tags": [
+          "Contacts"
+        ],
         "parameters": [
           {
             "name": "listId",
@@ -13841,7 +13886,10 @@
             "description": "The type of entities to export. Defaults to `\"contact\"`.",
             "schema": {
               "type": "string",
-              "enum": ["contact", "company"],
+              "enum": [
+                "contact",
+                "company"
+              ],
               "default": "contact"
             }
           }
@@ -20895,6 +20943,571 @@
           },
           "404": {
             "description": "Alert not found"
+          }
+        }
+      }
+    },
+    "/sequences/{sequenceId}/steps/{stepId}/ab-test": {
+      "parameters": [
+        {
+          "name": "sequenceId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the sequence",
+          "example": "seq_lkCSKd32qSZZTe5Ru",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "stepId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the step",
+          "example": "stp_V0JHmSpWiO0rxHUkz",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Create A/B Test Variant",
+        "tags": [
+          "Sequences"
+        ],
+        "description": "Creates variant B of an A/B test on an email step, prefilled from variant A, and starts the test (leads are split between A and B). Requires the Email Pro plan.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Variant B created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "stepId": {
+                      "type": "string"
+                    },
+                    "abTest": {
+                      "oneOf": [
+                        {
+                          "type": "boolean"
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "A",
+                            "B"
+                          ]
+                        }
+                      ]
+                    },
+                    "emailTemplateBId": {
+                      "type": "string",
+                      "description": "Email template ID of variant B"
+                    },
+                    "subject": {
+                      "type": "string",
+                      "description": "Variant B email subject"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Variant B email body (HTML)"
+                    },
+                    "altMessage": {
+                      "type": "string"
+                    },
+                    "cc": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "plainText": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "stepId": "stp_V0JHmSpWiO0rxHUkz",
+                  "abTest": true,
+                  "emailTemplateBId": "etp_9aZ2k1QwErTyUiOp3",
+                  "subject": "Quick question, {{firstName}}",
+                  "message": "<div>Hi {{firstName}}, ...</div>"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (e.g. step is not an email step, has no template, already runs an A/B test, or the campaign is running)",
+            "content": {
+              "text/plain": {
+                "example": "A/B test already exists on this step"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "A/B testing requires at least the Email Pro plan",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "404": {
+            "description": "Sequence, step, or A/B test variant not found",
+            "content": {
+              "text/plain": {
+                "example": "No A/B test variant on this step"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get A/B Test Variant",
+        "tags": [
+          "Sequences"
+        ],
+        "description": "Returns variant B (subject, message, config) of the A/B test on an email step. Requires the Email Pro plan.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "stepId": {
+                      "type": "string"
+                    },
+                    "abTest": {
+                      "oneOf": [
+                        {
+                          "type": "boolean"
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "A",
+                            "B"
+                          ]
+                        }
+                      ]
+                    },
+                    "emailTemplateBId": {
+                      "type": "string",
+                      "description": "Email template ID of variant B"
+                    },
+                    "subject": {
+                      "type": "string",
+                      "description": "Variant B email subject"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Variant B email body (HTML)"
+                    },
+                    "altMessage": {
+                      "type": "string"
+                    },
+                    "cc": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "plainText": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "stepId": "stp_V0JHmSpWiO0rxHUkz",
+                  "abTest": true,
+                  "emailTemplateBId": "etp_9aZ2k1QwErTyUiOp3",
+                  "subject": "Quick question, {{firstName}}",
+                  "message": "<div>Hi {{firstName}}, ...</div>"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "A/B testing requires at least the Email Pro plan",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "404": {
+            "description": "Sequence, step, or A/B test variant not found",
+            "content": {
+              "text/plain": {
+                "example": "No A/B test variant on this step"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update A/B Test Variant",
+        "tags": [
+          "Sequences"
+        ],
+        "description": "Edits variant B content/config of the A/B test on an email step. Only the provided fields are updated. Requires the Email Pro plan.",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "subject": {
+                    "type": "string",
+                    "description": "Variant B email subject. Maximum 400 characters"
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "Variant B email body (HTML)"
+                  },
+                  "altMessage": {
+                    "type": "string"
+                  },
+                  "cc": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "plainText": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "example": {
+                "subject": "New subject B",
+                "message": "<div>New body B</div>"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Variant B updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "stepId": {
+                      "type": "string"
+                    },
+                    "abTest": {
+                      "oneOf": [
+                        {
+                          "type": "boolean"
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "A",
+                            "B"
+                          ]
+                        }
+                      ]
+                    },
+                    "emailTemplateBId": {
+                      "type": "string",
+                      "description": "Email template ID of variant B"
+                    },
+                    "subject": {
+                      "type": "string",
+                      "description": "Variant B email subject"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Variant B email body (HTML)"
+                    },
+                    "altMessage": {
+                      "type": "string"
+                    },
+                    "cc": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "plainText": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "stepId": "stp_V0JHmSpWiO0rxHUkz",
+                  "abTest": true,
+                  "emailTemplateBId": "etp_9aZ2k1QwErTyUiOp3",
+                  "subject": "Quick question, {{firstName}}",
+                  "message": "<div>Hi {{firstName}}, ...</div>"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {
+              "text/plain": {
+                "example": "Match error: Expected string, got number"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "A/B testing requires at least the Email Pro plan",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "404": {
+            "description": "Sequence, step, or A/B test variant not found",
+            "content": {
+              "text/plain": {
+                "example": "No A/B test variant on this step"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete A/B Test Variant",
+        "tags": [
+          "Sequences"
+        ],
+        "description": "Deletes a variant of the A/B test and ends the test. Deleting `B` (default) drops variant B; deleting `A` promotes variant B to A. Requires the Email Pro plan.",
+        "parameters": [
+          {
+            "name": "variant",
+            "in": "query",
+            "required": false,
+            "description": "Which variant to delete. Defaults to `B`.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "A",
+                "B"
+              ],
+              "default": "B"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Variant deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "ok": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "You cannot edit this step because the campaign is running",
+            "content": {
+              "text/plain": {
+                "example": "You cannot edit this step because the campaign is running"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "A/B testing requires at least the Email Pro plan",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "404": {
+            "description": "Sequence, step, or A/B test variant not found",
+            "content": {
+              "text/plain": {
+                "example": "No A/B test variant on this step"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      }
+    },
+    "/sequences/{sequenceId}/steps/{stepId}/ab-test/winner": {
+      "parameters": [
+        {
+          "name": "sequenceId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the sequence",
+          "example": "seq_lkCSKd32qSZZTe5Ru",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "stepId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the step",
+          "example": "stp_V0JHmSpWiO0rxHUkz",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Select A/B Test Winner",
+        "tags": [
+          "Sequences"
+        ],
+        "description": "Selects the winning variant of the A/B test. The winning template is then sent to all remaining leads going through the campaign. Requires the Email Pro plan.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "variant"
+                ],
+                "properties": {
+                  "variant": {
+                    "type": "string",
+                    "enum": [
+                      "A",
+                      "B"
+                    ],
+                    "description": "The winning variant"
+                  }
+                }
+              },
+              "example": {
+                "variant": "B"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Winner selected",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "stepId": {
+                      "type": "string"
+                    },
+                    "abTest": {
+                      "type": "string",
+                      "enum": [
+                        "A",
+                        "B"
+                      ]
+                    }
+                  }
+                },
+                "example": {
+                  "stepId": "stp_V0JHmSpWiO0rxHUkz",
+                  "abTest": "B"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A winning variant has already been selected, or the variant is invalid",
+            "content": {
+              "text/plain": {
+                "example": "A winning variant has already been selected for this step"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "A/B testing requires at least the Email Pro plan",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "404": {
+            "description": "Sequence, step, or A/B test variant not found",
+            "content": {
+              "text/plain": {
+                "example": "No A/B test variant on this step"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
           }
         }
       }

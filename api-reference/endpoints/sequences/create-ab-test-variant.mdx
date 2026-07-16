@@ -1,0 +1,32 @@
+---
+openapi: post /sequences/{sequenceId}/steps/{stepId}/ab-test
+description: Creates variant B of an A/B test on an email step, prefilled from variant A.
+---
+
+<Note>
+A/B testing requires at least the **Email Pro** plan.
+</Note>
+
+A/B testing lets you compare two versions of a single email step. Calling this
+endpoint creates a **variant B** email template, prefilled with a copy of
+variant A's subject, content, and config, and starts the test: leads going
+through the step are split between variant A and variant B.
+
+Once created, edit variant B with
+[Update A/B Test Variant](/api-reference/endpoints/sequences/update-ab-test-variant),
+read it with
+[Get A/B Test Variant](/api-reference/endpoints/sequences/get-ab-test-variant),
+and conclude the test with
+[Select A/B Test Winner](/api-reference/endpoints/sequences/select-ab-test-winner).
+
+## Scope and constraints
+
+- A/B testing is only supported on **email** steps.
+- The step must have an email template (variant A) and must not already run an
+  A/B test.
+- As with other step edits, the test cannot be created while the campaign is
+  running on a non-editable sequence.
+- This endpoint covers A/B testing on a **single step** only.
+
+The response returns variant B's content (`subject`, `message`, config) along
+with the `abTest` flag and the new `emailTemplateBId`.

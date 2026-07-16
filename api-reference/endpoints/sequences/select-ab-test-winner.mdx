@@ -1,0 +1,30 @@
+---
+openapi: post /sequences/{sequenceId}/steps/{stepId}/ab-test/winner
+description: Selects the winning A/B test variant, applied to all remaining leads.
+---
+
+<Note>
+A/B testing requires at least the **Email Pro** plan.
+</Note>
+
+Concludes the A/B test by selecting the winning variant. From then on, **all
+remaining leads** going through the step receive the winning template — the
+split stops and the winner is sent every time.
+
+Both templates are kept on the step, so you can inspect the loser afterwards.
+
+## Request Body
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `variant` | string (required) | The winning variant: `A` or `B` |
+
+```json
+{
+    "variant": "B"
+}
+```
+
+This is allowed while the campaign is running — selecting a winner mid-flight is
+the intended use. Selecting a winner is **final**: a second selection returns
+`400`. If the step does not run an A/B test, the endpoint returns `404`.
