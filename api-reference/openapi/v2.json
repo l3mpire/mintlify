@@ -2878,6 +2878,59 @@
           }
         }
       },
+      "ExternalSignalPushResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "processed",
+              "ignored"
+            ],
+            "description": "`processed` when a signal was created, `ignored` otherwise"
+          },
+          "signalId": {
+            "type": "string",
+            "description": "Id of the created signal. Present when status is processed.",
+            "example": "wls_ExAmPlE1234567890a"
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "no_entity_match",
+              "daily_limit_reached"
+            ],
+            "description": "Why the signal was ignored. Present when status is ignored."
+          },
+          "creditsConsumed": {
+            "type": "integer",
+            "description": "Always 0 - external signals are free.",
+            "example": 0
+          },
+          "entity": {
+            "type": "object",
+            "description": "The matched entity. Present when status is processed.",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "contact",
+                  "company"
+                ]
+              },
+              "id": {
+                "type": "string",
+                "description": "Entity id or watch key",
+                "example": "lea_ExAmPlE1234567890a"
+              },
+              "enriched": {
+                "type": "boolean",
+                "description": "Whether the entity was enriched from lemlist data"
+              }
+            }
+          }
+        }
+      },
       "WatchListApiWatchListResponse": {
         "type": "object",
         "properties": {
@@ -19571,6 +19624,185 @@
           },
           "405": {
             "description": "Bad method"
+          }
+        }
+      }
+    },
+    "/watchlist/{watchListId}/external-signals": {
+      "post": {
+        "summary": "Push external signals",
+        "tags": [
+          "Signal Agents"
+        ],
+        "parameters": [
+          {
+            "name": "watchListId",
+            "in": "path",
+            "required": true,
+            "description": "Id of the Signal Agent to push the signal to. Must be an externalSignalContact or externalSignalCompany agent.",
+            "example": "wli_ExAmPlE1234567890a",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "contact": {
+                    "type": "object",
+                    "description": "The contact the signal is about. Required for externalSignalContact agents; ignored otherwise.",
+                    "required": [
+                      "linkedinUrl"
+                    ],
+                    "properties": {
+                      "linkedinUrl": {
+                        "type": "string",
+                        "description": "LinkedIn profile URL. Required.",
+                        "example": "https://www.linkedin.com/in/john-doe"
+                      },
+                      "email": {
+                        "type": "string",
+                        "description": "Contact email",
+                        "example": "john@example.com"
+                      },
+                      "firstName": {
+                        "type": "string",
+                        "description": "Contact first name",
+                        "example": "John"
+                      },
+                      "lastName": {
+                        "type": "string",
+                        "description": "Contact last name",
+                        "example": "Doe"
+                      }
+                    }
+                  },
+                  "company": {
+                    "type": "object",
+                    "description": "The company the signal is about. Required for externalSignalCompany agents; ignored otherwise.",
+                    "required": [
+                      "domain",
+                      "name"
+                    ],
+                    "properties": {
+                      "domain": {
+                        "type": "string",
+                        "description": "Company domain. Required.",
+                        "example": "acme.com"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Company name. Required.",
+                        "example": "Acme Inc"
+                      },
+                      "linkedinUrl": {
+                        "type": "string",
+                        "description": "LinkedIn company URL",
+                        "example": "https://www.linkedin.com/company/acme"
+                      }
+                    }
+                  },
+                  "customFields": {
+                    "type": "object",
+                    "description": "Optional key/value metadata stored on the signal. Max 20 keys; all values must be strings.",
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "example": {
+                      "plan": "enterprise",
+                      "source": "webinar"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Signal processed or ignored. `status` is `processed` when a signal was created, or `ignored` when no matching entity was found or the agent's daily limit was reached. External signals are free, so `creditsConsumed` is always 0.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExternalSignalPushResponse"
+                },
+                "examples": {
+                  "processed": {
+                    "value": {
+                      "status": "processed",
+                      "signalId": "wls_ExAmPlE1234567890a",
+                      "creditsConsumed": 0,
+                      "entity": {
+                        "type": "contact",
+                        "id": "lea_ExAmPlE1234567890a",
+                        "enriched": true
+                      }
+                    }
+                  },
+                  "ignoredNoMatch": {
+                    "value": {
+                      "status": "ignored",
+                      "reason": "no_entity_match",
+                      "creditsConsumed": 0
+                    }
+                  },
+                  "ignoredDailyLimit": {
+                    "value": {
+                      "status": "ignored",
+                      "reason": "daily_limit_reached",
+                      "creditsConsumed": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error - invalid contact, company, or custom fields",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "invalidContact": {
+                    "value": "Contact must have a valid LinkedIn profile URL (e.g. https://www.linkedin.com/in/...)"
+                  },
+                  "invalidCompany": {
+                    "value": "Company must have a domain and a name; linkedinUrl (when provided) must be a valid LinkedIn company URL (e.g. https://www.linkedin.com/company/...)"
+                  },
+                  "invalidCustomFields": {
+                    "value": "Custom fields must have 20 keys or less with string values"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "text/plain": {
+                "example": "Unauthorized"
+              }
+            }
+          },
+          "404": {
+            "description": "Watch list not found or not configured for external signals",
+            "content": {
+              "text/plain": {
+                "example": "Watch list not found or not configured for external signals"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "text/plain": {
+                "example": "Internal server error"
+              }
+            }
           }
         }
       }
