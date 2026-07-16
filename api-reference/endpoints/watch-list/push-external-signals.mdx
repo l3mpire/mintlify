@@ -1,0 +1,11 @@
+---
+openapi: post /watchlist/{watchListId}/external-signals
+description: Pushes a contact- or company-level external signal into a Signal Agent.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Signal" objectPath="signal" />
+
+<Note>
+Send `contact` for an `externalSignalContact` agent, or `company` for an `externalSignalCompany` agent — the agent's type decides which block is required. Create the agent first with [Create Signal Agent](/api-reference/endpoints/watch-list/create-watch-list) using `type: externalSignalContact` or `type: externalSignalCompany`. External signals are free (`creditsConsumed` is always `0`) and capped by the agent's daily limit (default 50/day); over the cap, or when no matching entity is found, the signal is returned with `status: "ignored"`.
+</Note>

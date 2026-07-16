@@ -360,6 +360,7 @@
                   "api-reference/endpoints/watch-list/delete-watch-list",
                   "api-reference/endpoints/watch-list/get-history",
                   "api-reference/endpoints/watch-list/get-signals",
+                  "api-reference/endpoints/watch-list/push-external-signals",
                   "api-reference/endpoints/watch-list/get-library",
                   "api-reference/endpoints/watch-list/get-filters",
                   "api-reference/endpoints/watch-list/get-filter-values"
