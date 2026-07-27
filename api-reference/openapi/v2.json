@@ -1939,6 +1939,10 @@
           "warmupTemplate": {
             "type": "string"
           },
+          "warmDailyVarianceEnabled": {
+            "type": "boolean",
+            "description": "Whether a random daily variance is applied to the warmup email target"
+          },
           "deliverability": {
             "type": "object",
             "properties": {
@@ -14157,24 +14161,43 @@
         ],
         "parameters": [],
         "requestBody": {
+          "description": "Provide only the fields you want to change; omitted fields keep their current value. At least one field is required.",
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
+                "minProperties": 1,
                 "properties": {
                   "warmEmailMax": {
                     "type": "integer",
-                    "description": "Maximum number of warm emails per day"
+                    "description": "Maximum number of warmup emails per day (0-40; the server enforces 1-40 unless the team has the lemwarm0limit beta)"
                   },
                   "warmEmailRampup": {
                     "type": "integer",
-                    "description": "Daily increase in warm email count"
+                    "description": "Daily increase in the warmup email count (0-40; the server enforces 1-40 unless the team has the lemwarm0limit beta)"
+                  },
+                  "internalCommunicationPercent": {
+                    "type": "integer",
+                    "description": "Percentage of warmup emails sent to internal participants (0-100)"
+                  },
+                  "answerPercentage": {
+                    "type": "integer",
+                    "description": "Percentage of warmup emails that should be answered (0-100)"
+                  },
+                  "warmUsePlaintext": {
+                    "type": "boolean",
+                    "description": "Whether warmup emails are sent as plain text"
+                  },
+                  "warmDailyVarianceEnabled": {
+                    "type": "boolean",
+                    "description": "Whether to apply a random daily variance to the warmup email target (spreads volume day-to-day instead of a flat number)"
                   }
                 }
               },
               "example": {
                 "warmEmailMax": 30,
-                "warmEmailRampup": 5
+                "warmEmailRampup": 5,
+                "warmDailyVarianceEnabled": true
               }
             }
           }
@@ -14199,7 +14222,7 @@
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / Error updating settings (warmEmailMax, warmEmailRampup)",
+            "description": "Possible errors: Bad team / A provided field has the wrong type / Error updating settings",
             "content": {
               "text/plain": {
                 "example": "Bad team"
