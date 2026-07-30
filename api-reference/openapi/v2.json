@@ -21205,7 +21205,7 @@
         "tags": [
           "Leads"
         ],
-        "description": "Add custom variables to a lead and sets values for that specific lead.",
+        "description": "Add custom variables to a lead and sets values for that specific lead.\n\nValues may contain line breaks (`\\n`) — for example for multi-line text custom fields. They are stored and returned as-is; in HTML emails a `\\n` is rendered as `<br>` (kept native in LinkedIn/SMS).",
         "parameters": [
           {
             "name": "customField1",
@@ -21354,7 +21354,7 @@
         "tags": [
           "Leads"
         ],
-        "description": "Update values of custom variables for a lead. Default variables follow the Update Lead rules: they are written on the lead's contact and company as well, and `companyName` alone renames the company the lead is linked to.",
+        "description": "Update values of custom variables for a lead. Default variables follow the Update Lead rules: they are written on the lead's contact and company as well, and `companyName` alone renames the company the lead is linked to.\n\nValues may contain line breaks (`\\n`) — for example for multi-line text custom fields. They are stored and returned as-is; in HTML emails a `\\n` is rendered as `<br>` (kept native in LinkedIn/SMS).",
         "parameters": [
           {
             "name": "customField1",
@@ -29391,7 +29391,7 @@
       },
       "get": {
         "summary": "Get Contact",
-        "description": "Retrieves a contact by its lemlist id (`ctc_xxx`) or email address. The path does not take a CRM record id: use `GET /contacts?crmIds=` for that.",
+        "description": "Retrieves a contact by its lemlist id (`ctc_xxx`) or email address. The path does not take a CRM record id: use `GET /contacts?crmIds=` for that.\n\nThe `fields` object may contain multi-line values with line breaks (`\\n`) for multi-line text custom fields.",
         "tags": [
           "Contacts"
         ],
