@@ -22,3 +22,7 @@ A write that would create a company not yet in lemlist requires the "Create comp
 On a lead with no linked contact, a write that would create one requires the "Create contacts" permission on the API key's user, otherwise it fails with `403 CONTACT_CREATE_NOT_ALLOWED` and nothing is written.
 
 The error names that user (`The user jane@acme.com does not have the permission to create contacts [CONTACT_CREATE_NOT_ALLOWED]`). When the API key's user is no longer in the team, it fails with `403 API_USER_NOT_IN_TEAM` instead (`The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect [API_USER_NOT_IN_TEAM]`).
+
+<Note>
+ Variable values may contain line breaks (`\n`) — for example for multi-line text custom fields. They are stored and returned as-is: in HTML emails a `\n` is rendered as a line break, while LinkedIn and SMS keep it native.
+</Note>
