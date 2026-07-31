@@ -1,0 +1,21 @@
+---
+openapi: post /people-database/personas
+description: Creates a People Database persona for your team.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Persona" objectPath="persona" />
+
+<Note>
+`name`, `filters` and `mode` are all required. The name must be unique within your team — a duplicate answers `409`. Only the `leads` mode is accepted today; `companies` answers `400` with the code `PEOPLE_DATABASE_PERSONA_MODE_NOT_SUPPORTED`.
+
+Filters carry no `type` property — it is derived from `filterId` server-side. Use [Get Database Filters](/api-reference/endpoints/people-database/get-database-filters) to discover which `filterId` values you can use. Filters that require a plan your team does not have are dropped silently.
+</Note>
+
+<Note>
+The response contains only the created id. The stored `name` and `filters` are sanitized and plan-gated server-side, so echoing the request payload back would misreport what was persisted — call [List personas](/api-reference/endpoints/people-database/list-personas) to read the stored persona.
+</Note>
+
+<Warning>
+This endpoint is in closed beta. It answers `403` with the code `BETA_NOT_ENABLED` unless the personas beta is enabled for your team.
+</Warning>

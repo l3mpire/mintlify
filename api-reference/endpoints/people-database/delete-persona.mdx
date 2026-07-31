@@ -1,0 +1,13 @@
+---
+openapi: delete /people-database/personas/{personaId}
+description: Deletes a People Database persona.
+---
+<Note>
+Pass the `personaId` as a path parameter. Deletion is permanent — there is no undo.
+
+An unknown id, a persona belonging to another team, and the persona lemlist auto-generates from your AI business context all answer the same `404`: they are indistinguishable by design.
+</Note>
+
+<Warning>
+This endpoint is in closed beta. It answers `403` with the code `BETA_NOT_ENABLED` unless the personas beta is enabled for your team.
+</Warning>
