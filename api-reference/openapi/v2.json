@@ -10670,7 +10670,7 @@
         "parameters": []
       }
     },
-    "/people-database/personas": {
+    "/database/personas": {
       "get": {
         "summary": "List Personas",
         "description": "Lists the personas saved by your team. A persona is a named, reusable set of People Database filters; its id can then be referenced elsewhere in the API, for example through the `persona` filter of a Signal Agent.\n\nPersonas are team-shared: every member sees the same list. Results are sorted by creation date, most recent first, and capped at 200. The auto-generated persona lemlist derives from your AI business context is never returned; only the personas your team created are.\n\nThis endpoint is in closed beta and answers `403` unless the beta is enabled for your team.",
@@ -10945,7 +10945,7 @@
         }
       }
     },
-    "/people-database/personas/{personaId}": {
+    "/database/personas/{personaId}": {
       "delete": {
         "summary": "Delete Persona",
         "description": "Permanently deletes one of your team's personas. There is no undo.\n\nAn unknown id, a persona belonging to another team, and the persona lemlist auto-generates from your AI business context all answer the same `404`: they are indistinguishable by design.\n\nThis endpoint is in closed beta and answers `403` unless the beta is enabled for your team.",
