@@ -327,7 +327,10 @@
                 "pages": [
                   "api-reference/endpoints/people-database/search-people-database",
                   "api-reference/endpoints/people-database/search-companies-database",
-                  "api-reference/endpoints/people-database/get-database-filters"
+                  "api-reference/endpoints/people-database/get-database-filters",
+                  "api-reference/endpoints/people-database/list-personas",
+                  "api-reference/endpoints/people-database/create-persona",
+                  "api-reference/endpoints/people-database/delete-persona"
                 ]
               },
               {
@@ -405,7 +408,8 @@
                 "pages": [
                   "api-reference/objects-definitions/database",
                   "api-reference/objects-definitions/people-database",
-                  "api-reference/objects-definitions/company-database"
+                  "api-reference/objects-definitions/company-database",
+                  "api-reference/objects-definitions/persona"
                 ]
               },
               "api-reference/objects-definitions/crm-filter",

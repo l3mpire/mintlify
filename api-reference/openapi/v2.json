@@ -1926,6 +1926,140 @@
           }
         }
       },
+      "Persona": {
+        "type": "object",
+        "description": "A People Database persona: a named, reusable set of People Database filters saved by your team. A persona id can be referenced elsewhere in the API, for example through the `persona` filter of a Signal Agent.",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Unique persona identifier",
+            "example": "pdp_ExAmPlE1234567890a"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name. Unique within your team.",
+            "example": "SaaS founders"
+          },
+          "mode": {
+            "type": "string",
+            "description": "Search mode the filters target",
+            "enum": ["leads", "companies"],
+            "example": "leads"
+          },
+          "filters": {
+            "type": "array",
+            "description": "People Database filters defining the persona",
+            "items": {
+              "$ref": "#/components/schemas/PersonaFilter"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date the persona was created",
+            "example": "2026-07-31T09:12:00.000Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date of the last modification",
+            "example": "2026-07-31T09:12:00.000Z"
+          }
+        }
+      },
+      "PersonaFilter": {
+        "type": "object",
+        "description": "One People Database filter of a persona. `in` includes matching values, `out` excludes them. There is no `type` property: it is derived from `filterId` server-side.",
+        "required": ["filterId"],
+        "properties": {
+          "filterId": {
+            "type": "string",
+            "description": "People Database filter identifier. Use [Get Database Filters](/api-reference/endpoints/people-database/get-database-filters) to discover the valid ids.",
+            "example": "currentTitle"
+          },
+          "in": {
+            "type": "array",
+            "description": "Values to include",
+            "items": {
+              "type": "string"
+            },
+            "example": ["Founder"]
+          },
+          "out": {
+            "type": "array",
+            "description": "Values to exclude",
+            "items": {
+              "type": "string"
+            },
+            "example": []
+          },
+          "exactMatch": {
+            "type": "boolean",
+            "description": "Exact-match toggle, for the text filters that support it"
+          }
+        }
+      },
+      "PersonaListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "The team's personas, most recently created first",
+            "items": {
+              "$ref": "#/components/schemas/Persona"
+            }
+          }
+        }
+      },
+      "PersonaCreateResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "description": "Id of the created persona",
+                "example": "pdp_ExAmPlE1234567890a"
+              }
+            }
+          }
+        }
+      },
+      "PersonaDeleteResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "description": "Id of the deleted persona",
+                "example": "pdp_ExAmPlE1234567890a"
+              },
+              "deleted": {
+                "type": "boolean",
+                "description": "Always `true` when the persona was removed",
+                "example": true
+              }
+            }
+          }
+        }
+      },
+      "PersonaError": {
+        "type": "object",
+        "description": "Error envelope returned by the persona endpoints.",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Human-readable explanation of the failure"
+          },
+          "code": {
+            "type": "string",
+            "description": "Machine-readable error code, stable across releases"
+          }
+        }
+      },
       "LemwarmSettings": {
         "type": "object",
         "description": "Lemwarm configuration for a mailbox.",
@@ -10534,6 +10668,390 @@
           }
         },
         "parameters": []
+      }
+    },
+    "/database/personas": {
+      "get": {
+        "summary": "List Personas",
+        "description": "Lists the personas saved by your team. A persona is a named, reusable set of People Database filters; its id can then be referenced elsewhere in the API, for example through the `persona` filter of a Signal Agent.\n\nPersonas are team-shared: every member sees the same list. Results are sorted by creation date, most recent first, and capped at 200. The auto-generated persona lemlist derives from your AI business context is never returned; only the personas your team created are.\n\nThis endpoint is in closed beta and answers `403` unless the beta is enabled for your team.",
+        "operationId": "listPersonas",
+        "tags": ["People Database"],
+        "parameters": [
+          {
+            "name": "mode",
+            "in": "query",
+            "required": false,
+            "description": "Restrict the list to personas of one search mode. Omit to return every persona of the team.",
+            "schema": {
+              "type": "string",
+              "enum": ["leads", "companies"]
+            },
+            "example": "leads"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaListResponse"
+                },
+                "example": {
+                  "data": [
+                    {
+                      "_id": "pdp_ExAmPlE1234567890a",
+                      "name": "SaaS founders",
+                      "mode": "leads",
+                      "filters": [
+                        {
+                          "filterId": "currentTitle",
+                          "in": ["Founder"],
+                          "out": []
+                        },
+                        {
+                          "filterId": "country",
+                          "in": ["France"],
+                          "out": []
+                        }
+                      ],
+                      "createdAt": "2026-07-31T09:12:00.000Z",
+                      "updatedAt": "2026-07-31T09:12:00.000Z"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error - invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Parameter \"mode\" must be \"leads\" or \"companies\"; user personas currently accept \"leads\" only",
+                  "code": "PEOPLE_DATABASE_PERSONA_API_INVALID_MODE"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Route unauthorized",
+                  "code": "ROUTE_UNAUTHORIZED"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The personas beta is not enabled for your team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Beta is not enabled",
+                  "code": "BETA_NOT_ENABLED"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Internal error",
+                  "code": "INTERNAL_ERROR"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Persona",
+        "description": "Creates a persona for your team from a name and a set of People Database filters.\n\nUse [Get Database Filters](/api-reference/endpoints/people-database/get-database-filters) to discover the valid `filterId` values. Filters carry no `type` property: it is derived from `filterId` server-side. Filters that require a plan your team does not have are dropped silently, so the persona is stored with the subset your plan allows.\n\nOnly the created id is returned. The stored `name` and `filters` are sanitized and plan-gated server-side, so echoing the request payload back would misreport what was persisted; call [List Personas](/api-reference/endpoints/people-database/list-personas) to read the stored persona.\n\nThis endpoint is in closed beta and answers `403` unless the beta is enabled for your team.",
+        "operationId": "createPersona",
+        "tags": ["People Database"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "filters", "mode"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Display name. Non-empty, and unique within your team.",
+                    "example": "SaaS founders"
+                  },
+                  "filters": {
+                    "type": "array",
+                    "description": "People Database filters defining the persona",
+                    "items": {
+                      "$ref": "#/components/schemas/PersonaFilter"
+                    }
+                  },
+                  "mode": {
+                    "type": "string",
+                    "description": "Search mode the filters target. Only `leads` is accepted today.",
+                    "enum": ["leads", "companies"],
+                    "example": "leads"
+                  }
+                }
+              },
+              "example": {
+                "name": "SaaS founders",
+                "mode": "leads",
+                "filters": [
+                  {
+                    "filterId": "currentTitle",
+                    "in": ["Founder"],
+                    "out": []
+                  },
+                  {
+                    "filterId": "country",
+                    "in": ["France"],
+                    "out": []
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Persona created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaCreateResponse"
+                },
+                "example": {
+                  "data": {
+                    "_id": "pdp_ExAmPlE1234567890a"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error - invalid name, mode, or filters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "examples": {
+                  "invalidName": {
+                    "value": {
+                      "error": "Parameter \"name\" must be a non-empty string; provide the persona display name",
+                      "code": "PEOPLE_DATABASE_PERSONA_API_INVALID_NAME"
+                    }
+                  },
+                  "invalidFilters": {
+                    "value": {
+                      "error": "Parameter \"filters\" must be an array of { filterId, in?, out?, exactMatch? } objects; call GET /api/database/filters for the valid filter ids",
+                      "code": "PEOPLE_DATABASE_PERSONA_API_INVALID_FILTERS"
+                    }
+                  },
+                  "modeNotSupported": {
+                    "value": {
+                      "error": "User personas support only the \"leads\" mode for now; create or update the persona in leads mode",
+                      "code": "PEOPLE_DATABASE_PERSONA_MODE_NOT_SUPPORTED"
+                    }
+                  },
+                  "unknownFilter": {
+                    "value": {
+                      "error": "You have no valid filters with the current search mode",
+                      "code": "SEARCH_FILTERS_INVALID"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Route unauthorized",
+                  "code": "ROUTE_UNAUTHORIZED"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The personas beta is not enabled for your team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Beta is not enabled",
+                  "code": "BETA_NOT_ENABLED"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A persona with this name already exists for your team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "A persona with this name already exists for the team; choose a different name",
+                  "code": "PEOPLE_DATABASE_PERSONA_NAME_ALREADY_EXISTS"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Internal error",
+                  "code": "INTERNAL_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/database/personas/{personaId}": {
+      "delete": {
+        "summary": "Delete Persona",
+        "description": "Permanently deletes one of your team's personas. There is no undo.\n\nAn unknown id, a persona belonging to another team, and the persona lemlist auto-generates from your AI business context all answer the same `404`: they are indistinguishable by design.\n\nThis endpoint is in closed beta and answers `403` unless the beta is enabled for your team.",
+        "operationId": "deletePersona",
+        "tags": ["People Database"],
+        "parameters": [
+          {
+            "name": "personaId",
+            "in": "path",
+            "required": true,
+            "description": "Id of the persona to delete",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "example": "pdp_ExAmPlE1234567890a"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Persona deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaDeleteResponse"
+                },
+                "example": {
+                  "data": {
+                    "_id": "pdp_ExAmPlE1234567890a",
+                    "deleted": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error - malformed personaId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Wrong param people database persona id",
+                  "code": "WRONG_PARAM_PEOPLE_DATABASE_PERSONA_ID"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Route unauthorized",
+                  "code": "ROUTE_UNAUTHORIZED"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The personas beta is not enabled for your team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Beta is not enabled",
+                  "code": "BETA_NOT_ENABLED"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such persona for your team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "No editable persona found for this id and team (it may not exist or be the system persona)",
+                  "code": "PEOPLE_DATABASE_PERSONA_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Internal error",
+                  "code": "INTERNAL_ERROR"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/tasks": {
