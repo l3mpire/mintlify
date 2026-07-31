@@ -6,3 +6,7 @@ description: Updates the values of custom variables on a lead.
 <Warning>
  This is not about renaming your custom variables, but really about updating the values within, just like the [Update Lead](./update-lead) endpoint would do on default variables.
 </Warning>
+
+<Note>
+ Variable values may contain line breaks (`\n`) — for example for multi-line text custom fields. They are stored and returned as-is: in HTML emails a `\n` is rendered as a line break, while LinkedIn and SMS keep it native.
+</Note>

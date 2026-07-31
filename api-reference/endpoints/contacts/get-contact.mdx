@@ -4,4 +4,8 @@ description: Retrieves a specific contact by their ID or email address.
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
+<Note>
+ A contact's `fields` may contain multi-line values with line breaks (`\n`) when a custom field is of the multi-line text type.
+</Note>
+
 <SnippetObjectReference objectName="Contact" objectPath="contact" />
