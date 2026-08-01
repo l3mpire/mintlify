@@ -1,0 +1,22 @@
+---
+openapi: patch /self-recovery/config
+description: Updates your team's self-recovery configuration. Every field is optional; only the fields you send are changed.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Self-recovery config" objectPath="self-recovery-config" />
+
+## What you can change
+
+- `enabled` — turn self-recovery on or off for the account.
+- `monitoredSignals` — the signals self-recovery watches. This **replaces** the current list, so send the full set, not a delta. `inboxPlacement` requires the inbox-placement test to be active on the account.
+- `authorizedActions` — the strategies self-recovery may run automatically. This **replaces** the current list.
+
+## Authorized actions
+
+Only `fixDns` and `recover` can be authorized:
+
+- `fixDns` — pause sending until the DNS records are corrected.
+- `recover` — cap the daily sending volume and re-warm the mailbox.
+
+`provision`, `replace` and `listHygiene` are diagnosis-only: self-recovery will still recommend them in the history, but it never executes them automatically. Sending any of them in `authorizedActions` returns `400`.

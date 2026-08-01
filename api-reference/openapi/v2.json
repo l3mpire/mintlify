@@ -23,6 +23,208 @@
       }
     },
     "schemas": {
+      "SelfRecoveryConfig": {
+        "type": "object",
+        "description": "Account-level self-recovery configuration. Self-recovery watches the monitored signals and, when authorized, automatically runs recovery actions on degraded mailboxes.",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Config identifier (prefixed with `src_`)."
+          },
+          "teamId": {
+            "type": "string",
+            "description": "ID of the team that owns the config."
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether self-recovery is active for the account."
+          },
+          "monitoredSignals": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "bounceRate",
+                "blacklist",
+                "inboxPlacement"
+              ]
+            },
+            "description": "Signals self-recovery watches. `inboxPlacement` requires the placement test to be active."
+          },
+          "authorizedActions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "fixDns",
+                "recover"
+              ]
+            },
+            "description": "Strategies self-recovery may execute automatically. Only `fixDns` and `recover` can be authorized; `provision`, `replace` and `listHygiene` are diagnosis-only and rejected here."
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "ID of the user who created the config."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp."
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp."
+          }
+        }
+      },
+      "SelfRecoveryCase": {
+        "type": "object",
+        "description": "A self-recovery incident case, opened when a monitored asset degrades. Append-only: one entry per trigger.",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Case identifier (prefixed with `srh_`)."
+          },
+          "teamId": {
+            "type": "string",
+            "description": "ID of the team that owns the case."
+          },
+          "assetId": {
+            "type": "string",
+            "description": "ID of the affected asset (a mailbox, prefixed with `usm_`)."
+          },
+          "assetType": {
+            "type": "string",
+            "enum": [
+              "mailbox"
+            ],
+            "description": "Type of the affected asset."
+          },
+          "assetLabel": {
+            "type": "string",
+            "description": "Human-readable label for the asset (usually the mailbox email)."
+          },
+          "openedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the case was opened."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "recommended",
+              "executed"
+            ],
+            "description": "`recommended` when nothing ran (no authorized + wired action); `executed` when at least one recommendation was applied."
+          },
+          "recommendations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SelfRecoveryRecommendation"
+            },
+            "description": "Ordered list of recommended fixes (primary first)."
+          },
+          "lastDiagnosisKey": {
+            "type": "string",
+            "description": "Internal key used to dedup identical diagnoses across ticks."
+          }
+        }
+      },
+      "SelfRecoveryRecommendation": {
+        "type": "object",
+        "description": "A single recommended fix produced by the diagnosis. A case can carry several.",
+        "properties": {
+          "rootCause": {
+            "type": "string",
+            "description": "Diagnosed root cause of the degradation.",
+            "enum": [
+              "dnsAuthentication",
+              "listQuality",
+              "senderReputation",
+              "reputationDecline",
+              "inconclusive"
+            ]
+          },
+          "strategy": {
+            "type": "string",
+            "description": "Recommended recovery strategy (the \"what\").",
+            "enum": [
+              "fixDns",
+              "listHygiene",
+              "replace",
+              "provision",
+              "recover",
+              "none"
+            ]
+          },
+          "action": {
+            "type": "string",
+            "description": "Concrete asset-level action the strategy executes.",
+            "enum": [
+              "pause",
+              "replace",
+              "provision",
+              "recover",
+              "none"
+            ]
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "explanationCode": {
+            "type": "string",
+            "description": "Stable code for the explanation text, resolved client-side."
+          },
+          "explanationVars": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Ordered substitutions for the explanation text."
+          },
+          "contributingSignals": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "bounceRate",
+                "blacklist",
+                "inboxPlacement"
+              ]
+            },
+            "description": "Signals that contributed to this recommendation."
+          },
+          "executionStatus": {
+            "type": "string",
+            "description": "Automatic-execution outcome. Absent on pre-execution entries.",
+            "enum": [
+              "executed",
+              "skippedNotAuthorized",
+              "notExecutable",
+              "failed"
+            ]
+          },
+          "executedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the action ran."
+          },
+          "executionDetail": {
+            "type": "string",
+            "description": "Machine-readable outcome detail (e.g. `already-locked`, `limit-already-low`, `lemwarm:<code>`)."
+          },
+          "previousEmailsLimit": {
+            "type": "integer",
+            "description": "recover only: the daily sending limit before the volume cooldown."
+          }
+        }
+      },
       "Team": {
         "type": "object",
         "description": "The organization account that manages users and billing.",
@@ -3358,6 +3560,244 @@
     }
   },
   "paths": {
+    "/self-recovery/config": {
+      "get": {
+        "summary": "Get Self-recovery Config",
+        "tags": [
+          "Self-recovery"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "config": {
+                      "$ref": "#/components/schemas/SelfRecoveryConfig"
+                    }
+                  }
+                },
+                "example": {
+                  "config": {
+                    "_id": "src_ExampleAcmeConfigId",
+                    "teamId": "tea_ExampleAcmeTeamId",
+                    "enabled": true,
+                    "monitoredSignals": [
+                      "bounceRate",
+                      "blacklist"
+                    ],
+                    "authorizedActions": [
+                      "recover"
+                    ],
+                    "createdBy": "usr_ExampleAcmeUserId",
+                    "createdAt": "2026-04-12T09:30:00.000Z",
+                    "updatedAt": "2026-05-06T14:10:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Self-recovery beta not enabled for the team"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Self-recovery Config",
+        "tags": [
+          "Self-recovery"
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "All fields are optional; only the supplied fields change. `monitoredSignals` and `authorizedActions` replace the current lists (send the full set). Only `fixDns` and `recover` may be authorized.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Turn self-recovery on or off."
+                  },
+                  "monitoredSignals": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "bounceRate",
+                        "blacklist",
+                        "inboxPlacement"
+                      ]
+                    },
+                    "description": "Replaces the monitored-signals list."
+                  },
+                  "authorizedActions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "fixDns",
+                        "recover"
+                      ]
+                    },
+                    "description": "Replaces the authorized-actions list. Only fixDns and recover are accepted."
+                  }
+                }
+              },
+              "example": {
+                "monitoredSignals": [
+                  "bounceRate",
+                  "blacklist"
+                ],
+                "authorizedActions": [
+                  "recover"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "config": {
+                      "$ref": "#/components/schemas/SelfRecoveryConfig"
+                    }
+                  }
+                },
+                "example": {
+                  "config": {
+                    "_id": "src_ExampleAcmeConfigId",
+                    "teamId": "tea_ExampleAcmeTeamId",
+                    "enabled": true,
+                    "monitoredSignals": [
+                      "bounceRate",
+                      "blacklist"
+                    ],
+                    "authorizedActions": [
+                      "recover"
+                    ],
+                    "createdBy": "usr_ExampleAcmeUserId",
+                    "createdAt": "2026-04-12T09:30:00.000Z",
+                    "updatedAt": "2026-05-06T14:10:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Self-recovery beta not enabled for the team"
+          }
+        }
+      }
+    },
+    "/self-recovery/history": {
+      "get": {
+        "summary": "List Self-recovery History",
+        "tags": [
+          "Self-recovery"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Max cases to return (1-100).",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "description": "Number of cases to skip, for pagination.",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "history": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SelfRecoveryCase"
+                      }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "description": "Total number of cases for the team."
+                    }
+                  }
+                },
+                "example": {
+                  "history": [
+                    {
+                      "_id": "srh_ExampleAcmeCaseId",
+                      "teamId": "tea_ExampleAcmeTeamId",
+                      "assetId": "usm_ExampleMailboxId",
+                      "assetType": "mailbox",
+                      "assetLabel": "john@example.com",
+                      "openedAt": "2026-05-06T18:42:11.000Z",
+                      "status": "executed",
+                      "recommendations": [
+                        {
+                          "rootCause": "reputationDecline",
+                          "strategy": "recover",
+                          "action": "recover",
+                          "confidence": "medium",
+                          "explanationCode": "reputationDecline",
+                          "explanationVars": [],
+                          "contributingSignals": [
+                            "bounceRate"
+                          ],
+                          "executionStatus": "executed",
+                          "executedAt": "2026-05-06T18:42:11.000Z",
+                          "previousEmailsLimit": 40
+                        }
+                      ],
+                      "lastDiagnosisKey": "reputationDecline|recover|recover"
+                    }
+                  ],
+                  "total": 1
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Self-recovery beta not enabled for the team"
+          }
+        }
+      }
+    },
     "/team": {
       "get": {
         "summary": "Get Team",
