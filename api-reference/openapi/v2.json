@@ -535,50 +535,79 @@
       },
       "Enrich": {
         "type": "object",
-        "description": "Contact information discovered through data enrichment (emails, phone numbers, LinkedIn URLs).",
+        "description": "The state and result of one enrichment request, as returned when polling `GET /enrich/{enrichId}`. Every response carries the same envelope; `data` is filled in only once the enrichment succeeded.",
         "properties": {
-          "_id": {
+          "enrichmentId": {
             "type": "string",
-            "description": "Unique enrichment request identifier"
+            "description": "Identifier of the enrichment that was polled"
           },
-          "status": {
+          "enrichmentStatus": {
             "type": "string",
-            "description": "Enrichment status",
+            "description": "Lifecycle state of the enrichment itself — not to be confused with `data.email.status`, which is the deliverability of a found address. Each state comes with its own HTTP code: `done` 200, `in-progress` 202, `failed` 400, `not-found` 404.",
             "enum": [
-              "pending",
-              "completed",
-              "failed"
+              "done",
+              "in-progress",
+              "failed",
+              "not-found"
             ]
           },
-          "email": {
-            "type": "string",
-            "format": "email",
-            "description": "Found email address"
+          "input": {
+            "type": "object",
+            "description": "The identifiers the enrichment was started with, echoed back. Absent on `not-found`.",
+            "additionalProperties": true
           },
-          "phone": {
+          "error": {
             "type": "string",
-            "description": "Found phone number"
+            "description": "Why the enrichment could not be completed. Present on `failed` and `not-found` only."
           },
-          "firstName": {
-            "type": "string",
-            "description": "Found first name"
-          },
-          "lastName": {
-            "type": "string",
-            "description": "Found last name"
-          },
-          "companyName": {
-            "type": "string",
-            "description": "Found company name"
-          },
-          "linkedinUrl": {
-            "type": "string",
-            "format": "uri",
-            "description": "Found LinkedIn URL"
-          },
-          "credits": {
-            "type": "integer",
-            "description": "Credits consumed"
+          "data": {
+            "type": "object",
+            "description": "What the enrichment found. A key is present only for a workflow that actually ran, so a request for an email alone carries no `phone`. Empty on any state other than `done`.",
+            "properties": {
+              "email": {
+                "type": "object",
+                "description": "Result of a `find_email` and/or `verify` workflow",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "The address found. Absent when `notFound` is true, or when only `verify` ran."
+                  },
+                  "notFound": {
+                    "type": "boolean",
+                    "description": "True when the workflow ran but found no address"
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "Deliverability of the address. Returned for `find_email` on its own — the waterfall verifies every address it finds — as well as for `verify`; when both ran, the `verify` verdict wins. Absent when no deliverability check resolved.",
+                    "enum": [
+                      "deliverable",
+                      "risky",
+                      "undeliverable"
+                    ]
+                  }
+                }
+              },
+              "phone": {
+                "type": "object",
+                "description": "Result of a `find_phone` workflow",
+                "properties": {
+                  "phone": {
+                    "type": "string",
+                    "description": "The number found, in E.164 format. Absent when `notFound` is true."
+                  },
+                  "notFound": {
+                    "type": "boolean",
+                    "description": "True when the workflow ran but found no number"
+                  }
+                }
+              },
+              "linkedin": {
+                "type": "object",
+                "description": "Result of a LinkedIn workflow, returned as provided by the enrichment source",
+                "additionalProperties": true
+              }
+            }
           }
         }
       },
@@ -726,6 +755,28 @@
           "unsubscribed": {
             "type": "boolean",
             "description": "Whether the contact is globally unsubscribed. When true, no outreach will be sent to this contact."
+          },
+          "phonesStatuses": {
+            "type": "object",
+            "description": "Verification verdict for each of the contact's phone numbers, keyed by the number exactly as stored in `fields`. A key appears only once a verdict has been recorded, so a missing key means the number was never verified. Empty when the contact has no verdict at all.",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "Verdict on the number",
+                  "enum": [
+                    "valid",
+                    "invalid"
+                  ]
+                }
+              }
+            },
+            "example": {
+              "+33612345678": {
+                "status": "invalid"
+              }
+            }
           },
           "fieldRejections": {
             "type": "array",
@@ -13531,6 +13582,7 @@
                       "jobTitle": "Growth Engineer",
                       "lastName": "Doe",
                       "industry": "Technology",
+                      "phone": "+33612345678",
                       "isActiveInCampaigns": false,
                       "lastCampaign": "NEW TO DELETE",
                       "lastLeadMarkedAsInterestedDate": "2025-10-28T02:12:31.971Z",
@@ -13547,7 +13599,12 @@
                     "ownerId": "usr_ahfFktBBHUIxbVG5P",
                     "createdAt": "2025-10-28T00:40:37.917Z",
                     "createdBy": "usr_ahfFktBBHUIxbVG5P",
-                    "unsubscribed": false
+                    "unsubscribed": false,
+                    "phonesStatuses": {
+                      "+33612345678": {
+                        "status": "invalid"
+                      }
+                    }
                   },
                   {
                     "_id": "ctc_a9RxJNa7pmMd85H9b",
@@ -14072,6 +14129,7 @@
                     "jobTitle": "Growth Engineer",
                     "lastName": "Doe",
                     "industry": "Technology",
+                    "phone": "+33612345678",
                     "isActiveInCampaigns": false,
                     "lastCampaign": "NEW TO DELETE",
                     "lastLeadMarkedAsInterestedDate": "2025-10-28T02:12:31.971Z",
@@ -14088,7 +14146,12 @@
                   "ownerId": "usr_ahfFktBBHUIxbVG5P",
                   "createdAt": "2025-10-28T00:40:37.917Z",
                   "createdBy": "usr_ahfFktBBHUIxbVG5P",
-                  "unsubscribed": false
+                  "unsubscribed": false,
+                  "phonesStatuses": {
+                    "+33612345678": {
+                      "status": "invalid"
+                    }
+                  }
                 }
               }
             }
@@ -18188,22 +18251,23 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/Enrich"
                 },
                 "example": {
-                  "enrichmentId": "enr_FPgMU8ZUVBnOZBuZ6",
+                  "enrichmentId": "enr_Example1234567ABC",
                   "enrichmentStatus": "done",
                   "input": {
                     "firstName": "John",
-                    "lastName": "lemlist",
-                    "linkedinUrl": "https://www.linkedin.com/in/lemlist",
-                    "companyName": "lemlist",
-                    "companyDomain": "lemlist.com"
+                    "lastName": "Doe",
+                    "linkedinUrl": "https://www.linkedin.com/in/johndoe",
+                    "companyName": "Acme Inc",
+                    "companyDomain": "acme.com"
                   },
                   "data": {
                     "email": {
-                      "email": "john@lemlist.co",
-                      "notFound": false
+                      "email": "john@example.com",
+                      "notFound": false,
+                      "status": "deliverable"
                     }
                   }
                 }
