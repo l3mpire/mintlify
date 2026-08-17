@@ -692,6 +692,24 @@
           }
         }
       },
+      "PhoneStatus": {
+        "type": "object",
+        "description": "The verification verdict recorded for one of a contact's phone numbers. Surfaced under `phonesStatuses[]` on a Contact.",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "description": "The number the verdict applies to, exactly as stored in the contact's `fields`. Match on this to line an entry up with a phone field."
+          },
+          "status": {
+            "type": "string",
+            "description": "Verdict on the number.",
+            "enum": [
+              "valid",
+              "invalid"
+            ]
+          }
+        }
+      },
       "Contact": {
         "type": "object",
         "description": "A contact record in your CRM. Not to be confused with a lead which is a contact specifically added to a campaign.",
@@ -757,25 +775,10 @@
             "description": "Whether the contact is globally unsubscribed. When true, no outreach will be sent to this contact."
           },
           "phonesStatuses": {
-            "type": "object",
-            "description": "Verification verdict for each of the contact's phone numbers, keyed by the number exactly as stored in `fields`. A key appears only once a verdict has been recorded, so a missing key means the number was never verified. Empty when the contact has no verdict at all.",
-            "additionalProperties": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "description": "Verdict on the number",
-                  "enum": [
-                    "valid",
-                    "invalid"
-                  ]
-                }
-              }
-            },
-            "example": {
-              "+33612345678": {
-                "status": "invalid"
-              }
+            "type": "array",
+            "description": "Verification verdicts on the contact's phone numbers, one entry per number. An entry appears only once a verdict has been recorded, so a number with no entry was never verified. Empty when the contact has no verdict at all. A number is deliberately kept here even after it is removed from `fields`, so a number flagged wrong stays flagged if it is later re-imported.",
+            "items": {
+              "$ref": "#/components/schemas/PhoneStatus"
             }
           },
           "fieldRejections": {
@@ -13600,11 +13603,12 @@
                     "createdAt": "2025-10-28T00:40:37.917Z",
                     "createdBy": "usr_ahfFktBBHUIxbVG5P",
                     "unsubscribed": false,
-                    "phonesStatuses": {
-                      "+33612345678": {
+                    "phonesStatuses": [
+                      {
+                        "phone": "+33612345678",
                         "status": "invalid"
                       }
-                    }
+                    ]
                   },
                   {
                     "_id": "ctc_a9RxJNa7pmMd85H9b",
@@ -14147,11 +14151,12 @@
                   "createdAt": "2025-10-28T00:40:37.917Z",
                   "createdBy": "usr_ahfFktBBHUIxbVG5P",
                   "unsubscribed": false,
-                  "phonesStatuses": {
-                    "+33612345678": {
+                  "phonesStatuses": [
+                    {
+                      "phone": "+33612345678",
                       "status": "invalid"
                     }
-                  }
+                  ]
                 }
               }
             }
