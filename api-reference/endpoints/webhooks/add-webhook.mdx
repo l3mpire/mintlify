@@ -35,7 +35,22 @@ These aggregate multiple activity types into a single lead-state change event.
 | `emailsFailed` | Email failed to send |
 | `emailsInterested` | Lead marked as interested via email |
 | `emailsNotInterested` | Lead marked as not interested via email |
-| `emailsUnsubscribed` | Lead unsubscribed via email |
+
+### Unsubscribe activities
+
+| Event | Description |
+| ----- | ----------- |
+| `entityUnsubscribed` | Contact unsubscribed from all communications — e.g. clicked the unsubscribe link or was marked as do-not-contact |
+| `variableUnsubscribed` | A specific contact variable (email address, phone number, LinkedIn profile) was unsubscribed |
+| `emailsUnsubscribed` | Lead stopped because their email or domain is on the unsubscribe list. Also matches `apiUnsubscribed` and `manualUnsubscribed` activities |
+
+<Note>
+  Since March 30, 2026, a contact unsubscribing emits `entityUnsubscribed` (whole
+  contact) or `variableUnsubscribed` (single variable) instead of
+  `emailsUnsubscribed`. If your integration listens to `emailsUnsubscribed`,
+  also subscribe to `entityUnsubscribed` and `variableUnsubscribed` to keep
+  receiving unsubscribe events.
+</Note>
 
 ### LinkedIn activities
 
