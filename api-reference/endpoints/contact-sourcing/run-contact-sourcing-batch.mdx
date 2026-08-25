@@ -1,0 +1,45 @@
+---
+openapi: post /contact-sourcing/runs/batch
+description: Starts a contact-sourcing run for up to 200 accounts in a single call.
+---
+
+Same as [Run Contact Sourcing](/api-reference/endpoints/contact-sourcing/run-contact-sourcing),
+for a list of accounts.
+
+## One answer per account
+
+The call responds `200` even when some accounts could not be started — with 200
+accounts in a request, one unrunnable account is not a reason to fail the other
+199. Read both arrays:
+
+- `results` — the accounts that started, each with its `runId`, plus the ones
+  that reused a previous run.
+- `errors` — the accounts that did not, each with the reason.
+
+```json
+{
+  "results": [
+    { "companyId": "cpn_K4tRm2Qw9Yb7Xz1Ns", "runId": "air_H2nQv7Bs4Jm1Ty8Wk", "status": "started" },
+    { "companyId": "cpn_G7yFs4Nc1Vd8Bh3Zp", "runId": "air_D5cLp3Xg9Rn6Vt2Fs", "status": "reused" }
+  ],
+  "errors": [
+    {
+      "companyId": "cpn_M9jTx6Rw2Kf5Cq0Ld",
+      "code": "ABS_CONTACT_SOURCING_COMPANY_NOT_IDENTIFIED",
+      "message": "Add this account's website or public LinkedIn URL before searching for leads."
+    }
+  ]
+}
+```
+
+Entries come back in the order you sent them, so you can zip them against your
+own list.
+
+The request itself is only refused for something you can fix as a whole: a body
+that is not a list of company IDs, or more than 200 accounts.
+
+<Note>
+  Every started account costs one credit and counts against the workspace's daily
+  contact-sourcing limit. Accounts left out by that limit come back in `errors`
+  with `ABS_CONTACT_SOURCING_TEAM_DAILY_CAP_REACHED` — retry them the next day.
+</Note>

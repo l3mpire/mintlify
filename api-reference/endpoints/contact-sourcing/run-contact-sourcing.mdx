@@ -1,0 +1,48 @@
+---
+openapi: post /contact-sourcing/runs
+description: Starts an AI contact-sourcing run for one account and returns a run ID.
+---
+
+Contact sourcing finds the **buying committee** of an account: it sources the
+company's employees from the People Database, then classifies each one as a
+`decision_maker`, a `user` or an `influencer`, with an ICP fit score and a short
+reason.
+
+## The run is asynchronous
+
+The response comes back immediately with a `runId` — the classification itself
+takes from a few seconds to a couple of minutes, depending on how many employees
+the company has. Two ways to get the result:
+
+- **Poll** [Get Contact Sourcing Run](/api-reference/endpoints/contact-sourcing/get-contact-sourcing-run).
+  It answers `202` while the run is going and `200` once it is done.
+- **Subscribe** to the `contactSourcingDone` webhook and let lemlist call you.
+  Subscribe to `contactSourcingFailed` too, or a failed run leaves you waiting.
+
+## Re-running an account
+
+By default an account that already has a committee is **not** re-run: you get the
+previous run back with `status: "reused"` and nothing is charged. Pass
+`overwrite: true` to force a fresh run and replace the previous result.
+
+<Note>
+  Each run costs one credit, charged when the run succeeds. A reused run is free.
+</Note>
+
+## Starting from a domain or a LinkedIn URL
+
+This endpoint takes a lemlist company ID. If you hold a domain or a LinkedIn
+page instead, resolve it first with
+[Get Many Companies](/api-reference/endpoints/companies/get-many-companies):
+
+```bash
+curl -u :$LEMLIST_API_KEY \
+  "https://api.lemlist.com/api/companies?idsOrDomains=acme.com"
+```
+
+## Before your first run
+
+The team needs its **AI Context** filled in (lemlist uses it to know what a good
+fit looks like), and the account needs a website or a LinkedIn URL — a company
+name alone matches every company that shares it, so the run is refused with
+`422` rather than sourcing people from the wrong company.

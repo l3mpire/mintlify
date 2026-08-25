@@ -1170,7 +1170,9 @@
               "callTranscriptDone",
               "inboxLabelUpdated",
               "signalRegistered",
-              "deliverabilityAlertTriggered"
+              "deliverabilityAlertTriggered",
+              "contactSourcingDone",
+              "contactSourcingFailed"
             ]
           },
           "campaignId": {
@@ -3355,6 +3357,88 @@
           "recheckDelayHours": {
             "type": "integer",
             "description": "Cool-down between re-evaluations after the alert has triggered, in hours. Defaults to 12."
+          }
+        }
+      },
+      "ContactSourcingRun": {
+        "type": "object",
+        "properties": {
+          "runId": {
+            "type": "string"
+          },
+          "companyId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "running",
+              "completed",
+              "failed"
+            ]
+          },
+          "ranAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reasoning": {
+            "type": "string",
+            "description": "The AI's read-out of the account — why it picked these people, or found nobody."
+          },
+          "error": {
+            "type": "string",
+            "description": "Only on a failed run."
+          },
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactSourcingContact"
+            }
+          }
+        }
+      },
+      "ContactSourcingContact": {
+        "type": "object",
+        "properties": {
+          "leadId": {
+            "type": "string",
+            "description": "People-Database id. Pass it to `POST /contact-sourcing/contacts` to add this person as a contact."
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "decision_maker",
+              "user",
+              "influencer"
+            ]
+          },
+          "fitScore": {
+            "type": "number",
+            "description": "How well the person matches the team's ICP, 0-100."
+          },
+          "reasoning": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "jobTitle": {
+            "type": "string"
+          },
+          "linkedinUrl": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "companyName": {
+            "type": "string",
+            "description": "The person's CURRENT employer, which is not always the account classified."
           }
         }
       }
@@ -18010,7 +18094,9 @@
                       "callTranscriptDone",
                       "inboxLabelUpdated",
                       "signalRegistered",
-                      "deliverabilityAlertTriggered"
+                      "deliverabilityAlertTriggered",
+                      "contactSourcingDone",
+                      "contactSourcingFailed"
                     ]
                   },
                   "secret": {
@@ -22287,6 +22373,296 @@
           },
           "405": {
             "description": "Method not allowed"
+          }
+        }
+      }
+    },
+    "/contact-sourcing/runs": {
+      "post": {
+        "summary": "Run Contact Sourcing",
+        "description": "Starts an AI contact-sourcing run for one account: sources the company's employees from the People Database and classifies them into a buying committee (decision maker / user / influencer) with an ICP fit score.\n\nThe run is asynchronous. The response returns a `runId` immediately — poll `GET /contact-sourcing/runs` or subscribe to the `contactSourcingDone` webhook to get the result.\n\nBy default an account that already has a committee is not re-run: the previous run is returned with `status: \"reused\"` and nothing is charged. Pass `overwrite: true` to force a fresh run.\n\nAccepts a lemlist company id only. To start from a domain or a LinkedIn URL, resolve it first with `GET /companies?idsOrDomains=`.",
+        "tags": [
+          "Contact sourcing"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "companyId"
+                ],
+                "properties": {
+                  "companyId": {
+                    "type": "string",
+                    "description": "The account to source contacts for (`cpn_xxx` format).",
+                    "example": "cpn_K4tRm2Qw9Yb7Xz1Ns"
+                  },
+                  "overwrite": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Force a fresh run even if the account already has a committee. Charges a credit."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Run started. Poll or wait for the webhook.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "runId": {
+                      "type": "string",
+                      "example": "air_H2nQv7Bs4Jm1Ty8Wk"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "started"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "The account already had a committee and `overwrite` was not set. Nothing was charged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "runId": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "reused"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Not enough credits."
+          },
+          "403": {
+            "description": "The team does not have contact sourcing enabled."
+          },
+          "422": {
+            "description": "The team has no AI Context set up, or the account has no website, LinkedIn URL nor CoreSignal id to match its employees on."
+          },
+          "429": {
+            "description": "Daily contact-sourcing limit reached for this team."
+          }
+        }
+      },
+      "get": {
+        "summary": "Get Contact Sourcing Run",
+        "description": "Reads one contact-sourcing run — by its own id, or the latest run of an account.\n\nThe HTTP status carries the run state: `200` the run completed and `contacts` is filled, `202` the run is still queued or going (poll again), `400` the run failed and `error` says why, `404` no such run.\n\nExactly one of `runId` or `companyId` is required.",
+        "tags": [
+          "Contact sourcing"
+        ],
+        "parameters": [
+          {
+            "name": "runId",
+            "in": "query",
+            "required": false,
+            "description": "The run to read, as returned by `POST /contact-sourcing/runs`.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "air_H2nQv7Bs4Jm1Ty8Wk"
+          },
+          {
+            "name": "companyId",
+            "in": "query",
+            "required": false,
+            "description": "Read the LATEST run of this account instead (`cpn_xxx` format).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The run completed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactSourcingRun"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "The run is queued or still going; `contacts` is empty."
+          },
+          "400": {
+            "description": "The run failed; `error` says why."
+          },
+          "404": {
+            "description": "No such run, or the account has never been sourced."
+          }
+        }
+      }
+    },
+    "/contact-sourcing/runs/batch": {
+      "post": {
+        "summary": "Run Contact Sourcing (batch)",
+        "description": "Starts a contact-sourcing run for up to 200 accounts in one call.\n\nAnswers per account rather than failing the whole request: `results` holds the accounts that started (or reused a previous run), `errors` holds the ones that did not, each with the reason. Only a malformed body or more than 200 items is refused outright.",
+        "tags": [
+          "Contact sourcing"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "companyIds"
+                ],
+                "properties": {
+                  "companyIds": {
+                    "type": "array",
+                    "maxItems": 200,
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Accounts to source contacts for (`cpn_xxx` format).",
+                    "example": [
+                      "cpn_K4tRm2Qw9Yb7Xz1Ns"
+                    ]
+                  },
+                  "overwrite": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "One entry per account, in the order they were given.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "companyId": {
+                            "type": "string"
+                          },
+                          "runId": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "started",
+                              "reused"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "companyId": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string",
+                            "example": "ABS_CONTACT_SOURCING_TEAM_DAILY_CAP_REACHED"
+                          },
+                          "message": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contact-sourcing/contacts": {
+      "post": {
+        "summary": "Add a Sourced Contact",
+        "description": "Turns one contact-sourcing recommendation into a lemlist contact.\n\n`leadId` comes from a run's `contacts[].leadId` — a People-Database id, not a contact id. `companyId` is required and verified: if the person's profile now puts them at a different company, the contact is not filed under the account asked for and the call answers 409.",
+        "tags": [
+          "Contact sourcing"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "leadId",
+                  "companyId"
+                ],
+                "properties": {
+                  "leadId": {
+                    "type": "string",
+                    "description": "People-Database id, from a run's `contacts[].leadId`.",
+                    "example": "123456789"
+                  },
+                  "companyId": {
+                    "type": "string",
+                    "example": "cpn_K4tRm2Qw9Yb7Xz1Ns"
+                  },
+                  "listId": {
+                    "type": "string",
+                    "description": "File the new contact into this contact list (`clt_xxx`). Omit to leave it in all contacts.",
+                    "example": "clt_P3vDh8Lk5Tq2Wm6Rj"
+                  },
+                  "findEmail": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Also run email enrichment on the new contact. Spends enrichment credits."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created."
+          },
+          "402": {
+            "description": "`findEmail` was asked for without the credits for it."
+          },
+          "404": {
+            "description": "The lead is no longer in the People Database. Re-run the sourcing to refresh the recommendations."
+          },
+          "409": {
+            "description": "The lead's profile lists a different current employer, so they were not filed under this account."
           }
         }
       }

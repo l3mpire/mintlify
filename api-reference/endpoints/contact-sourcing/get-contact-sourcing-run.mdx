@@ -1,0 +1,55 @@
+---
+openapi: get /contact-sourcing/runs
+description: Reads a contact-sourcing run by ID, or the latest run of an account.
+---
+
+Pass **either** `runId` (the ID returned when you started the run) **or**
+`companyId` (to read that account's most recent run) — not both.
+
+## The status is in the HTTP code
+
+You can drive a polling loop from the status code alone, without parsing the
+body:
+
+| Code | Meaning |
+| ---- | ------- |
+| `200` | The run finished. `contacts` holds the buying committee. |
+| `202` | The run is queued or still going. `contacts` is empty — poll again. |
+| `400` | The run failed. `error` says why. |
+| `404` | No such run, or this account has never been sourced. |
+
+## Reading the result
+
+Each entry in `contacts` is one person of the buying committee:
+
+```json
+{
+  "runId": "air_H2nQv7Bs4Jm1Ty8Wk",
+  "companyId": "cpn_K4tRm2Qw9Yb7Xz1Ns",
+  "status": "completed",
+  "reasoning": "Sales-led org; the VP Sales owns tooling decisions.",
+  "contacts": [
+    {
+      "leadId": "123456789",
+      "role": "decision_maker",
+      "fitScore": 92,
+      "reasoning": "Owns the outbound budget and the tooling decision.",
+      "fullName": "Jane Smith",
+      "jobTitle": "VP Sales",
+      "linkedinUrl": "https://www.linkedin.com/in/jane-smith",
+      "country": "France",
+      "companyName": "Acme"
+    }
+  ]
+}
+```
+
+<Warning>
+  `leadId` is a **People Database ID**, not a lemlist contact ID. Nobody has been
+  added to your workspace yet — pass it to
+  [Add a Sourced Contact](/api-reference/endpoints/contact-sourcing/add-sourced-contact)
+  to create the contact.
+</Warning>
+
+`companyName` is the person's **current** employer, which is not always the
+account that was classified: someone can match an account through a past role.
