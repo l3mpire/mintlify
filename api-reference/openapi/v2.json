@@ -22465,6 +22465,15 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "The body is not a non-empty list of company IDs, contains something other than a `cpn_` id, asks for more than 200 accounts, or `overwrite` is not a boolean."
+          },
+          "403": {
+            "description": "The workspace does not have contact sourcing enabled."
+          },
+          "422": {
+            "description": "The team has no AI Context set up, so there is nothing to judge fit against. In the lemlist app, open Settings > AI Context Center. Per-account problems — no website or LinkedIn URL, no credits, daily limit reached — are not this: they come back inside `errors`."
           }
         }
       },
@@ -22518,6 +22527,7 @@
         }
       }
     },
+
 
     
     "/contact-sourcing/contacts": {
