@@ -23,6 +23,176 @@
       }
     },
     "schemas": {
+      "LinkedinSubTypeCounts": {
+        "type": "object",
+        "description": "A LinkedIn counter split by message sub-type. The three values sum to the aggregated counter of the same name on `perChannel.linkedin`. All three keys are always present, `0` when there is no matching activity.",
+        "properties": {
+          "messages": {
+            "type": "integer",
+            "description": "Regular LinkedIn messages."
+          },
+          "inMails": {
+            "type": "integer",
+            "description": "InMails."
+          },
+          "voiceNotes": {
+            "type": "integer",
+            "description": "LinkedIn voice notes."
+          }
+        }
+      },
+      "CampaignPerChannelStats": {
+        "type": "object",
+        "description": "Campaign counters split by channel. Only the channels requested through the `channels` parameter are returned; when `channels` is omitted, all five are present.",
+        "properties": {
+          "email": {
+            "type": "object",
+            "description": "Email counters.",
+            "properties": {
+              "sent": {
+                "type": "integer",
+                "description": "Emails sent."
+              },
+              "delivered": {
+                "type": "integer",
+                "description": "Emails sent that did not bounce."
+              },
+              "notDelivered": {
+                "type": "integer",
+                "description": "Emails that failed to send."
+              },
+              "opened": {
+                "type": "integer",
+                "description": "Emails opened."
+              },
+              "clicked": {
+                "type": "integer",
+                "description": "Emails with a link clicked."
+              },
+              "replied": {
+                "type": "integer",
+                "description": "Emails replied to."
+              },
+              "bounced": {
+                "type": "integer",
+                "description": "Emails that bounced."
+              },
+              "unsubscribed": {
+                "type": "integer",
+                "description": "Unsubscribes from emails."
+              }
+            }
+          },
+          "linkedin": {
+            "type": "object",
+            "description": "LinkedIn counters. `sent` covers message sends only — regular messages, InMails and voice notes. It excludes invitations and non-message actions such as profile visits, follows, likes, comments and endorsements.",
+            "properties": {
+              "sent": {
+                "type": "integer",
+                "description": "LinkedIn messages successfully sent, across the three sub-types."
+              },
+              "delivered": {
+                "type": "integer",
+                "description": "Always equal to `sent`. LinkedIn has no delivery confirmation distinct from the send itself, so a LinkedIn delivery rate is always 100% and carries no information."
+              },
+              "notDelivered": {
+                "type": "integer",
+                "description": "Send attempts that failed. Disjoint from `sent` — a failed attempt is never also counted as sent — so the share of attempts that failed is `notDelivered / (sent + notDelivered)`."
+              },
+              "opened": {
+                "type": "integer",
+                "description": "LinkedIn messages opened."
+              },
+              "replied": {
+                "type": "integer",
+                "description": "LinkedIn messages replied to."
+              },
+              "invitationAccepted": {
+                "type": "integer",
+                "description": "LinkedIn invitations accepted."
+              },
+              "breakdown": {
+                "type": "object",
+                "description": "`sent` and `notDelivered` split by message sub-type. Each trio sums to the counter of the same name above.",
+                "properties": {
+                  "sent": {
+                    "$ref": "#/components/schemas/LinkedinSubTypeCounts"
+                  },
+                  "notDelivered": {
+                    "$ref": "#/components/schemas/LinkedinSubTypeCounts"
+                  }
+                }
+              }
+            }
+          },
+          "sms": {
+            "type": "object",
+            "description": "SMS counters.",
+            "properties": {
+              "sent": {
+                "type": "integer",
+                "description": "SMS sent."
+              },
+              "delivered": {
+                "type": "integer",
+                "description": "SMS delivered."
+              },
+              "notDelivered": {
+                "type": "integer",
+                "description": "SMS that failed to send."
+              },
+              "replied": {
+                "type": "integer",
+                "description": "SMS replied to."
+              }
+            }
+          },
+          "whatsapp": {
+            "type": "object",
+            "description": "WhatsApp counters, messages and voice notes combined.",
+            "properties": {
+              "sent": {
+                "type": "integer",
+                "description": "WhatsApp messages sent."
+              },
+              "delivered": {
+                "type": "integer",
+                "description": "WhatsApp messages delivered."
+              },
+              "notDelivered": {
+                "type": "integer",
+                "description": "WhatsApp messages that failed to send."
+              },
+              "opened": {
+                "type": "integer",
+                "description": "WhatsApp messages opened."
+              },
+              "replied": {
+                "type": "integer",
+                "description": "WhatsApp messages replied to."
+              }
+            }
+          },
+          "others": {
+            "type": "object",
+            "description": "Counters that belong to no messaging channel — API-driven and manual activities, fused to mirror the single entry of the in-app channel filter.",
+            "properties": {
+              "unsubscribed": {
+                "type": "integer",
+                "description": "Unsubscribes."
+              },
+              "interested": {
+                "type": "integer",
+                "description": "Leads marked as interested."
+              },
+              "notInterested": {
+                "type": "integer",
+                "description": "Leads marked as not interested."
+              }
+            }
+          }
+        }
+      },
       "Team": {
         "type": "object",
         "description": "The organization account that manages users and billing.",
@@ -16286,6 +16456,9 @@
                       "type": "integer",
                       "description": "Number of meetings booked"
                     },
+                    "perChannel": {
+                      "$ref": "#/components/schemas/CampaignPerChannelStats"
+                    },
                     "steps": {
                       "type": "array",
                       "description": "Detailed metrics for each step in the campaign",
@@ -16378,7 +16551,7 @@
                   "nbLeadsUnsubscribed": 1,
                   "nbLeadsInterrupted": 1,
                   "messagesSent": 72,
-                  "messagesNotSent": 0,
+                  "messagesNotSent": 4,
                   "messagesBounced": 0,
                   "delivered": 72,
                   "opened": 47,
@@ -16386,6 +16559,56 @@
                   "replied": 16,
                   "invitationAccepted": 0,
                   "meetingBooked": 0,
+                  "perChannel": {
+                    "email": {
+                      "sent": 40,
+                      "delivered": 40,
+                      "notDelivered": 0,
+                      "opened": 32,
+                      "clicked": 4,
+                      "replied": 1,
+                      "bounced": 0,
+                      "unsubscribed": 0
+                    },
+                    "linkedin": {
+                      "sent": 32,
+                      "delivered": 32,
+                      "notDelivered": 4,
+                      "opened": 15,
+                      "replied": 15,
+                      "invitationAccepted": 0,
+                      "breakdown": {
+                        "sent": {
+                          "messages": 24,
+                          "inMails": 5,
+                          "voiceNotes": 3
+                        },
+                        "notDelivered": {
+                          "messages": 3,
+                          "inMails": 1,
+                          "voiceNotes": 0
+                        }
+                      }
+                    },
+                    "sms": {
+                      "sent": 0,
+                      "delivered": 0,
+                      "notDelivered": 0,
+                      "replied": 0
+                    },
+                    "whatsapp": {
+                      "sent": 0,
+                      "delivered": 0,
+                      "notDelivered": 0,
+                      "opened": 0,
+                      "replied": 0
+                    },
+                    "others": {
+                      "unsubscribed": 1,
+                      "interested": 1,
+                      "notInterested": 0
+                    }
+                  },
                   "steps": [
                     {
                       "index": 1,
@@ -16398,7 +16621,7 @@
                       "opened": 15,
                       "clicked": 0,
                       "replied": 15,
-                      "notDelivered": 0,
+                      "notDelivered": 4,
                       "bounced": 0,
                       "unsubscribed": 1
                     },
@@ -16660,6 +16883,9 @@
                             "type": "integer",
                             "description": "Number of meetings booked"
                           },
+                          "perChannel": {
+                            "$ref": "#/components/schemas/CampaignPerChannelStats"
+                          },
                           "steps": {
                             "type": "array",
                             "description": "Detailed metrics for each step in the campaign",
@@ -16775,7 +17001,7 @@
                       "nbLeadsUnsubscribed": 1,
                       "nbLeadsInterrupted": 1,
                       "messagesSent": 72,
-                      "messagesNotSent": 0,
+                      "messagesNotSent": 4,
                       "messagesBounced": 0,
                       "delivered": 72,
                       "opened": 47,
@@ -16783,6 +17009,56 @@
                       "replied": 16,
                       "invitationAccepted": 0,
                       "meetingBooked": 0,
+                      "perChannel": {
+                        "email": {
+                          "sent": 40,
+                          "delivered": 40,
+                          "notDelivered": 0,
+                          "opened": 32,
+                          "clicked": 4,
+                          "replied": 1,
+                          "bounced": 0,
+                          "unsubscribed": 0
+                        },
+                        "linkedin": {
+                          "sent": 32,
+                          "delivered": 32,
+                          "notDelivered": 4,
+                          "opened": 15,
+                          "replied": 15,
+                          "invitationAccepted": 0,
+                          "breakdown": {
+                            "sent": {
+                              "messages": 24,
+                              "inMails": 5,
+                              "voiceNotes": 3
+                            },
+                            "notDelivered": {
+                              "messages": 3,
+                              "inMails": 1,
+                              "voiceNotes": 0
+                            }
+                          }
+                        },
+                        "sms": {
+                          "sent": 0,
+                          "delivered": 0,
+                          "notDelivered": 0,
+                          "replied": 0
+                        },
+                        "whatsapp": {
+                          "sent": 0,
+                          "delivered": 0,
+                          "notDelivered": 0,
+                          "opened": 0,
+                          "replied": 0
+                        },
+                        "others": {
+                          "unsubscribed": 1,
+                          "interested": 1,
+                          "notInterested": 0
+                        }
+                      },
                       "steps": [
                         {
                           "index": 1,
@@ -16795,7 +17071,7 @@
                           "opened": 15,
                           "clicked": 0,
                           "replied": 15,
-                          "notDelivered": 0,
+                          "notDelivered": 4,
                           "bounced": 0,
                           "unsubscribed": 1
                         }
