@@ -25,6 +25,11 @@ By default an account that already has a committee is **not** re-run: you get th
 previous run back with `status: "reused"` and nothing is charged. Pass
 `overwrite: true` to force a fresh run and replace the previous result.
 
+`overwrite` never stacks a second run on one that is **still going**: you get
+that run back as `reused`, and nothing is charged. So retrying a request that
+timed out on your side is always safe — you cannot pay twice for one account by
+retrying.
+
 <Note>
   Each run costs one credit, charged when the run succeeds. A reused run is free.
 </Note>

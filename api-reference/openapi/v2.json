@@ -22380,7 +22380,7 @@
     "/contact-sourcing/runs": {
       "post": {
         "summary": "Run Contact Sourcing",
-        "description": "Starts an AI contact-sourcing run for one account: sources the company's employees from the People Database and classifies them into a buying committee (decision maker / user / influencer) with an ICP fit score.\n\nThe run is asynchronous. The response returns a `runId` immediately — poll `GET /contact-sourcing/runs` or subscribe to the `contactSourcingDone` webhook to get the result.\n\nBy default an account that already has a committee is not re-run: the previous run is returned with `status: \"reused\"` and nothing is charged. Pass `overwrite: true` to force a fresh run.\n\nAccepts a lemlist company id only. To start from a domain or a LinkedIn URL, resolve it first with `GET /companies?idsOrDomains=`.",
+        "description": "Starts an AI contact-sourcing run for one account: sources the company's employees from the People Database and classifies them into a buying committee (decision maker / user / influencer) with an ICP fit score.\n\nThe run is asynchronous. The response returns a `runId` immediately — poll `GET /contact-sourcing/runs` or subscribe to the `contactSourcingDone` webhook to get the result.\n\nBy default an account that already has a committee is not re-run: the previous run is returned with `status: \"reused\"` and nothing is charged. Pass `overwrite: true` to force a fresh run. `overwrite` never stacks a second run on one still going — that run is returned as `reused` instead, so retrying a timed-out request cannot charge you twice.\n\nAccepts a lemlist company id only. To start from a domain or a LinkedIn URL, resolve it first with `GET /companies?idsOrDomains=`.",
         "tags": [
           "Contact sourcing"
         ],
@@ -22402,7 +22402,7 @@
                   "overwrite": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Force a fresh run even if the account already has a committee. Charges a credit."
+                    "description": "Force a fresh run even if the account already has a committee. Charges a credit. Ignored while a run for this account is still going — that one is returned as `reused` instead."
                   }
                 }
               }
