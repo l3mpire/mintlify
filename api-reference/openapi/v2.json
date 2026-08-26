@@ -22377,150 +22377,10 @@
         }
       }
     },
-    "/contact-sourcing/runs": {
+    "/contact-sourcing": {
       "post": {
         "summary": "Run Contact Sourcing",
-        "description": "Starts an AI contact-sourcing run for one account: sources the company's employees from the People Database and classifies them into a buying committee (decision maker / user / influencer) with an ICP fit score.\n\nThe run is asynchronous. The response returns a `runId` immediately — poll `GET /contact-sourcing/runs` or subscribe to the `contactSourcingDone` webhook to get the result.\n\nBy default an account that already has a committee is not re-run: the previous run is returned with `status: \"reused\"` and nothing is charged. Pass `overwrite: true` to force a fresh run. `overwrite` never stacks a second run on one still going — that run is returned as `reused` instead, so retrying a timed-out request cannot charge you twice.\n\nAccepts a lemlist company id only. To start from a domain or a LinkedIn URL, resolve it first with `GET /companies?idsOrDomains=`.",
-        "tags": [
-          "Contact sourcing"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "companyId"
-                ],
-                "properties": {
-                  "companyId": {
-                    "type": "string",
-                    "description": "The account to source contacts for (`cpn_xxx` format).",
-                    "example": "cpn_K4tRm2Qw9Yb7Xz1Ns"
-                  },
-                  "overwrite": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Force a fresh run even if the account already has a committee. Charges a credit. Ignored while a run for this account is still going — that one is returned as `reused` instead."
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "202": {
-            "description": "Run started. Poll or wait for the webhook.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "runId": {
-                      "type": "string",
-                      "example": "air_H2nQv7Bs4Jm1Ty8Wk"
-                    },
-                    "status": {
-                      "type": "string",
-                      "enum": [
-                        "started"
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "The account already had a committee and `overwrite` was not set. Nothing was charged.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "runId": {
-                      "type": "string"
-                    },
-                    "status": {
-                      "type": "string",
-                      "enum": [
-                        "reused"
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "402": {
-            "description": "Not enough credits."
-          },
-          "403": {
-            "description": "The team does not have contact sourcing enabled."
-          },
-          "422": {
-            "description": "The team has no AI Context set up (https://app.lemlist.com/homepage?s=aiContextCenter), or the account has no website, LinkedIn URL nor CoreSignal id to match its employees on."
-          },
-          "429": {
-            "description": "Daily contact-sourcing limit reached for this team."
-          }
-        }
-      },
-      "get": {
-        "summary": "Get Contact Sourcing Run",
-        "description": "Reads one contact-sourcing run — by its own id, or the latest run of an account.\n\nThe HTTP status carries the run state: `200` the run completed and `contacts` is filled, `202` the run is still queued or going (poll again), `400` the run failed and `error` says why, `404` no such run.\n\nExactly one of `runId` or `companyId` is required.",
-        "tags": [
-          "Contact sourcing"
-        ],
-        "parameters": [
-          {
-            "name": "runId",
-            "in": "query",
-            "required": false,
-            "description": "The run to read, as returned by `POST /contact-sourcing/runs`.",
-            "schema": {
-              "type": "string"
-            },
-            "example": "air_H2nQv7Bs4Jm1Ty8Wk"
-          },
-          {
-            "name": "companyId",
-            "in": "query",
-            "required": false,
-            "description": "Read the LATEST run of this account instead (`cpn_xxx` format).",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The run completed.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ContactSourcingRun"
-                }
-              }
-            }
-          },
-          "202": {
-            "description": "The run is queued or still going; `contacts` is empty."
-          },
-          "400": {
-            "description": "The run failed; `error` says why."
-          },
-          "404": {
-            "description": "No such run, or the account has never been sourced."
-          }
-        }
-      }
-    },
-    "/contact-sourcing/runs/batch": {
-      "post": {
-        "summary": "Run Contact Sourcing (batch)",
-        "description": "Starts a contact-sourcing run for up to 200 accounts in one call.\n\nAnswers per account rather than failing the whole request: `results` holds the accounts that started (or reused a previous run), `errors` holds the ones that did not, each with the reason. Only a malformed body or more than 200 items is refused outright.",
+        "description": "Starts an AI contact-sourcing run for one or more accounts: sources each company's employees from the People Database and classifies them into a buying committee (decision maker / user / influencer) with an ICP fit score.\n\nOne account or two hundred, same call — pass a list of one.\n\nRuns are asynchronous: the response carries a `runId` per account. Poll `GET /contact-sourcing` or subscribe to the `contactSourcingDone` webhook for the result.\n\nThe call answers `200` even when some accounts could not be started — one unrunnable account among 200 is not a reason to fail the rest. Read both `results` and `errors`.\n\nBy default an account that already has a committee is not re-run: its previous run comes back with `status: \"reused\"` and nothing is charged. `overwrite: true` forces a fresh run, but never stacks a second one on a run still going — that one is returned as `reused` instead, so retrying a timed-out request cannot charge you twice.\n\nTakes lemlist company ids only. To start from a domain or LinkedIn URL, resolve it first with `GET /companies?idsOrDomains=`.",
         "tags": [
           "Contact sourcing"
         ],
@@ -22607,8 +22467,59 @@
             }
           }
         }
+      },
+      "get": {
+        "summary": "Get Contact Sourcing Run",
+        "description": "Reads one contact-sourcing run — by its own id, or the latest run of an account.\n\nThe HTTP status carries the run state: `200` the run completed and `contacts` is filled, `202` the run is still queued or going (poll again), `400` the run failed and `error` says why, `404` no such run.\n\nExactly one of `runId` or `companyId` is required.",
+        "tags": [
+          "Contact sourcing"
+        ],
+        "parameters": [
+          {
+            "name": "runId",
+            "in": "query",
+            "required": false,
+            "description": "The run to read, as returned by `POST /contact-sourcing`.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "air_H2nQv7Bs4Jm1Ty8Wk"
+          },
+          {
+            "name": "companyId",
+            "in": "query",
+            "required": false,
+            "description": "Read the LATEST run of this account instead (`cpn_xxx` format).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The run completed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactSourcingRun"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "The run is queued or still going; `contacts` is empty."
+          },
+          "400": {
+            "description": "The run failed; `error` says why."
+          },
+          "404": {
+            "description": "No such run, or the account has never been sourced."
+          }
+        }
       }
     },
+
+    
     "/contact-sourcing/contacts": {
       "post": {
         "summary": "Add a Sourced Contact",

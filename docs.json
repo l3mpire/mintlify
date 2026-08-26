@@ -338,7 +338,6 @@
                 "expanded": false,
                 "pages": [
                   "api-reference/endpoints/contact-sourcing/run-contact-sourcing",
-                  "api-reference/endpoints/contact-sourcing/run-contact-sourcing-batch",
                   "api-reference/endpoints/contact-sourcing/get-contact-sourcing-run",
                   "api-reference/endpoints/contact-sourcing/add-sourced-contact"
                 ]
