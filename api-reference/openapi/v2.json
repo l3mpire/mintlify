@@ -22460,7 +22460,7 @@
             "description": "The team does not have contact sourcing enabled."
           },
           "422": {
-            "description": "The team has no AI Context set up, or the account has no website, LinkedIn URL nor CoreSignal id to match its employees on."
+            "description": "The team has no AI Context set up (https://app.lemlist.com/homepage?s=aiContextCenter), or the account has no website, LinkedIn URL nor CoreSignal id to match its employees on."
           },
           "429": {
             "description": "Daily contact-sourcing limit reached for this team."
