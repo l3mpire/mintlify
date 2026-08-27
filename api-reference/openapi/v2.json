@@ -13618,6 +13618,7 @@
                 "crm_sync_invalid_url",
                 "crm_sync_invalid_email",
                 "crm_sync_invalid_phone",
+                "crm_sync_linkedin_url_not_contact",
                 "crm_sync_duplicate_contact_blocked",
                 "crm_sync_duplicate_company_blocked",
                 "crm_sync_company_not_in_lemlist",
