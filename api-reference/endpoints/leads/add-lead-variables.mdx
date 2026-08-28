@@ -12,3 +12,7 @@ To add custom fields, you can add as many as you want in the body of your reques
  
  Beware, you **cannot** add a new variable with the same name as an existing variable (default or custom).
 </Warning>
+
+<Note>
+ Variable values may contain line breaks (`\n`) — for example for multi-line text custom fields. They are stored and returned as-is: in HTML emails a `\n` is rendered as a line break, while LinkedIn and SMS keep it native.
+</Note>
