@@ -1,6 +1,6 @@
 ---
 openapi: get /contacts
-description: Retrieves contacts from your CRM. Use `idsOrEmails` to fetch specific contacts by ID or email in a single request (max 100), or omit it to search/list contacts by name, email, contact list, or campaign membership.
+description: Retrieves contacts from your CRM. Use `idsOrEmails` to fetch specific contacts by ID or email in a single request (max 100), `crmId` / `crmIds` to look them up by their record id in your connected CRM, or omit all of these to search/list contacts by name, email, contact list, or campaign membership.
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
@@ -8,12 +8,16 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 ## Query modes
 
-This endpoint supports two query modes:
+This endpoint supports several query modes:
 
 | Mode | Parameters | Response format |
 |------|-----------|----------------|
 | **By IDs/emails** | `idsOrEmails` | Array of contacts |
+| **By CRM ID** | `crmId` | Single contact object (`404` if none) |
+| **By CRM IDs** | `crmIds` | Array of contacts (found subset, `[]` if none) |
 | **Search/filter** | `search`, `email`, `listId`, and/or `notInAnyCampaign` | Paginated object with `data`, `total`, `limit`, `offset` |
+
+The `crmId` / `crmIds` lookups resolve against the team's active CRM (HubSpot / Salesforce / Pipedrive), matching on the contact's CRM record id.
 
 ### Filtering by contact list
 

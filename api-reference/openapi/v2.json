@@ -13505,7 +13505,7 @@
     "/contacts": {
       "get": {
         "summary": "Get Many Contacts",
-        "description": "Retrieves contacts by IDs/emails, or searches/lists contacts by name, email, contact list, campaign membership, or company link.\n\nWhen using `idsOrEmails`, returns an array of matching contacts directly.\n\nWhen using `search`, `email`, `listId`, `notInAnyCampaign`, any of the `company*` filters, or no filter at all, returns a paginated response with `data`, `total`, `limit`, and `offset` fields. You can combine filters together to narrow results (e.g. `listId` with `search`, or `notInAnyCampaign` with `companyId`). Calling the endpoint without any filter returns all contacts of the team, paginated.\n\nThe `company*` filters (`companyId`, `companyDomain`, `companyLinkedinUrl`, `companySalesnavUrl`) are mutually exclusive — use only one at a time. `companyDomain` / `companyLinkedinUrl` / `companySalesnavUrl` are resolved to a `companyId` through the Companies collection; if no matching company exists, the endpoint returns an empty list with `total: 0` (not an error), which keeps automation flows simple.",
+        "description": "Retrieves contacts by IDs/emails, or searches/lists contacts by name, email, contact list, campaign membership, or company link.\n\nWhen using `idsOrEmails`, returns an array of matching contacts directly.\n\nWhen using `search`, `email`, `listId`, `notInAnyCampaign`, any of the `company*` filters, or no filter at all, returns a paginated response with `data`, `total`, `limit`, and `offset` fields. You can combine filters together to narrow results (e.g. `listId` with `search`, or `notInAnyCampaign` with `companyId`). Calling the endpoint without any filter returns all contacts of the team, paginated.\n\nThe `company*` filters (`companyId`, `companyDomain`, `companyLinkedinUrl`, `companySalesnavUrl`) are mutually exclusive — use only one at a time. `companyDomain` / `companyLinkedinUrl` / `companySalesnavUrl` are resolved to a `companyId` through the Companies collection; if no matching company exists, the endpoint returns an empty list with `total: 0` (not an error), which keeps automation flows simple.\n\nYou can also look contacts up by their record id in your connected CRM (HubSpot / Salesforce / Pipedrive), resolved against the team's active CRM and matched on the contact's CRM id. `crmId` does an exact lookup and returns the single matching contact object (same shape as `GET /contacts/{idOrEmail}`), or `404` if none matches. `crmIds` (comma separated, max 100) does a bulk lookup and returns the found subset as an array — `200` with `[]` when nothing matches or no CRM is connected.",
         "tags": [
           "Contacts"
         ],
@@ -13516,6 +13516,29 @@
             "required": false,
             "description": "A comma separated string of either valid contact IDs (MongoDB ObjectId) or valid email addresses. Optional — when omitted, returns the paginated list of all contacts of the team. Maximum 100 values.",
             "example": "ctc_xW8Ou6C03Csv8vatp,riley@example.com",
+            "schema": {
+              "type": "string"
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
+            "name": "crmId",
+            "in": "query",
+            "required": false,
+            "description": "Look up a single contact by its record id in the team's active CRM (HubSpot / Salesforce / Pipedrive), matched on the contact's CRM id. Returns the matching contact object (same shape as `GET /contacts/{idOrEmail}`), or `404` if none matches. Max 25 characters.",
+            "example": "739586853096",
+            "schema": {
+              "type": "string",
+              "maxLength": 25
+            }
+          },
+          {
+            "name": "crmIds",
+            "in": "query",
+            "required": false,
+            "description": "Bulk lookup by CRM record ids in the team's active CRM. A comma separated string, maximum 100 values (duplicates are collapsed). Returns the found subset as an array; `200` with an empty array when nothing matches or no CRM is connected.",
+            "example": "739586853096,739613833405",
             "schema": {
               "type": "string"
             },
@@ -13658,11 +13681,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Success. When using `idsOrEmails`, returns an array of contacts. Otherwise, returns a paginated object with `data`, `total`, `limit`, and `offset`.",
+            "description": "Success. When using `crmId`, returns a single contact object. When using `idsOrEmails` or `crmIds`, returns an array of contacts. Otherwise, returns a paginated object with `data`, `total`, `limit`, and `offset`.",
             "content": {
               "application/json": {
                 "schema": {
                   "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Contact"
+                    },
                     {
                       "type": "array",
                       "items": {
@@ -13771,7 +13797,7 @@
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / search query too short / invalid listId format",
+            "description": "Possible errors: Bad team / search query too short / invalid listId format / invalid `crmId` (`INVALID_CRM_ID`) / too many `crmIds` (`TOO_MANY_CRM_IDS`)",
             "content": {
               "text/plain": {
                 "example": "Search query must be at least 2 characters"
@@ -13783,6 +13809,14 @@
             "content": {
               "text/plain": {
                 "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "No contact matches the provided `idsOrEmails` or `crmId` (single lookup — `crmIds` returns an empty array instead).",
+            "content": {
+              "text/plain": {
+                "example": "Contact not found"
               }
             }
           },
@@ -14956,6 +14990,27 @@
             }
           },
           {
+            "name": "crmId",
+            "in": "query",
+            "required": false,
+            "description": "Look up a single company by its record id in the team's active CRM (HubSpot / Salesforce / Pipedrive), matched on the company's CRM id. Returns the matching company object (including its `crmSync` block), or `404` if none matches. Max 25 characters.",
+            "example": "422131544252",
+            "schema": {
+              "type": "string",
+              "maxLength": 25
+            }
+          },
+          {
+            "name": "crmIds",
+            "in": "query",
+            "required": false,
+            "description": "Bulk lookup by CRM record ids in the team's active CRM. A comma separated string, maximum 100 values (duplicates are collapsed). Returns a `{ data, total }` object with the found subset; `total: 0` and an empty `data` array when nothing matches or no CRM is connected.",
+            "example": "422131544252,422235196646",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "offset",
             "in": "query",
             "required": false,
@@ -15072,33 +15127,38 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "Success. `crmId` returns a single company object; `idsOrDomains` and `crmIds` return a `{ data, total }` object with the matching subset; the search / unfiltered form additionally includes `limit` and `offset`.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Company"
-                      }
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Company"
                     },
-                    "total": {
-                      "type": "integer"
-                    },
-                    "limit": {
-                      "type": "integer"
-                    },
-                    "offset": {
-                      "type": "integer"
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Company"
+                          }
+                        },
+                        "total": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        },
+                        "offset": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "data",
+                        "total"
+                      ]
                     }
-                  },
-                  "required": [
-                    "data",
-                    "total",
-                    "limit",
-                    "offset"
                   ]
                 },
                 "example": {
@@ -15182,7 +15242,7 @@
             }
           },
           "400": {
-            "description": "Bad team",
+            "description": "Possible errors: Bad team / invalid `crmId` (`INVALID_CRM_ID`) / too many `crmIds` (`TOO_MANY_CRM_IDS`)",
             "content": {
               "text/plain": {
                 "example": "Bad team"
@@ -15194,6 +15254,20 @@
             "content": {
               "text/plain": {
                 "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "No company matches the provided `crmId` in the team's active CRM (single lookup only — `crmIds` returns an empty list instead).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "COMPANY_NOT_FOUND",
+                    "message": "Company not found"
+                  }
+                }
               }
             }
           },
