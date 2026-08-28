@@ -820,7 +820,7 @@
           },
           "conflictingRecordId": {
             "type": "string",
-            "description": "For duplicate reasons, the id of the record that already holds the value — use it to merge or remap before resolving the duplicate. Omitted for non-duplicate reasons."
+            "description": "The lemlist record that already holds the value, when the rejection identifies one — use it to merge or remap before resolving the duplicate. Always a lemlist id (`ctc_…` for a contact, `cpn_…` for a company), never a CRM record id. Omitted otherwise."
           },
           "rejectedValue": {
             "type": "string",
@@ -13615,11 +13615,15 @@
                 "enrichment_duplicate_email",
                 "crm_sync_duplicate_linkedin_url",
                 "crm_sync_invalid_linkedin_url",
+                "crm_sync_invalid_url",
+                "crm_sync_invalid_email",
                 "crm_sync_invalid_phone",
+                "crm_sync_linkedin_url_not_contact",
                 "crm_sync_duplicate_contact_blocked",
                 "crm_sync_duplicate_company_blocked",
                 "crm_sync_company_not_in_lemlist",
                 "crm_sync_custom_field_creation_failed",
+                "crm_sync_unsub_state_protected",
                 "crm_sync_value_oscillating",
                 "crm_sync_owner_sync_loop",
                 "crm_sync_unmapped_user",
@@ -15053,10 +15057,10 @@
               "enum": [
                 "crm_sync_duplicate_company",
                 "crm_sync_invalid_domain",
-                "crm_sync_company_not_found",
-                "crm_sync_update_failed",
                 "crm_sync_duplicate_linkedin_url",
                 "crm_sync_invalid_linkedin_url",
+                "crm_sync_linkedin_url_not_company",
+                "crm_sync_invalid_url",
                 "crm_sync_value_oscillating",
                 "crm_sync_owner_sync_loop",
                 "crm_sync_unmapped_user",
