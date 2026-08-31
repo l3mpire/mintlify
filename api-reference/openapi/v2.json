@@ -12365,6 +12365,131 @@
         "parameters": []
       }
     },
+    "/inbox/sms": {
+      "post": {
+        "summary": "Send SMS Message",
+        "description": "Sends an SMS to a contact through the lemlist inbox. The message is sent to the contact's phone number (`phone` field, or the first entry of `phones`). Sending consumes SMS credits, one per message segment.",
+        "tags": [
+          "Inbox"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sendUserId": {
+                    "type": "string",
+                    "description": "Sender user ID. Must belong to the team owning the API key."
+                  },
+                  "from": {
+                    "type": "string",
+                    "description": "Sender phone number, in E.164 format. Must be a phone number provisioned on your team; an unknown, pending or deleted number fails with `Failed to send SMS`."
+                  },
+                  "contactId": {
+                    "type": "string",
+                    "description": "Contact ID. Provide either contactId or leadId (not both required). Returned in the response."
+                  },
+                  "leadId": {
+                    "type": "string",
+                    "description": "Lead ID. Provide either contactId or leadId; when only leadId is sent, its contact is resolved and returned as contactId in the response."
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "SMS body. lemlist variables such as {{firstName}} are resolved against the contact before sending, and the resolved message must not be empty."
+                  }
+                },
+                "required": [
+                  "sendUserId",
+                  "from",
+                  "message"
+                ]
+              },
+              "example": {
+                "sendUserId": "usr_Example123UserAbc",
+                "from": "+33612345678",
+                "contactId": "ctc_Example123Contact",
+                "message": "Hi {{firstName}}, following up on our conversation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "description": "True when the SMS was sent."
+                    },
+                    "contactId": {
+                      "type": "string",
+                      "description": "The contact the SMS was sent to (resolved from leadId when only a lead was provided)."
+                    }
+                  }
+                },
+                "example": {
+                  "ok": true,
+                  "contactId": "ctc_Example123Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible errors: Bad team / Invalid sendUserId / contactId or leadId is required / Invalid leadId / Lead not found / Invalid contactId / Invalid message / Invalid from / Sender not found / The sender is not in the current team / Contact or lead not found (or has no valid email address) / Contact is unsubscribed / Variable is unsubscribed / SMS message body is empty / Failed to send SMS",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Bad team"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "Not enough SMS credits to send the message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Not enough credit to send the sms"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        },
+        "parameters": []
+      }
+    },
     "/inbox/labels": {
       "get": {
         "summary": "Get Many Labels",
