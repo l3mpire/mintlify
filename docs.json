@@ -147,6 +147,7 @@
                   "api-reference/endpoints/campaigns/start-campaign-export",
                   "api-reference/endpoints/campaigns/get-campaign-export-status",
                   "api-reference/endpoints/campaigns/set-export-email-notification",
+                  "api-reference/endpoints/campaigns/export-campaign-leads-v2",
                   "api-reference/endpoints/campaigns/export-campaign-leads",
                   "api-reference/endpoints/campaigns/get-campaign-reports"
                 ]

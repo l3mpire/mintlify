@@ -1,13 +1,20 @@
 ---
-openapi: "get /campaigns/{campaignId}/export/leads"
+openapi: "get /v2/campaigns/{campaignId}/export/leads"
 description: "Exports leads from a campaign with flexible filtering and format options."
 ---
 
-<Warning>
-    This endpoint is **legacy**. Use [Export Campaign Leads](/api-reference/endpoints/campaigns/export-campaign-leads-v2) instead.
-</Warning>
-
 The export returns leads in CSV or JSON format based on their state.
+
+## Streaming response
+
+The response is streamed as it is read from the database. Parameters, CSV columns and JSON keys are identical to the [legacy endpoint](/api-reference/endpoints/campaigns/export-campaign-leads) — only the transport changes:
+
+- **No `Content-Length`**: the response uses chunked transfer encoding, so the total size is not known upfront. A client that needs the size must buffer the body itself.
+- **Errors after the first byte**: once rows start flowing, a failure closes the connection instead of returning an HTTP error status.
+
+<Warning>
+    A mid-export failure cannot be reported with an HTTP status code, since the response has already started. Treat an incomplete transfer as a failed export and retry — do not assume a truncated file is a complete one.
+</Warning>
 
 ## Filtering by state
 
@@ -73,21 +80,21 @@ Use the `format` parameter to choose between:
 
 ```bash Export all leads as CSV
 curl --request GET \
-  --url 'https://api.lemlist.com/api/campaigns/cam_123/export/leads?state=all' \
+  --url 'https://api.lemlist.com/api/v2/campaigns/cam_123/export/leads?state=all' \
  --header 'Authorization: Basic <encoded-value>'
 ```
 
 
 ```bash Export interested leads as JSON
 curl --request GET \
-  --url 'https://api.lemlist.com/api/campaigns/cam_123/export/leads?state=interested&format=json' \
+  --url 'https://api.lemlist.com/api/v2/campaigns/cam_123/export/leads?state=interested&format=json' \
  --header 'Authorization: Basic <encoded-value>'
 ```
 
 
 ```bash Export multiple states
 curl --request GET \
-  --url 'https://api.lemlist.com/api/campaigns/cam_123/export/leads?state=emailsOpened,emailsReplied,interested' \
+  --url 'https://api.lemlist.com/api/v2/campaigns/cam_123/export/leads?state=emailsOpened,emailsReplied,interested' \
   --header 'Authorization: Basic <encoded-value>'
 ```
 
