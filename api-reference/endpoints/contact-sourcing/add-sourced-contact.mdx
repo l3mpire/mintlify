@@ -1,0 +1,27 @@
+---
+openapi: post /contact-sourcing/contacts
+description: Turns one contact-sourcing recommendation into a lemlist contact.
+---
+
+Takes a `leadId` from a run's `contacts` array and creates the matching contact
+in your workspace.
+
+## Filing and enriching
+
+- `listId` files the new contact into a contact list. Without it the contact
+  lands in **All contacts**.
+- `findEmail: true` also runs email enrichment on the new contact. It spends
+  enrichment credits, so it is off by default.
+
+## Why `companyId` is required
+
+The People Database resolves a person's company from their own profile. If the
+person has changed jobs since the run, they belong to a different company than
+the one you sourced — so lemlist checks, and answers `409` rather than filing
+them under the wrong account and reporting success.
+
+| Code | Meaning |
+| ---- | ------- |
+| `201` | Contact created. |
+| `404` | The person is no longer in the People Database. Re-run the sourcing to refresh the recommendations. |
+| `409` | Their profile now lists a different employer, so they were not added to this account. |

@@ -154,6 +154,21 @@ These aggregate multiple activity types into a single lead-state change event.
 | `enrichmentDone` | Enrichment completed |
 | `enrichmentError` | Enrichment failed |
 
+### Contact sourcing
+
+| Event | Description |
+| ----- | ----------- |
+| `contactSourcingDone` | A contact-sourcing run finished; the payload carries the buying committee it found |
+| `contactSourcingFailed` | A contact-sourcing run failed; the payload carries the reason |
+
+The payload of both is the same shape [Get Contact Sourcing Run](/api-reference/endpoints/contact-sourcing/get-contact-sourcing-run) answers with, under a `data` key.
+
+<Note>
+  Subscribe to `contactSourcingFailed` as well as `contactSourcingDone`: a run
+  that fails never emits the done event, so an integration listening only for
+  the latter waits for a result that is not coming.
+</Note>
+
 ### Inbox activities
 
 | Event | Description |
