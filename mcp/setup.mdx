@@ -130,6 +130,7 @@ Then configure your AI client:
 The MCP server exposes a growing set of tools that evolve regularly. Simply ask your AI assistant what lemlist operations it can perform, and it will provide the most up-to-date list.
 
 Current capabilities include:
+
 - **Campaign management** — create, update, start, pause campaigns and sequences
 - **Lead management** — add, search, update leads across campaigns
 - **Lead sourcing** — search the 450M+ B2B database by role, industry, company size, location
@@ -139,6 +140,44 @@ Current capabilities include:
 
 <Note>
 Some operations (email finding, verification, phone enrichment) consume credits. Your AI assistant will warn you before using them.
+</Note>
+
+## Advanced: limit the exposed tools
+
+By default the server exposes every tool your team has access to. If your AI assistant only needs part of lemlist, add a `?bucket=` parameter to the connector URL to expose a smaller, focused set:
+
+```text
+https://app.lemlist.com/mcp?bucket=engagement
+```
+
+Pass several buckets by separating them with commas:
+
+```text
+https://app.lemlist.com/mcp?bucket=prospecting,crm
+```
+
+Repeating the parameter works too, if your client writes URLs that way: `?bucket=prospecting&bucket=crm`.
+
+| Bucket | What it covers |
+| --- | --- |
+| `core` | The always-available core on its own (see below), the smallest connector you can ask for |
+| `builder` | Build and launch campaigns: sequence steps, previews, AI variables, A/B variants, senders |
+| `prospecting` | Find, enrich and add leads: database search, enrichment, CSV import, lead edits |
+| `crm` | Contacts, companies, lists and list membership |
+| `engagement` | Inbox conversations, follow-up tasks and calls |
+| `deliverability` | Domains, DNS, mailboxes, channel connection, warmup, inbox placement |
+| `insights` | Reporting, watch lists, webhooks, unsubscribes, campaign folders |
+
+Every bucket also ships with a small always-available core: campaigns and team context, settings, memory, help center search, and the generic `call_api` tool. That core is what keeps a narrowed connector usable, since anything outside your bucket stays reachable through `call_api`.
+
+Ask for `?bucket=core` to get that core on its own. Combining it with a bucket changes nothing, since it is always included: `?bucket=core,crm` and `?bucket=crm` expose exactly the same tools.
+
+<Warning>
+`?bucket=` controls what the server **advertises**, not what your API key is allowed to do. A narrowed connector still reaches the rest of lemlist through `call_api`, so use it to keep your assistant focused, not to restrict its access. To limit what an integration can reach, scope the API key itself.
+</Warning>
+
+<Note>
+Omit the parameter to keep the full tool list. An unrecognized bucket name is ignored, and if none of the names match the server falls back to the full list, so a typo never leaves your assistant without tools.
 </Note>
 
 ---
