@@ -5779,7 +5779,7 @@
       ],
       "get": {
         "summary": "Export Campaign Leads",
-        "description": "Export leads from a campaign with filtering options. Returns leads in CSV or JSON format based on their state (e.g., contacted, interested, replied, etc.). Same parameters and same output as the legacy route, but the response is streamed (chunked transfer encoding, no `Content-Length` header).",
+        "description": "Export leads from a campaign with filtering options. Returns leads in CSV or JSON format based on their state (e.g., contacted, interested, replied, etc.).",
         "tags": [
           "Campaigns"
         ],
