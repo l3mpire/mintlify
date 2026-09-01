@@ -438,16 +438,7 @@
             "description": "Creator user ID"
           },
           "status": {
-            "type": "string",
-            "description": "Campaign status",
-            "enum": [
-              "running",
-              "paused",
-              "draft",
-              "ended",
-              "archived",
-              "errors"
-            ]
+            "$ref": "#/components/schemas/CampaignStatus"
           },
           "sequenceId": {
             "type": "string",
@@ -1261,87 +1252,7 @@
             "description": "Destination URL for event notifications"
           },
           "type": {
-            "type": "string",
-            "description": "Event type to listen for. Events are grouped by category — see the endpoint docs for a full breakdown.",
-            "enum": [
-              "contacted",
-              "hooked",
-              "attracted",
-              "warmed",
-              "interested",
-              "notInterested",
-              "emailsSent",
-              "emailsOpened",
-              "emailsClicked",
-              "emailsReplied",
-              "emailsBounced",
-              "emailsFailed",
-              "emailsInterested",
-              "emailsNotInterested",
-              "emailsUnsubscribed",
-              "entityUnsubscribed",
-              "variableUnsubscribed",
-              "linkedinSent",
-              "linkedinOpened",
-              "linkedinReplied",
-              "linkedinInterested",
-              "linkedinNotInterested",
-              "linkedinSendFailed",
-              "linkedinVisitDone",
-              "linkedinVisitFailed",
-              "linkedinFollowDone",
-              "linkedinFollowFailed",
-              "linkedinFollowSkipped",
-              "linkedinInviteDone",
-              "linkedinInviteFailed",
-              "linkedinInviteAccepted",
-              "linkedinEndorseDone",
-              "linkedinEndorseFailed",
-              "linkedinEndorseSkipped",
-              "linkedinVoiceNoteDone",
-              "linkedinVoiceNoteFailed",
-              "linkedinLikeLastPostDone",
-              "linkedinLikeLastPostNoPost",
-              "linkedinLikeLastPostFailed",
-              "linkedinWithdrawInvitationDone",
-              "linkedinWithdrawInvitationFailed",
-              "whatsappMessageSent",
-              "whatsappMessageDelivered",
-              "whatsappMessageOpened",
-              "whatsappReplied",
-              "whatsappMessageFailed",
-              "smsSent",
-              "smsDelivered",
-              "smsReplied",
-              "smsFailed",
-              "aircallCreated",
-              "aircallEnded",
-              "aircallDone",
-              "aircallInterested",
-              "aircallNotInterested",
-              "apiDone",
-              "apiInterested",
-              "apiNotInterested",
-              "apiFailed",
-              "manualInterested",
-              "manualNotInterested",
-              "paused",
-              "resumed",
-              "stopped",
-              "campaignComplete",
-              "customDomainErrors",
-              "connectionIssue",
-              "sendLimitReached",
-              "lemwarmPaused",
-              "annotated",
-              "enrichmentDone",
-              "enrichmentError",
-              "callRecordingDone",
-              "callTranscriptDone",
-              "inboxLabelUpdated",
-              "signalRegistered",
-              "deliverabilityAlertTriggered"
-            ]
+            "$ref": "#/components/schemas/WebhookEventType"
           },
           "campaignId": {
             "type": "string",
@@ -1401,13 +1312,7 @@
             }
           },
           "exportStatus": {
-            "type": "string",
-            "description": "Export request status",
-            "enum": [
-              "pending",
-              "done",
-              "error"
-            ]
+            "$ref": "#/components/schemas/ExportStatus"
           }
         }
       },
@@ -2115,7 +2020,10 @@
           "mode": {
             "type": "string",
             "description": "Search mode the filters target",
-            "enum": ["leads", "companies"],
+            "enum": [
+              "leads",
+              "companies"
+            ],
             "example": "leads"
           },
           "filters": {
@@ -2142,7 +2050,9 @@
       "PersonaFilter": {
         "type": "object",
         "description": "One People Database filter of a persona. `in` includes matching values, `out` excludes them. There is no `type` property: it is derived from `filterId` server-side.",
-        "required": ["filterId"],
+        "required": [
+          "filterId"
+        ],
         "properties": {
           "filterId": {
             "type": "string",
@@ -2155,7 +2065,9 @@
             "items": {
               "type": "string"
             },
-            "example": ["Founder"]
+            "example": [
+              "Founder"
+            ]
           },
           "out": {
             "type": "array",
@@ -3527,6 +3439,135 @@
             "description": "Cool-down between re-evaluations after the alert has triggered, in hours. Defaults to 12."
           }
         }
+      },
+      "WebhookEventType": {
+        "type": "string",
+        "description": "Event type to listen for. Events are grouped by category — see the endpoint docs for a full breakdown.",
+        "enum": [
+          "contacted",
+          "hooked",
+          "attracted",
+          "warmed",
+          "interested",
+          "notInterested",
+          "emailsSent",
+          "emailsOpened",
+          "emailsClicked",
+          "emailsReplied",
+          "emailsBounced",
+          "emailsFailed",
+          "emailsInterested",
+          "emailsNotInterested",
+          "emailsUnsubscribed",
+          "entityUnsubscribed",
+          "variableUnsubscribed",
+          "linkedinSent",
+          "linkedinOpened",
+          "linkedinReplied",
+          "linkedinInterested",
+          "linkedinNotInterested",
+          "linkedinSendFailed",
+          "linkedinVisitDone",
+          "linkedinVisitFailed",
+          "linkedinFollowDone",
+          "linkedinFollowFailed",
+          "linkedinFollowSkipped",
+          "linkedinInviteDone",
+          "linkedinInviteFailed",
+          "linkedinInviteAccepted",
+          "linkedinEndorseDone",
+          "linkedinEndorseFailed",
+          "linkedinEndorseSkipped",
+          "linkedinVoiceNoteDone",
+          "linkedinVoiceNoteFailed",
+          "linkedinLikeLastPostDone",
+          "linkedinLikeLastPostNoPost",
+          "linkedinLikeLastPostFailed",
+          "linkedinWithdrawInvitationDone",
+          "linkedinWithdrawInvitationFailed",
+          "whatsappMessageSent",
+          "whatsappMessageDelivered",
+          "whatsappMessageOpened",
+          "whatsappReplied",
+          "whatsappMessageFailed",
+          "smsSent",
+          "smsDelivered",
+          "smsReplied",
+          "smsFailed",
+          "aircallCreated",
+          "aircallEnded",
+          "aircallDone",
+          "aircallInterested",
+          "aircallNotInterested",
+          "apiDone",
+          "apiInterested",
+          "apiNotInterested",
+          "apiFailed",
+          "manualInterested",
+          "manualNotInterested",
+          "paused",
+          "resumed",
+          "stopped",
+          "campaignComplete",
+          "customDomainErrors",
+          "connectionIssue",
+          "sendLimitReached",
+          "lemwarmPaused",
+          "annotated",
+          "enrichmentDone",
+          "enrichmentError",
+          "callRecordingDone",
+          "callTranscriptDone",
+          "inboxLabelUpdated",
+          "signalRegistered",
+          "deliverabilityAlertTriggered"
+        ]
+      },
+      "CampaignStatus": {
+        "type": "string",
+        "description": "Campaign status",
+        "enum": [
+          "running",
+          "paused",
+          "draft",
+          "ended",
+          "archived",
+          "errors"
+        ]
+      },
+      "ExportStatus": {
+        "type": "string",
+        "description": "Export request status",
+        "enum": [
+          "pending",
+          "done",
+          "error"
+        ]
+      },
+      "DraftChannel": {
+        "type": "string",
+        "description": "Communication channel",
+        "enum": [
+          "email",
+          "linkedin",
+          "whatsapp",
+          "sms"
+        ]
+      },
+      "SortOrder": {
+        "type": "string",
+        "description": "Sort order.",
+        "enum": [
+          "asc",
+          "desc"
+        ]
+      },
+      "ApiVersion": {
+        "type": "string",
+        "description": "API version. `v2` is mandatory.",
+        "enum": [
+          "v2"
+        ]
       }
     }
   },
@@ -3544,10 +3585,7 @@
             "required": false,
             "description": "Set to `v2` to include the `users` array, listing each team member's `userId`, `name`, `email`, and `role`. This lets you retrieve the team and its members in a single request.",
             "schema": {
-              "type": "string",
-              "enum": [
-                "v2"
-              ]
+              "$ref": "#/components/schemas/ApiVersion"
             }
           }
         ],
@@ -3706,15 +3744,7 @@
             "description": "Filter by campaign's state (running, paused, draft, ended, archived, errors)",
             "example": "running",
             "schema": {
-              "type": "string",
-              "enum": [
-                "running",
-                "paused",
-                "draft",
-                "ended",
-                "archived",
-                "errors"
-              ]
+              "$ref": "#/components/schemas/CampaignStatus"
             }
           }
         ],
@@ -4163,11 +4193,12 @@
             "description": "Set to 'v2' to use the latest version",
             "example": "v2",
             "schema": {
-              "type": "string",
-              "default": "v2",
-              "enum": [
-                "v2"
-              ]
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/ApiVersion"
+                }
+              ],
+              "default": "v2"
             }
           },
           {
@@ -4200,11 +4231,7 @@
             "description": "The sort direction. Use 'desc' for descending order; any other value (or omission) will sort in ascending order.",
             "example": "desc",
             "schema": {
-              "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ]
+              "$ref": "#/components/schemas/SortOrder"
             }
           },
           {
@@ -4214,15 +4241,7 @@
             "description": "The campaign status. Can be: running, draft, archived, ended, paused, errors. Note: a campaign can be in multiple statuses at one time (e.g., a paused campaign with errors).",
             "example": "running",
             "schema": {
-              "type": "string",
-              "enum": [
-                "running",
-                "draft",
-                "archived",
-                "ended",
-                "paused",
-                "errors"
-              ]
+              "$ref": "#/components/schemas/CampaignStatus"
             }
           },
           {
@@ -5010,7 +5029,11 @@
                       },
                       "campaignProgress": {
                         "type": "string",
-                        "enum": ["continue", "pause", "stop"],
+                        "enum": [
+                          "continue",
+                          "pause",
+                          "stop"
+                        ],
                         "description": "What happens to the lead on reply."
                       },
                       "propagateProgressToCompany": {
@@ -5033,7 +5056,11 @@
                       },
                       "campaignProgress": {
                         "type": "string",
-                        "enum": ["continue", "pause", "stop"],
+                        "enum": [
+                          "continue",
+                          "pause",
+                          "stop"
+                        ],
                         "description": "What happens to the lead on link click."
                       },
                       "propagateProgressToCompany": {
@@ -5055,7 +5082,11 @@
                     "properties": {
                       "campaignProgress": {
                         "type": "string",
-                        "enum": ["continue", "pause", "stop"],
+                        "enum": [
+                          "continue",
+                          "pause",
+                          "stop"
+                        ],
                         "description": "What happens to the lead when a meeting is booked."
                       },
                       "propagateProgressToCompany": {
@@ -5288,13 +5319,7 @@
                       "description": "The name of the campaign"
                     },
                     "status": {
-                      "type": "string",
-                      "enum": [
-                        "pending",
-                        "done",
-                        "error"
-                      ],
-                      "description": "Current status of the export"
+                      "$ref": "#/components/schemas/ExportStatus"
                     },
                     "startedAt": {
                       "type": "string",
@@ -5432,13 +5457,7 @@
                           "description": "The name of the campaign"
                         },
                         "status": {
-                          "type": "string",
-                          "enum": [
-                            "pending",
-                            "done",
-                            "error"
-                          ],
-                          "description": "Current status of the export"
+                          "$ref": "#/components/schemas/ExportStatus"
                         },
                         "startedAt": {
                           "type": "string",
@@ -5658,12 +5677,7 @@
                           "type": "string"
                         },
                         "status": {
-                          "type": "string",
-                          "enum": [
-                            "pending",
-                            "done",
-                            "error"
-                          ]
+                          "$ref": "#/components/schemas/ExportStatus"
                         },
                         "startedAt": {
                           "type": "string",
@@ -7067,11 +7081,7 @@
             "description": "The sort direction. Use 'desc' for descending order; any other value (or omission) will sort in ascending order.",
             "example": "desc",
             "schema": {
-              "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ]
+              "$ref": "#/components/schemas/SortOrder"
             }
           }
         ],
@@ -7877,10 +7887,7 @@
             "description": "API version. v2 is the only option",
             "example": "v2",
             "schema": {
-              "type": "string",
-              "enum": [
-                "v2"
-              ]
+              "$ref": "#/components/schemas/ApiVersion"
             }
           }
         ],
@@ -8004,11 +8011,12 @@
             "description": "API version. v2 is the only option",
             "example": "v2",
             "schema": {
-              "type": "string",
-              "default": "v2",
-              "enum": [
-                "v2"
-              ]
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/ApiVersion"
+                }
+              ],
+              "default": "v2"
             }
           }
         ],
@@ -10848,7 +10856,9 @@
         "summary": "List Personas",
         "description": "Lists the personas saved by your team. A persona is a named, reusable set of People Database filters; its id can then be referenced elsewhere in the API, for example through the `persona` filter of a Signal Agent.\n\nPersonas are team-shared: every member sees the same list. Results are sorted by creation date, most recent first, and capped at 200. The auto-generated persona lemlist derives from your AI business context is never returned; only the personas your team created are.\n\nThis endpoint is in closed beta and answers `403` unless the beta is enabled for your team.",
         "operationId": "listPersonas",
-        "tags": ["People Database"],
+        "tags": [
+          "People Database"
+        ],
         "parameters": [
           {
             "name": "mode",
@@ -10857,7 +10867,10 @@
             "description": "Restrict the list to personas of one search mode. Omit to return every persona of the team.",
             "schema": {
               "type": "string",
-              "enum": ["leads", "companies"]
+              "enum": [
+                "leads",
+                "companies"
+              ]
             },
             "example": "leads"
           }
@@ -10879,12 +10892,16 @@
                       "filters": [
                         {
                           "filterId": "currentTitle",
-                          "in": ["Founder"],
+                          "in": [
+                            "Founder"
+                          ],
                           "out": []
                         },
                         {
                           "filterId": "country",
-                          "in": ["France"],
+                          "in": [
+                            "France"
+                          ],
                           "out": []
                         }
                       ],
@@ -10958,14 +10975,20 @@
         "summary": "Create Persona",
         "description": "Creates a persona for your team from a name and a set of People Database filters.\n\nUse [Get Database Filters](/api-reference/endpoints/people-database/get-database-filters) to discover the valid `filterId` values. Filters carry no `type` property: it is derived from `filterId` server-side. Filters that require a plan your team does not have are dropped silently, so the persona is stored with the subset your plan allows.\n\nOnly the created id is returned. The stored `name` and `filters` are sanitized and plan-gated server-side, so echoing the request payload back would misreport what was persisted; call [List Personas](/api-reference/endpoints/people-database/list-personas) to read the stored persona.\n\nThis endpoint is in closed beta and answers `403` unless the beta is enabled for your team.",
         "operationId": "createPersona",
-        "tags": ["People Database"],
+        "tags": [
+          "People Database"
+        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["name", "filters", "mode"],
+                "required": [
+                  "name",
+                  "filters",
+                  "mode"
+                ],
                 "properties": {
                   "name": {
                     "type": "string",
@@ -10983,7 +11006,10 @@
                   "mode": {
                     "type": "string",
                     "description": "Search mode the filters target. Only `leads` is accepted today.",
-                    "enum": ["leads", "companies"],
+                    "enum": [
+                      "leads",
+                      "companies"
+                    ],
                     "example": "leads"
                   }
                 }
@@ -10994,12 +11020,16 @@
                 "filters": [
                   {
                     "filterId": "currentTitle",
-                    "in": ["Founder"],
+                    "in": [
+                      "Founder"
+                    ],
                     "out": []
                   },
                   {
                     "filterId": "country",
-                    "in": ["France"],
+                    "in": [
+                      "France"
+                    ],
                     "out": []
                   }
                 ]
@@ -11123,7 +11153,9 @@
         "summary": "Delete Persona",
         "description": "Permanently deletes one of your team's personas. There is no undo.\n\nAn unknown id, a persona belonging to another team, and the persona lemlist auto-generates from your AI business context all answer the same `404`: they are indistinguishable by design.\n\nThis endpoint is in closed beta and answers `403` unless the beta is enabled for your team.",
         "operationId": "deletePersona",
-        "tags": ["People Database"],
+        "tags": [
+          "People Database"
+        ],
         "parameters": [
           {
             "name": "personaId",
@@ -12796,14 +12828,7 @@
                             "description": "Unique draft identifier"
                           },
                           "channel": {
-                            "type": "string",
-                            "enum": [
-                              "email",
-                              "linkedin",
-                              "whatsapp",
-                              "sms"
-                            ],
-                            "description": "Communication channel"
+                            "$ref": "#/components/schemas/DraftChannel"
                           },
                           "subject": {
                             "type": "string",
@@ -12908,14 +12933,7 @@
                 "type": "object",
                 "properties": {
                   "channel": {
-                    "type": "string",
-                    "enum": [
-                      "email",
-                      "linkedin",
-                      "whatsapp",
-                      "sms"
-                    ],
-                    "description": "Communication channel"
+                    "$ref": "#/components/schemas/DraftChannel"
                   },
                   "content": {
                     "type": "string",
@@ -13078,14 +13096,7 @@
                           "description": "Unique draft identifier"
                         },
                         "channel": {
-                          "type": "string",
-                          "enum": [
-                            "email",
-                            "linkedin",
-                            "whatsapp",
-                            "sms"
-                          ],
-                          "description": "Communication channel"
+                          "$ref": "#/components/schemas/DraftChannel"
                         },
                         "subject": {
                           "type": "string",
@@ -13303,14 +13314,7 @@
                           "description": "Unique draft identifier"
                         },
                         "channel": {
-                          "type": "string",
-                          "enum": [
-                            "email",
-                            "linkedin",
-                            "whatsapp",
-                            "sms"
-                          ],
-                          "description": "Communication channel"
+                          "$ref": "#/components/schemas/DraftChannel"
                         },
                         "subject": {
                           "type": "string",
@@ -14986,11 +14990,7 @@
             "description": "The sort direction. Use 'desc' for descending order; any other value (or omission) will sort in ascending order.",
             "example": "desc",
             "schema": {
-              "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ]
+              "$ref": "#/components/schemas/SortOrder"
             }
           },
           {
@@ -15683,11 +15683,7 @@
             "description": "The sort direction. Use 'desc' for descending order; any other value (or omission) will sort in ascending order.",
             "example": "desc",
             "schema": {
-              "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ]
+              "$ref": "#/components/schemas/SortOrder"
             }
           }
         ],
@@ -15859,10 +15855,7 @@
             "description": "API version. v2 is mandatory",
             "example": "v2",
             "schema": {
-              "type": "string",
-              "enum": [
-                "v2"
-              ]
+              "$ref": "#/components/schemas/ApiVersion"
             }
           },
           {
@@ -18211,87 +18204,7 @@
                     "description": "The URL that will receive webhook POST requests."
                   },
                   "type": {
-                    "type": "string",
-                    "description": "Optional event type to subscribe to. When omitted, all events are sent. See the full categorized list in the endpoint documentation.",
-                    "enum": [
-                      "contacted",
-                      "hooked",
-                      "attracted",
-                      "warmed",
-                      "interested",
-                      "notInterested",
-                      "emailsSent",
-                      "emailsOpened",
-                      "emailsClicked",
-                      "emailsReplied",
-                      "emailsBounced",
-                      "emailsFailed",
-                      "emailsInterested",
-                      "emailsNotInterested",
-                      "emailsUnsubscribed",
-                      "entityUnsubscribed",
-                      "variableUnsubscribed",
-                      "linkedinSent",
-                      "linkedinOpened",
-                      "linkedinReplied",
-                      "linkedinInterested",
-                      "linkedinNotInterested",
-                      "linkedinSendFailed",
-                      "linkedinVisitDone",
-                      "linkedinVisitFailed",
-                      "linkedinFollowDone",
-                      "linkedinFollowFailed",
-                      "linkedinFollowSkipped",
-                      "linkedinInviteDone",
-                      "linkedinInviteFailed",
-                      "linkedinInviteAccepted",
-                      "linkedinEndorseDone",
-                      "linkedinEndorseFailed",
-                      "linkedinEndorseSkipped",
-                      "linkedinVoiceNoteDone",
-                      "linkedinVoiceNoteFailed",
-                      "linkedinLikeLastPostDone",
-                      "linkedinLikeLastPostNoPost",
-                      "linkedinLikeLastPostFailed",
-                      "linkedinWithdrawInvitationDone",
-                      "linkedinWithdrawInvitationFailed",
-                      "whatsappMessageSent",
-                      "whatsappMessageDelivered",
-                      "whatsappMessageOpened",
-                      "whatsappReplied",
-                      "whatsappMessageFailed",
-                      "smsSent",
-                      "smsDelivered",
-                      "smsReplied",
-                      "smsFailed",
-                      "aircallCreated",
-                      "aircallEnded",
-                      "aircallDone",
-                      "aircallInterested",
-                      "aircallNotInterested",
-                      "apiDone",
-                      "apiInterested",
-                      "apiNotInterested",
-                      "apiFailed",
-                      "manualInterested",
-                      "manualNotInterested",
-                      "paused",
-                      "resumed",
-                      "stopped",
-                      "campaignComplete",
-                      "customDomainErrors",
-                      "connectionIssue",
-                      "sendLimitReached",
-                      "lemwarmPaused",
-                      "annotated",
-                      "enrichmentDone",
-                      "enrichmentError",
-                      "callRecordingDone",
-                      "callTranscriptDone",
-                      "inboxLabelUpdated",
-                      "signalRegistered",
-                      "deliverabilityAlertTriggered"
-                    ]
+                    "$ref": "#/components/schemas/WebhookEventType"
                   },
                   "secret": {
                     "type": "string",
@@ -19341,11 +19254,7 @@
             "description": "The sort direction",
             "example": "desc",
             "schema": {
-              "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ]
+              "$ref": "#/components/schemas/SortOrder"
             }
           },
           {
