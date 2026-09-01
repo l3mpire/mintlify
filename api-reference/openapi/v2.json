@@ -5966,7 +5966,7 @@
         }
       }
     },
-    "/campaigns/{campaignId}/export/leads": {
+    "/v2/campaigns/{campaignId}/export/leads": {
       "parameters": [
         {
           "name": "campaignId",
@@ -6062,7 +6062,197 @@
             "description": "Leads exported successfully",
             "content": {
               "text/csv": {
-                "example": "emailStatus,email,firstName,lastName,picture,phone,linkedinUrl,timezone,companyName,companyDomain,icebreaker,Original event page,url extension,event_link_to_send,testFieldToDelete,naissance,lastState,status,_id\n,jeremy@example.com,Jeremy,Smith,,,https://www.linkedin.com/in/jeremysmith,,example.com,,,https://www.example.com/event-registration,?name=Jeremy&email=jeremy@example.com,https://www.example.com/event-registration?name=Jeremy&email=jeremy@example.com,,,linkedinReplied,done,lea_s2cXajAHahdDKmDw8\n,frankie@example.org,Frankie,Johnson,,,https://www.linkedin.com/in/frankiejohnson,,example.org,,,https://www.example.com/event-registration,?name=Frankie&email=frankie@example.org,https://www.example.com/event-registration?name=Frankie&email=frankie@example.org,,,linkedinReplied,done,lea_E8hdds5NryDRXpGJa\n,louiza@example.io,Louiza,Brown,,,https://www.linkedin.com/in/louizabrown,,example.io,,,https://www.example.com/event-registration,?name=Louiza&email=louiza@example.io,https://www.example.com/event-registration?name=Louiza&email=louiza@example.io,,,emailsInterested,interested,lea_tLAI7Fr2gR5hVxAIc\n,benjamin@example.co,Benjamin,Williams,,,https://www.linkedin.com/in/benjaminwilliams,,example.co,,,https://www.example.com/event-registration,?name=Benjamin&email=benjamin@example.co,https://www.example.com/event-registration?name=Benjamin&email=benjamin@example.co,,,emailsUnsubscribed,unsubscribed,lea_oznzWQKKZGXrBdqXb\n,roxanne@example.net,Roxanne,Davis,,,https://www.linkedin.com/in/roxannedavis,,example.net,,,https://www.example.com/event-registration,?name=Roxanne&email=roxanne@example.net,https://www.example.com/event-registration?name=Roxanne&email=roxanne@example.net,,,emailsClicked,done,lea_M22nl3gUwvAiNl6Ks\n,thomas@example.fr,Thomas,Miller,,,https://www.linkedin.com/in/thomasmiller,,example.fr,,,https://www.example.com/event-registration,?name=Thomas&email=thomas@example.fr,https://www.example.com/event-registration?name=Thomas&email=thomas@example.fr,,,emailsSent,done,lea_z3DydraGgNBnLdV7o"
+                "schema": {
+                  "type": "string",
+                  "example": "emailStatus,email,firstName,lastName,picture,phone,linkedinUrl,timezone,companyName,companyDomain,icebreaker,customField,lastState,status,_id\ndeliverable,john@example.com,John,Doe,,,https://www.linkedin.com/in/johndoe,Europe/Paris,Acme Inc,acme.com,Saw your post on outbound,value one,emailsReplied,done,lea_6xvnr7DQXKOZ78obX\nrisky,jane@example.com,Jane,Smith,,,https://www.linkedin.com/in/janesmith,America/New_York,Example Corp,example.com,Congrats on the new role,value two,emailsInterested,interested,lea_Z5FryxKh6L8IfW7Ln\ndeliverable,alex@example.com,Alex,Johnson,,,https://www.linkedin.com/in/alexjohnson,Europe/London,Acme Inc,acme.com,Loved your talk,value three,emailsSent,done,lea_0KRgNBYxpRqsT9UQk"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "emailStatus": {
+                        "type": "string",
+                        "enum": [
+                          "deliverable",
+                          "risky",
+                          "undeliverable"
+                        ]
+                      },
+                      "email": {
+                        "type": "string",
+                        "format": "email"
+                      },
+                      "firstName": {
+                        "type": "string"
+                      },
+                      "lastName": {
+                        "type": "string"
+                      },
+                      "picture": {
+                        "type": "string"
+                      },
+                      "phone": {
+                        "type": "string"
+                      },
+                      "linkedinUrl": {
+                        "type": "string"
+                      },
+                      "timezone": {
+                        "type": "string"
+                      },
+                      "companyName": {
+                        "type": "string"
+                      },
+                      "companyDomain": {
+                        "type": "string"
+                      },
+                      "icebreaker": {
+                        "type": "string"
+                      },
+                      "jobTitle": {
+                        "type": "string"
+                      },
+                      "lastState": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "_id": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad team",
+            "content": {
+              "text/plain": {
+                "example": "Bad team"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Campaign not found",
+            "content": {
+              "text/plain": {
+                "example": "Campaign not found"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/campaigns/{campaignId}/export/leads": {
+      "parameters": [
+        {
+          "name": "campaignId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the campaign",
+          "example": "cam_A1B2C3D4E5F6G7H8I9",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Export Campaign Leads (legacy)",
+        "deprecated": true,
+        "description": "Export leads from a campaign with filtering options. Returns leads in CSV or JSON format based on their state (e.g., contacted, interested, replied, etc.).",
+        "tags": [
+          "Campaigns"
+        ],
+        "parameters": [
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "description": "Filter to export only the specified lead's last states. Use 'all' to export all states. Can be a comma-separated list of states. **Global states**: imported, scanned, skipped, reviewed, contacted, hooked, attracted, warmed, interested, notInterested, emailsBounced, emailsUnsubscribed, failed, meetingBooked, paused. **Detailed states**: emailsSent, emailsOpened, emailsClicked, emailsReplied, emailsInterested, emailsNotInterested, emailsFailed, opportunitiesDone, aircallDone, aircallInterested, aircallNotInterested, apiDone, apiInterested, apiNotInterested, linkedinVisitDone, linkedinVisitFailed, linkedinInviteDone, linkedinInviteAccepted, linkedinInviteFailed, linkedinSent, linkedinOpened, linkedinReplied, linkedinInterested, linkedinNotInterested, linkedinSendFailed, manualInterested, manualNotInterested",
+            "example": "all",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "imported",
+                "scanned",
+                "skipped",
+                "reviewed",
+                "contacted",
+                "hooked",
+                "attracted",
+                "warmed",
+                "interested",
+                "notInterested",
+                "emailsBounced",
+                "emailsUnsubscribed",
+                "failed",
+                "meetingBooked",
+                "paused",
+                "emailsSent",
+                "emailsOpened",
+                "emailsClicked",
+                "emailsReplied",
+                "emailsInterested",
+                "emailsNotInterested",
+                "emailsFailed",
+                "opportunitiesDone",
+                "aircallDone",
+                "aircallInterested",
+                "aircallNotInterested",
+                "apiDone",
+                "apiInterested",
+                "apiNotInterested",
+                "linkedinVisitDone",
+                "linkedinVisitFailed",
+                "linkedinInviteDone",
+                "linkedinInviteAccepted",
+                "linkedinInviteFailed",
+                "linkedinSent",
+                "linkedinOpened",
+                "linkedinReplied",
+                "linkedinInterested",
+                "linkedinNotInterested",
+                "linkedinSendFailed",
+                "manualInterested",
+                "manualNotInterested"
+              ],
+              "default": "all"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "Output format: 'json' or 'csv'. Default is CSV.",
+            "example": "json",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "json",
+                "csv"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Leads exported successfully",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "example": "emailStatus,email,firstName,lastName,picture,phone,linkedinUrl,timezone,companyName,companyDomain,icebreaker,Original event page,url extension,event_link_to_send,testFieldToDelete,naissance,lastState,status,_id\n,jeremy@example.com,Jeremy,Smith,,,https://www.linkedin.com/in/jeremysmith,,example.com,,,https://www.example.com/event-registration,?name=Jeremy&email=jeremy@example.com,https://www.example.com/event-registration?name=Jeremy&email=jeremy@example.com,,,linkedinReplied,done,lea_s2cXajAHahdDKmDw8\n,frankie@example.org,Frankie,Johnson,,,https://www.linkedin.com/in/frankiejohnson,,example.org,,,https://www.example.com/event-registration,?name=Frankie&email=frankie@example.org,https://www.example.com/event-registration?name=Frankie&email=frankie@example.org,,,linkedinReplied,done,lea_E8hdds5NryDRXpGJa\n,louiza@example.io,Louiza,Brown,,,https://www.linkedin.com/in/louizabrown,,example.io,,,https://www.example.com/event-registration,?name=Louiza&email=louiza@example.io,https://www.example.com/event-registration?name=Louiza&email=louiza@example.io,,,emailsInterested,interested,lea_tLAI7Fr2gR5hVxAIc\n,benjamin@example.co,Benjamin,Williams,,,https://www.linkedin.com/in/benjaminwilliams,,example.co,,,https://www.example.com/event-registration,?name=Benjamin&email=benjamin@example.co,https://www.example.com/event-registration?name=Benjamin&email=benjamin@example.co,,,emailsUnsubscribed,unsubscribed,lea_oznzWQKKZGXrBdqXb\n,roxanne@example.net,Roxanne,Davis,,,https://www.linkedin.com/in/roxannedavis,,example.net,,,https://www.example.com/event-registration,?name=Roxanne&email=roxanne@example.net,https://www.example.com/event-registration?name=Roxanne&email=roxanne@example.net,,,emailsClicked,done,lea_M22nl3gUwvAiNl6Ks\n,thomas@example.fr,Thomas,Miller,,,https://www.linkedin.com/in/thomasmiller,,example.fr,,,https://www.example.com/event-registration,?name=Thomas&email=thomas@example.fr,https://www.example.com/event-registration?name=Thomas&email=thomas@example.fr,,,emailsSent,done,lea_z3DydraGgNBnLdV7o"
+                }
               },
               "application/json": {
                 "schema": {

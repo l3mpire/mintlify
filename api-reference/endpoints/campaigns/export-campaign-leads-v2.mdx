@@ -1,11 +1,7 @@
 ---
-openapi: "get /campaigns/{campaignId}/export/leads"
+openapi: "get /v2/campaigns/{campaignId}/export/leads"
 description: "Exports leads from a campaign with flexible filtering and format options."
 ---
-
-<Warning>
-    This endpoint is **legacy**. Use [Export Campaign Leads](/api-reference/endpoints/campaigns/export-campaign-leads-v2) instead.
-</Warning>
 
 The export returns leads in CSV or JSON format based on their state.
 
@@ -73,21 +69,21 @@ Use the `format` parameter to choose between:
 
 ```bash Export all leads as CSV
 curl --request GET \
-  --url 'https://api.lemlist.com/api/campaigns/cam_123/export/leads?state=all' \
+  --url 'https://api.lemlist.com/api/v2/campaigns/cam_123/export/leads?state=all' \
  --header 'Authorization: Basic <encoded-value>'
 ```
 
 
 ```bash Export interested leads as JSON
 curl --request GET \
-  --url 'https://api.lemlist.com/api/campaigns/cam_123/export/leads?state=interested&format=json' \
+  --url 'https://api.lemlist.com/api/v2/campaigns/cam_123/export/leads?state=interested&format=json' \
  --header 'Authorization: Basic <encoded-value>'
 ```
 
 
 ```bash Export multiple states
 curl --request GET \
-  --url 'https://api.lemlist.com/api/campaigns/cam_123/export/leads?state=emailsOpened,emailsReplied,interested' \
+  --url 'https://api.lemlist.com/api/v2/campaigns/cam_123/export/leads?state=emailsOpened,emailsReplied,interested' \
   --header 'Authorization: Basic <encoded-value>'
 ```
 
