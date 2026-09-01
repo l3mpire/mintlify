@@ -13603,6 +13603,16 @@
             }
           },
           {
+            "name": "withPrimaryCompany",
+            "in": "query",
+            "required": false,
+            "description": "When set to `true`, only returns contacts linked to a company; when set to `false`, only returns contacts without a company. Omit for no filter. Mutually exclusive with the `company*` filters (`companyId`, `companyDomain`, `companyLinkedinUrl`, `companySalesnavUrl`).",
+            "example": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "name": "fieldRejectionReason",
             "in": "query",
             "required": false,
