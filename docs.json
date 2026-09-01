@@ -238,6 +238,7 @@
                   "api-reference/endpoints/inbox/send-email",
                   "api-reference/endpoints/inbox/send-linkedin-message",
                   "api-reference/endpoints/inbox/send-whatsapp-message",
+                  "api-reference/endpoints/inbox/send-sms-message",
                   "api-reference/endpoints/inbox/get-many-labels",
                   "api-reference/endpoints/inbox/get-label",
                   "api-reference/endpoints/inbox/create-label",
