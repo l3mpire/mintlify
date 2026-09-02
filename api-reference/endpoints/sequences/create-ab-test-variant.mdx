@@ -1,16 +1,16 @@
 ---
 openapi: post /sequences/{sequenceId}/steps/{stepId}/ab-test
-description: Creates variant B of an A/B test on an email step, prefilled from variant A.
+description: Creates variant B of an A/B test on a step, prefilled from variant A.
 ---
 
 <Note>
 A/B testing requires at least the **Email Pro** plan.
 </Note>
 
-A/B testing lets you compare two versions of a single email step. Calling this
-endpoint creates a **variant B** email template, prefilled with a copy of
-variant A's subject, content, and config, and starts the test: leads going
-through the step are split between variant A and variant B.
+A/B testing lets you compare two versions of a single step. Calling this
+endpoint creates a **variant B** template, prefilled with a copy of variant A's
+subject, content, and config, and starts the test: leads going through the step
+are split between variant A and variant B.
 
 Once created, edit variant B with
 [Update A/B Test Variant](/api-reference/endpoints/sequences/update-ab-test-variant),
@@ -21,9 +21,14 @@ and conclude the test with
 
 ## Scope and constraints
 
-- A/B testing is only supported on **email** steps.
-- The step must have an email template (variant A) and must not already run an
-  A/B test.
+- A/B testing is supported on the step types that carry a message: email,
+  WhatsApp message (`whatsappMessage`), SMS (`sms`), LinkedIn invite
+  (`linkedinInvite`), and LinkedIn message (`linkedinSend`).
+- The step must have a template (variant A) and must not already run an A/B
+  test.
+- Variant A's template must have a message, except on LinkedIn invite steps
+  (where an empty message means "invite without a note") — variant B starts as
+  a copy of it.
 - As with other step edits, the test cannot be created while the campaign is
   running on a non-editable sequence.
 - This endpoint covers A/B testing on a **single step** only.

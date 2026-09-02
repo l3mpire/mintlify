@@ -7,3 +7,7 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <SnippetObjectReference objectName="Sequence" objectPath="sequence" />
 
 For example, if the main sequence includes a condition that contains two sequences, you will receive both the sequence tree and all condition sequences in the main sequences array.
+
+On a step running an A/B test, `abTest` and `emailTemplateBId` are set, but the
+step's `subject` and `message` are always **variant A's** — read variant B with
+[Get A/B Test Variant](/api-reference/endpoints/sequences/get-ab-test-variant).
