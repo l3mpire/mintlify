@@ -5369,6 +5369,106 @@
         }
       }
     },
+    "/campaigns/{campaignId}/steps/{stepId}/skip": {
+      "parameters": [
+        {
+          "name": "campaignId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the campaign",
+          "example": "cam_A1B2C3D4E5F6G7H8I9",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "stepId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the step, from GET /campaigns/{campaignId}/sequences",
+          "example": "stp_A1B2C3D4E5F6G7H8I9",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Skip Step for Everyone",
+        "tags": ["Campaigns"],
+        "description": "Skip one step of a running campaign for every lead. Cannot be undone.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The step is skipped. `skipped` is `false` when it was already skipped: an idempotent no-op, not an error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "skipped": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "skipped": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A path identifier is malformed (JSON body carrying `ROUTE_BAD_REQUEST`), or no API key was supplied (plain text).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Route bad request",
+                  "code": "ROUTE_BAD_REQUEST"
+                }
+              },
+              "text/plain": {
+                "example": "no api key provided"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "`STEP_SKIP_CAMPAIGN_NOT_FOUND` or `STEP_SKIP_STEP_NOT_FOUND` - the campaign or the step does not exist in this workspace.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Step not found in this campaign",
+                  "code": "STEP_SKIP_STEP_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed - this endpoint only accepts POST"
+          },
+          "422": {
+            "description": "`STEP_SKIP_STEP_IS_CONDITION` - a condition step can never be skipped.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "A condition step cannot be skipped",
+                  "code": "STEP_SKIP_STEP_IS_CONDITION"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded - 20 requests per 2 seconds per API key"
+          }
+        }
+      }
+    },
     "/campaigns/{campaignId}/start": {
       "parameters": [
         {
@@ -10084,6 +10184,116 @@
           }
         },
         "parameters": []
+      }
+    },
+    "/campaigns/{campaignId}/leads/{leadIdOrEmail}/steps/{stepId}/skip": {
+      "parameters": [
+        {
+          "name": "campaignId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the campaign",
+          "example": "cam_A1B2C3D4E5F6G7H8I9",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "leadIdOrEmail",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier or email of the lead",
+          "example": "lea_A1B2C3D4E5F6G7H8I9",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "stepId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the step, from GET /campaigns/{campaignId}/sequences",
+          "example": "stp_A1B2C3D4E5F6G7H8I9",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Skip Step for Lead",
+        "tags": ["Leads"],
+        "description": "Skip one step of a running campaign for a single lead. Cannot be undone.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The step is skipped. `skipped` is `false` when it was already skipped: an idempotent no-op, not an error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "skipped": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "skipped": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A path identifier is malformed (JSON body carrying `ROUTE_BAD_REQUEST`), or no API key was supplied (plain text).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Route bad request",
+                  "code": "ROUTE_BAD_REQUEST"
+                }
+              },
+              "text/plain": {
+                "example": "no api key provided"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "`STEP_SKIP_CAMPAIGN_NOT_FOUND`, `STEP_SKIP_LEAD_NOT_FOUND` or `STEP_SKIP_STEP_NOT_FOUND` - the campaign, the lead or the step does not exist in this workspace.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Lead not found in this campaign",
+                  "code": "STEP_SKIP_LEAD_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed - this endpoint only accepts POST"
+          },
+          "422": {
+            "description": "`STEP_SKIP_STEP_IS_CONDITION` - a condition step can never be skipped.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "A condition step cannot be skipped",
+                  "code": "STEP_SKIP_STEP_IS_CONDITION"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded - 20 requests per 2 seconds per API key"
+          }
+        }
       }
     },
     "/leads/{leadId}/variables": {
