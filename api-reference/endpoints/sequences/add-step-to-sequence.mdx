@@ -66,6 +66,35 @@ Then you can call `/api/sequences/seq_jacL5GNH3YpNnuNQ2/steps` to add a send ste
 }
 ```
 
+## Branching on a lead variable
+
+The `customLeadInfo` condition branches on a lead variable or a contact field instead of on a lead
+action. It takes three extra fields:
+
+```json
+{
+    "type": "conditional",
+    "conditionKey": "customLeadInfo",
+    "delayType": "within",
+    "delay": 1,
+    "customField": "jobTitle",
+    "customOperator": "contains",
+    "customValue": "CEO"
+}
+```
+
+`customField` reads a bare name as a lead variable — `jobTitle` becomes `variables.jobTitle`. Prefix
+it with `fields.` to test a contact field instead.
+
+`customOperator` is one of `equal`, `contains`, `empty`, `notEmpty`. The first two need a
+`customValue`; the last two refuse one.
+
+<Note>
+A condition step created here has one branch plus the Else fallback. To give it more branches — "CEO
+or Founder here, CTO there, everyone else in Else" — use the
+[condition branch endpoints](/api-reference/endpoints/sequences/list-condition-branches).
+</Note>
+
 ## Step Types and Required Fields
 
 The table below summarizes the required and optional fields for each step type. Note that all step requests must include a common `type` field.
@@ -111,8 +140,11 @@ In conditional steps, if the `delayType` is not `"within"`, the `delay` field is
 | `title` (String, Conditional) | A title or label used in `manual` steps. Maximum 400 characters |
 | `method` (String, Conditional) | The HTTP method to use for API steps. Allowed values: `GET`, `POST`, `PUT`, `DELETE`, `PATCH` |
 | `url` (String, Conditional) | The URL of the API endpoint to call. Must be a valid URL (starting with `http://` or `https://`) |
-| `conditionKey` (String, Conditional) | For conditional steps only. Defines the condition key. Allowed values: `hasEmailAddress`, `hasLinkedinUrl`, `hasPhoneNumber`, `hasScore`, `emailsOpened`, `emailsClicked`, `emailsUnsubscribed`, `meetingBooked`, `linkedinInviteAccepted`, `linkedinOpened`, `aircallDone`, `linkedinNetworkCheck`, `hasWhatsappAccount` |
+| `conditionKey` (String, Conditional) | For conditional steps only. Defines the condition key. Allowed values: `hasEmailAddress`, `hasLinkedinUrl`, `hasPhoneNumber`, `customLeadInfo`, `hasScore`, `emailsOpened`, `emailsClicked`, `emailsUnsubscribed`, `meetingBooked`, `linkedinInviteAccepted`, `linkedinOpened`, `aircallDone`, `linkedinNetworkCheck`, `hasWhatsappAccount` |
 | `delayType` (String, Conditional) | For conditional steps only. Specifies the delay type. Allowed values: `within`, `waitUntil` |
+| `customField` (String, Conditional) | For `customLeadInfo` conditions only. The field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` to test a contact field. `$` and the reserved keys `_id`, `teamId`, `campaignId`, `leadId`, `__proto__`, `constructor`, `prototype` are refused |
+| `customOperator` (String, Conditional) | For `customLeadInfo` conditions only. How the field is compared. Allowed values: `equal`, `contains`, `empty`, `notEmpty` |
+| `customValue` (String, Conditional) | For `customLeadInfo` conditions only. The value the field is compared to. Required for `equal` and `contains`, and refused for `empty` and `notEmpty` |
 | `campaignId` (String, Conditional) | For steps of type `sendToAnotherCampaign` only. The target campaign ID to which a lead should be sent. The specified campaign must exist in the team and not be archived |
 | `images` (Array of strings, Optional) | For `linkedinInvite` and `linkedinSend` steps only. Public HTTPS URLs of images to attach to the LinkedIn message. lemlist downloads each file and re-hosts it. See the [LinkedIn media constraints](#linkedin-media-constraints) below |
 | `videos` (Array of strings, Optional) | For `linkedinInvite` and `linkedinSend` steps only. Public HTTPS URLs of videos to attach to the LinkedIn message. lemlist downloads each file and re-hosts it. See the [LinkedIn media constraints](#linkedin-media-constraints) below |

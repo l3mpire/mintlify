@@ -1,0 +1,69 @@
+---
+openapi: get /sequences/{sequenceId}/steps/{stepId}/branches
+description: Lists the branches of a condition step, in execution order.
+---
+
+## How a condition step branches
+
+A condition step (`type: "conditional"`) holds an ordered list of branches. Each branch owns a
+sub-sequence — the steps a lead walks once it matches — and the last entry is the **Else** branch,
+which catches every lead no other branch matched.
+
+Order is execution priority: lemlist tests the branches top to bottom and the **first match wins**.
+The Else branch always runs last and is never part of that race.
+
+A branch is addressed by its `sequenceId`, never by its position. A reorder moves positions around;
+the sub-sequence id is what the runtime routes leads to, and what every branch endpoint takes as its
+`branchSequenceId`. That same id is also the one you pass to
+[`POST /sequences/{sequenceId}/steps`](/api-reference/endpoints/sequences/add-step-to-sequence) to
+put steps inside the branch.
+
+## Reading a branch
+
+The `key` is the condition the **step** tests — every branch of a step shares it, so a branch never
+carries a condition of its own. What differs from one branch to the next is the value it tests,
+returned as structured parameters rather than as a raw Mongo selector:
+
+| Condition | Fields returned |
+| --- | --- |
+| `customLeadInfo` | `customField`, `customOperator`, `customValues` |
+| `hasScore` | `scoreComparator`, `scoreThreshold` |
+| `hasEmailAddress` | `emailStatusFilter` |
+| `aircallDone` | `callStatusFilter` |
+| lead-action conditions (`emailsOpened`, `linkedinInviteAccepted`, …) | `delay`, `delayType` |
+
+`selector` comes back only when none of those could describe the branch — an unknown or hand-written
+shape. Everything else is expressed as parameters you can send straight back to the write endpoints.
+
+<Note>
+`customValues` is an array because a `customLeadInfo` branch may test **several** values: it matches
+when any one of them does. The write endpoints currently take a single `customValue`; a branch
+testing several values is built from the lemlist campaign editor.
+</Note>
+
+## Names
+
+`name` is the name someone gave the branch, and it is only present when someone did. lemlist labels
+the unnamed branches "Branch 1", "Branch 2", … by rank, and the last one "Else" — those defaults are
+display copy, not stored data, so this endpoint does not invent them for you.
+
+## Access
+
+Reading branches is open to everyone. **Writing** them — add, rename, re-select, reorder, delete —
+is in closed beta and answers `403` unless the beta is enabled for your team.
+
+## Editing a running campaign
+
+Once leads have entered the campaign, lemlist locks the part of the tree they walk. Adding, removing
+and reordering branches, and changing what a branch tests, are then refused with
+`409 SEQUENCE_BRANCH_CAMPAIGN_RUNNING` — re-routing live leads would strand those already sent down
+the old path.
+
+Two things stay editable on a running campaign:
+
+- **renaming** a branch, which never re-routes anyone;
+- the `delay` **value** of a lead-action condition (`hasScore`, `aircallDone`) — how long it waits,
+  not what it waits for. Changing `delayType`, or anything else about the selector, still locks.
+
+Deleting a branch has one further guard: it is refused while any lead sits anywhere inside the
+branch's sub-tree, checked before anything is written.

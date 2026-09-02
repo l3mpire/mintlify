@@ -1298,6 +1298,101 @@
           }
         }
       },
+      "ConditionBranch": {
+        "type": "object",
+        "description": "One branch of a condition step. Addressed by `sequenceId` - the sub-sequence its leads walk - never by position. The fields describing what the branch tests depend on the step's condition; the ones that do not apply are absent.",
+        "properties": {
+          "sequenceId": {
+            "type": "string",
+            "description": "The branch's sub-sequence id, and its address on every branch endpoint. Pass it to `POST /sequences/{sequenceId}/steps` to add steps inside the branch."
+          },
+          "index": {
+            "type": "integer",
+            "description": "Execution rank among the non-fallback branches, starting at 0. The first branch whose test matches takes the lead. Absent on the Else branch, which always runs last."
+          },
+          "fallback": {
+            "type": "boolean",
+            "description": "`true` on the Else branch - the one that catches every lead no other branch matched. Absent on the others."
+          },
+          "key": {
+            "type": "string",
+            "description": "The condition the step tests. Every branch of a step shares it: a branch never carries a condition of its own."
+          },
+          "name": {
+            "type": "string",
+            "description": "The branch's display name, present only when someone has set one. lemlist labels the unnamed ones \"Branch 1\", \"Branch 2\", … and \"Else\"; those defaults are not stored and are not returned here."
+          },
+          "delay": {
+            "type": "integer",
+            "description": "Length of the time window the condition waits on the lead's action, in days. Only on the lead-action conditions that store one."
+          },
+          "delayType": {
+            "type": "string",
+            "enum": [
+              "within",
+              "waitUntil"
+            ],
+            "description": "How the condition waits: `within` branches once the window is over, `waitUntil` parks the lead until the action happens, with no time bound."
+          },
+          "scoreComparator": {
+            "type": "string",
+            "enum": [
+              "$gte",
+              "$lt"
+            ],
+            "description": "`hasScore` only - how the lead's score is compared to `scoreThreshold`."
+          },
+          "scoreThreshold": {
+            "type": "integer",
+            "description": "`hasScore` only - the score this branch tests against."
+          },
+          "emailStatusFilter": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "deliverable",
+                "risky",
+                "undeliverable",
+                "unverified"
+              ]
+            },
+            "description": "`hasEmailAddress` only - the email statuses this branch matches."
+          },
+          "callStatusFilter": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "`aircallDone` only - the call-status keys this branch matches."
+          },
+          "customField": {
+            "type": "string",
+            "description": "`customLeadInfo` only - the tested field, normalized: a lead variable reads back as `variables.<name>`, a contact field as `fields.<name>`. Every branch of the step tests the same field."
+          },
+          "customOperator": {
+            "type": "string",
+            "enum": [
+              "equal",
+              "contains",
+              "empty",
+              "notEmpty"
+            ],
+            "description": "`customLeadInfo` only - how the field is compared to the tested values."
+          },
+          "customValues": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "`customLeadInfo` only - every value this branch tests; the branch matches when any of them does. Empty for the `empty` and `notEmpty` operators."
+          },
+          "selector": {
+            "type": "string",
+            "description": "The raw stored condition selector, as JSON. Returned only when none of the fields above could describe the branch."
+          }
+        }
+      },
       "Schedule": {
         "type": "object",
         "description": "Sending time windows defining when campaigns can send messages (days and hours).",
@@ -6745,6 +6840,51 @@
                             "emailTemplateBId": {
                               "type": "string",
                               "description": "Email template ID of variant B (present when an A/B test exists on the step)"
+                            },
+                            "conditions": {
+                              "type": "array",
+                              "description": "The branches of a condition step, in execution order with the Else branch last (only on steps of type `conditional`). Each entry owns the sub-sequence its leads walk; look that `sequenceId` up in this same response to read the branch's own steps. Use `GET /sequences/{sequenceId}/steps/{stepId}/branches` to read the same branches as structured parameters instead of raw selectors.",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "sequenceId": {
+                                    "type": "string",
+                                    "description": "The branch's sub-sequence id - the key to look up in this response, and the branch's address on the branch endpoints"
+                                  },
+                                  "key": {
+                                    "type": "string",
+                                    "description": "The condition the step tests. Every branch of a step shares it; absent on the Else branch"
+                                  },
+                                  "label": {
+                                    "type": "string",
+                                    "description": "The server-stamped description of what is tested (\"If lead variable \\\"jobTitle\\\" contains \\\"CEO\\\"\"). On a step with several branches it doubles as the branch's name when `name` is unset"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "description": "The branch's display name, present only when someone has set one. The \"Branch 1\", \"Branch 2\", … and \"Else\" defaults lemlist shows are not stored"
+                                  },
+                                  "fallback": {
+                                    "type": "boolean",
+                                    "description": "`true` on the Else branch, which catches every lead no other branch matched and always comes last"
+                                  },
+                                  "delay": {
+                                    "type": "integer",
+                                    "description": "Length of the time window the condition waits on the lead's action, in days. Only on lead-action conditions"
+                                  },
+                                  "delayType": {
+                                    "type": "string",
+                                    "description": "How the condition waits: `within` branches once the window is over, `waitUntil` parks the lead until the action happens",
+                                    "enum": [
+                                      "within",
+                                      "waitUntil"
+                                    ]
+                                  },
+                                  "selector": {
+                                    "type": "string",
+                                    "description": "The raw stored condition selector, as JSON. Present when the condition carries no time window to hydrate - `customLeadInfo` and `hasEmailAddress` always keep it"
+                                  }
+                                }
+                              }
                             }
                           }
                         }
@@ -6799,9 +6939,53 @@
                         "subject": "{{firstName}}, do we count on you for the event?",
                         "message": "<p style=\"margin: 0px; box-sizing: border-box;\">So, should I add you to the list of attendees?<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">We'll meet around 7pm, have a drink and exchange with entrepreneurs, marketers, and salespeople.<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\"><a target=\"_blank\" style=\"color: rgb(0, 123, 255); text-decoration: none; background-color: transparent; user-select: auto; box-sizing: border-box;\" rel=\"noopener noreferrer\" href=\"{{event_link_to_send}}\">Here's the link</a> if you want to join!<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\"></p>\n<p style=\"margin: 0px; box-sizing: border-box;\">We would love to have you with us for this event!<br style=\"box-sizing: border-box;\"><br style=\"box-sizing: border-box;\">Sarah</p><p style=\"margin: 0px; box-sizing: border-box;\">Head of Marketing</p>",
                         "type": "email"
+                      },
+                      {
+                        "_id": "stp_Ae93hiemDkypHLys2",
+                        "delay": 2,
+                        "index": 4,
+                        "sequenceId": "seq_rH5RD3fMkkt2gM3YC",
+                        "sequenceStep": 3,
+                        "type": "conditional",
+                        "conditions": [
+                          {
+                            "sequenceId": "seq_jacL5GNH3YpNnuNQ2",
+                            "key": "customLeadInfo",
+                            "name": "Decision makers",
+                            "label": "If lead variable \"jobTitle\" contains \"CEO, Founder\"",
+                            "selector": "{\"$or\":[{\"variables.jobTitle\":{\"$regex\":\"CEO\",\"$options\":\"i\"}},{\"variables.jobTitle\":{\"$regex\":\"Founder\",\"$options\":\"i\"}}]}"
+                          },
+                          {
+                            "sequenceId": "seq_xzrGLxhZwoo5oxukc",
+                            "key": "customLeadInfo",
+                            "label": "If lead variable \"jobTitle\" contains \"CTO\"",
+                            "selector": "{\"variables.jobTitle\":{\"$regex\":\"CTO\",\"$options\":\"i\"}}"
+                          },
+                          {
+                            "sequenceId": "seq_Kd8pQrLm3Nv6Tz0Wy",
+                            "fallback": true
+                          }
+                        ]
                       }
                     ],
                     "level": 0
+                  },
+                  "seq_jacL5GNH3YpNnuNQ2": {
+                    "_id": "seq_jacL5GNH3YpNnuNQ2",
+                    "steps": [
+                      {
+                        "_id": "stp_Tq5mWx8Rn2Kd7Yz3B",
+                        "delay": 0,
+                        "index": 1,
+                        "sequenceId": "seq_jacL5GNH3YpNnuNQ2",
+                        "sequenceStep": 0,
+                        "type": "linkedinInvite",
+                        "message": "Hi {{firstName}}, would love to connect ahead of the event!"
+                      }
+                    ],
+                    "level": 1,
+                    "parentId": "seq_rH5RD3fMkkt2gM3YC",
+                    "conditionalStepIndex": 4
                   }
                 }
               }
@@ -6994,6 +7178,7 @@
                       "hasEmailAddress",
                       "hasLinkedinUrl",
                       "hasPhoneNumber",
+                      "customLeadInfo",
                       "hasScore",
                       "emailsOpened",
                       "emailsClicked",
@@ -7013,6 +7198,24 @@
                       "within",
                       "waitUntil"
                     ]
+                  },
+                  "customField": {
+                    "type": "string",
+                    "description": "For conditional steps keyed `customLeadInfo` only. The field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` to test a contact field. `$` and the reserved keys `_id`, `teamId`, `campaignId`, `leadId`, `__proto__`, `constructor` and `prototype` are refused."
+                  },
+                  "customOperator": {
+                    "type": "string",
+                    "description": "For conditional steps keyed `customLeadInfo` only. How the field is compared.",
+                    "enum": [
+                      "equal",
+                      "contains",
+                      "empty",
+                      "notEmpty"
+                    ]
+                  },
+                  "customValue": {
+                    "type": "string",
+                    "description": "For conditional steps keyed `customLeadInfo` only. The value the field is compared to. Required for `equal` and `contains`, and refused for `empty` and `notEmpty`."
                   },
                   "campaignId": {
                     "type": "string",
@@ -7124,6 +7327,17 @@
                     "conditionKey": "linkedinInviteAccepted",
                     "delayType": "waitUntil",
                     "delay": 1
+                  }
+                },
+                "Custom Lead Info Condition": {
+                  "value": {
+                    "type": "conditional",
+                    "conditionKey": "customLeadInfo",
+                    "delayType": "within",
+                    "delay": 1,
+                    "customField": "jobTitle",
+                    "customOperator": "contains",
+                    "customValue": "CEO"
                   }
                 },
                 "Send to Another Campaign": {
@@ -7312,6 +7526,7 @@
                       "hasEmailAddress",
                       "hasLinkedinUrl",
                       "hasPhoneNumber",
+                      "customLeadInfo",
                       "hasScore",
                       "emailsOpened",
                       "emailsClicked",
@@ -7331,6 +7546,24 @@
                       "within",
                       "waitUntil"
                     ]
+                  },
+                  "customField": {
+                    "type": "string",
+                    "description": "For conditional steps keyed `customLeadInfo` only. The field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` to test a contact field. `$` and the reserved keys `_id`, `teamId`, `campaignId`, `leadId`, `__proto__`, `constructor` and `prototype` are refused."
+                  },
+                  "customOperator": {
+                    "type": "string",
+                    "description": "For conditional steps keyed `customLeadInfo` only. How the field is compared.",
+                    "enum": [
+                      "equal",
+                      "contains",
+                      "empty",
+                      "notEmpty"
+                    ]
+                  },
+                  "customValue": {
+                    "type": "string",
+                    "description": "For conditional steps keyed `customLeadInfo` only. The value the field is compared to. Required for `equal` and `contains`, and refused for `empty` and `notEmpty`."
                   },
                   "campaignId": {
                     "type": "string",
@@ -7440,6 +7673,13 @@
                     "delay": 3
                   }
                 },
+                "Update Custom Lead Info Condition": {
+                  "value": {
+                    "type": "conditional",
+                    "customOperator": "equal",
+                    "customValue": "Founder"
+                  }
+                },
                 "Update Send to Another Campaign": {
                   "value": {
                     "type": "sendToAnotherCampaign",
@@ -7517,6 +7757,814 @@
           },
           "405": {
             "description": "Method not allowed"
+          }
+        }
+      }
+    },
+    "/sequences/{sequenceId}/steps/{stepId}/branches": {
+      "parameters": [
+        {
+          "name": "sequenceId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the sequence holding the condition step",
+          "example": "seq_lkCSKd32qSZZTe5Ru",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "stepId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the condition step, from `GET /campaigns/{campaignId}/sequences`",
+          "example": "stp_Ae93hiemDkypHLys2",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "List Condition Branches",
+        "tags": [
+          "Sequences"
+        ],
+        "description": "Every branch of a condition step, in execution order, with the Else branch last. A condition step holds an ordered list of branches, each owning the sub-sequence the leads it matches walk into. Array order is execution priority: the first branch whose test matches takes the lead, and the Else branch at the end catches everyone no branch matched. A branch is addressed by its `sequenceId`, never by position - a reorder moves positions, the sub-sequence id is what the runtime routes leads to.\n\nReading branches is not gated; only the writes are in closed beta.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The step's branches, ordered.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConditionBranch"
+                  }
+                },
+                "example": [
+                  {
+                    "sequenceId": "seq_jacL5GNH3YpNnuNQ2",
+                    "index": 0,
+                    "key": "customLeadInfo",
+                    "name": "Decision makers",
+                    "customField": "variables.jobTitle",
+                    "customOperator": "contains",
+                    "customValues": [
+                      "CEO",
+                      "Founder"
+                    ]
+                  },
+                  {
+                    "sequenceId": "seq_xzrGLxhZwoo5oxukc",
+                    "index": 1,
+                    "key": "customLeadInfo",
+                    "customField": "variables.jobTitle",
+                    "customOperator": "contains",
+                    "customValues": [
+                      "CTO"
+                    ]
+                  },
+                  {
+                    "sequenceId": "seq_Kd8pQrLm3Nv6Tz0Wy",
+                    "fallback": true
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "`SEQUENCE_BRANCH_STEP_NOT_CONDITIONAL` - the step exists but is not of type `conditional`. `SEQUENCE_BRANCH_INVALID_PARAM` - a path identifier is malformed.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This step is not a condition step",
+                  "code": "SEQUENCE_BRANCH_STEP_NOT_CONDITIONAL"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "The team's plan is below the Email Pro floor every sequence route sits on.",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "404": {
+            "description": "`SEQUENCE_NOT_FOUND` or `SEQUENCE_STEP_NOT_FOUND` - no such sequence in this workspace, or no such step on it.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Step not found",
+                  "code": "SEQUENCE_STEP_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed - this path accepts GET, POST and PATCH"
+          },
+          "429": {
+            "description": "Rate limit exceeded - 20 requests per 2 seconds per API key"
+          }
+        }
+      },
+      "post": {
+        "summary": "Add Condition Branch",
+        "tags": [
+          "Sequences"
+        ],
+        "description": "Adds a branch to a condition step, just before the Else branch, and mints the empty sub-sequence it routes to. Add steps to that branch by calling `POST /sequences/{sequenceId}/steps` with the returned `sequenceId`.\n\nA branch carries the value it tests from the moment it is created - there are no blank branches - so the body must say what this one matches. The step's condition is shared by every branch and is never sent here: `conditionKey` in the body is refused.\n\nOnly four conditions host several branches: `customLeadInfo`, `hasScore`, `hasEmailAddress` and `aircallDone`. Each needs its own tested value in the body, except `hasScore`, whose new branch inherits a complete `>= 80` band and can be added from an empty body.",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The branch's display name. An empty string clears it, and lemlist falls back to labelling the branch \"Branch 1\", \"Branch 2\", … by rank. The Else branch cannot be named."
+                  },
+                  "delayType": {
+                    "type": "string",
+                    "enum": [
+                      "within",
+                      "waitUntil"
+                    ],
+                    "description": "How a lead-action condition waits: `within` branches once the `delay` window is over, `waitUntil` parks the lead until the action happens, with no time bound. Ignored by the conditions that store no time window (`customLeadInfo`, `hasEmailAddress`)."
+                  },
+                  "delay": {
+                    "type": "integer",
+                    "description": "Length of that time window, in days."
+                  },
+                  "scoreComparator": {
+                    "type": "string",
+                    "enum": [
+                      "$gte",
+                      "$lt"
+                    ],
+                    "description": "`hasScore` only - how the lead's score is compared to `scoreThreshold`."
+                  },
+                  "scoreThreshold": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "`hasScore` only - the score this branch tests against."
+                  },
+                  "emailStatusFilter": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "deliverable",
+                        "risky",
+                        "undeliverable",
+                        "unverified"
+                      ]
+                    },
+                    "description": "`hasEmailAddress` only - the email statuses this branch matches. Required to add a branch on that condition."
+                  },
+                  "callStatusFilter": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "`aircallDone` only - the call-status keys this branch matches. The keys are the team's own (defaults plus custom dispositions), so any non-empty string is accepted. Required to add a branch on that condition."
+                  },
+                  "customField": {
+                    "type": "string",
+                    "description": "`customLeadInfo` only - the field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` to test a contact field. Every branch of a step tests the same field, so changing it here changes it on all of them."
+                  },
+                  "customOperator": {
+                    "type": "string",
+                    "enum": [
+                      "equal",
+                      "contains",
+                      "empty",
+                      "notEmpty"
+                    ],
+                    "description": "`customLeadInfo` only - how the field is compared. `equal` and `contains` need a `customValue`; `empty` and `notEmpty` refuse one."
+                  },
+                  "customValue": {
+                    "type": "string",
+                    "description": "`customLeadInfo` only - the value the field is compared to. Required for `equal` and `contains`, and refused for `empty` and `notEmpty`."
+                  }
+                }
+              },
+              "examples": {
+                "Custom lead variable": {
+                  "value": {
+                    "name": "Marketing",
+                    "customField": "jobTitle",
+                    "customOperator": "contains",
+                    "customValue": "CMO"
+                  }
+                },
+                "Email status": {
+                  "value": {
+                    "name": "Risky addresses",
+                    "emailStatusFilter": [
+                      "risky",
+                      "unverified"
+                    ]
+                  }
+                },
+                "Lead score": {
+                  "value": {
+                    "name": "Cold leads",
+                    "scoreComparator": "$lt",
+                    "scoreThreshold": 40
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The branch was added.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConditionBranch"
+                },
+                "example": {
+                  "sequenceId": "seq_Nb4vKq7Xm2Rd9Tz1L",
+                  "index": 2,
+                  "key": "customLeadInfo",
+                  "name": "Marketing",
+                  "customField": "variables.jobTitle",
+                  "customOperator": "contains",
+                  "customValues": [
+                    "CMO"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The body or the step cannot host the branch. `SEQUENCE_BRANCH_VALUE_REQUIRED` - the condition needs a tested value the body did not carry. `SEQUENCE_BRANCH_CONDITION_NOT_CONFIGURABLE` - the condition has no branch parameters on the API. `SEQUENCE_BRANCH_CONDITION_KEY_NOT_ALLOWED` - `conditionKey` was sent. `not-multi-capable` - the condition supports a single branch plus Else. `cap-reached` - the step is at its 200-entry ceiling. `SEQUENCE_BRANCH_INVALID_PARAM` - a malformed body or path identifier. A bad `customField`, `customOperator` or `customValue` answers with a plain message and no `code` - for instance `customValue is required for operator \"contains\"`.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "emailStatusFilter is required to add a branch on condition \"hasEmailAddress\"",
+                  "code": "SEQUENCE_BRANCH_VALUE_REQUIRED"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "The team's plan is below the Email Pro floor every sequence route sits on.",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "403": {
+            "description": "`SEQUENCE_BRANCH_BETA_REQUIRED` - branch writes are in closed beta and answer `403` unless the beta is enabled for your team. Reading branches is not gated.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Condition branches are not enabled for this team",
+                  "code": "SEQUENCE_BRANCH_BETA_REQUIRED"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`SEQUENCE_NOT_FOUND` or `SEQUENCE_STEP_NOT_FOUND` - no such sequence in this workspace, or no such step on it.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Step not found",
+                  "code": "SEQUENCE_STEP_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed - this path accepts GET, POST and PATCH"
+          },
+          "409": {
+            "description": "`SEQUENCE_BRANCH_CAMPAIGN_RUNNING` - leads have entered the campaign, which freezes the branch structure. Renaming a branch stays allowed.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "You cannot add, remove or reorder branches once leads have entered the campaign",
+                  "code": "SEQUENCE_BRANCH_CAMPAIGN_RUNNING"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded - 20 requests per 2 seconds per API key"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Reorder Condition Branches",
+        "tags": [
+          "Sequences"
+        ],
+        "description": "Rewrites the execution priority of a condition step's branches. Order is priority: the first branch whose test matches takes the lead.\n\n`order` must list every non-fallback branch of the step exactly once. The Else branch is not orderable and always stays last, so it is left out of the list. Sending the order the step already has is a no-op that still returns the branches.",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "order"
+                ],
+                "properties": {
+                  "order": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Every branch of the step by `sequenceId`, in the new execution order, excluding the Else branch."
+                  }
+                }
+              },
+              "example": {
+                "order": [
+                  "seq_xzrGLxhZwoo5oxukc",
+                  "seq_jacL5GNH3YpNnuNQ2"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The branches, in their new order.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ConditionBranch"
+                  }
+                },
+                "example": [
+                  {
+                    "sequenceId": "seq_xzrGLxhZwoo5oxukc",
+                    "index": 0,
+                    "key": "customLeadInfo",
+                    "customField": "variables.jobTitle",
+                    "customOperator": "contains",
+                    "customValues": [
+                      "CTO"
+                    ]
+                  },
+                  {
+                    "sequenceId": "seq_jacL5GNH3YpNnuNQ2",
+                    "index": 1,
+                    "key": "customLeadInfo",
+                    "name": "Decision makers",
+                    "customField": "variables.jobTitle",
+                    "customOperator": "contains",
+                    "customValues": [
+                      "CEO",
+                      "Founder"
+                    ]
+                  },
+                  {
+                    "sequenceId": "seq_Kd8pQrLm3Nv6Tz0Wy",
+                    "fallback": true
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "`SEQUENCE_BRANCH_ORDER_INVALID` - `order` is missing, is not an array of strings, repeats a branch, omits one, or names an id that is not a branch of this step.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "order must list every branch of this step exactly once, excluding the Else branch",
+                  "code": "SEQUENCE_BRANCH_ORDER_INVALID"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "The team's plan is below the Email Pro floor every sequence route sits on.",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "403": {
+            "description": "`SEQUENCE_BRANCH_BETA_REQUIRED` - branch writes are in closed beta and answer `403` unless the beta is enabled for your team. Reading branches is not gated.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Condition branches are not enabled for this team",
+                  "code": "SEQUENCE_BRANCH_BETA_REQUIRED"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`SEQUENCE_NOT_FOUND` or `SEQUENCE_STEP_NOT_FOUND` - no such sequence in this workspace, or no such step on it.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Step not found",
+                  "code": "SEQUENCE_STEP_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed - this path accepts GET, POST and PATCH"
+          },
+          "409": {
+            "description": "`SEQUENCE_BRANCH_CAMPAIGN_RUNNING` - leads have entered the campaign, which freezes the branch structure. Renaming a branch stays allowed.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "You cannot add, remove or reorder branches once leads have entered the campaign",
+                  "code": "SEQUENCE_BRANCH_CAMPAIGN_RUNNING"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded - 20 requests per 2 seconds per API key"
+          }
+        }
+      }
+    },
+    "/sequences/{sequenceId}/steps/{stepId}/branches/{branchSequenceId}": {
+      "parameters": [
+        {
+          "name": "sequenceId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the sequence holding the condition step",
+          "example": "seq_lkCSKd32qSZZTe5Ru",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "stepId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the condition step, from `GET /campaigns/{campaignId}/sequences`",
+          "example": "stp_Ae93hiemDkypHLys2",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "branchSequenceId",
+          "in": "path",
+          "required": true,
+          "description": "The branch's own sub-sequence id, from `GET /sequences/{sequenceId}/steps/{stepId}/branches`. A branch is never addressed by its position.",
+          "example": "seq_jacL5GNH3YpNnuNQ2",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "patch": {
+        "summary": "Update Condition Branch",
+        "tags": [
+          "Sequences"
+        ],
+        "description": "Renames a branch and/or changes what it tests. Send only the halves you want to change.\n\nThe two halves are gated differently once leads have entered the campaign: a rename still goes through, while re-selecting what the branch tests is refused with `409`. A body that does both on a running campaign is refused whole - the request is atomic, so the rename does not land either. Send the rename on its own if that is what you need.\n\n`conditionKey` is refused: every branch of a step shares the step's condition. The Else branch is neither renamable nor editable.",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The branch's display name. An empty string clears it, and lemlist falls back to labelling the branch \"Branch 1\", \"Branch 2\", … by rank. The Else branch cannot be named."
+                  },
+                  "delayType": {
+                    "type": "string",
+                    "enum": [
+                      "within",
+                      "waitUntil"
+                    ],
+                    "description": "How a lead-action condition waits: `within` branches once the `delay` window is over, `waitUntil` parks the lead until the action happens, with no time bound. Ignored by the conditions that store no time window (`customLeadInfo`, `hasEmailAddress`)."
+                  },
+                  "delay": {
+                    "type": "integer",
+                    "description": "Length of that time window, in days."
+                  },
+                  "scoreComparator": {
+                    "type": "string",
+                    "enum": [
+                      "$gte",
+                      "$lt"
+                    ],
+                    "description": "`hasScore` only - how the lead's score is compared to `scoreThreshold`."
+                  },
+                  "scoreThreshold": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "`hasScore` only - the score this branch tests against."
+                  },
+                  "emailStatusFilter": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "deliverable",
+                        "risky",
+                        "undeliverable",
+                        "unverified"
+                      ]
+                    },
+                    "description": "`hasEmailAddress` only - the email statuses this branch matches. Required to add a branch on that condition."
+                  },
+                  "callStatusFilter": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "`aircallDone` only - the call-status keys this branch matches. The keys are the team's own (defaults plus custom dispositions), so any non-empty string is accepted. Required to add a branch on that condition."
+                  },
+                  "customField": {
+                    "type": "string",
+                    "description": "`customLeadInfo` only - the field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` to test a contact field. Every branch of a step tests the same field, so changing it here changes it on all of them."
+                  },
+                  "customOperator": {
+                    "type": "string",
+                    "enum": [
+                      "equal",
+                      "contains",
+                      "empty",
+                      "notEmpty"
+                    ],
+                    "description": "`customLeadInfo` only - how the field is compared. `equal` and `contains` need a `customValue`; `empty` and `notEmpty` refuse one."
+                  },
+                  "customValue": {
+                    "type": "string",
+                    "description": "`customLeadInfo` only - the value the field is compared to. Required for `equal` and `contains`, and refused for `empty` and `notEmpty`."
+                  }
+                }
+              },
+              "examples": {
+                "Rename only": {
+                  "value": {
+                    "name": "Founders and CEOs"
+                  }
+                },
+                "Clear the name": {
+                  "value": {
+                    "name": ""
+                  }
+                },
+                "Change the tested value": {
+                  "value": {
+                    "customOperator": "equal",
+                    "customValue": "CTO"
+                  }
+                },
+                "Widen the score band": {
+                  "value": {
+                    "scoreComparator": "$gte",
+                    "scoreThreshold": 60
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The branch as it now stands.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConditionBranch"
+                },
+                "example": {
+                  "sequenceId": "seq_jacL5GNH3YpNnuNQ2",
+                  "index": 0,
+                  "key": "customLeadInfo",
+                  "name": "Founders and CEOs",
+                  "customField": "variables.jobTitle",
+                  "customOperator": "contains",
+                  "customValues": [
+                    "CEO",
+                    "Founder"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`SEQUENCE_BRANCH_NO_UPDATE` - the body changed nothing. `SEQUENCE_BRANCH_IS_FALLBACK` - the Else branch cannot be renamed or edited. `SEQUENCE_BRANCH_CONDITION_KEY_NOT_ALLOWED` - `conditionKey` was sent. `SEQUENCE_BRANCH_UPDATE_REJECTED` - the change did not apply. `SEQUENCE_BRANCH_INVALID_PARAM` - a malformed body or path identifier. A bad `customField`, `customOperator` or `customValue` answers with a plain message and no `code` - for instance `customValue is required for operator \"contains\"`.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Nothing to update",
+                  "code": "SEQUENCE_BRANCH_NO_UPDATE"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "The team's plan is below the Email Pro floor every sequence route sits on.",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "403": {
+            "description": "`SEQUENCE_BRANCH_BETA_REQUIRED` - branch writes are in closed beta and answer `403` unless the beta is enabled for your team. Reading branches is not gated.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Condition branches are not enabled for this team",
+                  "code": "SEQUENCE_BRANCH_BETA_REQUIRED"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`SEQUENCE_NOT_FOUND`, `SEQUENCE_STEP_NOT_FOUND` or `SEQUENCE_BRANCH_NOT_FOUND` - no such sequence, step, or branch on that step.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "No branch with this sequenceId on this step",
+                  "code": "SEQUENCE_BRANCH_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed - this path accepts PATCH and DELETE"
+          },
+          "409": {
+            "description": "`SEQUENCE_BRANCH_CAMPAIGN_RUNNING` - leads have entered the campaign, which freezes the branch structure. Renaming a branch stays allowed.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "You cannot add, remove or reorder branches once leads have entered the campaign",
+                  "code": "SEQUENCE_BRANCH_CAMPAIGN_RUNNING"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded - 20 requests per 2 seconds per API key"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Condition Branch",
+        "tags": [
+          "Sequences"
+        ],
+        "description": "Removes a branch and the whole sub-tree behind it - the branch's own sub-sequence, and every sequence only reachable through it. `removedSequenceIds` lists what was deleted alongside the branch entry; a sequence another step still points at is left alone.\n\nA step keeps at least one branch besides Else, and the Else branch itself is never removable. Removal is refused once leads have entered the campaign, and again while any lead sits anywhere inside the sub-tree.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The branch is gone.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "removedSequenceIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "The sub-tree sequences deleted with the branch. Empty when the branch held no steps of its own."
+                    }
+                  }
+                },
+                "example": {
+                  "ok": true,
+                  "removedSequenceIds": [
+                    "seq_xzrGLxhZwoo5oxukc"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`SEQUENCE_BRANCH_LAST_NOT_REMOVABLE` - this is the step's only branch besides Else. `SEQUENCE_BRANCH_IS_FALLBACK` - the Else branch cannot be removed. `SEQUENCE_BRANCH_INVALID_PARAM` - a path identifier is malformed.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "A condition step must keep at least one branch",
+                  "code": "SEQUENCE_BRANCH_LAST_NOT_REMOVABLE"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "The team's plan is below the Email Pro floor every sequence route sits on.",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "403": {
+            "description": "`SEQUENCE_BRANCH_BETA_REQUIRED` - branch writes are in closed beta and answer `403` unless the beta is enabled for your team. Reading branches is not gated.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Condition branches are not enabled for this team",
+                  "code": "SEQUENCE_BRANCH_BETA_REQUIRED"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`SEQUENCE_NOT_FOUND`, `SEQUENCE_STEP_NOT_FOUND` or `SEQUENCE_BRANCH_NOT_FOUND` - no such sequence, step, or branch on that step.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "No branch with this sequenceId on this step",
+                  "code": "SEQUENCE_BRANCH_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed - this path accepts PATCH and DELETE"
+          },
+          "409": {
+            "description": "`SEQUENCE_BRANCH_CAMPAIGN_RUNNING` - leads have entered the campaign, which freezes the branch structure. Renaming a branch stays allowed.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "You cannot add, remove or reorder branches once leads have entered the campaign",
+                  "code": "SEQUENCE_BRANCH_CAMPAIGN_RUNNING"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded - 20 requests per 2 seconds per API key"
           }
         }
       }
