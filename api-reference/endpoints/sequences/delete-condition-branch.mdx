@@ -1,0 +1,30 @@
+---
+openapi: delete /sequences/{sequenceId}/steps/{stepId}/branches/{branchSequenceId}
+description: Removes a branch and the sub-tree behind it.
+---
+
+<Note>
+New to condition branches? Start with
+[List Condition Branches](/api-reference/endpoints/sequences/list-condition-branches), which explains
+how a step branches and how a branch is addressed.
+</Note>
+
+<Warning>
+This deletes the branch's whole sub-tree — its sub-sequence, its steps, and every sequence only
+reachable through it, however deep. It cannot be undone.
+</Warning>
+
+`removedSequenceIds` lists exactly what was deleted alongside the branch entry. A sequence another
+step still points at is left alone, so the list can be shorter than the sub-tree you walked, and it
+is empty when the branch held no steps of its own.
+
+## What is refused
+
+| Case | Response |
+| --- | --- |
+| The Else branch | `400` `SEQUENCE_BRANCH_IS_FALLBACK` — a condition step always keeps its fallback |
+| The step's last branch besides Else | `400` `SEQUENCE_BRANCH_LAST_NOT_REMOVABLE` — delete the whole step instead |
+| Leads have entered the campaign | `409` `SEQUENCE_BRANCH_CAMPAIGN_RUNNING` |
+| A lead is sitting anywhere inside the sub-tree | `409` `SEQUENCE_BRANCH_CAMPAIGN_RUNNING` |
+
+The last check is run before anything is written, so a refusal leaves the step untouched.

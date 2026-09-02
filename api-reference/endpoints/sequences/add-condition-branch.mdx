@@ -1,0 +1,48 @@
+---
+openapi: post /sequences/{sequenceId}/steps/{stepId}/branches
+description: Adds a branch to a condition step and returns it.
+---
+
+<Note>
+New to condition branches? Start with
+[List Condition Branches](/api-reference/endpoints/sequences/list-condition-branches), which explains
+how a step branches and how a branch is addressed.
+</Note>
+
+The new branch is inserted **just before the Else branch**, so it becomes the lowest-priority branch
+of the step. Reorder afterwards with
+[`PATCH …/branches`](/api-reference/endpoints/sequences/reorder-condition-branches) if it should be
+tested earlier.
+
+lemlist mints the empty sub-sequence the branch routes to and returns its id as `sequenceId`. Pass
+that id to [`POST /sequences/{sequenceId}/steps`](/api-reference/endpoints/sequences/add-step-to-sequence)
+to fill the branch with steps.
+
+## A branch carries the value it tests
+
+There are no blank branches: the body must say what this one matches, and a step's condition is never
+sent here. `conditionKey` in the body is refused with `SEQUENCE_BRANCH_CONDITION_KEY_NOT_ALLOWED` —
+every branch of a step shares the step's condition.
+
+Only four conditions host more than one branch:
+
+| Condition | Required in the body |
+| --- | --- |
+| `customLeadInfo` | `customValue` — unless `customOperator` is `empty` or `notEmpty`, which refuse one. The tested **field** is inherited from the step, so `customField` is optional |
+| `hasScore` | nothing — the branch inherits a complete `>= 80` band. Send `scoreComparator` and `scoreThreshold` to give it its own |
+| `hasEmailAddress` | `emailStatusFilter` |
+| `aircallDone` | `callStatusFilter` |
+
+Any other condition answers `400`: `not-multi-capable` when the condition supports a single branch
+plus Else, `SEQUENCE_BRANCH_CONDITION_NOT_CONFIGURABLE` when it has no branch parameters on the API.
+
+<Note>
+On a `customLeadInfo` step every branch tests the **same field** — only the operator and the value
+differ. Sending a `customField` that differs from the step's changes it on every branch at once.
+</Note>
+
+## When the campaign is running
+
+Adding a branch changes the shape of the tree leads walk, so it is refused with `409` once leads have
+entered the campaign — see
+[Editing a running campaign](/api-reference/endpoints/sequences/list-condition-branches#editing-a-running-campaign).

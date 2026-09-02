@@ -11,3 +11,31 @@ For example, if the main sequence includes a condition that contains two sequenc
 On a step running an A/B test, `abTest` and `emailTemplateBId` are set, but the
 step's `subject` and `message` are always **variant A's** — read variant B with
 [Get A/B Test Variant](/api-reference/endpoints/sequences/get-ab-test-variant).
+
+## Condition steps
+
+A step of type `conditional` carries its branches in `conditions`, in execution order with the Else
+branch last. Each entry names the sub-sequence its leads walk — look that `sequenceId` up as a key of
+this same response to read the branch's own steps.
+
+| Field | Description |
+| --- | --- |
+| `sequenceId` | The branch's sub-sequence id: the key to look up here, and the branch's address on the branch endpoints |
+| `key` | The condition the step tests. Every branch shares it; absent on the Else branch |
+| `label` | The server-stamped description of what is tested, e.g. `If lead variable "jobTitle" contains "CEO"`. On a step with several branches it doubles as the branch's name when `name` is unset |
+| `name` | The name someone gave the branch, when they gave one. The "Branch 1", "Branch 2", … and "Else" labels lemlist displays are not stored |
+| `fallback` | `true` on the Else branch, which catches every lead no other branch matched and always comes last |
+| `delay`, `delayType` | The time window a lead-action condition waits on, in days. Present instead of `selector` once hydrated |
+| `selector` | The raw stored selector, as JSON. `customLeadInfo` and `hasEmailAddress` keep it, since they carry no time window |
+
+<Warning>
+A branch whose `delay` was hydrated has **no** `selector` left, so what it actually tests is not in
+this response at all — a `hasScore` branch shows its window but not its score band, an `aircallDone`
+branch not its call statuses.
+
+[`GET /sequences/{sequenceId}/steps/{stepId}/branches`](/api-reference/endpoints/sequences/list-condition-branches)
+returns the same branches with everything decoded into parameters (`customField`, `customOperator`,
+`customValues`, `scoreComparator`, `scoreThreshold`, `emailStatusFilter`, `callStatusFilter`,
+`delay`, `delayType`) instead of a raw Mongo fragment. Use it whenever you need to read or edit what
+a branch tests.
+</Warning>
