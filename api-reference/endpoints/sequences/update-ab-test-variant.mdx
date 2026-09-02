@@ -1,23 +1,27 @@
 ---
 openapi: patch /sequences/{sequenceId}/steps/{stepId}/ab-test
-description: Edits variant B content and config of the A/B test on an email step.
+description: Edits variant B content and config of the A/B test on a step.
 ---
 
 <Note>
 A/B testing requires at least the **Email Pro** plan.
 </Note>
 
-Updates the **variant B** email template of the A/B test. Only the fields you
-include in the request body are changed; variant A is never touched.
+Updates the **variant B** template of the A/B test. Only the fields you include
+in the request body are changed; variant A is never touched.
 
 ## Request Body
 
 | Field | Type | Description |
 | --- | --- | --- |
-| `subject` | string | Variant B email subject. Maximum 400 characters |
-| `message` | string | Variant B email body (HTML) |
-| `altMessage` | string | Alternate message |
+| `subject` | string | Variant B subject |
+| `message` | string | Variant B body (HTML) |
+| `altMessage` | string | Alternate message. On LinkedIn invite steps, the premium invitation note — maximum 300 characters |
 | `cc` | array of strings | CC recipients |
 | `plainText` | boolean | Send as plain text |
+
+Fields outside this list are rejected with `400`. An empty `message` is also
+rejected with `400`, except on LinkedIn invite steps where it means "invite
+without a note".
 
 If the step does not run an A/B test, the endpoint returns `404`.

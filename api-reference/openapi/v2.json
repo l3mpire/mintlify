@@ -1274,7 +1274,7 @@
             "description": "Creation timestamp"
           },
           "abTest": {
-            "description": "A/B test state for this email step. `true` while the test runs (leads are split between variant A and B); `\"A\"` or `\"B\"` once a winner is selected (all remaining leads receive the winning template); absent/false when there is no A/B test.",
+            "description": "A/B test state for this step. `true` while the test runs (leads are split between variant A and B); `\"A\"` or `\"B\"` once a winner is selected (all remaining leads receive the winning template); absent/false when there is no A/B test.",
             "oneOf": [
               {
                 "type": "boolean"
@@ -6726,6 +6726,25 @@
                             "subject": {
                               "type": "string",
                               "description": "The email subject line (only for email steps)"
+                            },
+                            "abTest": {
+                              "description": "A/B test state for this step. `true` while the test runs (leads are split between variant A and B); `\"A\"` or `\"B\"` once a winner is selected; absent or `false` when there is no A/B test. `subject` and `message` are always variant A's — read variant B via Get A/B Test Variant",
+                              "oneOf": [
+                                {
+                                  "type": "boolean"
+                                },
+                                {
+                                  "type": "string",
+                                  "enum": [
+                                    "A",
+                                    "B"
+                                  ]
+                                }
+                              ]
+                            },
+                            "emailTemplateBId": {
+                              "type": "string",
+                              "description": "Email template ID of variant B (present when an A/B test exists on the step)"
                             }
                           }
                         }
@@ -22773,7 +22792,7 @@
         "tags": [
           "Sequences"
         ],
-        "description": "Creates variant B of an A/B test on an email step, prefilled from variant A, and starts the test (leads are split between A and B). Requires the Email Pro plan.",
+        "description": "Creates variant B of an A/B test on a step, prefilled from variant A, and starts the test (leads are split between A and B). Supported on `email`, `whatsappMessage`, `sms`, `linkedinInvite`, and `linkedinSend` steps. Requires the Email Pro plan.",
         "parameters": [],
         "responses": {
           "200": {
@@ -22806,11 +22825,11 @@
                     },
                     "subject": {
                       "type": "string",
-                      "description": "Variant B email subject"
+                      "description": "Variant B subject"
                     },
                     "message": {
                       "type": "string",
-                      "description": "Variant B email body (HTML)"
+                      "description": "Variant B body (HTML)"
                     },
                     "altMessage": {
                       "type": "string"
@@ -22837,10 +22856,26 @@
             }
           },
           "400": {
-            "description": "Bad request (e.g. step is not an email step, has no template, already runs an A/B test, or the campaign is running)",
+            "description": "Bad request: the step type does not support A/B testing, the step has no template, its template has no message (except LinkedIn invites), an A/B test already exists, or the campaign is running",
             "content": {
-              "text/plain": {
-                "example": "A/B test already exists on this step"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "A/B test already exists on this step",
+                  "code": "SEQUENCE_AB_ALREADY_EXISTS"
+                }
               }
             }
           },
@@ -22861,15 +22896,38 @@
             }
           },
           "404": {
-            "description": "Sequence, step, or A/B test variant not found",
+            "description": "Sequence or step not found",
             "content": {
-              "text/plain": {
-                "example": "No A/B test variant on this step"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Step not found",
+                  "code": "SEQUENCE_STEP_NOT_FOUND"
+                }
               }
             }
           },
           "405": {
-            "description": "Method not allowed"
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Bad method"
+                }
+              }
+            }
           }
         }
       },
@@ -22878,7 +22936,7 @@
         "tags": [
           "Sequences"
         ],
-        "description": "Returns variant B (subject, message, config) of the A/B test on an email step. Requires the Email Pro plan.",
+        "description": "Returns variant B (subject, message, config) of the A/B test on a step. Requires the Email Pro plan.",
         "parameters": [],
         "responses": {
           "200": {
@@ -22911,11 +22969,11 @@
                     },
                     "subject": {
                       "type": "string",
-                      "description": "Variant B email subject"
+                      "description": "Variant B subject"
                     },
                     "message": {
                       "type": "string",
-                      "description": "Variant B email body (HTML)"
+                      "description": "Variant B body (HTML)"
                     },
                     "altMessage": {
                       "type": "string"
@@ -22960,13 +23018,36 @@
           "404": {
             "description": "Sequence, step, or A/B test variant not found",
             "content": {
-              "text/plain": {
-                "example": "No A/B test variant on this step"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "No A/B test variant on this step",
+                  "code": "SEQUENCE_AB_NO_VARIANT"
+                }
               }
             }
           },
           "405": {
-            "description": "Method not allowed"
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Bad method"
+                }
+              }
+            }
           }
         }
       },
@@ -22975,7 +23056,7 @@
         "tags": [
           "Sequences"
         ],
-        "description": "Edits variant B content/config of the A/B test on an email step. Only the provided fields are updated. Requires the Email Pro plan.",
+        "description": "Edits variant B content/config of the A/B test on a step. Only the provided fields are updated; unknown fields are rejected. Allowed while the campaign is running. Requires the Email Pro plan.",
         "parameters": [],
         "requestBody": {
           "content": {
@@ -22985,14 +23066,15 @@
                 "properties": {
                   "subject": {
                     "type": "string",
-                    "description": "Variant B email subject. Maximum 400 characters"
+                    "description": "Variant B subject"
                   },
                   "message": {
                     "type": "string",
-                    "description": "Variant B email body (HTML)"
+                    "description": "Variant B body (HTML). An empty string is rejected, except on LinkedIn invite steps where it means \"invite without a note\""
                   },
                   "altMessage": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Alternate message. On LinkedIn invite steps, the premium invitation note — maximum 300 characters"
                   },
                   "cc": {
                     "type": "array",
@@ -23043,11 +23125,11 @@
                     },
                     "subject": {
                       "type": "string",
-                      "description": "Variant B email subject"
+                      "description": "Variant B subject"
                     },
                     "message": {
                       "type": "string",
-                      "description": "Variant B email body (HTML)"
+                      "description": "Variant B body (HTML)"
                     },
                     "altMessage": {
                       "type": "string"
@@ -23074,10 +23156,26 @@
             }
           },
           "400": {
-            "description": "Bad request (invalid request body)",
+            "description": "Bad request: invalid or unknown body field, empty message on a step other than a LinkedIn invite, or invitation note over 300 characters",
             "content": {
-              "text/plain": {
-                "example": "Match error: Expected string, got number"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "The premium invitation note must not exceed 300 characters",
+                  "code": "SEQUENCE_AB_ALT_MESSAGE_TOO_LONG"
+                }
               }
             }
           },
@@ -23100,13 +23198,36 @@
           "404": {
             "description": "Sequence, step, or A/B test variant not found",
             "content": {
-              "text/plain": {
-                "example": "No A/B test variant on this step"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "No A/B test variant on this step",
+                  "code": "SEQUENCE_AB_NO_VARIANT"
+                }
               }
             }
           },
           "405": {
-            "description": "Method not allowed"
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Bad method"
+                }
+              }
+            }
           }
         }
       },
@@ -23152,10 +23273,26 @@
             }
           },
           "400": {
-            "description": "You cannot edit this step because the campaign is running",
+            "description": "The campaign is running on a non-editable sequence",
             "content": {
-              "text/plain": {
-                "example": "You cannot edit this step because the campaign is running"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "You cannot edit this step because the campaign is running",
+                  "code": "SEQUENCE_AB_CAMPAIGN_RUNNING"
+                }
               }
             }
           },
@@ -23178,13 +23315,36 @@
           "404": {
             "description": "Sequence, step, or A/B test variant not found",
             "content": {
-              "text/plain": {
-                "example": "No A/B test variant on this step"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "No A/B test variant on this step",
+                  "code": "SEQUENCE_AB_NO_VARIANT"
+                }
               }
             }
           },
           "405": {
-            "description": "Method not allowed"
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Bad method"
+                }
+              }
+            }
           }
         }
       }
@@ -23275,8 +23435,24 @@
           "400": {
             "description": "A winning variant has already been selected, or the variant is invalid",
             "content": {
-              "text/plain": {
-                "example": "A winning variant has already been selected for this step"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "A winning variant has already been selected for this step",
+                  "code": "SEQUENCE_AB_WINNER_ALREADY_SELECTED"
+                }
               }
             }
           },
@@ -23299,13 +23475,36 @@
           "404": {
             "description": "Sequence, step, or A/B test variant not found",
             "content": {
-              "text/plain": {
-                "example": "No A/B test variant on this step"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "No A/B test variant on this step",
+                  "code": "SEQUENCE_AB_NO_VARIANT"
+                }
               }
             }
           },
           "405": {
-            "description": "Method not allowed"
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Bad method"
+                }
+              }
+            }
           }
         }
       }
