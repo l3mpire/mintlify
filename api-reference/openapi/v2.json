@@ -10324,7 +10324,7 @@
             }
           },
           "409": {
-            "description": "Permanent conflict, do not retry as is: `duplicate-forbidden` (an email, LinkedIn or Sales Navigator url already belongs to another contact), `already-in` (the contact already has a lead in this campaign), `deduplicate` (lead already in another campaign), `duplicate-csv`.",
+            "description": "Permanent conflict, do not retry as is: `duplicate-forbidden` (an email, LinkedIn or Sales Navigator url already belongs to another contact), `company-duplicate-forbidden` (the company identifiers designate two different companies), `already-in` (the contact already has a lead in this campaign), `deduplicate` (lead already in another campaign), `duplicate-csv`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -11622,7 +11622,7 @@
             }
           },
           "409": {
-            "description": "Permanent conflict, do not retry as is: `duplicate-forbidden` (an identifier already belongs to another contact), `already-in`, `deduplicate`, `duplicate-csv`.",
+            "description": "Permanent conflict, do not retry as is: `duplicate-forbidden` (an identifier already belongs to another contact), `company-duplicate-forbidden` (the company identifiers designate two different companies), `already-in`, `deduplicate`, `duplicate-csv`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -11786,7 +11786,7 @@
             }
           },
           "409": {
-            "description": "Permanent conflict, do not retry as is: `duplicate-forbidden` (an identifier already belongs to another contact), `already-in`, `deduplicate`, `duplicate-csv`.",
+            "description": "Permanent conflict, do not retry as is: `duplicate-forbidden` (an identifier already belongs to another contact), `company-duplicate-forbidden` (the company identifiers designate two different companies), `already-in`, `deduplicate`, `duplicate-csv`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -11947,7 +11947,7 @@
             }
           },
           "409": {
-            "description": "Permanent conflict, do not retry as is: `duplicate-forbidden` (an identifier already belongs to another contact), `already-in`, `deduplicate`, `duplicate-csv`.",
+            "description": "Permanent conflict, do not retry as is: `duplicate-forbidden` (an identifier already belongs to another contact), `company-duplicate-forbidden` (the company identifiers designate two different companies), `already-in`, `deduplicate`, `duplicate-csv`.",
             "content": {
               "application/json": {
                 "schema": {
