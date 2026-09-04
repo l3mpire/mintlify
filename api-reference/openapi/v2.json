@@ -10230,7 +10230,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was skipped. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden`, `company-update-failed`, `company-skipped`.",
+                      "description": "Always present on a 200, empty when nothing was skipped. A non-empty array means the lead WAS written but its company part was not. This field is always API-owned: the response also spreads the lead's own variables, so a variable of yours named `warnings` never surfaces here. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden`, `company-update-failed`, `company-skipped`.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -16080,7 +16080,7 @@
                   },
                   "contactOwner": {
                     "type": "string",
-                    "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the owner defaults to the API key owner."
+                    "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the value matches no team member the contact is still written, and the response carries an `OWNER_NOT_FOUND` (or `INVALID_OWNER_FORMAT`) entry in `warnings`: on creation the owner falls back to the owner of the API key, on update the existing owner is left unchanged."
                   },
                   "source": {
                     "type": "string",
@@ -16129,6 +16129,29 @@
                     "data": {
                       "type": "object",
                       "description": "Same shape as the 201 response, with `created: false` and `updated: true`."
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "Non-blocking issues: the record WAS written, and each entry names something you asked for that was not applied. Absent when everything applied.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string",
+                            "description": "`OWNER_NOT_FOUND` / `INVALID_OWNER_FORMAT` when the owner you sent matches no team member; `COMPANY_NOT_FOUND_BY_ID` / `COMPANY_NOT_FOUND_BY_DOMAIN` / `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` when the company could not be linked."
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "params": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "The offending input, echoed back — e.g. `{ \"contactOwner\": \"nobody@example.com\" }`."
+                          }
+                        }
+                      }
                     }
                   }
                 },
@@ -16247,15 +16270,23 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "description": "Non-blocking issues: the record WAS written, and each entry names something you asked for that was not applied. Absent when everything applied.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "`OWNER_NOT_FOUND` / `INVALID_OWNER_FORMAT` when the owner you sent matches no team member; `COMPANY_NOT_FOUND_BY_ID` / `COMPANY_NOT_FOUND_BY_DOMAIN` / `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` when the company could not be linked."
                           },
                           "message": {
                             "type": "string"
+                          },
+                          "params": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "The offending input, echoed back — e.g. `{ \"contactOwner\": \"nobody@example.com\" }`."
                           }
                         }
                       }
@@ -17499,7 +17530,7 @@
                   },
                   "companyOwner": {
                     "type": "string",
-                    "description": "Owner of the company. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the owner defaults to the API key owner."
+                    "description": "Owner of the company. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the value matches no team member the company is still written, and the response carries an `OWNER_NOT_FOUND` (or `INVALID_OWNER_FORMAT`) entry in `warnings`: on creation the owner falls back to the owner of the API key, on update the existing owner is left unchanged."
                   },
                   "industry": {
                     "type": "string",
@@ -17575,6 +17606,29 @@
                     "data": {
                       "type": "object",
                       "description": "Same shape as the 201 response, with `created: false` and `updated: true`."
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "Non-blocking issues: the record WAS written, and each entry names something you asked for that was not applied. Absent when everything applied.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string",
+                            "description": "`OWNER_NOT_FOUND` / `INVALID_OWNER_FORMAT` when the owner you sent matches no team member; `COMPANY_NOT_FOUND_BY_ID` / `COMPANY_NOT_FOUND_BY_DOMAIN` / `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` when the company could not be linked."
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "params": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "The offending input, echoed back — e.g. `{ \"contactOwner\": \"nobody@example.com\" }`."
+                          }
+                        }
+                      }
                     }
                   }
                 },
@@ -17663,15 +17717,23 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. owner resolution issues).",
+                      "description": "Non-blocking issues: the record WAS written, and each entry names something you asked for that was not applied. Absent when everything applied.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "`OWNER_NOT_FOUND` / `INVALID_OWNER_FORMAT` when the owner you sent matches no team member; `COMPANY_NOT_FOUND_BY_ID` / `COMPANY_NOT_FOUND_BY_DOMAIN` / `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` when the company could not be linked."
                           },
                           "message": {
                             "type": "string"
+                          },
+                          "params": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "The offending input, echoed back — e.g. `{ \"contactOwner\": \"nobody@example.com\" }`."
                           }
                         }
                       }
