@@ -10230,7 +10230,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Always present on a 200, empty when nothing was skipped. A non-empty array means the lead WAS written but its company part was not. This field is always API-owned: the response also spreads the lead's own variables, so a variable of yours named `warnings` never surfaces here. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden`, `company-update-failed`, `company-skipped`.",
+                      "description": "Always present on a 200, empty when nothing was skipped. A non-empty array means the lead WAS written but its company part was not. This field is always API-owned: the response also spreads the lead's own variables, so a variable of yours named `warnings` never surfaces here. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-update-failed`, `company-skipped`. A company identifier conflict is NOT here: it is answered as a 409 `company-duplicate-forbidden`, never as a warning.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -11553,7 +11553,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was skipped. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden`, `company-update-failed`, `company-skipped`.",
+                      "description": "Present only when the lead was written but its company part was skipped. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-update-failed`, `company-skipped`. A company identifier conflict is NOT here: it is answered as a 409 `company-duplicate-forbidden`, never as a warning.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -11717,7 +11717,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was skipped. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden`, `company-update-failed`, `company-skipped`.",
+                      "description": "Present only when the lead was written but its company part was skipped. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-update-failed`, `company-skipped`. A company identifier conflict is NOT here: it is answered as a 409 `company-duplicate-forbidden`, never as a warning.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -11878,7 +11878,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was skipped. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden`, `company-update-failed`, `company-skipped`.",
+                      "description": "Present only when the lead was written but its company part was skipped. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-update-failed`, `company-skipped`. A company identifier conflict is NOT here: it is answered as a 409 `company-duplicate-forbidden`, never as a warning.",
                       "items": {
                         "type": "object",
                         "properties": {
