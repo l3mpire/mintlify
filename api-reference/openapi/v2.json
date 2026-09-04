@@ -23,6 +23,37 @@
       }
     },
     "schemas": {
+      "ApiErrorEnvelope": {
+        "type": "object",
+        "description": "Structured error body of the CRM API routes (contacts, companies, lead updates).",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Machine-readable error code, stable across releases."
+              },
+              "message": {
+                "type": "string",
+                "description": "Human-readable explanation."
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "success",
+          "error"
+        ]
+      },
       "ActivityType": {
         "type": "string",
         "description": "A lemlist activity type. These are the exact values accepted by the `type` filter on GET /activities and returned as an activity's `type`. Mind the spelling: email types are plural (emailsSent), invites are linkedinInvite*.",
@@ -10011,7 +10042,7 @@
             }
           },
           "400": {
-            "description": "Possible errors: No API key provided / Bad team",
+            "description": "Rejected add. Raw text body unless the code is one of the few that answer `{\"error\": \"...\"}`. `Invalid email address`, `Email address is in the graveyard`, `Body of your request must be an object` and `Lead already in the campaign` land here \u2014 the first three answered 500 (and the body one 401) until the status audit; they describe what the caller sent, so they are 4xx. Also `No API key provided` / `Bad team`.",
             "content": {
               "text/plain": {
                 "example": "No API key provided"
@@ -10025,6 +10056,9 @@
                 "example": "The authentication you supplied is incorrect"
               }
             }
+          },
+          "409": {
+            "description": "`Lead already in other campaign`: the lead exists in another campaign and the request is deduplicated. Permanent for this payload, retrying as is fails again. Answered 500 until the status audit — the caller can act on it, so it is a 4xx."
           },
           "403": {
             "description": "User linked to this API key is blocked",
@@ -10223,6 +10257,21 @@
                     "emailStatus": {
                       "type": "string",
                       "description": "Email verification status"
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "Present only when the lead was written but its company part was not. The response also spreads the lead's own variables, so a variable of yours named `warnings` would sit alongside this one. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (the identifiers sent designate two different companies) and `company-update-failed`.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   }
                 },
@@ -10246,26 +10295,19 @@
             }
           },
           "400": {
-            "description": "Bad team",
-            "content": {
-              "text/plain": {
-                "example": "Bad team"
-              }
-            }
+            "description": "The update was refused for something the request carries. The body is the raw reason text, not JSON, so a client that decodes the body as JSON sees the status only. Reasons behind it: `invalid-email`, `invalid-linkedin-url`, `linkedin-url-not-contact` (a company page or Sales Navigator url was sent as `linkedinUrl`), `no-valid-leads`. The `Bad team` and `Body of your request must be an object` pre-checks answer the same way."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "The authentication you supplied is incorrect"
           },
           "404": {
-            "description": "Lead not found",
-            "content": {
-              "text/plain": {
-                "example": "Lead not found"
-              }
-            }
+            "description": "Lead or campaign not found (`{\"error\": \"Lead not found\"}` / `{\"error\": \"Campaign not found\"}`), or a target that disappeared during the write \u2014 `edit-deleted-lead`, `campaign-deleted` \u2014 the latter as raw text."
+          },
+          "409": {
+            "description": "Permanent conflict, retrying as is fails again: `duplicate-forbidden` (an email, LinkedIn or Sales Navigator url already belongs to another contact) and `already-in` (the row resolves to a contact that already holds a lead in this campaign). The body is the raw reason text, not JSON, so a client that decodes the body as JSON sees the status only. A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
           },
           "500": {
-            "description": "Lead in graveyard"
+            "description": "The write failed on our side (`contact-update-failed`, `lead-update-failed`): nothing was written, safe to retry. The body is the raw reason text, not JSON, so a client that decodes the body as JSON sees the status only."
           }
         },
         "parameters": []
@@ -11448,7 +11490,27 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "additionalProperties": true
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "Present only when the lead was written but its company part was skipped. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (the identifiers sent designate two different companies) and `company-update-failed`.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 },
                 "example": {
                   "ok": true
@@ -11457,23 +11519,19 @@
             }
           },
           "400": {
-            "description": "Bad team",
-            "content": {
-              "text/plain": {
-                "example": "Variable not found"
-              }
-            }
+            "description": "Pre-check failure as `{\"ok\": false, \"status\": \"<reason>\"}` (a variable that already exists, invalid variables) or `{\"error\": \"Invalid leadId\"}`; a refused write comes back as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `invalid-email`, `invalid-linkedin-url`, `linkedin-url-not-contact`, `no-valid-leads`."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "The authentication you supplied is incorrect"
           },
           "404": {
-            "description": "Lead not found",
-            "content": {
-              "text/plain": {
-                "example": "Lead not found"
-              }
-            }
+            "description": "`Lead not found` / `Campaign not found` (plain text), or a target that disappeared during the write, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `edit-deleted-lead`, `campaign-deleted`."
+          },
+          "409": {
+            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact) and `already-in`. A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
+          },
+          "500": {
+            "description": "The write failed on our side (`contact-update-failed`, `lead-update-failed`): nothing was written, safe to retry, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field."
           }
         }
       },
@@ -11522,7 +11580,27 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "additionalProperties": true
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "Present only when the lead was written but its company part was skipped. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (the identifiers sent designate two different companies) and `company-update-failed`.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 },
                 "example": {
                   "ok": true
@@ -11531,23 +11609,19 @@
             }
           },
           "400": {
-            "description": "Bad team",
-            "content": {
-              "text/plain": {
-                "example": "Bad team"
-              }
-            }
+            "description": "Pre-check failure as `{\"ok\": false, \"status\": \"<reason>\"}` (a variable that does not exist, invalid variables) or `{\"error\": \"Invalid leadId\"}`; a refused write comes back as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `invalid-email`, `invalid-linkedin-url`, `linkedin-url-not-contact`, `no-valid-leads`."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "The authentication you supplied is incorrect"
           },
           "404": {
-            "description": "Lead not found",
-            "content": {
-              "text/plain": {
-                "example": "Lead not found"
-              }
-            }
+            "description": "`Lead not found` / `Campaign not found` (plain text), or a target that disappeared during the write, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `edit-deleted-lead`, `campaign-deleted`."
+          },
+          "409": {
+            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact) and `already-in`. A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
+          },
+          "500": {
+            "description": "The write failed on our side (`contact-update-failed`, `lead-update-failed`): nothing was written, safe to retry, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field."
           }
         }
       },
@@ -11593,7 +11667,27 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "additionalProperties": true
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "Present only when the lead was written but its company part was skipped. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (the identifiers sent designate two different companies) and `company-update-failed`.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 },
                 "example": {
                   "ok": true
@@ -11602,23 +11696,19 @@
             }
           },
           "400": {
-            "description": "Bad team",
-            "content": {
-              "text/plain": {
-                "example": "Bad team"
-              }
-            }
+            "description": "Pre-check failure as `{\"ok\": false, \"status\": \"<reason>\"}` (a variable that does not exist or cannot be deleted) or `{\"error\": \"Invalid leadId\"}`; a refused write comes back as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `invalid-email`, `invalid-linkedin-url`, `linkedin-url-not-contact`, `no-valid-leads`."
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "The authentication you supplied is incorrect"
           },
           "404": {
-            "description": "Lead not found",
-            "content": {
-              "text/plain": {
-                "example": "Lead not found"
-              }
-            }
+            "description": "`Lead not found` / `Campaign not found` (plain text), or a target that disappeared during the write, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `edit-deleted-lead`, `campaign-deleted`."
+          },
+          "409": {
+            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact) and `already-in`. A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
+          },
+          "500": {
+            "description": "The write failed on our side (`contact-update-failed`, `lead-update-failed`): nothing was written, safe to retry, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field."
           }
         }
       }
@@ -15712,7 +15802,7 @@
                   },
                   "contactOwner": {
                     "type": "string",
-                    "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the owner defaults to the API key owner."
+                    "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the value matches no team member the contact is still written, and the response carries an `OWNER_NOT_FOUND` (or `INVALID_OWNER_FORMAT`) entry in `warnings`: on creation the owner falls back to the owner of the API key, on update the existing owner is left unchanged."
                   },
                   "source": {
                     "type": "string",
@@ -15748,6 +15838,73 @@
           }
         },
         "responses": {
+          "200": {
+            "description": "Existing contact updated (upsert matched by email or LinkedIn URL)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Same shape as the 201 response, with `created: false` and `updated: true`."
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "Non-blocking issues: the record WAS written, and each entry names something you asked for that was not applied. Absent when everything applied.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string",
+                            "description": "`OWNER_NOT_FOUND` / `INVALID_OWNER_FORMAT` when the owner you sent matches no team member; `COMPANY_NOT_FOUND_BY_ID` / `COMPANY_NOT_FOUND_BY_DOMAIN` / `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` when the company could not be linked."
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "params": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "The offending input, echoed back — e.g. `{ \"contactOwner\": \"nobody@example.com\" }`."
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "_id": "ctc_xW8Ou6C03Csv8vatp",
+                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                    "emails": [
+                      {
+                        "value": "jane.smith@example.com"
+                      }
+                    ],
+                    "fields": {
+                      "firstName": "Jane",
+                      "lastName": "Smith",
+                      "jobTitle": "Product Manager"
+                    },
+                    "ownerId": "usr_ahfFktBBHUIxbVG5P",
+                    "source": "api",
+                    "createdAt": "2025-10-28T00:40:37.917Z",
+                    "createdBy": "usr_ahfFktBBHUIxbVG5P",
+                    "unsubscribed": false,
+                    "created": false,
+                    "updated": true,
+                    "companyLinked": false
+                  }
+                }
+              }
+            }
+          },
           "201": {
             "description": "Contact created successfully",
             "content": {
@@ -15835,15 +15992,23 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "description": "Non-blocking issues: the record WAS written, and each entry names something you asked for that was not applied. Absent when everything applied.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "`OWNER_NOT_FOUND` / `INVALID_OWNER_FORMAT` when the owner you sent matches no team member; `COMPANY_NOT_FOUND_BY_ID` / `COMPANY_NOT_FOUND_BY_DOMAIN` / `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` when the company could not be linked."
                           },
                           "message": {
                             "type": "string"
+                          },
+                          "params": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "The offending input, echoed back — e.g. `{ \"contactOwner\": \"nobody@example.com\" }`."
                           }
                         }
                       }
@@ -15879,52 +16044,8 @@
               }
             }
           },
-          "200": {
-            "description": "Existing contact updated (upsert matched by email or LinkedIn URL)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "data": {
-                      "type": "object",
-                      "description": "Same shape as the 201 response, with `created: false` and `updated: true`."
-                    }
-                  }
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "_id": "ctc_xW8Ou6C03Csv8vatp",
-                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
-                    "emails": [
-                      {
-                        "value": "jane.smith@example.com"
-                      }
-                    ],
-                    "fields": {
-                      "firstName": "Jane",
-                      "lastName": "Smith",
-                      "jobTitle": "Product Manager"
-                    },
-                    "ownerId": "usr_ahfFktBBHUIxbVG5P",
-                    "source": "api",
-                    "createdAt": "2025-10-28T00:40:37.917Z",
-                    "createdBy": "usr_ahfFktBBHUIxbVG5P",
-                    "unsubscribed": false,
-                    "created": false,
-                    "updated": true,
-                    "companyLinked": false
-                  }
-                }
-              }
-            }
-          },
           "400": {
-            "description": "Validation error",
+            "description": "Validation error (nothing written)",
             "content": {
               "application/json": {
                 "schema": {
@@ -15938,7 +16059,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `MISSING_IDENTIFIER`, `INVALID_CONTACT_ID`, `CONTACT_NOT_FOUND_BY_ID`, `INVALID_EMAIL`, `INVALID_ADDITIONAL_EMAILS`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, or `CONTACT_VALIDATION_FAILED`."
+                          "description": "Error code: `MISSING_IDENTIFIER`, `INVALID_CONTACT_ID`, `INVALID_EMAIL`, `INVALID_ADDITIONAL_EMAILS`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, `OWNER_NOT_FOUND` / `INVALID_OWNER_FORMAT` (`contactOwner` is not a team member: nothing is written), or `CONTACT_VALIDATION_FAILED`."
                         },
                         "message": {
                           "type": "string"
@@ -15962,6 +16083,69 @@
             "content": {
               "text/plain": {
                 "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "`CONTACT_NOT_FOUND_BY_ID`: the `contactId` targets no contact of the team.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "examples": {
+                  "not-found": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CONTACT_NOT_FOUND_BY_ID",
+                        "message": "No contact found with the provided contactId"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`CONTACT_IDENTIFIER_CONFLICT`: an email, LinkedIn or Sales Navigator url already belongs to another contact. Retarget the request or free the identifier; retrying as is fails again.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "examples": {
+                  "conflict": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CONTACT_IDENTIFIER_CONFLICT",
+                        "message": "An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "`UPSERT_FAILED`: the write failed on our side, nothing was written, safe to retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "examples": {
+                  "upsert-failed": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "UPSERT_FAILED",
+                        "message": "Failed to create or update contact"
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -17068,7 +17252,7 @@
                   },
                   "companyOwner": {
                     "type": "string",
-                    "description": "Owner of the company. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the owner defaults to the API key owner."
+                    "description": "Owner of the company. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the value matches no team member the company is still written, and the response carries an `OWNER_NOT_FOUND` (or `INVALID_OWNER_FORMAT`) entry in `warnings`: on creation the owner falls back to the owner of the API key, on update the existing owner is left unchanged."
                   },
                   "industry": {
                     "type": "string",
@@ -17131,6 +17315,67 @@
           }
         },
         "responses": {
+          "200": {
+            "description": "Existing company updated (upsert matched by domain or LinkedIn URL)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Same shape as the 201 response, with `created: false` and `updated: true`."
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "Non-blocking issues: the record WAS written, and each entry names something you asked for that was not applied. Absent when everything applied.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string",
+                            "description": "`OWNER_NOT_FOUND` / `INVALID_OWNER_FORMAT` when the owner you sent matches no team member; `COMPANY_NOT_FOUND_BY_ID` / `COMPANY_NOT_FOUND_BY_DOMAIN` / `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` when the company could not be linked."
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "params": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "The offending input, echoed back — e.g. `{ \"contactOwner\": \"nobody@example.com\" }`."
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "_id": "cpn_gG7PsmZFpEAnpMCHO",
+                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                    "domain": "acme.com",
+                    "fields": {
+                      "name": "Acme Corp",
+                      "industry": "Technology",
+                      "location": "San Francisco, CA"
+                    },
+                    "ownerId": "usr_ahfFktBBHUIxbVG5P",
+                    "source": "api",
+                    "createdAt": "2025-10-28T00:40:37.917Z",
+                    "createdBy": "usr_ahfFktBBHUIxbVG5P",
+                    "created": false,
+                    "updated": true
+                  }
+                }
+              }
+            }
+          },
           "201": {
             "description": "Company created successfully",
             "content": {
@@ -17194,15 +17439,23 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. owner resolution issues).",
+                      "description": "Non-blocking issues: the record WAS written, and each entry names something you asked for that was not applied. Absent when everything applied.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "`OWNER_NOT_FOUND` / `INVALID_OWNER_FORMAT` when the owner you sent matches no team member; `COMPANY_NOT_FOUND_BY_ID` / `COMPANY_NOT_FOUND_BY_DOMAIN` / `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` when the company could not be linked."
                           },
                           "message": {
                             "type": "string"
+                          },
+                          "params": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "The offending input, echoed back — e.g. `{ \"contactOwner\": \"nobody@example.com\" }`."
                           }
                         }
                       }
@@ -17231,46 +17484,8 @@
               }
             }
           },
-          "200": {
-            "description": "Existing company updated (upsert matched by domain or LinkedIn URL)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "data": {
-                      "type": "object",
-                      "description": "Same shape as the 201 response, with `created: false` and `updated: true`."
-                    }
-                  }
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "_id": "cpn_gG7PsmZFpEAnpMCHO",
-                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
-                    "domain": "acme.com",
-                    "fields": {
-                      "name": "Acme Corp",
-                      "industry": "Technology",
-                      "location": "San Francisco, CA"
-                    },
-                    "ownerId": "usr_ahfFktBBHUIxbVG5P",
-                    "source": "api",
-                    "createdAt": "2025-10-28T00:40:37.917Z",
-                    "createdBy": "usr_ahfFktBBHUIxbVG5P",
-                    "created": false,
-                    "updated": true
-                  }
-                }
-              }
-            }
-          },
           "400": {
-            "description": "Validation error",
+            "description": "Validation error (nothing written)",
             "content": {
               "application/json": {
                 "schema": {
@@ -17284,7 +17499,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `MISSING_REQUIRED_FIELD`, `INVALID_COMPANY_ID`, `COMPANY_NOT_FOUND_BY_ID`, `INVALID_DOMAIN`, `INVALID_LINKEDIN_URL`, or `INVALID_FIELD`."
+                          "description": "Error code: `MISSING_REQUIRED_FIELD`, `INVALID_COMPANY_ID`, `INVALID_DOMAIN`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, `OWNER_NOT_FOUND` / `INVALID_OWNER_FORMAT` (`companyOwner` is not a team member: nothing is written), or `COMPANY_VALIDATION_FAILED`."
                         },
                         "message": {
                           "type": "string"
@@ -17308,6 +17523,69 @@
             "content": {
               "text/plain": {
                 "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "`COMPANY_NOT_FOUND_BY_ID`: the `companyId` targets no company of the team.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "examples": {
+                  "not-found": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "COMPANY_NOT_FOUND_BY_ID",
+                        "message": "No company found with id"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`COMPANY_IDENTIFIER_CONFLICT`: a domain, LinkedIn or Sales Navigator url already belongs to another company. Retarget the request or free the identifier; retrying as is fails again.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "examples": {
+                  "conflict": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "COMPANY_IDENTIFIER_CONFLICT",
+                        "message": "An identifier (domain, linkedinUrl or salesnavUrl) already belongs to another company"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "`COMPANY_UPSERT_FAILED`: the write failed on our side, nothing was written, safe to retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "examples": {
+                  "upsert-failed": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "COMPANY_UPSERT_FAILED",
+                        "message": "Failed to create or update company"
+                      }
+                    }
+                  }
+                }
               }
             }
           }
