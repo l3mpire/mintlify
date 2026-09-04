@@ -10,9 +10,9 @@ Companies are addressed by their lemlist id (`cpn_xxx`).
 ## What moves to the survivor
 
 - Contacts, activities, tasks and list memberships of every deleted company.
-- When a CRM is connected, the linked CRM records are merged the same way.
+- When a CRM is connected, the survivor keeps its CRM link, or adopts the first linked company's when it has none, and receives the merged values there. lemlist never merges or deletes anything in the CRM itself: the other companys' CRM records stay in the CRM, unlinked from lemlist. Merge them CRM-side too, or a later CRM import may recreate the duplicate.
 
-## Partial runs
+## Partial runs — `success: true` does not mean complete
 
 The companies are folded into the survivor one at a time and the run **stops at the first failure**. The response is still `200`: `mergedIds` lists what went through, `remainingIds` what still exists — fix the cause and call again with the remaining ids. A failure on the very first fold returns an error instead, and nothing was written.
 

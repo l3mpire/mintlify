@@ -15944,7 +15944,7 @@
     },
     "/contacts/merge": {
       "summary": "Merge Contacts",
-      "description": "Merges up to 10 lemlist contacts into one. The survivor (`primaryId`) keeps its id and every value it holds; its empty fields are filled from the other contacts, which are then deleted. Everything attached to a deleted contact (leads in campaigns, activities, tasks, list memberships, inbox conversations) is moved to the survivor. When a CRM is connected, the CRM records are merged the same way.\n\nThe contacts are folded into the survivor one at a time and the run **stops at the first failure**: `mergedIds` lists what went through, `remainingIds` what still exists. A first-fold failure returns an error instead — nothing was written.\n\n**Email addresses:** the survivor keeps its own; a loser's addresses are dropped, unless the survivor has none (then it takes the first loser's).\n\n**No undo:** deleted contacts are gone.",
+      "description": "Merges up to 10 lemlist contacts into one. The survivor (`primaryId`) keeps its id and every value it holds; its empty fields are filled from the other contacts, which are then deleted. Everything attached to a deleted contact (leads in campaigns, activities, tasks, list memberships, inbox conversations) is moved to the survivor. When a CRM is connected, the survivor keeps its CRM link (or adopts the first linked record's when it has none) and receives the merged values there; lemlist never merges or deletes anything in the CRM itself, so the other records' CRM entries stay in the CRM, unlinked from lemlist — merge them CRM-side too, or a CRM import may recreate the duplicate.\n\nThe contacts are folded into the survivor one at a time and the run **stops at the first failure**: `mergedIds` lists what went through, `remainingIds` what still exists. A first-fold failure returns an error instead — nothing was written.\n\n**Email addresses:** the survivor keeps its own; a loser's addresses are dropped, unless the survivor has none (then it takes the first loser's).\n\n**No undo:** deleted contacts are gone.",
       "tags": [
         "Contacts"
       ],
@@ -15984,7 +15984,7 @@
       },
       "responses": {
         "200": {
-          "description": "Merge run. Check `remainingIds`: when it is not empty, a later fold failed and those contacts still exist.",
+          "description": "Merge run — **`success: true` does not mean complete.** The contacts fold one at a time and the run stops at the first failure, so ALWAYS check `remainingIds`: the contacts listed there were NOT merged and still exist. Fix the cause (typically an enrichment in progress) and call again with the survivor and the remaining ids.",
           "content": {
             "application/json": {
               "schema": {
@@ -17461,7 +17461,7 @@
     },
     "/companies/merge": {
       "summary": "Merge Companies",
-      "description": "Merges up to 10 lemlist companies into one. The survivor (`primaryId`) keeps its id and every value it holds; its empty fields are filled from the other companies, which are then deleted. Everything attached to a deleted company (contacts, activities, tasks, list memberships) is moved to the survivor. When a CRM is connected, the CRM records are merged the same way.\n\nThe companies are folded into the survivor one at a time and the run **stops at the first failure**: `mergedIds` lists what went through, `remainingIds` what still exists. A first-fold failure returns an error instead — nothing was written.\n\n**No undo:** deleted companies are gone.",
+      "description": "Merges up to 10 lemlist companies into one. The survivor (`primaryId`) keeps its id and every value it holds; its empty fields are filled from the other companies, which are then deleted. Everything attached to a deleted company (contacts, activities, tasks, list memberships) is moved to the survivor. When a CRM is connected, the survivor keeps its CRM link (or adopts the first linked record's when it has none) and receives the merged values there; lemlist never merges or deletes anything in the CRM itself, so the other records' CRM entries stay in the CRM, unlinked from lemlist — merge them CRM-side too, or a CRM import may recreate the duplicate.\n\nThe companies are folded into the survivor one at a time and the run **stops at the first failure**: `mergedIds` lists what went through, `remainingIds` what still exists. A first-fold failure returns an error instead — nothing was written.\n\n**No undo:** deleted companies are gone.",
       "tags": [
         "Companies"
       ],
@@ -17501,7 +17501,7 @@
       },
       "responses": {
         "200": {
-          "description": "Merge run. Check `remainingIds`: when it is not empty, a later fold failed and those companies still exist.",
+          "description": "Merge run — **`success: true` does not mean complete.** The companies fold one at a time and the run stops at the first failure, so ALWAYS check `remainingIds`: the companies listed there were NOT merged and still exist. Fix the cause and call again with the survivor and the remaining ids.",
           "content": {
             "application/json": {
               "schema": {
