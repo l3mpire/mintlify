@@ -6,6 +6,28 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Webhook" objectPath="webhook" />
 
+## Limits and conflicts
+
+A workspace holds at most **200 webhooks**, and a `targetUrl` can only be registered once. Both limits answer `409`, with a JSON body whose `error` field tells them apart:
+
+| `error` | Cause | What to do |
+| ------- | ----- | ---------- |
+| `Too many webhooks (max 200 per team, disabled webhooks included)` | The workspace is at the cap. | Free a slot with [Delete Webhook](/api-reference/endpoints/webhooks/delete-webhook). Disabled webhooks count too — see below. |
+| `A webhook with this targetUrl already exists` | Another webhook already points to that URL. | Reuse it, or register a distinct URL. |
+
+<Warning>
+  Uniqueness is on `targetUrl` alone, regardless of `type` and `campaignId`. The
+  same URL cannot be registered twice to subscribe to two event types — either
+  register it once without a `type` (it then receives every event, and you filter
+  on your side), or give each subscription its own URL.
+</Warning>
+
+### Disabled webhooks still count toward the cap
+
+When a delivery fails in a way that says the destination is gone — your endpoint answers `404` or `410`, or its host does not resolve — lemlist disables the webhook instead of deleting it, and notifies its owner. [Get Many Webhooks](/api-reference/endpoints/webhooks/get-many-webhooks) keeps returning it, carrying `disabled: true`, `disabledReason: "deliveryError"`, `disabledAt` and `lastErrorStatus`.
+
+A disabled webhook stops firing but keeps its slot, and nothing purges it. A workspace showing a handful of live webhooks can therefore be refused a new one. When you check the remaining room, count **every** entry `GET /hooks` returns, not just the active ones, and delete those you no longer need.
+
 ## Available event types
 
 When creating a webhook, you can subscribe to specific events using the `type` field. Events are organized by category below.

@@ -1570,6 +1570,33 @@
           "zapId": {
             "type": "integer",
             "description": "Zapier integration ID (if the destination is a Zapier webhook)"
+          },
+          "disabled": {
+            "type": "boolean",
+            "description": "`true` when the webhook no longer fires. lemlist sets it automatically after a failed delivery, and it can also be toggled from the app. A disabled webhook still occupies one slot of the 200-webhook cap — delete it to free the slot."
+          },
+          "disabledReason": {
+            "type": "string",
+            "description": "Why the webhook was disabled. `deliveryError` means lemlist disabled it after a failed delivery. Absent when a user disabled it from the app.",
+            "enum": [
+              "deliveryError"
+            ]
+          },
+          "disabledAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the webhook was disabled"
+          },
+          "lastErrorStatus": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "description": "What the delivery that caused the deactivation ran into: the HTTP status your endpoint answered (`404`, `410`) or the network error raised while reaching it (`ENOTFOUND`, `ECONNREFUSED`)"
           }
         }
       },
@@ -20168,6 +20195,27 @@
             "content": {
               "text/plain": {
                 "example": "Webhook not found"
+              }
+            }
+          },
+          "409": {
+            "description": "The webhook was not created. Two distinct cases, told apart by the `error` message: the workspace is at its webhook cap, or the `targetUrl` is already registered.",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "tooManyWebhooks": {
+                    "summary": "The workspace reached the 200-webhook cap — delete unused webhooks, including disabled ones, before retrying",
+                    "value": {
+                      "error": "Too many webhooks (max 200 per team, disabled webhooks included)"
+                    }
+                  },
+                  "duplicateTargetUrl": {
+                    "summary": "A webhook already points to this targetUrl — uniqueness is on the URL alone, regardless of `type` or `campaignId`",
+                    "value": {
+                      "error": "A webhook with this targetUrl already exists"
+                    }
+                  }
+                }
               }
             }
           }
