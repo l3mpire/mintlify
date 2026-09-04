@@ -5,6 +5,8 @@ description: Merges up to 10 lemlist contacts into one survivor, moving everythi
 
 Merges up to 10 lemlist contacts into one. The survivor (`primaryId`) keeps its id and every value it holds; its **empty** fields are filled from the other contacts, which are then deleted. A value the survivor already has is never overwritten.
 
+**Email addresses** follow the same rule: the survivor keeps its own, a loser's addresses are dropped — unless the survivor has none, in which case it takes the first loser's.
+
 Each contact is addressed by its lemlist id (`ctc_xxx`) or by one of its email addresses, like `DELETE /contacts/{idOrEmail}`. The response always carries the resolved `primaryId`.
 
 ## What moves to the survivor

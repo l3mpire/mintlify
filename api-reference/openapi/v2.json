@@ -15944,7 +15944,7 @@
     },
     "/contacts/merge": {
       "summary": "Merge Contacts",
-      "description": "Merges up to 10 lemlist contacts into one. The survivor (`primaryId`) keeps its id and every value it holds; its empty fields are filled from the other contacts, which are then deleted. Everything attached to a deleted contact (leads in campaigns, activities, tasks, list memberships, inbox conversations) is moved to the survivor. When a CRM is connected, the CRM records are merged the same way.\n\nThe contacts are folded into the survivor one at a time and the run **stops at the first failure**: `mergedIds` lists what went through, `remainingIds` what still exists. A first-fold failure returns an error instead — nothing was written.\n\n**No undo:** deleted contacts are gone.",
+      "description": "Merges up to 10 lemlist contacts into one. The survivor (`primaryId`) keeps its id and every value it holds; its empty fields are filled from the other contacts, which are then deleted. Everything attached to a deleted contact (leads in campaigns, activities, tasks, list memberships, inbox conversations) is moved to the survivor. When a CRM is connected, the CRM records are merged the same way.\n\nThe contacts are folded into the survivor one at a time and the run **stops at the first failure**: `mergedIds` lists what went through, `remainingIds` what still exists. A first-fold failure returns an error instead — nothing was written.\n\n**Email addresses:** the survivor keeps its own; a loser's addresses are dropped, unless the survivor has none (then it takes the first loser's).\n\n**No undo:** deleted contacts are gone.",
       "tags": [
         "Contacts"
       ],
@@ -16080,20 +16080,6 @@
           "content": {
             "text/plain": {
               "example": "The authentication you supplied is incorrect"
-            }
-          }
-        },
-        "403": {
-          "description": "Merging contacts is not enabled for this team (`ENTITY_MERGE_NOT_ALLOWED`).",
-          "content": {
-            "application/json": {
-              "example": {
-                "success": false,
-                "error": {
-                  "code": "ENTITY_MERGE_NOT_ALLOWED",
-                  "message": "Merging is not enabled for this team"
-                }
-              }
             }
           }
         },
@@ -17611,20 +17597,6 @@
           "content": {
             "text/plain": {
               "example": "The authentication you supplied is incorrect"
-            }
-          }
-        },
-        "403": {
-          "description": "Merging companies is not enabled for this team (`ENTITY_MERGE_NOT_ALLOWED`).",
-          "content": {
-            "application/json": {
-              "example": {
-                "success": false,
-                "error": {
-                  "code": "ENTITY_MERGE_NOT_ALLOWED",
-                  "message": "Merging is not enabled for this team"
-                }
-              }
             }
           }
         },
