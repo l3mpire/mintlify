@@ -10233,7 +10233,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was not. The response also spreads the lead's own variables, so a variable of yours named `warnings` would sit alongside this one. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-update-failed`, `company-skipped`. A company identifier conflict is NOT here: it is answered as a 409 `company-duplicate-forbidden`, never as a warning.",
+                      "description": "Present only when the lead was written but its company part was not. The response also spreads the lead's own variables, so a variable of yours named `warnings` would sit alongside this one. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (the identifiers sent designate two different companies) and `company-update-failed`.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -10277,7 +10277,7 @@
             "description": "Lead or campaign not found (`{\"error\": \"Lead not found\"}` / `{\"error\": \"Campaign not found\"}`), or a target that disappeared during the write \u2014 `edit-deleted-lead`, `campaign-deleted` \u2014 the latter as raw text."
           },
           "409": {
-            "description": "Permanent conflict, retrying as is fails again: `duplicate-forbidden` (an email, LinkedIn or Sales Navigator url already belongs to another contact), `already-in` (the contact already has a lead in this campaign), `deduplicate` (lead already in another campaign), `duplicate-csv`. The body is the raw reason text, not JSON, so a client that decodes the body as JSON sees the status only. A company identifier conflict is NOT here: the lead is written and the company is reported in `warnings`."
+            "description": "Permanent conflict, retrying as is fails again: `duplicate-forbidden` (an email, LinkedIn or Sales Navigator url already belongs to another contact) and `already-in` (the row resolves to a contact that already holds a lead in this campaign). The body is the raw reason text, not JSON, so a client that decodes the body as JSON sees the status only. A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
           },
           "500": {
             "description": "The write failed on our side (`contact-update-failed`, `lead-update-failed`): nothing was written, safe to retry. The body is the raw reason text, not JSON, so a client that decodes the body as JSON sees the status only."
@@ -11470,7 +11470,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was skipped. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-update-failed`, `company-skipped`. A company identifier conflict is NOT here: it is answered as a 409 `company-duplicate-forbidden`, never as a warning.",
+                      "description": "Present only when the lead was written but its company part was skipped. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (the identifiers sent designate two different companies) and `company-update-failed`.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -11501,7 +11501,7 @@
             "description": "`Lead not found` / `Campaign not found` (plain text), or a target that disappeared during the write, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `edit-deleted-lead`, `campaign-deleted`."
           },
           "409": {
-            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact), `already-in`, `deduplicate`, `duplicate-csv`. A company identifier conflict is NOT here: the lead is written and the company is reported in `warnings`."
+            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact) and `already-in`. A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
           },
           "500": {
             "description": "The write failed on our side (`contact-update-failed`, `lead-update-failed`): nothing was written, safe to retry, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field."
@@ -11560,7 +11560,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was skipped. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-update-failed`, `company-skipped`. A company identifier conflict is NOT here: it is answered as a 409 `company-duplicate-forbidden`, never as a warning.",
+                      "description": "Present only when the lead was written but its company part was skipped. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (the identifiers sent designate two different companies) and `company-update-failed`.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -11591,7 +11591,7 @@
             "description": "`Lead not found` / `Campaign not found` (plain text), or a target that disappeared during the write, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `edit-deleted-lead`, `campaign-deleted`."
           },
           "409": {
-            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact), `already-in`, `deduplicate`, `duplicate-csv`. A company identifier conflict is NOT here: the lead is written and the company is reported in `warnings`."
+            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact) and `already-in`. A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
           },
           "500": {
             "description": "The write failed on our side (`contact-update-failed`, `lead-update-failed`): nothing was written, safe to retry, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field."
@@ -11647,7 +11647,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was skipped. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-update-failed`, `company-skipped`. A company identifier conflict is NOT here: it is answered as a 409 `company-duplicate-forbidden`, never as a warning.",
+                      "description": "Present only when the lead was written but its company part was skipped. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (the identifiers sent designate two different companies) and `company-update-failed`.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -11678,7 +11678,7 @@
             "description": "`Lead not found` / `Campaign not found` (plain text), or a target that disappeared during the write, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `edit-deleted-lead`, `campaign-deleted`."
           },
           "409": {
-            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact), `already-in`, `deduplicate`, `duplicate-csv`. A company identifier conflict is NOT here: the lead is written and the company is reported in `warnings`."
+            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact) and `already-in`. A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
           },
           "500": {
             "description": "The write failed on our side (`contact-update-failed`, `lead-update-failed`): nothing was written, safe to retry, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field."
