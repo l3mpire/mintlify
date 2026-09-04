@@ -10015,7 +10015,7 @@
             }
           },
           "400": {
-            "description": "Possible errors: No API key provided / Bad team",
+            "description": "Rejected add. Raw text body unless the code is one of the few that answer `{\"error\": \"...\"}`. `Invalid email address`, `Email address is in the graveyard`, `Body of your request must be an object` and `Lead already in the campaign` land here \u2014 the first three answered 500 (and the body one 401) until the status audit; they describe what the caller sent, so they are 4xx. Also `No API key provided` / `Bad team`.",
             "content": {
               "text/plain": {
                 "example": "No API key provided"
@@ -10029,6 +10029,9 @@
                 "example": "The authentication you supplied is incorrect"
               }
             }
+          },
+          "409": {
+            "description": "`Lead already in other campaign`: the lead exists in another campaign and the request is deduplicated. Permanent for this payload, retrying as is fails again. Answered 500 until the status audit — the caller can act on it, so it is a 4xx."
           },
           "403": {
             "description": "User linked to this API key is blocked",
@@ -10230,7 +10233,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Always present on a 200, empty when nothing was skipped. A non-empty array means the lead WAS written but its company part was not. This field is always API-owned: the response also spreads the lead's own variables, so a variable of yours named `warnings` never surfaces here. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-update-failed`, `company-skipped`. A company identifier conflict is NOT here: it is answered as a 409 `company-duplicate-forbidden`, never as a warning.",
+                      "description": "Present only when the lead was written but its company part was not. The response also spreads the lead's own variables, so a variable of yours named `warnings` would sit alongside this one. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-update-failed`, `company-skipped`. A company identifier conflict is NOT here: it is answered as a 409 `company-duplicate-forbidden`, never as a warning.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -10265,105 +10268,19 @@
             }
           },
           "400": {
-            "description": "Rejected update, JSON envelope: `invalid-email`, `invalid-linkedin-url`, `linkedin-url-not-contact` (a company page or Sales Navigator url was sent as `linkedinUrl`), `no-valid-leads` (nothing to write, or a value the pipeline refuses). Also `Bad team` / `Body of your request must be an object` as plain text.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
-                },
-                "examples": {
-                  "invalid-email": {
-                    "value": {
-                      "success": false,
-                      "error": {
-                        "code": "invalid-email",
-                        "message": "Invalid email address"
-                      }
-                    }
-                  },
-                  "linkedin-url-not-contact": {
-                    "value": {
-                      "success": false,
-                      "error": {
-                        "code": "linkedin-url-not-contact",
-                        "message": "LinkedIn URL is not a personal profile"
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "description": "The update was refused for something the request carries. The body is the raw reason text, not JSON, so a client that decodes the body as JSON sees the status only. Reasons behind it: `invalid-email`, `invalid-linkedin-url`, `linkedin-url-not-contact` (a company page or Sales Navigator url was sent as `linkedinUrl`), `no-valid-leads`. The `Bad team` and `Body of your request must be an object` pre-checks answer the same way."
           },
           "401": {
             "description": "The authentication you supplied is incorrect"
           },
           "404": {
-            "description": "Lead or campaign not found (`{\"error\": \"Lead not found\"}` / `{\"error\": \"Campaign not found\"}` / `{\"error\": \"Campaign deleted\"}`), or a target that disappeared during the write: `edit-deleted-lead`, `campaign-deleted`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
-                },
-                "examples": {
-                  "lead-not-found": {
-                    "value": {
-                      "error": "Lead not found"
-                    }
-                  },
-                  "edit-deleted-lead": {
-                    "value": {
-                      "success": false,
-                      "error": {
-                        "code": "edit-deleted-lead",
-                        "message": "Lead not found"
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Lead or campaign not found (`{\"error\": \"Lead not found\"}` / `{\"error\": \"Campaign not found\"}`), or a target that disappeared during the write \u2014 `edit-deleted-lead`, `campaign-deleted` \u2014 the latter as raw text."
           },
           "409": {
-            "description": "Permanent conflict, do not retry as is: `duplicate-forbidden` (an email, LinkedIn or Sales Navigator url already belongs to another contact), `company-duplicate-forbidden` (the company identifiers designate two different companies), `already-in` (the contact already has a lead in this campaign), `deduplicate` (lead already in another campaign), `duplicate-csv`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
-                },
-                "examples": {
-                  "duplicate-forbidden": {
-                    "value": {
-                      "success": false,
-                      "error": {
-                        "code": "duplicate-forbidden",
-                        "message": "An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact"
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Permanent conflict, retrying as is fails again: `duplicate-forbidden` (an email, LinkedIn or Sales Navigator url already belongs to another contact), `already-in` (the contact already has a lead in this campaign), `deduplicate` (lead already in another campaign), `duplicate-csv`. The body is the raw reason text, not JSON, so a client that decodes the body as JSON sees the status only. A company identifier conflict is NOT here: the lead is written and the company is reported in `warnings`."
           },
           "500": {
-            "description": "The write failed on our side (`contact-update-failed`, `lead-update-failed`): nothing was written, safe to retry.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
-                },
-                "examples": {
-                  "lead-update-failed": {
-                    "value": {
-                      "success": false,
-                      "error": {
-                        "code": "lead-update-failed",
-                        "message": "Lead could not be updated"
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "description": "The write failed on our side (`contact-update-failed`, `lead-update-failed`): nothing was written, safe to retry. The body is the raw reason text, not JSON, so a client that decodes the body as JSON sees the status only."
           }
         },
         "parameters": []
@@ -11575,93 +11492,19 @@
             }
           },
           "400": {
-            "description": "Pre-check failure as `{\"ok\": false, \"status\": \"<reason>\"}` (a variable that already exists, invalid variables, `Invalid leadId` as `{\"error\"}`), or a rejected write with the JSON envelope: `invalid-email`, `invalid-linkedin-url`, `linkedin-url-not-contact`, `no-valid-leads`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
-                },
-                "examples": {
-                  "pre-check": {
-                    "value": {
-                      "ok": false,
-                      "status": "Variables favoriteColor not found"
-                    }
-                  },
-                  "invalid-email": {
-                    "value": {
-                      "success": false,
-                      "error": {
-                        "code": "invalid-email",
-                        "message": "Invalid email address"
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Pre-check failure as `{\"ok\": false, \"status\": \"<reason>\"}` (a variable that already exists, invalid variables) or `{\"error\": \"Invalid leadId\"}`; a refused write comes back as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `invalid-email`, `invalid-linkedin-url`, `linkedin-url-not-contact`, `no-valid-leads`."
           },
           "401": {
             "description": "The authentication you supplied is incorrect"
           },
           "404": {
-            "description": "`Lead not found` / `Campaign not found` (plain text), `{\"error\": \"Campaign deleted\"}`, or a target that disappeared during the write: `edit-deleted-lead`, `campaign-deleted`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
-                },
-                "examples": {
-                  "campaign-deleted": {
-                    "value": {
-                      "error": "Campaign deleted"
-                    }
-                  }
-                }
-              }
-            }
+            "description": "`Lead not found` / `Campaign not found` (plain text), or a target that disappeared during the write, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `edit-deleted-lead`, `campaign-deleted`."
           },
           "409": {
-            "description": "Permanent conflict, do not retry as is: `duplicate-forbidden` (an identifier already belongs to another contact), `company-duplicate-forbidden` (the company identifiers designate two different companies), `already-in`, `deduplicate`, `duplicate-csv`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
-                },
-                "examples": {
-                  "duplicate-forbidden": {
-                    "value": {
-                      "success": false,
-                      "error": {
-                        "code": "duplicate-forbidden",
-                        "message": "An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact"
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact), `already-in`, `deduplicate`, `duplicate-csv`. A company identifier conflict is NOT here: the lead is written and the company is reported in `warnings`."
           },
           "500": {
-            "description": "The write failed on our side (`contact-update-failed`, `lead-update-failed`): nothing was written, safe to retry.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
-                },
-                "examples": {
-                  "lead-update-failed": {
-                    "value": {
-                      "success": false,
-                      "error": {
-                        "code": "lead-update-failed",
-                        "message": "Lead could not be updated"
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "description": "The write failed on our side (`contact-update-failed`, `lead-update-failed`): nothing was written, safe to retry, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field."
           }
         }
       },
@@ -11739,93 +11582,19 @@
             }
           },
           "400": {
-            "description": "Pre-check failure as `{\"ok\": false, \"status\": \"<reason>\"}` (a variable that does not exist, invalid variables, `Invalid leadId` as `{\"error\"}`), or a rejected write with the JSON envelope: `invalid-email`, `invalid-linkedin-url`, `linkedin-url-not-contact`, `no-valid-leads`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
-                },
-                "examples": {
-                  "pre-check": {
-                    "value": {
-                      "ok": false,
-                      "status": "Variables favoriteColor not found"
-                    }
-                  },
-                  "invalid-email": {
-                    "value": {
-                      "success": false,
-                      "error": {
-                        "code": "invalid-email",
-                        "message": "Invalid email address"
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Pre-check failure as `{\"ok\": false, \"status\": \"<reason>\"}` (a variable that does not exist, invalid variables) or `{\"error\": \"Invalid leadId\"}`; a refused write comes back as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `invalid-email`, `invalid-linkedin-url`, `linkedin-url-not-contact`, `no-valid-leads`."
           },
           "401": {
             "description": "The authentication you supplied is incorrect"
           },
           "404": {
-            "description": "`Lead not found` / `Campaign not found` (plain text), `{\"error\": \"Campaign deleted\"}`, or a target that disappeared during the write: `edit-deleted-lead`, `campaign-deleted`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
-                },
-                "examples": {
-                  "campaign-deleted": {
-                    "value": {
-                      "error": "Campaign deleted"
-                    }
-                  }
-                }
-              }
-            }
+            "description": "`Lead not found` / `Campaign not found` (plain text), or a target that disappeared during the write, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `edit-deleted-lead`, `campaign-deleted`."
           },
           "409": {
-            "description": "Permanent conflict, do not retry as is: `duplicate-forbidden` (an identifier already belongs to another contact), `company-duplicate-forbidden` (the company identifiers designate two different companies), `already-in`, `deduplicate`, `duplicate-csv`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
-                },
-                "examples": {
-                  "duplicate-forbidden": {
-                    "value": {
-                      "success": false,
-                      "error": {
-                        "code": "duplicate-forbidden",
-                        "message": "An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact"
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact), `already-in`, `deduplicate`, `duplicate-csv`. A company identifier conflict is NOT here: the lead is written and the company is reported in `warnings`."
           },
           "500": {
-            "description": "The write failed on our side (`contact-update-failed`, `lead-update-failed`): nothing was written, safe to retry.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
-                },
-                "examples": {
-                  "lead-update-failed": {
-                    "value": {
-                      "success": false,
-                      "error": {
-                        "code": "lead-update-failed",
-                        "message": "Lead could not be updated"
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "description": "The write failed on our side (`contact-update-failed`, `lead-update-failed`): nothing was written, safe to retry, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field."
           }
         }
       },
@@ -11900,93 +11669,19 @@
             }
           },
           "400": {
-            "description": "Pre-check failure as `{\"ok\": false, \"status\": \"<reason>\"}` (a variable that does not exist or cannot be removed (firstName, lastName, fullName, email, companyDomain), invalid variables, `Invalid leadId` as `{\"error\"}`), or a rejected write with the JSON envelope: `invalid-email`, `invalid-linkedin-url`, `linkedin-url-not-contact`, `no-valid-leads`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
-                },
-                "examples": {
-                  "pre-check": {
-                    "value": {
-                      "ok": false,
-                      "status": "Variables favoriteColor not found"
-                    }
-                  },
-                  "invalid-email": {
-                    "value": {
-                      "success": false,
-                      "error": {
-                        "code": "invalid-email",
-                        "message": "Invalid email address"
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Pre-check failure as `{\"ok\": false, \"status\": \"<reason>\"}` (a variable that does not exist or cannot be deleted) or `{\"error\": \"Invalid leadId\"}`; a refused write comes back as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `invalid-email`, `invalid-linkedin-url`, `linkedin-url-not-contact`, `no-valid-leads`."
           },
           "401": {
             "description": "The authentication you supplied is incorrect"
           },
           "404": {
-            "description": "`Lead not found` / `Campaign not found` (plain text), `{\"error\": \"Campaign deleted\"}`, or a target that disappeared during the write: `edit-deleted-lead`, `campaign-deleted`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
-                },
-                "examples": {
-                  "campaign-deleted": {
-                    "value": {
-                      "error": "Campaign deleted"
-                    }
-                  }
-                }
-              }
-            }
+            "description": "`Lead not found` / `Campaign not found` (plain text), or a target that disappeared during the write, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `edit-deleted-lead`, `campaign-deleted`."
           },
           "409": {
-            "description": "Permanent conflict, do not retry as is: `duplicate-forbidden` (an identifier already belongs to another contact), `company-duplicate-forbidden` (the company identifiers designate two different companies), `already-in`, `deduplicate`, `duplicate-csv`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
-                },
-                "examples": {
-                  "duplicate-forbidden": {
-                    "value": {
-                      "success": false,
-                      "error": {
-                        "code": "duplicate-forbidden",
-                        "message": "An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact"
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact), `already-in`, `deduplicate`, `duplicate-csv`. A company identifier conflict is NOT here: the lead is written and the company is reported in `warnings`."
           },
           "500": {
-            "description": "The write failed on our side (`contact-update-failed`, `lead-update-failed`): nothing was written, safe to retry.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
-                },
-                "examples": {
-                  "lead-update-failed": {
-                    "value": {
-                      "success": false,
-                      "error": {
-                        "code": "lead-update-failed",
-                        "message": "Lead could not be updated"
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "description": "The write failed on our side (`contact-update-failed`, `lead-update-failed`): nothing was written, safe to retry, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field."
           }
         }
       }
