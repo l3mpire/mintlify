@@ -1,0 +1,21 @@
+---
+openapi: post /contacts/merge
+description: Merges up to 10 lemlist contacts into one survivor, moving everything attached to the deleted contacts onto it.
+---
+
+Merges up to 10 lemlist contacts into one. The survivor (`primaryId`) keeps its id and every value it holds; its **empty** fields are filled from the other contacts, which are then deleted. A value the survivor already has is never overwritten.
+
+Each contact is addressed by its lemlist id (`ctc_xxx`) or by one of its email addresses, like `DELETE /contacts/{idOrEmail}`. The response always carries the resolved `primaryId`.
+
+## What moves to the survivor
+
+- Leads in campaigns, activities, tasks, list memberships and inbox conversations of every deleted contact.
+- When a CRM is connected, the linked CRM records are merged the same way.
+
+## Partial runs
+
+The contacts are folded into the survivor one at a time and the run **stops at the first failure**. The response is still `200`: `mergedIds` lists what went through, `remainingIds` what still exists — fix the cause (typically an enrichment in progress) and call again with the remaining ids. A failure on the very first fold returns an error instead, and nothing was written.
+
+<Warning>
+There is no undo. Once merged, the secondary contacts are deleted and only the survivor remains.
+</Warning>

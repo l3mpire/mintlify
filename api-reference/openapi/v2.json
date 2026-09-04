@@ -15942,6 +15942,191 @@
         "parameters": []
       }
     },
+    "/contacts/merge": {
+      "summary": "Merge Contacts",
+      "description": "Merges up to 10 lemlist contacts into one. The survivor (`primaryId`) keeps its id and every value it holds; its empty fields are filled from the other contacts, which are then deleted. Everything attached to a deleted contact (leads in campaigns, activities, tasks, list memberships, inbox conversations) is moved to the survivor. When a CRM is connected, the CRM records are merged the same way.\n\nThe contacts are folded into the survivor one at a time and the run **stops at the first failure**: `mergedIds` lists what went through, `remainingIds` what still exists. A first-fold failure returns an error instead — nothing was written.\n\n**No undo:** deleted contacts are gone.",
+      "tags": [
+        "Contacts"
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "primaryId": {
+                  "type": "string",
+                  "description": "The surviving contact. A lemlist contact id (`ctc_xxx`) or one of the contact's email addresses.",
+                  "example": "ctc_xW8Ou6C03Csv8vatp"
+                },
+                "secondaryIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "maxItems": 9,
+                  "description": "The contacts folded into the survivor then deleted, 9 at most. A lemlist contact id (`ctc_xxx`) or one of the contact's email addresses. Must not contain `primaryId`, and each contact is listed once.",
+                  "example": [
+                    "ctc_bT4Ktq6kbXwWKv2rM",
+                    "john.doe@acme.com"
+                  ]
+                }
+              },
+              "required": [
+                "primaryId",
+                "secondaryIds"
+              ]
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Merge run. Check `remainingIds`: when it is not empty, a later fold failed and those contacts still exist.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean"
+                  },
+                  "primaryId": {
+                    "type": "string",
+                    "description": "ID of the surviving lemlist contact — resolved from the email when one was given."
+                  },
+                  "merged": {
+                    "type": "boolean",
+                    "description": "`true` once at least one contact was folded into the survivor."
+                  },
+                  "mergedIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "IDs of the contacts folded into the survivor and deleted, in fold order."
+                  },
+                  "remainingIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "IDs of the contacts NOT merged because an earlier fold failed. Empty when everything went through."
+                  },
+                  "rejectedFields": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Fields whose adopted value was refused by a uniqueness rule (kept survivor-side). Only present when it happened."
+                  }
+                },
+                "required": [
+                  "success",
+                  "primaryId",
+                  "merged",
+                  "mergedIds",
+                  "remainingIds"
+                ]
+              },
+              "examples": {
+                "everything merged": {
+                  "value": {
+                    "success": true,
+                    "primaryId": "ctc_xW8Ou6C03Csv8vatp",
+                    "merged": true,
+                    "mergedIds": [
+                      "ctc_bT4Ktq6kbXwWKv2rM",
+                      "john.doe@acme.com"
+                    ],
+                    "remainingIds": []
+                  }
+                },
+                "stopped at the second fold": {
+                  "value": {
+                    "success": true,
+                    "primaryId": "ctc_xW8Ou6C03Csv8vatp",
+                    "merged": true,
+                    "mergedIds": [
+                      "ctc_bT4Ktq6kbXwWKv2rM"
+                    ],
+                    "remainingIds": [
+                      "john.doe@acme.com"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Invalid request. Possible error codes: `ENTITY_MERGE_INVALID_PAYLOAD` (missing `primaryId` or empty `secondaryIds`), `ENTITY_MERGE_SAME_ENTITY` (`primaryId` among `secondaryIds`, or a contact listed twice), `ENTITY_MERGE_TOO_MANY_ENTITIES` (more than 9 `secondaryIds`).",
+          "content": {
+            "application/json": {
+              "example": {
+                "success": false,
+                "error": {
+                  "code": "ENTITY_MERGE_SAME_ENTITY",
+                  "message": "A record cannot be merged with itself, and each record is listed once"
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "The authentication you supplied is incorrect.",
+          "content": {
+            "text/plain": {
+              "example": "The authentication you supplied is incorrect"
+            }
+          }
+        },
+        "403": {
+          "description": "Merging contacts is not enabled for this team (`ENTITY_MERGE_NOT_ALLOWED`).",
+          "content": {
+            "application/json": {
+              "example": {
+                "success": false,
+                "error": {
+                  "code": "ENTITY_MERGE_NOT_ALLOWED",
+                  "message": "Merging is not enabled for this team"
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "One of the contacts was not found (`ENTITY_MERGE_ENTITY_NOT_FOUND`) — an unknown email counts as a missing contact.",
+          "content": {
+            "application/json": {
+              "example": {
+                "success": false,
+                "error": {
+                  "code": "ENTITY_MERGE_ENTITY_NOT_FOUND",
+                  "message": "One of the records was not found"
+                }
+              }
+            }
+          }
+        },
+        "409": {
+          "description": "A contact is being enriched and cannot be merged yet (`ENTITY_MERGE_ENRICHMENT_IN_PROGRESS`); retry once it finishes.",
+          "content": {
+            "application/json": {
+              "example": {
+                "success": false,
+                "error": {
+                  "code": "ENTITY_MERGE_ENRICHMENT_IN_PROGRESS",
+                  "message": "A record is being enriched, retry once it finishes"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/contacts/{idOrEmail}": {
       "parameters": [
         {
@@ -17286,6 +17471,191 @@
           }
         },
         "parameters": []
+      }
+    },
+    "/companies/merge": {
+      "summary": "Merge Companies",
+      "description": "Merges up to 10 lemlist companies into one. The survivor (`primaryId`) keeps its id and every value it holds; its empty fields are filled from the other companies, which are then deleted. Everything attached to a deleted company (contacts, activities, tasks, list memberships) is moved to the survivor. When a CRM is connected, the CRM records are merged the same way.\n\nThe companies are folded into the survivor one at a time and the run **stops at the first failure**: `mergedIds` lists what went through, `remainingIds` what still exists. A first-fold failure returns an error instead — nothing was written.\n\n**No undo:** deleted companies are gone.",
+      "tags": [
+        "Companies"
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "primaryId": {
+                  "type": "string",
+                  "description": "The surviving company. A lemlist company id (`cpn_xxx`).",
+                  "example": "cpn_A1B2C3D4E5F6G7H8I"
+                },
+                "secondaryIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "maxItems": 9,
+                  "description": "The companies folded into the survivor then deleted, 9 at most. A lemlist company id (`cpn_xxx`). Must not contain `primaryId`, and each company is listed once.",
+                  "example": [
+                    "cpn_J9K8L7M6N5O4P3Q2R",
+                    "cpn_S1T2U3V4W5X6Y7Z8A"
+                  ]
+                }
+              },
+              "required": [
+                "primaryId",
+                "secondaryIds"
+              ]
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Merge run. Check `remainingIds`: when it is not empty, a later fold failed and those companies still exist.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "success": {
+                    "type": "boolean"
+                  },
+                  "primaryId": {
+                    "type": "string",
+                    "description": "ID of the surviving lemlist company."
+                  },
+                  "merged": {
+                    "type": "boolean",
+                    "description": "`true` once at least one company was folded into the survivor."
+                  },
+                  "mergedIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "IDs of the companies folded into the survivor and deleted, in fold order."
+                  },
+                  "remainingIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "IDs of the companies NOT merged because an earlier fold failed. Empty when everything went through."
+                  },
+                  "rejectedFields": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Fields whose adopted value was refused by a uniqueness rule (kept survivor-side). Only present when it happened."
+                  }
+                },
+                "required": [
+                  "success",
+                  "primaryId",
+                  "merged",
+                  "mergedIds",
+                  "remainingIds"
+                ]
+              },
+              "examples": {
+                "everything merged": {
+                  "value": {
+                    "success": true,
+                    "primaryId": "cpn_A1B2C3D4E5F6G7H8I",
+                    "merged": true,
+                    "mergedIds": [
+                      "cpn_J9K8L7M6N5O4P3Q2R",
+                      "cpn_S1T2U3V4W5X6Y7Z8A"
+                    ],
+                    "remainingIds": []
+                  }
+                },
+                "stopped at the second fold": {
+                  "value": {
+                    "success": true,
+                    "primaryId": "cpn_A1B2C3D4E5F6G7H8I",
+                    "merged": true,
+                    "mergedIds": [
+                      "cpn_J9K8L7M6N5O4P3Q2R"
+                    ],
+                    "remainingIds": [
+                      "cpn_S1T2U3V4W5X6Y7Z8A"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Invalid request. Possible error codes: `ENTITY_MERGE_INVALID_PAYLOAD` (missing `primaryId` or empty `secondaryIds`), `ENTITY_MERGE_SAME_ENTITY` (`primaryId` among `secondaryIds`, or a company listed twice), `ENTITY_MERGE_TOO_MANY_ENTITIES` (more than 9 `secondaryIds`).",
+          "content": {
+            "application/json": {
+              "example": {
+                "success": false,
+                "error": {
+                  "code": "ENTITY_MERGE_SAME_ENTITY",
+                  "message": "A record cannot be merged with itself, and each record is listed once"
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "The authentication you supplied is incorrect.",
+          "content": {
+            "text/plain": {
+              "example": "The authentication you supplied is incorrect"
+            }
+          }
+        },
+        "403": {
+          "description": "Merging companies is not enabled for this team (`ENTITY_MERGE_NOT_ALLOWED`).",
+          "content": {
+            "application/json": {
+              "example": {
+                "success": false,
+                "error": {
+                  "code": "ENTITY_MERGE_NOT_ALLOWED",
+                  "message": "Merging is not enabled for this team"
+                }
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "One of the companies was not found (`ENTITY_MERGE_ENTITY_NOT_FOUND`).",
+          "content": {
+            "application/json": {
+              "example": {
+                "success": false,
+                "error": {
+                  "code": "ENTITY_MERGE_ENTITY_NOT_FOUND",
+                  "message": "One of the records was not found"
+                }
+              }
+            }
+          }
+        },
+        "409": {
+          "description": "A company is being enriched and cannot be merged yet (`ENTITY_MERGE_ENRICHMENT_IN_PROGRESS`); retry once it finishes.",
+          "content": {
+            "application/json": {
+              "example": {
+                "success": false,
+                "error": {
+                  "code": "ENTITY_MERGE_ENRICHMENT_IN_PROGRESS",
+                  "message": "A record is being enriched, retry once it finishes"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/companies/{companyId}": {
