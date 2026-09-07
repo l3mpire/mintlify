@@ -10022,6 +10022,21 @@
                     "contactId": {
                       "type": "string",
                       "description": "Associated contact ID"
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "Present only when the lead was written but its company part was not. The response also spreads the lead's own variables at the top level, so a variable of yours named `warnings` is shadowed by this one whenever it is present. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (the identifiers sent designate two different companies) and `company-update-failed`.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   }
                 },
@@ -10042,7 +10057,7 @@
             }
           },
           "400": {
-            "description": "Rejected add. Raw text body unless the code is one of the few that answer `{\"error\": \"...\"}` (a non-scalar field, an invalid user custom field, the campaign lead limit). `Invalid email address` (a malformed `email` in the body), `Email address is in the graveyard` (the contact is unsubscribed), `Lead already in the campaign` and `Body of your request must be an object` land here; the first two answered 500 (`Failed to add lead` for the malformed email) and the last 401 until the status audit, and all describe what the caller sent, so they are 4xx. Also `No API key provided` / `Bad team`. In the `/leads/{email}` path form a malformed email is refused earlier with 405, see that response.",
+            "description": "Rejected add. Raw text body unless the code is one of the few that answer `{\"error\": \"...\"}` (a non-scalar field, an invalid user custom field, the campaign lead limit). `Invalid email address` (a malformed `email` in the body), `Invalid LinkedIn URL` (a malformed `linkedinUrl`), `LinkedIn URL is not a personal profile` (a company page or Sales Navigator url sent as `linkedinUrl`), `Email address is in the graveyard` (the contact is unsubscribed), `Lead already in the campaign` and `Body of your request must be an object` land here. Until the status audit the pipeline refusals answered 500 `Failed to add lead`, the graveyard hit 500 and the body check 401; all describe what the caller sent, so they are 4xx. Also `No API key provided` / `Bad team`. In the `/leads/{email}` path form a malformed email is refused earlier with 405, see that response.",
             "content": {
               "text/plain": {
                 "example": "No API key provided"
@@ -10058,7 +10073,7 @@
             }
           },
           "409": {
-            "description": "`Lead already in other campaign`: the lead exists in another campaign and the request is deduplicated. Permanent for this payload, retrying as is fails again. Answered 500 until the status audit — the caller can act on it, so it is a 4xx."
+            "description": "`Lead already in other campaign`: the lead exists in another campaign and the request is deduplicated. `An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact`: the email and LinkedIn url sent designate two different contacts, nothing is written. Both permanent for this payload, retrying as is fails again. Answered 500 until the status audit — the caller can act on them, so they are 4xx."
           },
           "405": {
             "description": "Malformed email in the `/leads/{email}` path form, refused before any lead logic as `{\"error\": \"Invalid email address\"}` (JSON). Unchanged by the status audit."
