@@ -10042,7 +10042,7 @@
             }
           },
           "400": {
-            "description": "Rejected add. Raw text body unless the code is one of the few that answer `{\"error\": \"...\"}` (a non-scalar field, an invalid user custom field, the campaign lead limit). `Email address is in the graveyard` (the contact is unsubscribed), `Lead already in the campaign` and `Body of your request must be an object` land here; the first answered 500 and the last 401 until the status audit, and both describe what the caller sent, so they are 4xx. Also `No API key provided` / `Bad team`. A malformed email is not a 400 here: in the `/leads/{email}` path form it is refused with 405, see that response.",
+            "description": "Rejected add. Raw text body unless the code is one of the few that answer `{\"error\": \"...\"}` (a non-scalar field, an invalid user custom field, the campaign lead limit). `Invalid email address` (a malformed `email` in the body), `Email address is in the graveyard` (the contact is unsubscribed), `Lead already in the campaign` and `Body of your request must be an object` land here; the first two answered 500 (`Failed to add lead` for the malformed email) and the last 401 until the status audit, and all describe what the caller sent, so they are 4xx. Also `No API key provided` / `Bad team`. In the `/leads/{email}` path form a malformed email is refused earlier with 405, see that response.",
             "content": {
               "text/plain": {
                 "example": "No API key provided"
