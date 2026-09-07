@@ -10042,7 +10042,7 @@
             }
           },
           "400": {
-            "description": "Rejected add. Raw text body unless the code is one of the few that answer `{\"error\": \"...\"}`. `Invalid email address`, `Email address is in the graveyard`, `Body of your request must be an object` and `Lead already in the campaign` land here \u2014 the first three answered 500 (and the body one 401) until the status audit; they describe what the caller sent, so they are 4xx. Also `No API key provided` / `Bad team`.",
+            "description": "Rejected add. Raw text body unless the code is one of the few that answer `{\"error\": \"...\"}` (a non-scalar field, an invalid user custom field, the campaign lead limit). `Email address is in the graveyard` (the contact is unsubscribed), `Lead already in the campaign` and `Body of your request must be an object` land here; the first answered 500 and the last 401 until the status audit, and both describe what the caller sent, so they are 4xx. Also `No API key provided` / `Bad team`. A malformed email is not a 400 here: in the `/leads/{email}` path form it is refused with 405, see that response.",
             "content": {
               "text/plain": {
                 "example": "No API key provided"
@@ -10060,6 +10060,9 @@
           "409": {
             "description": "`Lead already in other campaign`: the lead exists in another campaign and the request is deduplicated. Permanent for this payload, retrying as is fails again. Answered 500 until the status audit — the caller can act on it, so it is a 4xx."
           },
+          "405": {
+            "description": "Malformed email in the `/leads/{email}` path form, refused before any lead logic as `{\"error\": \"Invalid email address\"}` (JSON). Unchanged by the status audit."
+          },
           "403": {
             "description": "User linked to this API key is blocked",
             "content": {
@@ -10069,7 +10072,7 @@
             }
           },
           "404": {
-            "description": "Possible errors: No user found for this API key / Campaign not found",
+            "description": "`No user found for this api key` (plain text); `Campaign not found` and `Campaign deleted`, as plain text with the email in the body, as `{\"error\": \"...\"}` JSON in the `/leads/{email}` path form.",
             "content": {
               "text/plain": {
                 "example": "No user found for this API key"
@@ -10301,10 +10304,10 @@
             "description": "The authentication you supplied is incorrect"
           },
           "404": {
-            "description": "Not found before the write, as JSON: `{\"error\": \"Lead not found\"}`, `{\"error\": \"Campaign not found\"}`, `{\"error\": \"Campaign deleted\"}`. A target that disappeared during the write answers as raw text, the code itself is never sent: `Lead not found` (edit-deleted-lead) and `Campaign deleted` (campaign-deleted)."
+            "description": "Not found before the write, as JSON: `{\"error\": \"Lead not found\"}`, `{\"error\": \"Campaign not found\"}`, `{\"error\": \"Campaign deleted\"}`, `{\"error\": \"Contact owner not found: neither a valid email nor a valid user id.\"}` (the `contactOwner` sent matches no team member). A target that disappeared during the write answers as raw text, the code itself is never sent: `Lead not found` (edit-deleted-lead) and `Campaign deleted` (campaign-deleted)."
           },
           "409": {
-            "description": "Permanent conflict, retrying as is fails again. The body is the raw reason text, not JSON, and the code itself is never sent, so a client that decodes the body as JSON sees the status only: `An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact` (duplicate-forbidden) and `Lead already in the campaign` (already-in: the row resolves to a contact that already holds a lead in this campaign). A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
+            "description": "Permanent conflict, retrying as is fails again. The body is the raw reason text, not JSON, and the code itself is never sent, so a client that decodes the body as JSON sees the status only: `An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact` (duplicate-forbidden) and `Lead already in the campaign` (already-in: a lead with no linked contact whose new identifiers resolve to a contact that already holds a lead in this campaign; a linked lead answers duplicate-forbidden instead). A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
           },
           "500": {
             "description": "The write failed on our side, safe to retry. The body is the raw reason text, not JSON, and the code itself is never sent, so a client that decodes the body as JSON sees the status only: `Contact could not be saved` (contact-update-failed) and `Lead could not be updated` (lead-update-failed). The lead was not updated; the contact and company part of the same request may already have been applied, the pipeline writes them first."
@@ -11528,7 +11531,7 @@
             "description": "`Lead not found` / `Campaign not found` (plain text), or a target that disappeared during the write, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `edit-deleted-lead`, `campaign-deleted`."
           },
           "409": {
-            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact) and `already-in`. A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
+            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact) and `already-in` (a lead with no linked contact whose new identifiers resolve to a contact that already holds a lead in the campaign). A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
           },
           "500": {
             "description": "The write failed on our side, safe to retry, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `contact-update-failed`, `lead-update-failed`. The lead was not updated; the contact and company part of the same request may already have been applied, the pipeline writes them first."
@@ -11618,7 +11621,7 @@
             "description": "`Lead not found` / `Campaign not found` (plain text), or a target that disappeared during the write, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `edit-deleted-lead`, `campaign-deleted`."
           },
           "409": {
-            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact) and `already-in`. A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
+            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact) and `already-in` (a lead with no linked contact whose new identifiers resolve to a contact that already holds a lead in the campaign). A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
           },
           "500": {
             "description": "The write failed on our side, safe to retry, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `contact-update-failed`, `lead-update-failed`. The lead was not updated; the contact and company part of the same request may already have been applied, the pipeline writes them first."
@@ -11705,7 +11708,7 @@
             "description": "`Lead not found` / `Campaign not found` (plain text), or a target that disappeared during the write, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `edit-deleted-lead`, `campaign-deleted`."
           },
           "409": {
-            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact) and `already-in`. A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
+            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact) and `already-in` (a lead with no linked contact whose new identifiers resolve to a contact that already holds a lead in the campaign). A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
           },
           "500": {
             "description": "The write failed on our side, safe to retry, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `contact-update-failed`, `lead-update-failed`. The lead was not updated; the contact and company part of the same request may already have been applied, the pipeline writes them first."
@@ -17512,7 +17515,7 @@
                   "success": false,
                   "error": {
                     "code": "MISSING_REQUIRED_FIELD",
-                    "message": "Missing required field: name"
+                    "message": "A required field is missing: name"
                   }
                 }
               }
