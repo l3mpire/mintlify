@@ -25,7 +25,7 @@
     "schemas": {
       "ApiErrorEnvelope": {
         "type": "object",
-        "description": "Structured error body of the contact and company routes. The lead routes do not use it: they answer raw text or a bare `{\"error\": \"...\"}` object, see each route.",
+        "description": "Error envelope of the contact and company endpoints.",
         "properties": {
           "success": {
             "type": "boolean",
@@ -10025,7 +10025,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was not. The response also spreads the lead's own variables at the top level, so a variable of yours named `warnings` is shadowed by this one whenever it is present. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (the identifiers sent designate two different companies) and `company-update-failed`.",
+                      "description": "Present only when the lead was written but its company part was not; a lead variable named `warnings` is shadowed by it. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (personal profile sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (identifiers naming two companies), `company-update-failed`.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -10057,7 +10057,7 @@
             }
           },
           "400": {
-            "description": "Rejected add. Raw text body unless the code is one of the few that answer `{\"error\": \"...\"}`: a non-scalar field (`Field \"<name>\" must be a scalar value (string, number or boolean), not an object or array.`), an invalid user custom field, the campaign lead limit. `Invalid email address` (a malformed `email` in the body), `Invalid LinkedIn URL` (a malformed `linkedinUrl`), `LinkedIn URL is not a personal profile` (a company page or Sales Navigator url sent as `linkedinUrl`), `Email address is in the graveyard` (the contact is unsubscribed), `Lead already in the campaign`, `No valid fields to add` (the body carries no field the route can write) and `Body of your request must be an object` land here. Until the status audit the pipeline refusals answered 500 `Failed to add lead`, the graveyard hit 500 and the body check 401; all describe what the caller sent, so they are 4xx. Also `No API key provided` / `Bad team`. In the `/leads/{email}` path form a malformed email is refused earlier with 405, see that response.",
+            "description": "Possible errors: No API key provided / Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile (company page or Sales Navigator URL) / Email address is in the graveyard (unsubscribed) / Lead already in the campaign / No valid fields to add (nothing writable in the body). Raw text, except `{\"error\": \"...\"}` for a non-scalar field (`Field \"<name>\" must be a scalar value (string, number or boolean), not an object or array.`), an invalid user custom field or the campaign lead limit.",
             "content": {
               "text/plain": {
                 "example": "No API key provided"
@@ -10073,10 +10073,10 @@
             }
           },
           "409": {
-            "description": "`Lead already in other campaign`: the lead exists in another campaign and the request is deduplicated. `An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact`: the email and LinkedIn url sent designate two different contacts, nothing is written. Both permanent for this payload, retrying as is fails again. Answered 500 until the status audit — the caller can act on them, so they are 4xx."
+            "description": "Possible errors: Lead already in other campaign (when deduplicating) / An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact. Raw text, nothing written, retrying as is fails again."
           },
           "405": {
-            "description": "Malformed `/leads/{email}` path segment, refused before any lead logic, as JSON: `{\"error\": \"Invalid email address\"}` for a malformed email, `{\"error\": \"Invalid lead identifier\"}` for a malformed `lea_` id. Unchanged by the status audit."
+            "description": "Malformed `/leads/{email}` path segment, nothing written: `{\"error\": \"Invalid email address\"}` or `{\"error\": \"Invalid lead identifier\"}` (malformed `lea_` id)."
           },
           "403": {
             "description": "User linked to this API key is blocked",
@@ -10087,7 +10087,7 @@
             }
           },
           "404": {
-            "description": "`No user found for this api key` (plain text); `Campaign not found` and `Campaign deleted`, as plain text with the email in the body, as `{\"error\": \"...\"}` JSON in the `/leads/{email}` path form.",
+            "description": "Possible errors: No user found for this api key / Campaign not found / Campaign deleted. Raw text; `{\"error\": \"...\"}` for the campaign errors in the `/leads/{email}` path form.",
             "content": {
               "text/plain": {
                 "example": "No user found for this API key"
@@ -10095,7 +10095,7 @@
             }
           },
           "500": {
-            "description": "`Failed to add lead`: the lead was not added because a write failed on our side, or because the pipeline refused it for a reason this route has no translation for. Raw text body, safe to retry. The company and contact parts of the same request may already have been written, the pipeline writes them first. Since the status audit this is the only 500 of the route: every refusal the caller can act on answers 4xx.",
+            "description": "`Failed to add lead` (raw text): internal write failure, or a refusal without a dedicated error. The lead was not added, its contact and company parts may already be written. Safe to retry.",
             "content": {
               "text/plain": {
                 "example": "Failed to add lead"
@@ -10286,7 +10286,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was not. The response also spreads the lead's own variables at the top level, so a variable of yours named `warnings` is shadowed by this one whenever it is present. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (the identifiers sent designate two different companies) and `company-update-failed`.",
+                      "description": "Present only when the lead was written but its company part was not; a lead variable named `warnings` is shadowed by it. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (personal profile sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (identifiers naming two companies), `company-update-failed`.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -10321,19 +10321,29 @@
             }
           },
           "400": {
-            "description": "The update was refused for something the request carries. The body is the raw reason text, not JSON, and the code itself is never sent, so a client that decodes the body as JSON sees the status only. Texts, with the reason behind each: `Invalid email address` (invalid-email), `Invalid LinkedIn URL` (invalid-linkedin-url), `LinkedIn URL is not a personal profile` (linkedin-url-not-contact: a company page or Sales Navigator url was sent as `linkedinUrl`), `Lead could not be updated` (no-valid-leads). The `Bad team` and `Body of your request must be an object` pre-checks answer the same way."
+            "description": "Possible errors (raw text, code not sent): Bad team / Body of your request must be an object / Invalid email address (invalid-email) / Invalid LinkedIn URL (invalid-linkedin-url) / LinkedIn URL is not a personal profile (linkedin-url-not-contact) / Lead could not be updated (no-valid-leads).",
+            "content": {
+              "text/plain": {
+                "example": "Bad team"
+              }
+            }
           },
           "401": {
             "description": "The authentication you supplied is incorrect"
           },
           "404": {
-            "description": "Not found before the write, as JSON: `{\"error\": \"Lead not found\"}`, `{\"error\": \"Campaign not found\"}`, `{\"error\": \"Campaign deleted\"}`, `{\"error\": \"Contact owner not found: neither a valid email nor a valid user id.\"}` (the `contactOwner` sent matches no team member). A target that disappeared during the write answers as raw text, the code itself is never sent: `Lead not found` (edit-deleted-lead) and `Campaign deleted` (campaign-deleted)."
+            "description": "Before the write, as `{\"error\": \"...\"}`: Lead not found / Campaign not found / Campaign deleted / Contact owner not found: neither a valid email nor a valid user id. Deleted during the write, as raw text (code not sent): Lead not found (edit-deleted-lead) / Campaign deleted (campaign-deleted).",
+            "content": {
+              "text/plain": {
+                "example": "Lead not found"
+              }
+            }
           },
           "409": {
-            "description": "Permanent conflict, retrying as is fails again. The body is the raw reason text, not JSON, and the code itself is never sent, so a client that decodes the body as JSON sees the status only: `An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact` (duplicate-forbidden) and `Lead already in the campaign` (already-in: a lead with no linked contact whose new identifiers resolve to a contact that already holds a lead in this campaign; a linked lead answers duplicate-forbidden instead). A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
+            "description": "Possible errors (raw text, code not sent): An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact (duplicate-forbidden) / Lead already in the campaign (already-in: unlinked lead whose new identifiers match a contact already in the campaign; a linked lead answers duplicate-forbidden). Retrying as is fails again; a company identifier conflict is reported in `warnings` instead."
           },
           "500": {
-            "description": "The write failed on our side, safe to retry. The body is the raw reason text, not JSON, and the code itself is never sent, so a client that decodes the body as JSON sees the status only: `Contact could not be saved` (contact-update-failed) and `Lead could not be updated` (lead-update-failed). The lead was not updated; the contact and company part of the same request may already have been applied, the pipeline writes them first."
+            "description": "Possible errors (raw text, code not sent): Contact could not be saved (contact-update-failed) / Lead could not be updated (lead-update-failed). Internal error, safe to retry; the lead was not updated, its contact and company parts may already be written."
           }
         },
         "parameters": []
@@ -11523,7 +11533,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was skipped. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (the identifiers sent designate two different companies) and `company-update-failed`.",
+                      "description": "Present only when the lead was written but its company part was not. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (personal profile sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (identifiers naming two companies), `company-update-failed`.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -11545,19 +11555,24 @@
             }
           },
           "400": {
-            "description": "Pre-check failure as `{\"ok\": false, \"status\": \"<reason>\"}` (a variable that already exists, invalid variables) or `{\"error\": \"Invalid leadId\"}`; a refused write comes back as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `invalid-email`, `invalid-linkedin-url`, `linkedin-url-not-contact`, `no-valid-leads`."
+            "description": "`{\"ok\": false, \"status\": \"...\"}` for a variable that already exists or invalid variables, `{\"error\": \"Invalid leadId\"}` for a malformed id, `{\"error\": \"<reason> [<code>]\"}` for a refused write: invalid-email / invalid-linkedin-url / linkedin-url-not-contact / no-valid-leads."
           },
           "401": {
             "description": "The authentication you supplied is incorrect"
           },
           "404": {
-            "description": "`Lead not found` / `Campaign not found` (plain text), or a target that disappeared during the write, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `edit-deleted-lead`, `campaign-deleted`."
+            "description": "Possible errors (raw text): Lead not found / Campaign not found. Deleted during the write, as `{\"error\": \"<reason> [<code>]\"}`: edit-deleted-lead / campaign-deleted.",
+            "content": {
+              "text/plain": {
+                "example": "Lead not found"
+              }
+            }
           },
           "409": {
-            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact) and `already-in` (a lead with no linked contact whose new identifiers resolve to a contact that already holds a lead in the campaign). A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
+            "description": "`{\"error\": \"<reason> [<code>]\"}` with duplicate-forbidden (an identifier already belongs to another contact) or already-in (unlinked lead whose new identifiers match a contact already in the campaign). Retrying as is fails again; a company identifier conflict is reported in `warnings` instead."
           },
           "500": {
-            "description": "The write failed on our side, safe to retry, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `contact-update-failed`, `lead-update-failed`. The lead was not updated; the contact and company part of the same request may already have been applied, the pipeline writes them first."
+            "description": "`{\"error\": \"<reason> [<code>]\"}` with contact-update-failed or lead-update-failed. Internal error, safe to retry; the lead was not updated, its contact and company parts may already be written."
           }
         }
       },
@@ -11613,7 +11628,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was skipped. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (the identifiers sent designate two different companies) and `company-update-failed`.",
+                      "description": "Present only when the lead was written but its company part was not. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (personal profile sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (identifiers naming two companies), `company-update-failed`.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -11635,19 +11650,24 @@
             }
           },
           "400": {
-            "description": "Pre-check failure as `{\"ok\": false, \"status\": \"<reason>\"}` (a variable that does not exist, invalid variables) or `{\"error\": \"Invalid leadId\"}`; a refused write comes back as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `invalid-email`, `invalid-linkedin-url`, `linkedin-url-not-contact`, `no-valid-leads`."
+            "description": "`{\"ok\": false, \"status\": \"...\"}` for a variable that does not exist or invalid variables, `{\"error\": \"Invalid leadId\"}` for a malformed id, `{\"error\": \"<reason> [<code>]\"}` for a refused write: invalid-email / invalid-linkedin-url / linkedin-url-not-contact / no-valid-leads."
           },
           "401": {
             "description": "The authentication you supplied is incorrect"
           },
           "404": {
-            "description": "`Lead not found` / `Campaign not found` (plain text), or a target that disappeared during the write, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `edit-deleted-lead`, `campaign-deleted`."
+            "description": "Possible errors (raw text): Lead not found / Campaign not found. Deleted during the write, as `{\"error\": \"<reason> [<code>]\"}`: edit-deleted-lead / campaign-deleted.",
+            "content": {
+              "text/plain": {
+                "example": "Lead not found"
+              }
+            }
           },
           "409": {
-            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact) and `already-in` (a lead with no linked contact whose new identifiers resolve to a contact that already holds a lead in the campaign). A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
+            "description": "`{\"error\": \"<reason> [<code>]\"}` with duplicate-forbidden (an identifier already belongs to another contact) or already-in (unlinked lead whose new identifiers match a contact already in the campaign). Retrying as is fails again; a company identifier conflict is reported in `warnings` instead."
           },
           "500": {
-            "description": "The write failed on our side, safe to retry, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `contact-update-failed`, `lead-update-failed`. The lead was not updated; the contact and company part of the same request may already have been applied, the pipeline writes them first."
+            "description": "`{\"error\": \"<reason> [<code>]\"}` with contact-update-failed or lead-update-failed. Internal error, safe to retry; the lead was not updated, its contact and company parts may already be written."
           }
         }
       },
@@ -11700,7 +11720,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was skipped. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (a personal profile url was sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (the identifiers sent designate two different companies) and `company-update-failed`.",
+                      "description": "Present only when the lead was written but its company part was not. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (personal profile sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (identifiers naming two companies), `company-update-failed`.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -11722,19 +11742,24 @@
             }
           },
           "400": {
-            "description": "Pre-check failure as `{\"ok\": false, \"status\": \"<reason>\"}` (a variable that does not exist or cannot be deleted) or `{\"error\": \"Invalid leadId\"}`; a refused write comes back as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `invalid-email`, `invalid-linkedin-url`, `linkedin-url-not-contact`, `no-valid-leads`."
+            "description": "`{\"ok\": false, \"status\": \"...\"}` for a variable that does not exist or cannot be deleted, `{\"error\": \"Invalid leadId\"}` for a malformed id, `{\"error\": \"<reason> [<code>]\"}` for a refused write: invalid-email / invalid-linkedin-url / linkedin-url-not-contact / no-valid-leads."
           },
           "401": {
             "description": "The authentication you supplied is incorrect"
           },
           "404": {
-            "description": "`Lead not found` / `Campaign not found` (plain text), or a target that disappeared during the write, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `edit-deleted-lead`, `campaign-deleted`."
+            "description": "Possible errors (raw text): Lead not found / Campaign not found. Deleted during the write, as `{\"error\": \"<reason> [<code>]\"}`: edit-deleted-lead / campaign-deleted.",
+            "content": {
+              "text/plain": {
+                "example": "Lead not found"
+              }
+            }
           },
           "409": {
-            "description": "Permanent conflict, retrying as is fails again, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `duplicate-forbidden` (an identifier already belongs to another contact) and `already-in` (a lead with no linked contact whose new identifiers resolve to a contact that already holds a lead in the campaign). A company identifier conflict is not here: the lead is written and the company is reported in `warnings`."
+            "description": "`{\"error\": \"<reason> [<code>]\"}` with duplicate-forbidden (an identifier already belongs to another contact) or already-in (unlinked lead whose new identifiers match a contact already in the campaign). Retrying as is fails again; a company identifier conflict is reported in `warnings` instead."
           },
           "500": {
-            "description": "The write failed on our side, safe to retry, as `{\"error\": \"<reason> [<code>]\"}` \u2014 the code rides the message, there is no separate field: `contact-update-failed`, `lead-update-failed`. The lead was not updated; the contact and company part of the same request may already have been applied, the pipeline writes them first."
+            "description": "`{\"error\": \"<reason> [<code>]\"}` with contact-update-failed or lead-update-failed. Internal error, safe to retry; the lead was not updated, its contact and company parts may already be written."
           }
         }
       }
@@ -15828,7 +15853,7 @@
                   },
                   "contactOwner": {
                     "type": "string",
-                    "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the value matches no team member the contact is still written, and the response carries an `OWNER_NOT_FOUND` (or `INVALID_OWNER_FORMAT`) entry in `warnings`: on creation the owner falls back to the owner of the API key, on update the existing owner is left unchanged."
+                    "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the contact is still written with an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`: the owner defaults to the API key owner on creation and is unchanged on update."
                   },
                   "source": {
                     "type": "string",
@@ -15880,13 +15905,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Non-blocking issues: the record WAS written, and each entry names something you asked for that was not applied. Absent when everything applied.",
+                      "description": "Inputs that were not applied; the contact was still written. Absent when everything applied.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` / `INVALID_OWNER_FORMAT` when the owner you sent matches no team member; `COMPANY_NOT_FOUND_BY_ID` / `COMPANY_NOT_FOUND_BY_DOMAIN` / `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` when the company could not be linked."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked)."
                           },
                           "message": {
                             "type": "string"
@@ -15896,7 +15921,7 @@
                             "additionalProperties": {
                               "type": "string"
                             },
-                            "description": "The offending input, echoed back — e.g. `{ \"contactOwner\": \"nobody@example.com\" }`."
+                            "description": "The offending input, echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`)."
                           }
                         }
                       }
@@ -16018,13 +16043,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Non-blocking issues: the record WAS written, and each entry names something you asked for that was not applied. Absent when everything applied.",
+                      "description": "Inputs that were not applied; the contact was still written. Absent when everything applied.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` / `INVALID_OWNER_FORMAT` when the owner you sent matches no team member; `COMPANY_NOT_FOUND_BY_ID` / `COMPANY_NOT_FOUND_BY_DOMAIN` / `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` when the company could not be linked."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked)."
                           },
                           "message": {
                             "type": "string"
@@ -16034,7 +16059,7 @@
                             "additionalProperties": {
                               "type": "string"
                             },
-                            "description": "The offending input, echoed back — e.g. `{ \"contactOwner\": \"nobody@example.com\" }`."
+                            "description": "The offending input, echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`)."
                           }
                         }
                       }
@@ -16085,7 +16110,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `MISSING_IDENTIFIER`, `INVALID_CONTACT_ID`, `INVALID_EMAIL`, `INVALID_ADDITIONAL_EMAILS`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, or `CONTACT_VALIDATION_FAILED`. An unresolved `contactOwner` is not an error: the contact is written and the response carries an `OWNER_NOT_FOUND` / `INVALID_OWNER_FORMAT` entry in `warnings`."
+                          "description": "Error code: `MISSING_IDENTIFIER`, `INVALID_CONTACT_ID`, `INVALID_EMAIL`, `INVALID_ADDITIONAL_EMAILS`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, or `CONTACT_VALIDATION_FAILED`."
                         },
                         "message": {
                           "type": "string"
@@ -16113,7 +16138,7 @@
             }
           },
           "404": {
-            "description": "`CONTACT_NOT_FOUND_BY_ID`: the `contactId` targets no contact of the team.",
+            "description": "No contact of the team matches `contactId` (`CONTACT_NOT_FOUND_BY_ID`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -16134,7 +16159,7 @@
             }
           },
           "409": {
-            "description": "`CONTACT_IDENTIFIER_CONFLICT`: an email, LinkedIn or Sales Navigator url already belongs to another contact. Retarget the request or free the identifier; retrying as is fails again.",
+            "description": "An email, LinkedIn or Sales Navigator URL already belongs to another contact (`CONTACT_IDENTIFIER_CONFLICT`); retrying as is fails again.",
             "content": {
               "application/json": {
                 "schema": {
@@ -16155,7 +16180,7 @@
             }
           },
           "500": {
-            "description": "`UPSERT_FAILED`: the write failed on our side, nothing was written, safe to retry.",
+            "description": "Internal server error (`UPSERT_FAILED`): nothing written, safe to retry.",
             "content": {
               "application/json": {
                 "schema": {
@@ -17278,7 +17303,7 @@
                   },
                   "companyOwner": {
                     "type": "string",
-                    "description": "Owner of the company. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the value matches no team member the company is still written, and the response carries an `OWNER_NOT_FOUND` (or `INVALID_OWNER_FORMAT`) entry in `warnings`: on creation the owner falls back to the owner of the API key, on update the existing owner is left unchanged."
+                    "description": "Owner of the company. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the company is still written with an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`: the owner defaults to the API key owner on creation and is unchanged on update."
                   },
                   "industry": {
                     "type": "string",
@@ -17357,13 +17382,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Non-blocking issues: the record WAS written, and each entry names something you asked for that was not applied. Absent when everything applied.",
+                      "description": "Inputs that were not applied; the company was still written. Absent when everything applied.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` / `INVALID_OWNER_FORMAT`: the `companyOwner` you sent matches no team member, so the company was written without it (on creation the owner is the owner of the API key, on update the existing owner is kept)."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member)."
                           },
                           "message": {
                             "type": "string"
@@ -17373,7 +17398,7 @@
                             "additionalProperties": {
                               "type": "string"
                             },
-                            "description": "The offending input, echoed back — e.g. `{ \"companyOwner\": \"nobody@example.com\" }`."
+                            "description": "The offending input, echoed back (e.g. `{\"companyOwner\": \"nobody@example.com\"}`)."
                           }
                         }
                       }
@@ -17465,13 +17490,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Non-blocking issues: the record WAS written, and each entry names something you asked for that was not applied. Absent when everything applied.",
+                      "description": "Inputs that were not applied; the company was still written. Absent when everything applied.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` / `INVALID_OWNER_FORMAT`: the `companyOwner` you sent matches no team member, so the company was written without it (on creation the owner is the owner of the API key, on update the existing owner is kept)."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member)."
                           },
                           "message": {
                             "type": "string"
@@ -17481,7 +17506,7 @@
                             "additionalProperties": {
                               "type": "string"
                             },
-                            "description": "The offending input, echoed back — e.g. `{ \"companyOwner\": \"nobody@example.com\" }`."
+                            "description": "The offending input, echoed back (e.g. `{\"companyOwner\": \"nobody@example.com\"}`)."
                           }
                         }
                       }
@@ -17525,7 +17550,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `MISSING_REQUIRED_FIELD`, `INVALID_COMPANY_ID`, `INVALID_DOMAIN`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, or `COMPANY_VALIDATION_FAILED`. An unresolved `companyOwner` is not an error: the company is written and the response carries an `OWNER_NOT_FOUND` / `INVALID_OWNER_FORMAT` entry in `warnings`."
+                          "description": "Error code: `MISSING_REQUIRED_FIELD`, `INVALID_COMPANY_ID`, `INVALID_DOMAIN`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, or `COMPANY_VALIDATION_FAILED`."
                         },
                         "message": {
                           "type": "string"
@@ -17553,7 +17578,7 @@
             }
           },
           "404": {
-            "description": "`COMPANY_NOT_FOUND_BY_ID`: the `companyId` targets no company of the team.",
+            "description": "No company of the team matches `companyId` (`COMPANY_NOT_FOUND_BY_ID`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -17574,7 +17599,7 @@
             }
           },
           "409": {
-            "description": "`COMPANY_IDENTIFIER_CONFLICT`: a domain, LinkedIn or Sales Navigator url already belongs to another company. Retarget the request or free the identifier; retrying as is fails again.",
+            "description": "A domain, LinkedIn or Sales Navigator URL already belongs to another company (`COMPANY_IDENTIFIER_CONFLICT`); retrying as is fails again.",
             "content": {
               "application/json": {
                 "schema": {
@@ -17595,7 +17620,7 @@
             }
           },
           "500": {
-            "description": "`COMPANY_UPSERT_FAILED`: the write failed on our side, nothing was written, safe to retry.",
+            "description": "Internal server error (`COMPANY_UPSERT_FAILED`): nothing written, safe to retry.",
             "content": {
               "application/json": {
                 "schema": {
