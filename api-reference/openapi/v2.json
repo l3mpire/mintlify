@@ -10057,7 +10057,7 @@
             }
           },
           "400": {
-            "description": "Rejected add. Raw text body unless the code is one of the few that answer `{\"error\": \"...\"}` (a non-scalar field, an invalid user custom field, the campaign lead limit). `Invalid email address` (a malformed `email` in the body), `Invalid LinkedIn URL` (a malformed `linkedinUrl`), `LinkedIn URL is not a personal profile` (a company page or Sales Navigator url sent as `linkedinUrl`), `Email address is in the graveyard` (the contact is unsubscribed), `Lead already in the campaign` and `Body of your request must be an object` land here. Until the status audit the pipeline refusals answered 500 `Failed to add lead`, the graveyard hit 500 and the body check 401; all describe what the caller sent, so they are 4xx. Also `No API key provided` / `Bad team`. In the `/leads/{email}` path form a malformed email is refused earlier with 405, see that response.",
+            "description": "Rejected add. Raw text body unless the code is one of the few that answer `{\"error\": \"...\"}`: a non-scalar field (`Field \"<name>\" must be a scalar value (string, number or boolean), not an object or array.`), an invalid user custom field, the campaign lead limit. `Invalid email address` (a malformed `email` in the body), `Invalid LinkedIn URL` (a malformed `linkedinUrl`), `LinkedIn URL is not a personal profile` (a company page or Sales Navigator url sent as `linkedinUrl`), `Email address is in the graveyard` (the contact is unsubscribed), `Lead already in the campaign`, `No valid fields to add` (the body carries no field the route can write) and `Body of your request must be an object` land here. Until the status audit the pipeline refusals answered 500 `Failed to add lead`, the graveyard hit 500 and the body check 401; all describe what the caller sent, so they are 4xx. Also `No API key provided` / `Bad team`. In the `/leads/{email}` path form a malformed email is refused earlier with 405, see that response.",
             "content": {
               "text/plain": {
                 "example": "No API key provided"
@@ -10076,7 +10076,7 @@
             "description": "`Lead already in other campaign`: the lead exists in another campaign and the request is deduplicated. `An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact`: the email and LinkedIn url sent designate two different contacts, nothing is written. Both permanent for this payload, retrying as is fails again. Answered 500 until the status audit — the caller can act on them, so they are 4xx."
           },
           "405": {
-            "description": "Malformed email in the `/leads/{email}` path form, refused before any lead logic as `{\"error\": \"Invalid email address\"}` (JSON). Unchanged by the status audit."
+            "description": "Malformed `/leads/{email}` path segment, refused before any lead logic, as JSON: `{\"error\": \"Invalid email address\"}` for a malformed email, `{\"error\": \"Invalid lead identifier\"}` for a malformed `lea_` id. Unchanged by the status audit."
           },
           "403": {
             "description": "User linked to this API key is blocked",
@@ -10091,6 +10091,14 @@
             "content": {
               "text/plain": {
                 "example": "No user found for this API key"
+              }
+            }
+          },
+          "500": {
+            "description": "`Failed to add lead`: the lead was not added because a write failed on our side, or because the pipeline refused it for a reason this route has no translation for. Raw text body, safe to retry. The company and contact parts of the same request may already have been written, the pipeline writes them first. Since the status audit this is the only 500 of the route: every refusal the caller can act on answers 4xx.",
+            "content": {
+              "text/plain": {
+                "example": "Failed to add lead"
               }
             }
           }
