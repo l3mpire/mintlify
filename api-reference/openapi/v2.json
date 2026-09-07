@@ -10025,7 +10025,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was not; a lead variable named `warnings` is shadowed by it. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company`, `company-duplicate-forbidden`, `company-update-failed`.",
+                      "description": "Optional warnings (e.g. company resolution issues).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -10290,7 +10290,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was not; a lead variable named `warnings` is shadowed by it. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company`, `company-duplicate-forbidden`, `company-update-failed`.",
+                      "description": "Optional warnings (e.g. company resolution issues).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -11539,7 +11539,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was not. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company`, `company-duplicate-forbidden`, `company-update-failed`.",
+                      "description": "Optional warnings (e.g. company resolution issues).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -11646,7 +11646,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was not. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company`, `company-duplicate-forbidden`, `company-update-failed`.",
+                      "description": "Optional warnings (e.g. company resolution issues).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -11750,7 +11750,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was not. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company`, `company-duplicate-forbidden`, `company-update-failed`.",
+                      "description": "Optional warnings (e.g. company resolution issues).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -15947,7 +15947,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "description": "Optional warnings (e.g. owner or company resolution issues).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -16085,7 +16085,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "description": "Optional warnings (e.g. owner or company resolution issues).",
                       "items": {
                         "type": "object",
                         "properties": {
