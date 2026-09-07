@@ -10073,10 +10073,22 @@
             }
           },
           "409": {
-            "description": "Possible errors: Lead already in other campaign / An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact"
+            "description": "Possible errors: Lead already in other campaign / An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact",
+            "content": {
+              "text/plain": {
+                "example": "Lead already in other campaign"
+              }
+            }
           },
           "405": {
-            "description": "Malformed path segment. Possible errors: Invalid email address / Invalid lead identifier"
+            "description": "Malformed path segment. Possible errors: Invalid email address / Invalid lead identifier",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Invalid email address"
+                }
+              }
+            }
           },
           "403": {
             "description": "User linked to this API key is blocked",
@@ -10332,7 +10344,12 @@
             }
           },
           "409": {
-            "description": "Possible errors: An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact / Lead already in the campaign"
+            "description": "Possible errors: An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact / Lead already in the campaign",
+            "content": {
+              "text/plain": {
+                "example": "An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact"
+              }
+            }
           }
         },
         "parameters": []
@@ -11544,7 +11561,15 @@
             }
           },
           "400": {
-            "description": "Possible errors: Invalid leadId / Variables not found / Invalid variables: <names> / Variables <names> already exist / Invalid email address [invalid-email] / Invalid LinkedIn URL [invalid-linkedin-url] / LinkedIn URL is not a personal profile [linkedin-url-not-contact] / Lead could not be updated [no-valid-leads]"
+            "description": "Possible errors: Invalid leadId / Variables not found / Invalid variables: <names> / Variables <names> already exist / Invalid email address [invalid-email] / Invalid LinkedIn URL [invalid-linkedin-url] / LinkedIn URL is not a personal profile [linkedin-url-not-contact] / Lead could not be updated [no-valid-leads]",
+            "content": {
+              "application/json": {
+                "example": {
+                  "ok": false,
+                  "status": "Variables not found"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized"
@@ -11558,7 +11583,14 @@
             }
           },
           "409": {
-            "description": "Possible errors: An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact [duplicate-forbidden] / Lead already in the campaign [already-in]"
+            "description": "Possible errors: An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact [duplicate-forbidden] / Lead already in the campaign [already-in]",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact [duplicate-forbidden]"
+                }
+              }
+            }
           }
         }
       },
@@ -11636,7 +11668,15 @@
             }
           },
           "400": {
-            "description": "Possible errors: Invalid leadId / Variables not found / Invalid variables: <names> / Variables <names> not found / Invalid email address [invalid-email] / Invalid LinkedIn URL [invalid-linkedin-url] / LinkedIn URL is not a personal profile [linkedin-url-not-contact] / Lead could not be updated [no-valid-leads]"
+            "description": "Possible errors: Invalid leadId / Variables not found / Invalid variables: <names> / Variables <names> not found / Invalid email address [invalid-email] / Invalid LinkedIn URL [invalid-linkedin-url] / LinkedIn URL is not a personal profile [linkedin-url-not-contact] / Lead could not be updated [no-valid-leads]",
+            "content": {
+              "application/json": {
+                "example": {
+                  "ok": false,
+                  "status": "Variables not found"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized"
@@ -11650,7 +11690,14 @@
             }
           },
           "409": {
-            "description": "Possible errors: An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact [duplicate-forbidden] / Lead already in the campaign [already-in]"
+            "description": "Possible errors: An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact [duplicate-forbidden] / Lead already in the campaign [already-in]",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact [duplicate-forbidden]"
+                }
+              }
+            }
           }
         }
       },
@@ -11725,7 +11772,15 @@
             }
           },
           "400": {
-            "description": "Possible errors: Invalid leadId / Variables not found / Variables <names> not found / Following variables can't be removed: <names> / Invalid email address [invalid-email] / Invalid LinkedIn URL [invalid-linkedin-url] / LinkedIn URL is not a personal profile [linkedin-url-not-contact] / Lead could not be updated [no-valid-leads]"
+            "description": "Possible errors: Invalid leadId / Variables not found / Variables <names> not found / Following variables can't be removed: <names> / Invalid email address [invalid-email] / Invalid LinkedIn URL [invalid-linkedin-url] / LinkedIn URL is not a personal profile [linkedin-url-not-contact] / Lead could not be updated [no-valid-leads]",
+            "content": {
+              "application/json": {
+                "example": {
+                  "ok": false,
+                  "status": "Variables not found"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized"
@@ -11739,7 +11794,14 @@
             }
           },
           "409": {
-            "description": "Possible errors: An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact [duplicate-forbidden] / Lead already in the campaign [already-in]"
+            "description": "Possible errors: An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact [duplicate-forbidden] / Lead already in the campaign [already-in]",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact [duplicate-forbidden]"
+                }
+              }
+            }
           }
         }
       }
