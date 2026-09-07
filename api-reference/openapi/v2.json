@@ -10025,7 +10025,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was not; a lead variable named `warnings` is shadowed by it. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (personal profile sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (identifiers naming two companies), `company-update-failed`.",
+                      "description": "Present only when the lead was written but its company part was not; a lead variable named `warnings` is shadowed by it. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company`, `company-duplicate-forbidden`, `company-update-failed`.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -10057,7 +10057,7 @@
             }
           },
           "400": {
-            "description": "Possible errors: No API key provided / Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile (company page or Sales Navigator URL) / Email address is in the graveyard (unsubscribed) / Lead already in the campaign / No valid fields to add (nothing writable in the body). Raw text, except `{\"error\": \"...\"}` for a non-scalar field (`Field \"<name>\" must be a scalar value (string, number or boolean), not an object or array.`), an invalid user custom field or the campaign lead limit.",
+            "description": "Possible errors: No API key provided / Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile / Email address is in the graveyard / Lead already in the campaign / No valid fields to add",
             "content": {
               "text/plain": {
                 "example": "No API key provided"
@@ -10073,10 +10073,10 @@
             }
           },
           "409": {
-            "description": "Possible errors: Lead already in other campaign (when deduplicating) / An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact. Raw text, nothing written, retrying as is fails again."
+            "description": "Possible errors: Lead already in other campaign / An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact"
           },
           "405": {
-            "description": "Malformed `/leads/{email}` path segment, nothing written: `{\"error\": \"Invalid email address\"}` or `{\"error\": \"Invalid lead identifier\"}` (malformed `lea_` id)."
+            "description": "Malformed path segment. Possible errors: Invalid email address / Invalid lead identifier"
           },
           "403": {
             "description": "User linked to this API key is blocked",
@@ -10087,18 +10087,10 @@
             }
           },
           "404": {
-            "description": "Possible errors: No user found for this api key / Campaign not found / Campaign deleted. Raw text; `{\"error\": \"...\"}` for the campaign errors in the `/leads/{email}` path form.",
+            "description": "Possible errors: No user found for this API key / Campaign not found",
             "content": {
               "text/plain": {
                 "example": "No user found for this API key"
-              }
-            }
-          },
-          "500": {
-            "description": "`Failed to add lead` (raw text): internal write failure, or a refusal without a dedicated error. The lead was not added, its contact and company parts may already be written. Safe to retry.",
-            "content": {
-              "text/plain": {
-                "example": "Failed to add lead"
               }
             }
           }
@@ -10286,7 +10278,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was not; a lead variable named `warnings` is shadowed by it. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (personal profile sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (identifiers naming two companies), `company-update-failed`.",
+                      "description": "Present only when the lead was written but its company part was not; a lead variable named `warnings` is shadowed by it. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company`, `company-duplicate-forbidden`, `company-update-failed`.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -10321,7 +10313,7 @@
             }
           },
           "400": {
-            "description": "Possible errors (raw text, code not sent): Bad team / Body of your request must be an object / Invalid email address (invalid-email) / Invalid LinkedIn URL (invalid-linkedin-url) / LinkedIn URL is not a personal profile (linkedin-url-not-contact) / Lead could not be updated (no-valid-leads).",
+            "description": "Possible errors: Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile / Lead could not be updated",
             "content": {
               "text/plain": {
                 "example": "Bad team"
@@ -10329,10 +10321,10 @@
             }
           },
           "401": {
-            "description": "The authentication you supplied is incorrect"
+            "description": "Unauthorized"
           },
           "404": {
-            "description": "Before the write, as `{\"error\": \"...\"}`: Lead not found / Campaign not found / Campaign deleted / Contact owner not found: neither a valid email nor a valid user id. Deleted during the write, as raw text (code not sent): Lead not found (edit-deleted-lead) / Campaign deleted (campaign-deleted).",
+            "description": "Possible errors: Lead not found / Campaign not found / Campaign deleted / Contact owner not found: neither a valid email nor a valid user id.",
             "content": {
               "text/plain": {
                 "example": "Lead not found"
@@ -10340,10 +10332,7 @@
             }
           },
           "409": {
-            "description": "Possible errors (raw text, code not sent): An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact (duplicate-forbidden) / Lead already in the campaign (already-in: unlinked lead whose new identifiers match a contact already in the campaign; a linked lead answers duplicate-forbidden). Retrying as is fails again; a company identifier conflict is reported in `warnings` instead."
-          },
-          "500": {
-            "description": "Possible errors (raw text, code not sent): Contact could not be saved (contact-update-failed) / Lead could not be updated (lead-update-failed). Internal error, safe to retry; the lead was not updated, its contact and company parts may already be written."
+            "description": "Possible errors: An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact / Lead already in the campaign"
           }
         },
         "parameters": []
@@ -11533,7 +11522,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was not. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (personal profile sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (identifiers naming two companies), `company-update-failed`.",
+                      "description": "Present only when the lead was written but its company part was not. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company`, `company-duplicate-forbidden`, `company-update-failed`.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -11555,13 +11544,13 @@
             }
           },
           "400": {
-            "description": "`{\"ok\": false, \"status\": \"...\"}` for a variable that already exists or invalid variables, `{\"error\": \"Invalid leadId\"}` for a malformed id, `{\"error\": \"<reason> [<code>]\"}` for a refused write: invalid-email / invalid-linkedin-url / linkedin-url-not-contact / no-valid-leads."
+            "description": "Possible errors: Invalid leadId / Variables not found / Invalid variables: <names> / Variables <names> already exist / Invalid email address [invalid-email] / Invalid LinkedIn URL [invalid-linkedin-url] / LinkedIn URL is not a personal profile [linkedin-url-not-contact] / Lead could not be updated [no-valid-leads]"
           },
           "401": {
-            "description": "The authentication you supplied is incorrect"
+            "description": "Unauthorized"
           },
           "404": {
-            "description": "Possible errors (raw text): Lead not found / Campaign not found. Deleted during the write, as `{\"error\": \"<reason> [<code>]\"}`: edit-deleted-lead / campaign-deleted.",
+            "description": "Possible errors: Lead not found / Campaign not found / Lead not found [edit-deleted-lead] / Campaign deleted [campaign-deleted]",
             "content": {
               "text/plain": {
                 "example": "Lead not found"
@@ -11569,10 +11558,7 @@
             }
           },
           "409": {
-            "description": "`{\"error\": \"<reason> [<code>]\"}` with duplicate-forbidden (an identifier already belongs to another contact) or already-in (unlinked lead whose new identifiers match a contact already in the campaign). Retrying as is fails again; a company identifier conflict is reported in `warnings` instead."
-          },
-          "500": {
-            "description": "`{\"error\": \"<reason> [<code>]\"}` with contact-update-failed or lead-update-failed. Internal error, safe to retry; the lead was not updated, its contact and company parts may already be written."
+            "description": "Possible errors: An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact [duplicate-forbidden] / Lead already in the campaign [already-in]"
           }
         }
       },
@@ -11628,7 +11614,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was not. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (personal profile sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (identifiers naming two companies), `company-update-failed`.",
+                      "description": "Present only when the lead was written but its company part was not. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company`, `company-duplicate-forbidden`, `company-update-failed`.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -11650,13 +11636,13 @@
             }
           },
           "400": {
-            "description": "`{\"ok\": false, \"status\": \"...\"}` for a variable that does not exist or invalid variables, `{\"error\": \"Invalid leadId\"}` for a malformed id, `{\"error\": \"<reason> [<code>]\"}` for a refused write: invalid-email / invalid-linkedin-url / linkedin-url-not-contact / no-valid-leads."
+            "description": "Possible errors: Invalid leadId / Variables not found / Invalid variables: <names> / Variables <names> not found / Invalid email address [invalid-email] / Invalid LinkedIn URL [invalid-linkedin-url] / LinkedIn URL is not a personal profile [linkedin-url-not-contact] / Lead could not be updated [no-valid-leads]"
           },
           "401": {
-            "description": "The authentication you supplied is incorrect"
+            "description": "Unauthorized"
           },
           "404": {
-            "description": "Possible errors (raw text): Lead not found / Campaign not found. Deleted during the write, as `{\"error\": \"<reason> [<code>]\"}`: edit-deleted-lead / campaign-deleted.",
+            "description": "Possible errors: Lead not found / Campaign not found / Lead not found [edit-deleted-lead] / Campaign deleted [campaign-deleted]",
             "content": {
               "text/plain": {
                 "example": "Lead not found"
@@ -11664,10 +11650,7 @@
             }
           },
           "409": {
-            "description": "`{\"error\": \"<reason> [<code>]\"}` with duplicate-forbidden (an identifier already belongs to another contact) or already-in (unlinked lead whose new identifiers match a contact already in the campaign). Retrying as is fails again; a company identifier conflict is reported in `warnings` instead."
-          },
-          "500": {
-            "description": "`{\"error\": \"<reason> [<code>]\"}` with contact-update-failed or lead-update-failed. Internal error, safe to retry; the lead was not updated, its contact and company parts may already be written."
+            "description": "Possible errors: An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact [duplicate-forbidden] / Lead already in the campaign [already-in]"
           }
         }
       },
@@ -11720,7 +11703,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Present only when the lead was written but its company part was not. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (personal profile sent as `companyLinkedinUrl`), `company-duplicate-forbidden` (identifiers naming two companies), `company-update-failed`.",
+                      "description": "Present only when the lead was written but its company part was not. Codes: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company`, `company-duplicate-forbidden`, `company-update-failed`.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -11742,13 +11725,13 @@
             }
           },
           "400": {
-            "description": "`{\"ok\": false, \"status\": \"...\"}` for a variable that does not exist or cannot be deleted, `{\"error\": \"Invalid leadId\"}` for a malformed id, `{\"error\": \"<reason> [<code>]\"}` for a refused write: invalid-email / invalid-linkedin-url / linkedin-url-not-contact / no-valid-leads."
+            "description": "Possible errors: Invalid leadId / Variables not found / Variables <names> not found / Following variables can't be removed: <names> / Invalid email address [invalid-email] / Invalid LinkedIn URL [invalid-linkedin-url] / LinkedIn URL is not a personal profile [linkedin-url-not-contact] / Lead could not be updated [no-valid-leads]"
           },
           "401": {
-            "description": "The authentication you supplied is incorrect"
+            "description": "Unauthorized"
           },
           "404": {
-            "description": "Possible errors (raw text): Lead not found / Campaign not found. Deleted during the write, as `{\"error\": \"<reason> [<code>]\"}`: edit-deleted-lead / campaign-deleted.",
+            "description": "Possible errors: Lead not found / Campaign not found / Lead not found [edit-deleted-lead] / Campaign deleted [campaign-deleted]",
             "content": {
               "text/plain": {
                 "example": "Lead not found"
@@ -11756,10 +11739,7 @@
             }
           },
           "409": {
-            "description": "`{\"error\": \"<reason> [<code>]\"}` with duplicate-forbidden (an identifier already belongs to another contact) or already-in (unlinked lead whose new identifiers match a contact already in the campaign). Retrying as is fails again; a company identifier conflict is reported in `warnings` instead."
-          },
-          "500": {
-            "description": "`{\"error\": \"<reason> [<code>]\"}` with contact-update-failed or lead-update-failed. Internal error, safe to retry; the lead was not updated, its contact and company parts may already be written."
+            "description": "Possible errors: An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact [duplicate-forbidden] / Lead already in the campaign [already-in]"
           }
         }
       }
@@ -15905,7 +15885,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Inputs that were not applied; the contact was still written. Absent when everything applied.",
+                      "description": "Optional warnings (e.g. company resolution issues).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -16043,7 +16023,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Inputs that were not applied; the contact was still written. Absent when everything applied.",
+                      "description": "Optional warnings (e.g. company resolution issues).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -16096,7 +16076,7 @@
             }
           },
           "400": {
-            "description": "Validation error (nothing written)",
+            "description": "Validation error",
             "content": {
               "application/json": {
                 "schema": {
@@ -16172,27 +16152,6 @@
                       "error": {
                         "code": "CONTACT_IDENTIFIER_CONFLICT",
                         "message": "An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error (`UPSERT_FAILED`): nothing written, safe to retry.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
-                },
-                "examples": {
-                  "upsert-failed": {
-                    "value": {
-                      "success": false,
-                      "error": {
-                        "code": "UPSERT_FAILED",
-                        "message": "Failed to create or update contact"
                       }
                     }
                   }
@@ -17382,7 +17341,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Inputs that were not applied; the company was still written. Absent when everything applied.",
+                      "description": "Optional warnings (e.g. owner resolution issues).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -17490,7 +17449,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Inputs that were not applied; the company was still written. Absent when everything applied.",
+                      "description": "Optional warnings (e.g. owner resolution issues).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -17536,7 +17495,7 @@
             }
           },
           "400": {
-            "description": "Validation error (nothing written)",
+            "description": "Validation error",
             "content": {
               "application/json": {
                 "schema": {
@@ -17612,27 +17571,6 @@
                       "error": {
                         "code": "COMPANY_IDENTIFIER_CONFLICT",
                         "message": "An identifier (domain, linkedinUrl or salesnavUrl) already belongs to another company"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error (`COMPANY_UPSERT_FAILED`): nothing written, safe to retry.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
-                },
-                "examples": {
-                  "upsert-failed": {
-                    "value": {
-                      "success": false,
-                      "error": {
-                        "code": "COMPANY_UPSERT_FAILED",
-                        "message": "Failed to create or update company"
                       }
                     }
                   }
