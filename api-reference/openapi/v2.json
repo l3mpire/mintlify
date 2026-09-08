@@ -6849,6 +6849,14 @@
                               "type": "string",
                               "description": "The email subject line (only for email steps)"
                             },
+                            "altMessage": {
+                              "type": "string",
+                              "description": "The LinkedIn note sent instead of `message` in specific cases. On a `linkedinInvite` step it is the premium invitation note, used when the sending account has LinkedIn Premium. On a `linkedinSend` or `linkedinVoiceNote` step it is the out-of-network note, sent as a connection request when the lead is not a 1st-degree connection. Returned only when the step carries one and it is not empty"
+                            },
+                            "altMessagePremium": {
+                              "type": "string",
+                              "description": "The premium variant of the out-of-network note, sent instead of `altMessage` when the sending LinkedIn account is Premium or Sales Navigator. Only on `linkedinSend` steps, and returned only when it is not empty"
+                            },
                             "abTest": {
                               "description": "A/B test state for this step. `true` while the test runs (leads are split between variant A and B); `\"A\"` or `\"B\"` once a winner is selected; absent or `false` when there is no A/B test. `subject` and `message` are always variant A's — read variant B via Get A/B Test Variant",
                               "oneOf": [
@@ -7173,11 +7181,15 @@
                   },
                   "message": {
                     "type": "string",
-                    "description": "Content of the email or message (used for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage, sms steps). Required for linkedinSend, whatsappMessage, and sms"
+                    "description": "Content of the email or message (used for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage, sms steps, and as the AI script of a linkedinVoiceNote step in `ai` record mode). Required for linkedinSend, whatsappMessage, and sms"
                   },
                   "altMessage": {
                     "type": "string",
-                    "description": "Alternate message for linkedinSend steps"
+                    "description": "The LinkedIn note sent instead of `message` in specific cases, with a meaning that depends on the step type. On `linkedinInvite`: the premium invitation note attached to the connection request, used when the sending account has LinkedIn Premium. On `linkedinSend` and `linkedinVoiceNote`: the out-of-network note, sent as a connection request when the lead is not a 1st-degree connection. Rejected with `400` on any other step type. LinkedIn caps a connection-request note at 200 characters on a free account and 300 on Premium or Sales Navigator. This endpoint does not enforce those caps, but an over-long note is a blocking step error: the campaign refuses to launch until it is shortened"
+                  },
+                  "altMessagePremium": {
+                    "type": "string",
+                    "description": "For `linkedinSend` steps only. The premium variant of the out-of-network note, sent instead of `altMessage` when the sending LinkedIn account is Premium or Sales Navigator (300-character LinkedIn cap). Rejected with `400` on any other step type"
                   },
                   "title": {
                     "type": "string",
@@ -7521,11 +7533,15 @@
                   },
                   "message": {
                     "type": "string",
-                    "description": "Content of the email or message (for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage, sms steps)"
+                    "description": "Content of the email or message (for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage, sms steps, and as the AI script of a linkedinVoiceNote step in `ai` record mode)"
                   },
                   "altMessage": {
                     "type": "string",
-                    "description": "Alternate message for linkedinSend steps"
+                    "description": "The LinkedIn note sent instead of `message` in specific cases, with a meaning that depends on the step type. On `linkedinInvite`: the premium invitation note attached to the connection request, used when the sending account has LinkedIn Premium. On `linkedinSend` and `linkedinVoiceNote`: the out-of-network note, sent as a connection request when the lead is not a 1st-degree connection. Pass an empty string to clear it. LinkedIn caps a connection-request note at 200 characters on a free account and 300 on Premium or Sales Navigator. This endpoint does not enforce those caps, but an over-long note is a blocking step error: the campaign refuses to launch until it is shortened"
+                  },
+                  "altMessagePremium": {
+                    "type": "string",
+                    "description": "For `linkedinSend` steps only. The premium variant of the out-of-network note, sent instead of `altMessage` when the sending LinkedIn account is Premium or Sales Navigator (300-character LinkedIn cap). Pass an empty string to clear it. Rejected with `400` on any other step type"
                   },
                   "title": {
                     "type": "string",
@@ -7650,7 +7666,8 @@
                   "value": {
                     "type": "linkedinSend",
                     "message": "Thanks for accepting my invite, {{firstName}}! I wanted to reach out about...",
-                    "altMessage": "Alternative message if the main one fails",
+                    "altMessage": "Hi {{firstName}}, we are not connected yet, happy to change that!",
+                    "altMessagePremium": "Hi {{firstName}}, we are not connected yet. I work with teams like {{companyName}} on the same problem and would love to swap notes.",
                     "delay": 3
                   }
                 },
