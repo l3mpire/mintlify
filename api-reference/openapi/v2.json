@@ -23,6 +23,37 @@
       }
     },
     "schemas": {
+      "ApiErrorEnvelope": {
+        "type": "object",
+        "description": "Error envelope of the contact and company endpoints.",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Machine-readable error code, stable across releases."
+              },
+              "message": {
+                "type": "string",
+                "description": "Human-readable explanation."
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "success",
+          "error"
+        ]
+      },
       "ActivityType": {
         "type": "string",
         "description": "A lemlist activity type. These are the exact values accepted by the `type` filter on GET /activities and returned as an activity's `type`. Mind the spelling: email types are plural (emailsSent), invites are linkedinInvite*.",
@@ -9991,6 +10022,21 @@
                     "contactId": {
                       "type": "string",
                       "description": "Associated contact ID"
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   }
                 },
@@ -10011,7 +10057,7 @@
             }
           },
           "400": {
-            "description": "Possible errors: No API key provided / Bad team",
+            "description": "Possible errors: No API key provided / Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile / Email address is in the graveyard / Lead already in the campaign / No valid fields to add",
             "content": {
               "text/plain": {
                 "example": "No API key provided"
@@ -10023,6 +10069,24 @@
             "content": {
               "text/plain": {
                 "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "409": {
+            "description": "Possible errors: Lead already in other campaign / An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact",
+            "content": {
+              "text/plain": {
+                "example": "Lead already in other campaign"
+              }
+            }
+          },
+          "405": {
+            "description": "Malformed path segment. Possible errors: Invalid email address / Invalid lead identifier",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Invalid email address"
+                }
               }
             }
           },
@@ -10223,6 +10287,21 @@
                     "emailStatus": {
                       "type": "string",
                       "description": "Email verification status"
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          }
+                        }
+                      }
                     }
                   }
                 },
@@ -10246,7 +10325,7 @@
             }
           },
           "400": {
-            "description": "Bad team",
+            "description": "Possible errors: Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile / Lead could not be updated",
             "content": {
               "text/plain": {
                 "example": "Bad team"
@@ -10257,15 +10336,20 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Lead not found",
+            "description": "Possible errors: Lead not found / Campaign not found / Campaign deleted / Contact owner not found: neither a valid email nor a valid user id.",
             "content": {
               "text/plain": {
                 "example": "Lead not found"
               }
             }
           },
-          "500": {
-            "description": "Lead in graveyard"
+          "409": {
+            "description": "Possible errors: An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact / Lead already in the campaign",
+            "content": {
+              "text/plain": {
+                "example": "An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact"
+              }
+            }
           }
         },
         "parameters": []
@@ -11448,7 +11532,27 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "additionalProperties": true
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 },
                 "example": {
                   "ok": true
@@ -11457,10 +11561,13 @@
             }
           },
           "400": {
-            "description": "Bad team",
+            "description": "Possible errors: Invalid leadId / Variables not found / Invalid variables: <names> / Variables <names> already exist / Invalid email address [invalid-email] / Invalid LinkedIn URL [invalid-linkedin-url] / LinkedIn URL is not a personal profile [linkedin-url-not-contact] / Lead could not be updated [no-valid-leads]",
             "content": {
-              "text/plain": {
-                "example": "Variable not found"
+              "application/json": {
+                "example": {
+                  "ok": false,
+                  "status": "Variables not found"
+                }
               }
             }
           },
@@ -11468,10 +11575,20 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Lead not found",
+            "description": "Possible errors: Lead not found / Campaign not found / Lead not found [edit-deleted-lead] / Campaign deleted [campaign-deleted]",
             "content": {
               "text/plain": {
                 "example": "Lead not found"
+              }
+            }
+          },
+          "409": {
+            "description": "Possible errors: An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact [duplicate-forbidden] / Lead already in the campaign [already-in]",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact [duplicate-forbidden]"
+                }
               }
             }
           }
@@ -11522,7 +11639,27 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "additionalProperties": true
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 },
                 "example": {
                   "ok": true
@@ -11531,10 +11668,13 @@
             }
           },
           "400": {
-            "description": "Bad team",
+            "description": "Possible errors: Invalid leadId / Variables not found / Invalid variables: <names> / Variables <names> not found / Invalid email address [invalid-email] / Invalid LinkedIn URL [invalid-linkedin-url] / LinkedIn URL is not a personal profile [linkedin-url-not-contact] / Lead could not be updated [no-valid-leads]",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "example": {
+                  "ok": false,
+                  "status": "Variables not found"
+                }
               }
             }
           },
@@ -11542,10 +11682,20 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Lead not found",
+            "description": "Possible errors: Lead not found / Campaign not found / Lead not found [edit-deleted-lead] / Campaign deleted [campaign-deleted]",
             "content": {
               "text/plain": {
                 "example": "Lead not found"
+              }
+            }
+          },
+          "409": {
+            "description": "Possible errors: An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact [duplicate-forbidden] / Lead already in the campaign [already-in]",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact [duplicate-forbidden]"
+                }
               }
             }
           }
@@ -11593,7 +11743,27 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "additionalProperties": true
+                  "properties": {
+                    "ok": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          },
+                          "message": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 },
                 "example": {
                   "ok": true
@@ -11602,10 +11772,13 @@
             }
           },
           "400": {
-            "description": "Bad team",
+            "description": "Possible errors: Invalid leadId / Variables not found / Variables <names> not found / Following variables can't be removed: <names> / Invalid email address [invalid-email] / Invalid LinkedIn URL [invalid-linkedin-url] / LinkedIn URL is not a personal profile [linkedin-url-not-contact] / Lead could not be updated [no-valid-leads]",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "example": {
+                  "ok": false,
+                  "status": "Variables not found"
+                }
               }
             }
           },
@@ -11613,10 +11786,20 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Lead not found",
+            "description": "Possible errors: Lead not found / Campaign not found / Lead not found [edit-deleted-lead] / Campaign deleted [campaign-deleted]",
             "content": {
               "text/plain": {
                 "example": "Lead not found"
+              }
+            }
+          },
+          "409": {
+            "description": "Possible errors: An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact [duplicate-forbidden] / Lead already in the campaign [already-in]",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact [duplicate-forbidden]"
+                }
               }
             }
           }
@@ -15712,7 +15895,7 @@
                   },
                   "contactOwner": {
                     "type": "string",
-                    "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the owner defaults to the API key owner."
+                    "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the contact is still written with an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`: the owner defaults to the API key owner on creation and is unchanged on update."
                   },
                   "source": {
                     "type": "string",
@@ -15748,6 +15931,73 @@
           }
         },
         "responses": {
+          "200": {
+            "description": "Existing contact updated (upsert matched by email or LinkedIn URL)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Same shape as the 201 response, with `created: false` and `updated: true`."
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "Optional warnings (e.g. owner or company resolution issues).",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string",
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked)."
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "params": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "The offending input, echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`)."
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "_id": "ctc_xW8Ou6C03Csv8vatp",
+                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                    "emails": [
+                      {
+                        "value": "jane.smith@example.com"
+                      }
+                    ],
+                    "fields": {
+                      "firstName": "Jane",
+                      "lastName": "Smith",
+                      "jobTitle": "Product Manager"
+                    },
+                    "ownerId": "usr_ahfFktBBHUIxbVG5P",
+                    "source": "api",
+                    "createdAt": "2025-10-28T00:40:37.917Z",
+                    "createdBy": "usr_ahfFktBBHUIxbVG5P",
+                    "unsubscribed": false,
+                    "created": false,
+                    "updated": true,
+                    "companyLinked": false
+                  }
+                }
+              }
+            }
+          },
           "201": {
             "description": "Contact created successfully",
             "content": {
@@ -15835,15 +16085,23 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "description": "Optional warnings (e.g. owner or company resolution issues).",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked)."
                           },
                           "message": {
                             "type": "string"
+                          },
+                          "params": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "The offending input, echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`)."
                           }
                         }
                       }
@@ -15879,50 +16137,6 @@
               }
             }
           },
-          "200": {
-            "description": "Existing contact updated (upsert matched by email or LinkedIn URL)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "data": {
-                      "type": "object",
-                      "description": "Same shape as the 201 response, with `created: false` and `updated: true`."
-                    }
-                  }
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "_id": "ctc_xW8Ou6C03Csv8vatp",
-                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
-                    "emails": [
-                      {
-                        "value": "jane.smith@example.com"
-                      }
-                    ],
-                    "fields": {
-                      "firstName": "Jane",
-                      "lastName": "Smith",
-                      "jobTitle": "Product Manager"
-                    },
-                    "ownerId": "usr_ahfFktBBHUIxbVG5P",
-                    "source": "api",
-                    "createdAt": "2025-10-28T00:40:37.917Z",
-                    "createdBy": "usr_ahfFktBBHUIxbVG5P",
-                    "unsubscribed": false,
-                    "created": false,
-                    "updated": true,
-                    "companyLinked": false
-                  }
-                }
-              }
-            }
-          },
           "400": {
             "description": "Validation error",
             "content": {
@@ -15938,7 +16152,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `MISSING_IDENTIFIER`, `INVALID_CONTACT_ID`, `CONTACT_NOT_FOUND_BY_ID`, `INVALID_EMAIL`, `INVALID_ADDITIONAL_EMAILS`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, or `CONTACT_VALIDATION_FAILED`."
+                          "description": "Error code: `MISSING_IDENTIFIER`, `INVALID_CONTACT_ID`, `INVALID_EMAIL`, `INVALID_ADDITIONAL_EMAILS`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, or `CONTACT_VALIDATION_FAILED`."
                         },
                         "message": {
                           "type": "string"
@@ -15962,6 +16176,48 @@
             "content": {
               "text/plain": {
                 "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "No contact of the team matches `contactId` (`CONTACT_NOT_FOUND_BY_ID`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "examples": {
+                  "not-found": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CONTACT_NOT_FOUND_BY_ID",
+                        "message": "No contact found with the provided contactId"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "An email, LinkedIn or Sales Navigator URL already belongs to another contact (`CONTACT_IDENTIFIER_CONFLICT`); retrying as is fails again.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "examples": {
+                  "conflict": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CONTACT_IDENTIFIER_CONFLICT",
+                        "message": "An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact"
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -17239,7 +17495,7 @@
                   },
                   "companyOwner": {
                     "type": "string",
-                    "description": "Owner of the company. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the owner defaults to the API key owner."
+                    "description": "Owner of the company. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the company is still written with an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`: the owner defaults to the API key owner on creation and is unchanged on update."
                   },
                   "industry": {
                     "type": "string",
@@ -17302,6 +17558,67 @@
           }
         },
         "responses": {
+          "200": {
+            "description": "Existing company updated (upsert matched by domain or LinkedIn URL)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "description": "Same shape as the 201 response, with `created: false` and `updated: true`."
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "Optional warnings (e.g. owner resolution issues).",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string",
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member)."
+                          },
+                          "message": {
+                            "type": "string"
+                          },
+                          "params": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "The offending input, echoed back (e.g. `{\"companyOwner\": \"nobody@example.com\"}`)."
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "_id": "cpn_gG7PsmZFpEAnpMCHO",
+                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                    "domain": "acme.com",
+                    "fields": {
+                      "name": "Acme Corp",
+                      "industry": "Technology",
+                      "location": "San Francisco, CA"
+                    },
+                    "ownerId": "usr_ahfFktBBHUIxbVG5P",
+                    "source": "api",
+                    "createdAt": "2025-10-28T00:40:37.917Z",
+                    "createdBy": "usr_ahfFktBBHUIxbVG5P",
+                    "created": false,
+                    "updated": true
+                  }
+                }
+              }
+            }
+          },
           "201": {
             "description": "Company created successfully",
             "content": {
@@ -17370,10 +17687,18 @@
                         "type": "object",
                         "properties": {
                           "code": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member)."
                           },
                           "message": {
                             "type": "string"
+                          },
+                          "params": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            },
+                            "description": "The offending input, echoed back (e.g. `{\"companyOwner\": \"nobody@example.com\"}`)."
                           }
                         }
                       }
@@ -17402,44 +17727,6 @@
               }
             }
           },
-          "200": {
-            "description": "Existing company updated (upsert matched by domain or LinkedIn URL)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "data": {
-                      "type": "object",
-                      "description": "Same shape as the 201 response, with `created: false` and `updated: true`."
-                    }
-                  }
-                },
-                "example": {
-                  "success": true,
-                  "data": {
-                    "_id": "cpn_gG7PsmZFpEAnpMCHO",
-                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
-                    "domain": "acme.com",
-                    "fields": {
-                      "name": "Acme Corp",
-                      "industry": "Technology",
-                      "location": "San Francisco, CA"
-                    },
-                    "ownerId": "usr_ahfFktBBHUIxbVG5P",
-                    "source": "api",
-                    "createdAt": "2025-10-28T00:40:37.917Z",
-                    "createdBy": "usr_ahfFktBBHUIxbVG5P",
-                    "created": false,
-                    "updated": true
-                  }
-                }
-              }
-            }
-          },
           "400": {
             "description": "Validation error",
             "content": {
@@ -17455,7 +17742,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `MISSING_REQUIRED_FIELD`, `INVALID_COMPANY_ID`, `COMPANY_NOT_FOUND_BY_ID`, `INVALID_DOMAIN`, `INVALID_LINKEDIN_URL`, or `INVALID_FIELD`."
+                          "description": "Error code: `MISSING_REQUIRED_FIELD`, `INVALID_COMPANY_ID`, `INVALID_DOMAIN`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, or `COMPANY_VALIDATION_FAILED`."
                         },
                         "message": {
                           "type": "string"
@@ -17468,7 +17755,7 @@
                   "success": false,
                   "error": {
                     "code": "MISSING_REQUIRED_FIELD",
-                    "message": "Missing required field: name"
+                    "message": "A required field is missing: name"
                   }
                 }
               }
@@ -17479,6 +17766,48 @@
             "content": {
               "text/plain": {
                 "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "No company of the team matches `companyId` (`COMPANY_NOT_FOUND_BY_ID`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "examples": {
+                  "not-found": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "COMPANY_NOT_FOUND_BY_ID",
+                        "message": "No company found with id"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A domain, LinkedIn or Sales Navigator URL already belongs to another company (`COMPANY_IDENTIFIER_CONFLICT`); retrying as is fails again.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "examples": {
+                  "conflict": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "COMPANY_IDENTIFIER_CONFLICT",
+                        "message": "An identifier (domain, linkedinUrl or salesnavUrl) already belongs to another company"
+                      }
+                    }
+                  }
+                }
               }
             }
           }
