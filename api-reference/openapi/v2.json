@@ -23905,7 +23905,7 @@
         "tags": [
           "Sequences"
         ],
-        "description": "Creates variant B of an A/B test on a step, prefilled from variant A, and starts the test (leads are split between A and B). Supported on `email`, `whatsappMessage`, `sms`, `linkedinInvite`, and `linkedinSend` steps. Requires the Email Pro plan.",
+        "description": "Creates variant B of an A/B test on a step, prefilled from variant A, and starts the test (leads are split between A and B). Supported on `email`, `linkedinInvite`, and `linkedinSend` steps. Requires the Email Pro plan.",
         "parameters": [],
         "responses": {
           "200": {
@@ -23945,7 +23945,12 @@
                       "description": "Variant B body (HTML)"
                     },
                     "altMessage": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Variant B's LinkedIn note, same meaning as the step-level `altMessage`: the premium invitation note on a `linkedinInvite` step, the out-of-network note on a `linkedinSend` one"
+                    },
+                    "altMessagePremium": {
+                      "type": "string",
+                      "description": "Variant B's premium variant of the out-of-network note, on `linkedinSend` steps only"
                     },
                     "cc": {
                       "type": "array",
@@ -24089,7 +24094,12 @@
                       "description": "Variant B body (HTML)"
                     },
                     "altMessage": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Variant B's LinkedIn note, same meaning as the step-level `altMessage`: the premium invitation note on a `linkedinInvite` step, the out-of-network note on a `linkedinSend` one"
+                    },
+                    "altMessagePremium": {
+                      "type": "string",
+                      "description": "Variant B's premium variant of the out-of-network note, on `linkedinSend` steps only"
                     },
                     "cc": {
                       "type": "array",
@@ -24187,7 +24197,11 @@
                   },
                   "altMessage": {
                     "type": "string",
-                    "description": "Alternate message. On LinkedIn invite steps, the premium invitation note — maximum 300 characters"
+                    "description": "Variant B's LinkedIn note, same meaning as the step-level `altMessage`: the premium invitation note on a `linkedinInvite` step, the out-of-network note on a `linkedinSend` one. On a `linkedinInvite` step, over 300 characters is rejected with `400`"
+                  },
+                  "altMessagePremium": {
+                    "type": "string",
+                    "description": "Variant B's premium variant of the out-of-network note, on `linkedinSend` steps only: any other step type is rejected with `400`. Over 300 characters is rejected with `400` too"
                   },
                   "cc": {
                     "type": "array",
@@ -24245,7 +24259,12 @@
                       "description": "Variant B body (HTML)"
                     },
                     "altMessage": {
-                      "type": "string"
+                      "type": "string",
+                      "description": "Variant B's LinkedIn note, same meaning as the step-level `altMessage`: the premium invitation note on a `linkedinInvite` step, the out-of-network note on a `linkedinSend` one"
+                    },
+                    "altMessagePremium": {
+                      "type": "string",
+                      "description": "Variant B's premium variant of the out-of-network note, on `linkedinSend` steps only"
                     },
                     "cc": {
                       "type": "array",
@@ -24269,7 +24288,7 @@
             }
           },
           "400": {
-            "description": "Bad request: invalid or unknown body field, empty message on a step other than a LinkedIn invite, or invitation note over 300 characters",
+            "description": "Bad request: invalid or unknown body field, empty message on a step other than a LinkedIn invite, an `altMessage` over 300 characters on a LinkedIn invite step, an `altMessagePremium` on a step other than a LinkedIn message, or an `altMessagePremium` over 300 characters",
             "content": {
               "application/json": {
                 "schema": {

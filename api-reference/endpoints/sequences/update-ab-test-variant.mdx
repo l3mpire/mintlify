@@ -16,7 +16,8 @@ in the request body are changed; variant A is never touched.
 | --- | --- | --- |
 | `subject` | string | Variant B subject |
 | `message` | string | Variant B body (HTML) |
-| `altMessage` | string | Alternate message. On LinkedIn invite steps, the premium invitation note — maximum 300 characters |
+| `altMessage` | string | Variant B's LinkedIn note, same meaning as the step-level `altMessage`: the premium invitation note on a `linkedinInvite` step, the out-of-network note on a `linkedinSend` one. Over 300 characters on an invite is rejected with `400` |
+| `altMessagePremium` | string | Variant B's premium variant of the out-of-network note, on `linkedinSend` steps only. Any other step type is rejected with `400`, and so is a value over 300 characters |
 | `cc` | array of strings | CC recipients |
 | `plainText` | boolean | Send as plain text |
 
