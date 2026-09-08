@@ -39,5 +39,5 @@ You can assign an owner to the company using the `companyOwner` field. Accepted 
 | Team member email | `john@yourcompany.com` |
 
 <Note>
-If the provided value does not match a team member (invalid format, unknown email, or unknown user ID), the owner is **silently ignored** — no error or warning is returned. On creation, the company defaults to the API key owner.
+If the provided value does not match a team member (invalid format, unknown email, or unknown user ID), the company is still written and the response carries an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`. On creation, the company defaults to the API key owner; on update, the current owner is unchanged.
 </Note>
