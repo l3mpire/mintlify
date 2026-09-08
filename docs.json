@@ -219,6 +219,7 @@
                   "api-reference/endpoints/companies/upsert-company",
                   "api-reference/endpoints/companies/get-many-companies",
                   "api-reference/endpoints/companies/delete-company",
+                  "api-reference/endpoints/companies/merge-companies",
                   "api-reference/endpoints/companies/create-company-note",
                   "api-reference/endpoints/companies/get-company-notes"
                 ]
@@ -231,6 +232,7 @@
                   "api-reference/endpoints/contacts/get-contact",
                   "api-reference/endpoints/contacts/get-many-contacts",
                   "api-reference/endpoints/contacts/delete-contact",
+                  "api-reference/endpoints/contacts/merge-contacts",
                   "api-reference/endpoints/contacts/get-contact-lists",
                   "api-reference/endpoints/contacts/create-contact-list",
                   "api-reference/endpoints/contacts/manage-contact-list-entities",
