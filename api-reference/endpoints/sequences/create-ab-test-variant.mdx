@@ -21,9 +21,9 @@ and conclude the test with
 
 ## Scope and constraints
 
-- A/B testing is supported on the step types that carry a message: email,
-  WhatsApp message (`whatsappMessage`), SMS (`sms`), LinkedIn invite
-  (`linkedinInvite`), and LinkedIn message (`linkedinSend`).
+- A/B testing is supported on email, LinkedIn invite (`linkedinInvite`) and
+  LinkedIn message (`linkedinSend`) steps. Any other step type is rejected with
+  `400`.
 - The step must have a template (variant A) and must not already run an A/B
   test.
 - Variant A's template must have a message, except on LinkedIn invite steps

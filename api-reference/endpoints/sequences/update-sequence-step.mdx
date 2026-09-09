@@ -40,9 +40,9 @@ instead.
 | `phone` | `message`, `delay` | Reminder to make a phone call |
 | `api` | `method`, `url`, `delay` | Makes an API call |
 | `linkedinVisit` | `delay` | Simulates a profile visit on LinkedIn |
-| `linkedinInvite` | `message`, `images`, `videos`, `delay` | Sends a LinkedIn invite with message |
-| `linkedinSend` | `message`, `altMessage`, `images`, `videos`, `delay` | Sends a LinkedIn message |
-| `linkedinVoiceNote` | `delay`, `recordMode` | Sends a LinkedIn voice note. Audio is either recorded manually or AI-generated from a text template, depending on `recordMode` |
+| `linkedinInvite` | `message`, `altMessage`, `images`, `videos`, `delay` | Sends a LinkedIn invite with message |
+| `linkedinSend` | `message`, `altMessage`, `altMessagePremium`, `images`, `videos`, `delay` | Sends a LinkedIn message |
+| `linkedinVoiceNote` | `message`, `altMessage`, `delay`, `recordMode` | Sends a LinkedIn voice note. Audio is either recorded manually or AI-generated from a text template, depending on `recordMode` |
 | `linkedinFollow` | `delay` | Follows the lead on LinkedIn |
 | `linkedinLikeLastPost` | `delay` | Likes the lead's most recent LinkedIn post |
 | `linkedinCommentLastPost` | `delay` | Posts an AI-generated comment on the lead's most recent LinkedIn post |
@@ -61,7 +61,8 @@ Only include the fields you want to update. Required fields are not enforced her
 | --- | --- | --- | --- |
 | `subject` | string | `email` | Email subject line. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
 | `message` | string | `email`, `linkedin*`, `manual`, `phone`, `whatsappMessage`, `sms` | Message text |
-| `altMessage` | string | `linkedinSend` | Fallback LinkedIn message |
+| `altMessage` | string | `linkedinInvite`, `linkedinSend`, `linkedinVoiceNote` | The premium invitation note on an invite, the out-of-network note on the other two. Pass an empty string to clear it. See [LinkedIn invitation notes](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-invitation-notes) on Add Step |
+| `altMessagePremium` | string | `linkedinSend` | The premium variant of the out-of-network note. Pass an empty string to clear it. See [LinkedIn invitation notes](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-invitation-notes) on Add Step |
 | `title` | string | `manual` | Title for manual task. Maximum 400 characters |
 | `method` | string | `api` | One of `GET`, `POST`, `PUT`, `DELETE`, `PATCH` |
 | `url` | string | `api` | Valid HTTP/HTTPS URL |
