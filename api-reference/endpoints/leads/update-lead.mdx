@@ -5,3 +5,7 @@ description: Updates an existing lead's information in a specific campaign.
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Lead" objectPath="lead" />
+
+<Note>
+  The `updateStrategy` query parameter decides what happens to the values the lead, its contact and its company already hold: `overwrite` (default) replaces them and an empty value clears the field, `overwriteIgnoreEmpty` replaces them but never clears, `fillEmptyOnly` only fills the fields they have empty and keeps everything else (identifiers, company link, owner, status included).
+</Note>

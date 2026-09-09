@@ -29,6 +29,25 @@ When `companyId` is provided, the company is matched by its ID directly — `nam
 `companyId` can only be used to **update** an existing company. It cannot be used to create a new company — use `name` and `domain` for creation.
 </Warning>
 
+## Update strategy
+
+By default an existing company receives every non-empty value you send. The `updateStrategy` query parameter changes what happens to the fields it already holds:
+
+| Value | Existing value | Empty value sent |
+|-------|----------------|------------------|
+| `overwrite` (default) | Replaced | Ignored |
+| `overwriteIgnoreEmpty` | Replaced | Ignored |
+| `fillEmptyOnly` | Kept | Ignored |
+
+Under `fillEmptyOnly`, identifiers (`domain`, `linkedinUrl`, `linkedinUrlSalesNav`, `name`), the owner and the status are kept as well: only the fields the company has empty are filled. A newly created company always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.
+
+```bash
+curl -X POST "https://api.lemlist.com/api/companies?updateStrategy=fillEmptyOnly" \
+  -u ":YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Acme Inc", "domain": "acme.com", "industry": "Software"}'
+```
+
 ## Owner assignment
 
 You can assign an owner to the company using the `companyOwner` field. Accepted formats:

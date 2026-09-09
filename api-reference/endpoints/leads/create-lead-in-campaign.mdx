@@ -9,6 +9,10 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <SnippetObjectReference objectName="Lead" objectPath="lead" />
 
 <Note>
+  The lead is always created. When the contact or the company it belongs to already exists in your CRM, the `updateStrategy` query parameter decides what happens to their stored values: `overwrite` (default) replaces them, `overwriteIgnoreEmpty` replaces them but never clears a field from an empty value, `fillEmptyOnly` only fills the fields they have empty and keeps everything else (identifiers, company link, owner, status included).
+</Note>
+
+<Note>
   Beyond the standard fields above, **any additional key/value pair you send in the body is stored as a custom variable** on the lead and can be used in your campaign with `{{yourVariableName}}`.
 
   In the example, `companySize` and `customVariable1` are custom variables.

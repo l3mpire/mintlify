@@ -29,6 +29,25 @@ When `contactId` is provided, the contact is matched by its ID directly — `ema
 `contactId` can only be used to **update** an existing contact. It cannot be used to create a new contact — use `email` or `linkedinUrl` for creation.
 </Warning>
 
+## Update strategy
+
+By default an existing contact receives every non-empty value you send. The `updateStrategy` query parameter changes what happens to the fields it already holds:
+
+| Value | Existing value | Empty value sent |
+|-------|----------------|------------------|
+| `overwrite` (default) | Replaced | Ignored (except `jobTitle` and `jobDescription`, cleared) |
+| `overwriteIgnoreEmpty` | Replaced | Ignored |
+| `fillEmptyOnly` | Kept | Ignored |
+
+Under `fillEmptyOnly`, identifiers (`email`, `linkedinUrl`, `linkedinUrlSalesNav`), the company link, the owner and the status are kept as well: only the fields the contact has empty are filled. A newly created contact always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.
+
+```bash
+curl -X POST "https://api.lemlist.com/api/contacts?updateStrategy=fillEmptyOnly" \
+  -u ":YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "john@example.com", "jobTitle": "Founder", "phone": "+33600000000"}'
+```
+
 ## Linking to a company
 
 You can link the contact to a company that already exists in your lemlist CRM using one of the following fields (in order of priority):

@@ -9919,6 +9919,22 @@
             "schema": {
               "type": "boolean"
             }
+          },
+          {
+            "name": "updateStrategy",
+            "in": "query",
+            "required": false,
+            "description": "How the contact and company an existing record matches are updated (the lead itself is always created). `overwrite` (default): the values sent replace the stored ones. `overwriteIgnoreEmpty`: the values sent replace the stored ones, but an empty value never clears a field. `fillEmptyOnly`: only the fields the record has empty are filled; stored values, identifiers, links, owner and status are kept. A newly created contact or company always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.",
+            "example": "fillEmptyOnly",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "overwrite",
+                "overwriteIgnoreEmpty",
+                "fillEmptyOnly"
+              ],
+              "default": "overwrite"
+            }
           }
         ],
         "requestBody": {
@@ -10074,7 +10090,7 @@
             }
           },
           "400": {
-            "description": "Possible errors: No API key provided / Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile / Email address is in the graveyard / Lead already in the campaign / No valid fields to add",
+            "description": "Possible errors: No API key provided / Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile / Email address is in the graveyard / Lead already in the campaign / No valid fields to add / Invalid updateStrategy value",
             "content": {
               "text/plain": {
                 "example": "No API key provided"
@@ -10342,7 +10358,7 @@
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile / Lead could not be updated",
+            "description": "Possible errors: Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile / Lead could not be updated / Invalid updateStrategy value",
             "content": {
               "text/plain": {
                 "example": "Bad team"
@@ -10369,7 +10385,24 @@
             }
           }
         },
-        "parameters": []
+        "parameters": [
+          {
+            "name": "updateStrategy",
+            "in": "query",
+            "required": false,
+            "description": "How the lead, its contact and its company are updated. `overwrite` (default): the values sent replace the stored ones. `overwriteIgnoreEmpty`: the values sent replace the stored ones, but an empty value never clears a field. `fillEmptyOnly`: only the fields the record has empty are filled; stored values, identifiers, links, owner and status are kept. A newly created record always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.",
+            "example": "fillEmptyOnly",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "overwrite",
+                "overwriteIgnoreEmpty",
+                "fillEmptyOnly"
+              ],
+              "default": "overwrite"
+            }
+          }
+        ]
       },
       "delete": {
         "summary": "Delete or Unsubscribe Lead",
@@ -15913,6 +15946,10 @@
                     "type": "string",
                     "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the contact is still written with an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`: the owner defaults to the API key owner on creation and is unchanged on update."
                   },
+                  "statusId": {
+                    "type": "string",
+                    "description": "ID of one of the team's contact statuses (`cst_...`), as configured in the CRM settings. Defaults to the team's first status on creation. Under `updateStrategy=fillEmptyOnly` an existing status is never replaced."
+                  },
                   "source": {
                     "type": "string",
                     "description": "Origin of the contact record. Set on creation only and cannot be updated afterwards. Defaults to `api`.",
@@ -16168,7 +16205,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `MISSING_IDENTIFIER`, `INVALID_CONTACT_ID`, `INVALID_EMAIL`, `INVALID_ADDITIONAL_EMAILS`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, or `CONTACT_VALIDATION_FAILED`."
+                          "description": "Error code: `MISSING_IDENTIFIER`, `INVALID_CONTACT_ID`, `INVALID_EMAIL`, `INVALID_ADDITIONAL_EMAILS`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, `CONTACT_VALIDATION_FAILED`, or `INVALID_UPDATE_STRATEGY`."
                         },
                         "message": {
                           "type": "string"
@@ -16238,7 +16275,24 @@
             }
           }
         },
-        "parameters": []
+        "parameters": [
+          {
+            "name": "updateStrategy",
+            "in": "query",
+            "required": false,
+            "description": "How an existing contact is updated. `overwrite` (default): the values sent replace the stored ones. `overwriteIgnoreEmpty`: the values sent replace the stored ones, but an empty value never clears a field. `fillEmptyOnly`: only the fields the record has empty are filled; stored values, identifiers, links, owner and status are kept. A newly created record always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.",
+            "example": "fillEmptyOnly",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "overwrite",
+                "overwriteIgnoreEmpty",
+                "fillEmptyOnly"
+              ],
+              "default": "overwrite"
+            }
+          }
+        ]
       }
     },
     "/contacts/merge": {
@@ -17555,6 +17609,10 @@
                     "type": "string",
                     "description": "URL of the company logo or picture."
                   },
+                  "statusId": {
+                    "type": "string",
+                    "description": "ID of one of the team's company statuses (`cst_...`), as configured in the CRM settings. Defaults to the team's first status on creation. Under `updateStrategy=fillEmptyOnly` an existing status is never replaced."
+                  },
                   "source": {
                     "type": "string",
                     "description": "Origin of the company record. Set on creation only and cannot be updated afterwards. Defaults to `api`.",
@@ -17760,7 +17818,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `MISSING_REQUIRED_FIELD`, `INVALID_COMPANY_ID`, `INVALID_DOMAIN`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, or `COMPANY_VALIDATION_FAILED`."
+                          "description": "Error code: `MISSING_REQUIRED_FIELD`, `INVALID_COMPANY_ID`, `INVALID_DOMAIN`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, `COMPANY_VALIDATION_FAILED`, or `INVALID_UPDATE_STRATEGY`."
                         },
                         "message": {
                           "type": "string"
@@ -17830,7 +17888,24 @@
             }
           }
         },
-        "parameters": []
+        "parameters": [
+          {
+            "name": "updateStrategy",
+            "in": "query",
+            "required": false,
+            "description": "How an existing company is updated. `overwrite` (default): the values sent replace the stored ones. `overwriteIgnoreEmpty`: the values sent replace the stored ones, but an empty value never clears a field. `fillEmptyOnly`: only the fields the record has empty are filled; stored values, identifiers, links, owner and status are kept. A newly created record always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.",
+            "example": "fillEmptyOnly",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "overwrite",
+                "overwriteIgnoreEmpty",
+                "fillEmptyOnly"
+              ],
+              "default": "overwrite"
+            }
+          }
+        ]
       }
     },
     "/companies/merge": {
