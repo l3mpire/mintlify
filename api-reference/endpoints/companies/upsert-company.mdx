@@ -31,13 +31,15 @@ When `companyId` is provided, the company is matched by its ID directly — `nam
 
 ## Update strategy
 
-By default an existing company receives every non-empty value you send. The `updateStrategy` query parameter changes what happens to the fields it already holds:
+By default an existing company receives every non-empty value you send, and an empty value never clears anything. The `updateStrategy` query parameter changes what happens to the fields it already holds:
 
-| Value | Existing value | Empty value sent |
-|-------|----------------|------------------|
-| `overwrite` (default) | Replaced | Ignored |
-| `overwriteIgnoreEmpty` | Replaced | Ignored |
+| Value | Existing value | Empty string sent |
+|-------|----------------|-------------------|
+| `overwriteIgnoreEmpty` (default) | Replaced | Ignored |
+| `overwrite` | Replaced | Cleared |
 | `fillEmptyOnly` | Kept | Ignored |
+
+`null` and an absent key never touch a field. Identifiers (`name`, `domain`, `linkedinUrl`, `linkedinUrlSalesNav`) are never cleared: an empty one is ignored whatever the strategy. To erase a field, send `""` with `updateStrategy=overwrite`.
 
 Under `fillEmptyOnly`, identifiers (`domain`, `linkedinUrl`, `linkedinUrlSalesNav`, `name`), the owner and the status are kept as well: only the fields the company has empty are filled. A company without an owner receives the `companyOwner` sent, like any other empty field. A newly created company always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.
 

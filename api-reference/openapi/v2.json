@@ -16280,7 +16280,7 @@
             "name": "updateStrategy",
             "in": "query",
             "required": false,
-            "description": "How an existing contact is updated. `overwrite` (default): the values sent replace the stored ones. `overwriteIgnoreEmpty`: the values sent replace the stored ones, but an empty value never clears a field. `fillEmptyOnly`: only the fields the record has empty are filled; stored values, identifiers, links, owner and status are kept. A newly created record always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.",
+            "description": "How an existing contact is updated. `overwriteIgnoreEmpty` (default, the endpoint's historical behavior): the values sent replace the stored ones, but an empty value never clears a field. `overwrite`: the values sent replace the stored ones and an empty string clears the field. `fillEmptyOnly`: only the fields the record has empty are filled; stored values, identifiers, links, owner and status are kept. A newly created record always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.",
             "example": "fillEmptyOnly",
             "schema": {
               "type": "string",
@@ -16289,7 +16289,7 @@
                 "overwriteIgnoreEmpty",
                 "fillEmptyOnly"
               ],
-              "default": "overwrite"
+              "default": "overwriteIgnoreEmpty"
             }
           }
         ]
@@ -17893,7 +17893,7 @@
             "name": "updateStrategy",
             "in": "query",
             "required": false,
-            "description": "How an existing company is updated. `overwrite` (default): the values sent replace the stored ones. `overwriteIgnoreEmpty`: the values sent replace the stored ones, but an empty value never clears a field. `fillEmptyOnly`: only the fields the record has empty are filled; stored values, identifiers, links, owner and status are kept. A newly created record always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.",
+            "description": "How an existing company is updated. `overwriteIgnoreEmpty` (default, the endpoint's historical behavior): the values sent replace the stored ones, but an empty value never clears a field. `overwrite`: the values sent replace the stored ones and an empty string clears the field. `fillEmptyOnly`: only the fields the record has empty are filled; stored values, identifiers, links, owner and status are kept. A newly created record always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.",
             "example": "fillEmptyOnly",
             "schema": {
               "type": "string",
@@ -17902,7 +17902,7 @@
                 "overwriteIgnoreEmpty",
                 "fillEmptyOnly"
               ],
-              "default": "overwrite"
+              "default": "overwriteIgnoreEmpty"
             }
           }
         ]
