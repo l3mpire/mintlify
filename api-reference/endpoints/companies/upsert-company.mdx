@@ -54,8 +54,14 @@ When the strategy keeps a value you sent, the `200` response says so: `warnings`
 
 ```json
 {
-  "company": { "_id": "cpn_xxx", "industry": "Software", "location": "Lyon" },
-  "created": false,
+  "success": true,
+  "data": {
+    "_id": "cpn_2aB3cD4eF5gH6iJ7k",
+    "industry": "Software",
+    "location": "Lyon",
+    "created": false,
+    "updated": true
+  },
   "warnings": [
     {
       "code": "FIELDS_KEPT",

@@ -54,8 +54,15 @@ When the strategy keeps a value you sent, the `200` response says so: `warnings`
 
 ```json
 {
-  "contact": { "_id": "ctc_xxx", "jobTitle": "CEO", "phone": "+33600000000" },
-  "created": false,
+  "success": true,
+  "data": {
+    "_id": "ctc_2aB3cD4eF5gH6iJ7k",
+    "jobTitle": "CEO",
+    "phone": "+33600000000",
+    "created": false,
+    "updated": true,
+    "companyLinked": false
+  },
   "warnings": [
     {
       "code": "FIELDS_KEPT",
