@@ -1,7 +1,7 @@
 ---
 title: "Create Lead in Campaign"
 openapi: "post /campaigns/{campaignId}/leads/"
-description: "Creates a new lead and adds it to a specific campaign."
+description: "Creates a new lead and adds it to a specific campaign. Never updates an existing lead."
 ---
 
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
@@ -9,7 +9,11 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <SnippetObjectReference objectName="Lead" objectPath="lead" />
 
 <Note>
-  The lead is always created. When the contact or the company it belongs to already exists in your CRM, the `updateStrategy` query parameter decides what happens to their stored values: `overwrite` (default) replaces them, `overwriteIgnoreEmpty` replaces them but never clears a field from an empty value, `fillEmptyOnly` only fills the fields they have empty and keeps everything else (identifiers, company link, owner, status included).
+  **This endpoint creates, it never updates.** When the contact identified by the body already has a lead in this campaign, the request is refused with `400 LEAD_ALREADY_IN_CAMPAIGN` and nothing is written, neither on the lead nor on its contact or company. To change an existing lead, use `PATCH /campaigns/{campaignId}/leads/{leadId}`. With `deduplicate=true` (or the campaign's own deduplication setting), a contact that already has a lead in another campaign is refused with `409 LEAD_ALREADY_IN_OTHER_CAMPAIGN`.
+</Note>
+
+<Note>
+  The lead is new, but the contact and the company it belongs to may already exist in your CRM. The `updateStrategy` query parameter decides what happens to their stored values: `overwrite` (default) replaces them and an empty value clears the field, `overwriteIgnoreEmpty` replaces them but never clears, `fillEmptyOnly` only fills the fields they have empty and keeps everything else (identifiers, company link, owner, status included). Under `fillEmptyOnly` the created lead takes the values the contact kept, not the ones in the body: a `jobTitle` of `Founder` sent for a contact stored as `CEO` produces a lead with `CEO`.
 </Note>
 
 <Note>

@@ -9866,6 +9866,7 @@
       },
       "post": {
         "summary": "Create Lead in Campaign",
+        "description": "Creates a new lead in the campaign, never updates one: a contact that already has a lead in this campaign is refused with `400 LEAD_ALREADY_IN_CAMPAIGN` and nothing is written, on the lead, the contact or the company. Use `PATCH /campaigns/{campaignId}/leads/{leadId}` to change an existing lead. The contact and the company the new lead belongs to may already exist: `updateStrategy` decides how their stored values are updated, and under `fillEmptyOnly` the created lead takes the values the contact kept.",
         "tags": [
           "Leads"
         ],
@@ -9874,7 +9875,7 @@
             "name": "deduplicate",
             "in": "query",
             "required": false,
-            "description": "Search email address in other campaigns. Will not insert the lead if email address already exists. Default: false",
+            "description": "Search the contact in other campaigns. When it already has a lead there, the request is refused with `409 LEAD_ALREADY_IN_OTHER_CAMPAIGN` and nothing is written. Default: false (the campaign's own deduplication setting still applies).",
             "example": "true",
             "schema": {
               "type": "boolean"
