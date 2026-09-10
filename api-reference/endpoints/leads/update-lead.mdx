@@ -7,5 +7,5 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <SnippetObjectReference objectName="Lead" objectPath="lead" />
 
 <Note>
-  The `updateStrategy` query parameter decides what happens to the values the lead, its contact and its company already hold: `overwrite` (default) replaces them and an empty value clears the field, `overwriteIgnoreEmpty` replaces them but never clears, `fillEmptyOnly` only fills the fields they have empty and keeps everything else (identifiers, company link, owner, status included). When the strategy keeps a value you sent (`fillEmptyOnly` on a filled field, or `overwriteIgnoreEmpty` ignoring an empty string on a filled field), the response lists it in `warnings` (`FIELDS_KEPT`, `params.fields`): lead variables by name, contact fields by name, company fields with their `company` prefix.
+  `updateStrategy` decides what the lead, its contact and its company keep. `overwrite` (default): sent values replace stored ones, an empty value clears. `overwriteIgnoreEmpty`: same, empty values ignored. `fillEmptyOnly`: only empty fields are filled, identifiers, company link, owner and status kept. Kept values are listed in `warnings` (`FIELDS_KEPT`, `params.fields`: lead variables and contact fields by name, company fields prefixed with `company`).
 </Note>

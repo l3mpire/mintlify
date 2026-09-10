@@ -6,7 +6,7 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 Creates a new company in your CRM, or updates an existing one if a company with the same `domain`, `linkedinUrl`, or `linkedinUrlSalesNav` already exists (upsert).
 
-During updates, only non-empty fields are applied — null or empty values are ignored to preserve existing data.
+On update, the `updateStrategy` query parameter decides what the existing record keeps (see below). By default, sent values replace stored ones and empty values are ignored.
 
 <SnippetObjectReference objectName="Company" objectPath="company" />
 
@@ -31,17 +31,15 @@ When `companyId` is provided, the company is matched by its ID directly — `nam
 
 ## Update strategy
 
-By default an existing company receives every non-empty value you send, and an empty value never clears anything. The `updateStrategy` query parameter changes what happens to the fields it already holds:
+The `updateStrategy` query parameter decides what an existing company keeps:
 
-| Value | Existing value | Empty string sent |
-|-------|----------------|-------------------|
+| Value | Stored value | Empty string sent |
+|-------|--------------|-------------------|
 | `overwriteIgnoreEmpty` (default) | Replaced | Ignored |
 | `overwrite` | Replaced | Cleared |
 | `fillEmptyOnly` | Kept | Ignored |
 
-`null` and an absent key never touch a field. Identifiers (`name`, `domain`, `linkedinUrl`, `linkedinUrlSalesNav`) are never cleared: an empty one is ignored whatever the strategy. To erase a field, send `""` with `updateStrategy=overwrite`.
-
-Under `fillEmptyOnly`, identifiers (`name`, `domain`, `linkedinUrl`, `linkedinUrlSalesNav`), the owner and the status are kept as well when the company already holds them; a missing one is set, like any other empty field. A company that already has an owner keeps it, whatever `companyOwner` says; a company that has no owner yet takes the `companyOwner` sent, as it would any other empty field. A newly created company always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.
+`null` and absent keys never touch a field. Identifiers (`name`, `domain`, `linkedinUrl`, `linkedinUrlSalesNav`) are never cleared. Under `fillEmptyOnly`, the owner and the status are kept when set and filled when missing. A new company receives every value sent. Any other value answers `400 INVALID_UPDATE_STRATEGY`.
 
 ```bash
 curl -X POST "https://api.lemlist.com/api/companies?updateStrategy=fillEmptyOnly" \
@@ -50,24 +48,14 @@ curl -X POST "https://api.lemlist.com/api/companies?updateStrategy=fillEmptyOnly
   -d '{"name": "Acme Inc", "domain": "acme.com", "industry": "Retail"}'
 ```
 
-When the strategy keeps a value you sent, the `200` response says so: `warnings` carries a `FIELDS_KEPT` entry whose `params.fields` lists the fields left unchanged. That happens under `fillEmptyOnly` for any non-empty value the record already holds differently, and under `overwriteIgnoreEmpty`, the default, when an empty string you sent was ignored on a filled field. A value the record already holds identically, or a filled empty field, is never listed.
+Kept values are reported: `warnings` carries a `FIELDS_KEPT` entry with the field names in `params.fields`. It appears under `fillEmptyOnly` on a stored value, and under the default when an empty string is ignored on a filled field, never for an identical value.
 
 ```json
 {
   "success": true,
-  "data": {
-    "_id": "cpn_2aB3cD4eF5gH6iJ7k",
-    "industry": "Software",
-    "location": "Lyon",
-    "created": false,
-    "updated": true
-  },
+  "data": { "_id": "cpn_2aB3cD4eF5gH6iJ7k", "industry": "Software", "location": "Lyon", "created": false, "updated": true },
   "warnings": [
-    {
-      "code": "FIELDS_KEPT",
-      "message": "Fields kept: the record already holds a different value, left unchanged by the update strategy",
-      "params": { "fields": ["industry"] }
-    }
+    { "code": "FIELDS_KEPT", "message": "Fields kept: the record already holds a different value, left unchanged by the update strategy", "params": { "fields": ["industry"] } }
   ]
 }
 ```
@@ -85,12 +73,12 @@ You can assign an owner to the company using the `companyOwner` field. Accepted 
 If the provided value does not match a team member (invalid format, unknown email, or unknown user ID), the company is still written and the response carries an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`. On creation, the company defaults to the API key owner; on update, the current owner is unchanged.
 </Note>
 
-On an existing company, what happens to the current owner depends on `updateStrategy`:
+On an existing company, `updateStrategy` decides the owner:
 
 | Strategy | Current owner set | No current owner |
 |----------|-------------------|------------------|
 | `overwriteIgnoreEmpty` (default) and `overwrite` | Replaced by `companyOwner` | Set to `companyOwner` |
 | `fillEmptyOnly` | Kept, reported as `ownerId` under `warnings` (`FIELDS_KEPT`) | Set to `companyOwner` |
 
-Sending no `companyOwner` never touches the owner.
+Without `companyOwner`, the owner is never touched.
 

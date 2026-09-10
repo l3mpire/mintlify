@@ -9875,7 +9875,7 @@
             "name": "deduplicate",
             "in": "query",
             "required": false,
-            "description": "Search the contact in other campaigns. When it already has a lead there, the request is refused with `409 LEAD_ALREADY_IN_OTHER_CAMPAIGN` and nothing is written. Default: false. Only this parameter drives the check: the campaign's own \"remove duplicates\" setting applies to the in-app and CRM imports, not to this endpoint.",
+            "description": "Refuse the lead with `409 LEAD_ALREADY_IN_OTHER_CAMPAIGN` when the contact already has one in another campaign. Default: false. The campaign's own \"remove duplicates\" setting does not apply here.",
             "example": "true",
             "schema": {
               "type": "boolean"
@@ -9925,7 +9925,7 @@
             "name": "updateStrategy",
             "in": "query",
             "required": false,
-            "description": "How the contact and company an existing record matches are updated (the lead itself is always created). `overwrite` (default): the values sent replace the stored ones. `overwriteIgnoreEmpty`: the values sent replace the stored ones, but an empty value never clears a field. `fillEmptyOnly`: only the fields the record has empty are filled; stored values, identifiers, links, owner and status are kept. A newly created contact or company always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.",
+            "description": "What the matched contact and company keep (the lead is always created). `overwrite` (default): sent values replace stored ones, an empty string clears. `overwriteIgnoreEmpty`: empty values ignored. `fillEmptyOnly`: only empty fields filled, identifiers, links, owner and status kept. Other values: 400.",
             "example": "fillEmptyOnly",
             "schema": {
               "type": "string",
@@ -10059,7 +10059,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings, never a failure: company resolution issues, and `FIELDS_KEPT` when the update strategy left values you sent unchanged: `fillEmptyOnly` on a filled field, or `overwriteIgnoreEmpty` ignoring an empty string on a filled field (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
+                      "description": "Non-blocking notices: the company part was skipped, or `FIELDS_KEPT` when the update strategy kept values you sent (`params.fields` names them, company fields prefixed with `company`).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -10085,7 +10085,7 @@
                                 }
                               ]
                             },
-                            "description": "Values the warning is about: the offending input echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`), or the kept fields for `FIELDS_KEPT` (`{\"fields\": [\"jobTitle\"]}`)."
+                            "description": "Details: the input echoed back, or `fields` for `FIELDS_KEPT`."
                           }
                         }
                       }
@@ -10342,7 +10342,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings, never a failure: company resolution issues, and `FIELDS_KEPT` when the update strategy left values you sent unchanged: `fillEmptyOnly` on a filled field, or `overwriteIgnoreEmpty` ignoring an empty string on a filled field (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
+                      "description": "Non-blocking notices: the company part was skipped, or `FIELDS_KEPT` when the update strategy kept values you sent (`params.fields` names them, company fields prefixed with `company`).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -10368,7 +10368,7 @@
                                 }
                               ]
                             },
-                            "description": "Values the warning is about: the offending input echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`), or the kept fields for `FIELDS_KEPT` (`{\"fields\": [\"jobTitle\"]}`)."
+                            "description": "Details: the input echoed back, or `fields` for `FIELDS_KEPT`."
                           }
                         }
                       }
@@ -10427,7 +10427,7 @@
             "name": "updateStrategy",
             "in": "query",
             "required": false,
-            "description": "How the lead, its contact and its company are updated. `overwrite` (default): the values sent replace the stored ones. `overwriteIgnoreEmpty`: the values sent replace the stored ones, but an empty value never clears a field. `fillEmptyOnly`: only the fields the record has empty are filled; stored values, identifiers, links, owner and status are kept. A newly created record always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.",
+            "description": "What the lead, its contact and its company keep. `overwrite` (default): sent values replace stored ones, an empty string clears. `overwriteIgnoreEmpty`: empty values ignored. `fillEmptyOnly`: only empty fields filled, identifiers, links, owner and status kept. Other values: 400.",
             "example": "fillEmptyOnly",
             "schema": {
               "type": "string",
@@ -15896,7 +15896,7 @@
       },
       "post": {
         "summary": "Add and update contact",
-        "description": "Creates a new contact or updates an existing one (upsert). If a contact with the same email, LinkedIn URL, or Sales Navigator URL already exists, it will be updated with the provided non-empty fields. Null or empty values are ignored during updates to preserve existing data. You can target an existing contact directly by providing `contactId`, bypassing email/LinkedIn matching. You can optionally link the contact to a company by providing `companyId`, `companyDomain`, or `companyLinkedinUrl`.",
+        "description": "Creates a new contact or updates an existing one (upsert). If a contact with the same email, LinkedIn URL, or Sales Navigator URL already exists, it is updated as the `updateStrategy` query parameter says (by default, sent values replace stored ones and empty values are ignored). You can target an existing contact directly by providing `contactId`, bypassing email/LinkedIn matching. You can optionally link the contact to a company by providing `companyId`, `companyDomain`, or `companyLinkedinUrl`.",
         "tags": [
           "Contacts"
         ],
@@ -15984,7 +15984,7 @@
                   },
                   "contactOwner": {
                     "type": "string",
-                    "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the contact is still written with an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`: the owner defaults to the API key owner on creation and is unchanged on update. On an existing contact, the value replaces the current owner under `overwriteIgnoreEmpty` (default) and `overwrite`; under `fillEmptyOnly` it is only set when the contact has no owner yet, otherwise kept and reported as `ownerId` in a `FIELDS_KEPT` warning."
+                    "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the contact is still written with an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`: the owner defaults to the API key owner on creation and is unchanged on update. On update it replaces the current owner, except under `fillEmptyOnly` where it is only set when the contact has none."
                   },
                   "statusId": {
                     "type": "string",
@@ -16040,7 +16040,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when the update strategy left values you sent unchanged: `fillEmptyOnly` on a filled field, or `overwriteIgnoreEmpty` ignoring an empty string on a filled field (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
+                      "description": "Non-blocking notices: owner or company not resolved, or `FIELDS_KEPT` when the update strategy kept values you sent (`params.fields` names them).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -16066,7 +16066,7 @@
                                 }
                               ]
                             },
-                            "description": "Values the warning is about: the offending input echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`), or the kept fields for `FIELDS_KEPT` (`{\"fields\": [\"jobTitle\"]}`)."
+                            "description": "Details: the input echoed back, or `fields` for `FIELDS_KEPT`."
                           }
                         }
                       }
@@ -16188,7 +16188,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when the update strategy left values you sent unchanged: `fillEmptyOnly` on a filled field, or `overwriteIgnoreEmpty` ignoring an empty string on a filled field (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
+                      "description": "Non-blocking notices: owner or company not resolved, or `FIELDS_KEPT` when the update strategy kept values you sent (`params.fields` names them).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -16214,7 +16214,7 @@
                                 }
                               ]
                             },
-                            "description": "Values the warning is about: the offending input echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`), or the kept fields for `FIELDS_KEPT` (`{\"fields\": [\"jobTitle\"]}`)."
+                            "description": "Details: the input echoed back, or `fields` for `FIELDS_KEPT`."
                           }
                         }
                       }
@@ -16340,7 +16340,7 @@
             "name": "updateStrategy",
             "in": "query",
             "required": false,
-            "description": "How an existing contact is updated. `overwriteIgnoreEmpty` (default, the endpoint's historical behavior): the values sent replace the stored ones, but an empty value never clears a field. `overwrite`: the values sent replace the stored ones and an empty string clears the field. `fillEmptyOnly`: only the fields the record has empty are filled; stored values, identifiers, links, owner and status are kept. A newly created record always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.",
+            "description": "What an existing record keeps. `overwriteIgnoreEmpty` (default): sent values replace stored ones, empty values are ignored. `overwrite`: an empty string clears the field. `fillEmptyOnly`: only empty fields are filled, identifiers, links, owner and status kept. A new record receives every value sent. Other values: `400 INVALID_UPDATE_STRATEGY`.",
             "example": "fillEmptyOnly",
             "schema": {
               "type": "string",
@@ -17594,7 +17594,7 @@
       },
       "post": {
         "summary": "Add and update company",
-        "description": "Creates a new company or updates an existing one (upsert). If a company with the same domain, LinkedIn URL, or Sales Navigator URL already exists, it will be updated with the provided non-empty fields. Null or empty values are ignored during updates to preserve existing data. You can target an existing company directly by providing `companyId`, bypassing domain/LinkedIn matching — in that case `name` and `domain` become optional.",
+        "description": "Creates a new company or updates an existing one (upsert). If a company with the same domain, LinkedIn URL, or Sales Navigator URL already exists, it is updated as the `updateStrategy` query parameter says (by default, sent values replace stored ones and empty values are ignored). You can target an existing company directly by providing `companyId`, bypassing domain/LinkedIn matching — in that case `name` and `domain` become optional.",
         "tags": [
           "Companies"
         ],
@@ -17627,7 +17627,7 @@
                   },
                   "companyOwner": {
                     "type": "string",
-                    "description": "Owner of the company. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the company is still written with an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`: the owner defaults to the API key owner on creation and is unchanged on update. On an existing company, the value replaces the current owner under `overwriteIgnoreEmpty` (default) and `overwrite`; under `fillEmptyOnly` it is only set when the company has no owner yet, otherwise kept and reported as `ownerId` in a `FIELDS_KEPT` warning."
+                    "description": "Owner of the company. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the company is still written with an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`: the owner defaults to the API key owner on creation and is unchanged on update. On update it replaces the current owner, except under `fillEmptyOnly` where it is only set when the company has none."
                   },
                   "industry": {
                     "type": "string",
@@ -17710,7 +17710,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when the update strategy left values you sent unchanged: `fillEmptyOnly` on a filled field, or `overwriteIgnoreEmpty` ignoring an empty string on a filled field (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
+                      "description": "Non-blocking notices: owner or company not resolved, or `FIELDS_KEPT` when the update strategy kept values you sent (`params.fields` names them).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -17736,7 +17736,7 @@
                                 }
                               ]
                             },
-                            "description": "Values the warning is about: the offending input echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`), or the kept fields for `FIELDS_KEPT` (`{\"fields\": [\"jobTitle\"]}`)."
+                            "description": "Details: the input echoed back, or `fields` for `FIELDS_KEPT`."
                           }
                         }
                       }
@@ -17828,7 +17828,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when the update strategy left values you sent unchanged: `fillEmptyOnly` on a filled field, or `overwriteIgnoreEmpty` ignoring an empty string on a filled field (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
+                      "description": "Non-blocking notices: owner or company not resolved, or `FIELDS_KEPT` when the update strategy kept values you sent (`params.fields` names them).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -17854,7 +17854,7 @@
                                 }
                               ]
                             },
-                            "description": "Values the warning is about: the offending input echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`), or the kept fields for `FIELDS_KEPT` (`{\"fields\": [\"jobTitle\"]}`)."
+                            "description": "Details: the input echoed back, or `fields` for `FIELDS_KEPT`."
                           }
                         }
                       }
@@ -17973,7 +17973,7 @@
             "name": "updateStrategy",
             "in": "query",
             "required": false,
-            "description": "How an existing company is updated. `overwriteIgnoreEmpty` (default, the endpoint's historical behavior): the values sent replace the stored ones, but an empty value never clears a field. `overwrite`: the values sent replace the stored ones and an empty string clears the field. `fillEmptyOnly`: only the fields the record has empty are filled; stored values, identifiers, links, owner and status are kept. A newly created record always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.",
+            "description": "What an existing record keeps. `overwriteIgnoreEmpty` (default): sent values replace stored ones, empty values are ignored. `overwrite`: an empty string clears the field. `fillEmptyOnly`: only empty fields are filled, identifiers, links, owner and status kept. A new record receives every value sent. Other values: `400 INVALID_UPDATE_STRATEGY`.",
             "example": "fillEmptyOnly",
             "schema": {
               "type": "string",
