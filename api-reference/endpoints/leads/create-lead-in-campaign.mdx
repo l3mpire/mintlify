@@ -13,7 +13,7 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 </Note>
 
 <Note>
-  The lead is new, but the contact and the company it belongs to may already exist in your CRM. The `updateStrategy` query parameter decides what happens to their stored values: `overwrite` (default) replaces them and an empty value clears the field, `overwriteIgnoreEmpty` replaces them but never clears, `fillEmptyOnly` only fills the fields they have empty and keeps everything else (identifiers, company link, owner, status included). Under `fillEmptyOnly` the created lead takes the values the contact kept, not the ones in the body: a `jobTitle` of `Founder` sent for a contact stored as `CEO` produces a lead with `CEO`.
+  The lead is new, but the contact and the company it belongs to may already exist in your CRM. The `updateStrategy` query parameter decides what happens to their stored values: `overwrite` (default) replaces them and an empty value clears the field, `overwriteIgnoreEmpty` replaces them but never clears, `fillEmptyOnly` only fills the fields they have empty and keeps everything else (identifiers, company link, owner, status included). Under `fillEmptyOnly` the created lead takes the values the contact kept, not the ones in the body: a `jobTitle` of `Founder` sent for a contact stored as `CEO` produces a lead with `CEO`. Under `fillEmptyOnly`, the contact and company values it kept are listed in `warnings` (`FIELDS_KEPT`, `params.fields`, company fields with their `company` prefix).
 </Note>
 
 <Note>

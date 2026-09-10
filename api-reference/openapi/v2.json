@@ -10059,7 +10059,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when `updateStrategy=fillEmptyOnly` left values you sent unchanged (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -10068,6 +10068,23 @@
                           },
                           "message": {
                             "type": "string"
+                          },
+                          "params": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              ]
+                            },
+                            "description": "Values the warning is about: the offending input echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`), or the kept fields for `FIELDS_KEPT` (`{\"fields\": [\"jobTitle\"]}`)."
                           }
                         }
                       }
@@ -10324,7 +10341,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when `updateStrategy=fillEmptyOnly` left values you sent unchanged (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -10333,6 +10350,23 @@
                           },
                           "message": {
                             "type": "string"
+                          },
+                          "params": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              ]
+                            },
+                            "description": "Values the warning is about: the offending input echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`), or the kept fields for `FIELDS_KEPT` (`{\"fields\": [\"jobTitle\"]}`)."
                           }
                         }
                       }
@@ -16001,13 +16035,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. owner or company resolution issues).",
+                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when `updateStrategy=fillEmptyOnly` left values you sent unchanged (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked)."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked); `FIELDS_KEPT` (values kept by `updateStrategy=fillEmptyOnly`)."
                           },
                           "message": {
                             "type": "string"
@@ -16015,9 +16049,19 @@
                           "params": {
                             "type": "object",
                             "additionalProperties": {
-                              "type": "string"
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              ]
                             },
-                            "description": "The offending input, echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`)."
+                            "description": "Values the warning is about: the offending input echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`), or the kept fields for `FIELDS_KEPT` (`{\"fields\": [\"jobTitle\"]}`)."
                           }
                         }
                       }
@@ -16139,13 +16183,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. owner or company resolution issues).",
+                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when `updateStrategy=fillEmptyOnly` left values you sent unchanged (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked)."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked); `FIELDS_KEPT` (values kept by `updateStrategy=fillEmptyOnly`)."
                           },
                           "message": {
                             "type": "string"
@@ -16153,9 +16197,19 @@
                           "params": {
                             "type": "object",
                             "additionalProperties": {
-                              "type": "string"
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              ]
                             },
-                            "description": "The offending input, echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`)."
+                            "description": "Values the warning is about: the offending input echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`), or the kept fields for `FIELDS_KEPT` (`{\"fields\": [\"jobTitle\"]}`)."
                           }
                         }
                       }
@@ -17651,13 +17705,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. owner resolution issues).",
+                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when `updateStrategy=fillEmptyOnly` left values you sent unchanged (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member)."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member); `FIELDS_KEPT` (values kept by `updateStrategy=fillEmptyOnly`)."
                           },
                           "message": {
                             "type": "string"
@@ -17665,9 +17719,19 @@
                           "params": {
                             "type": "object",
                             "additionalProperties": {
-                              "type": "string"
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              ]
                             },
-                            "description": "The offending input, echoed back (e.g. `{\"companyOwner\": \"nobody@example.com\"}`)."
+                            "description": "Values the warning is about: the offending input echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`), or the kept fields for `FIELDS_KEPT` (`{\"fields\": [\"jobTitle\"]}`)."
                           }
                         }
                       }
@@ -17759,13 +17823,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. owner resolution issues).",
+                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when `updateStrategy=fillEmptyOnly` left values you sent unchanged (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member)."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member); `FIELDS_KEPT` (values kept by `updateStrategy=fillEmptyOnly`)."
                           },
                           "message": {
                             "type": "string"
@@ -17773,9 +17837,19 @@
                           "params": {
                             "type": "object",
                             "additionalProperties": {
-                              "type": "string"
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              ]
                             },
-                            "description": "The offending input, echoed back (e.g. `{\"companyOwner\": \"nobody@example.com\"}`)."
+                            "description": "Values the warning is about: the offending input echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`), or the kept fields for `FIELDS_KEPT` (`{\"fields\": [\"jobTitle\"]}`)."
                           }
                         }
                       }

@@ -50,6 +50,22 @@ curl -X POST "https://api.lemlist.com/api/contacts?updateStrategy=fillEmptyOnly"
   -d '{"email": "john@example.com", "jobTitle": "Founder", "phone": "+33600000000"}'
 ```
 
+When `fillEmptyOnly` keeps a value you sent, the `200` response says so: `warnings` carries a `FIELDS_KEPT` entry whose `params.fields` lists the fields left unchanged. A value the record already holds identically is not listed.
+
+```json
+{
+  "contact": { "_id": "ctc_xxx", "jobTitle": "CEO", "phone": "+33600000000" },
+  "created": false,
+  "warnings": [
+    {
+      "code": "FIELDS_KEPT",
+      "message": "Fields kept: the record already holds a different value, left unchanged by the update strategy",
+      "params": { "fields": ["jobTitle"] }
+    }
+  ]
+}
+```
+
 ## Linking to a company
 
 You can link the contact to a company that already exists in your lemlist CRM using one of the following fields (in order of priority):
