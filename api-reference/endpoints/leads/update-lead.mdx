@@ -7,5 +7,5 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <SnippetObjectReference objectName="Lead" objectPath="lead" />
 
 <Note>
-  `updateStrategy` decides what the lead, its contact and its company keep. `overwrite` (default): sent values replace stored ones, an empty value clears. `overwriteIgnoreEmpty`: same, empty values ignored. `fillEmptyOnly`: only empty fields are filled, identifiers, company link, owner and status kept. Kept values are listed in `warnings` (`FIELDS_KEPT`, `params.fields`: lead variables and contact fields by name, company fields prefixed with `company`).
+  This endpoint updates the lead and, through it, the contact and the company it is linked to: contact fields such as `firstName` or `jobTitle` are written on the contact, company fields such as `companyName` on the company; only the fields you send change. `updateStrategy` decides what the lead, its contact and its company keep. `overwrite` (default): sent values replace stored ones, an empty value clears. `overwriteIgnoreEmpty`: same, empty values ignored. `fillEmptyOnly`: only empty fields are filled, identifiers, company link, owner and status kept. Kept values are listed in `warnings` (`FIELDS_KEPT`, `params.fields`: lead variables and contact fields by name, company fields prefixed with `company`).
 </Note>

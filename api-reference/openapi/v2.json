@@ -1033,10 +1033,6 @@
             "type": "string",
             "description": "ID of the user who owns this contact"
           },
-          "statusId": {
-            "type": "string",
-            "description": "ID of the contact status (`cst_...`), one of the team's statuses in the CRM settings."
-          },
           "createdAt": {
             "type": "string",
             "format": "date-time",
@@ -1099,10 +1095,6 @@
           "ownerId": {
             "type": "string",
             "description": "User ID of the owner of the company"
-          },
-          "statusId": {
-            "type": "string",
-            "description": "ID of the company status (`cst_...`), one of the team's statuses in the CRM settings."
           },
           "createdAt": {
             "type": "string",
@@ -15994,10 +15986,6 @@
                     "type": "string",
                     "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the contact is still written with an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`: the owner defaults to the API key owner on creation and is unchanged on update. On update it replaces the current owner, except under `fillEmptyOnly` where it is only set when the contact has none."
                   },
-                  "statusId": {
-                    "type": "string",
-                    "description": "ID of one of the team's contact statuses (`cst_...`), as configured in the CRM settings. Defaults to the team's first status on creation. Under `updateStrategy=fillEmptyOnly` an existing status is never replaced."
-                  },
                   "source": {
                     "type": "string",
                     "description": "Origin of the contact record. Set on creation only and cannot be updated afterwards. Defaults to `api`.",
@@ -17676,10 +17664,6 @@
                   "picture": {
                     "type": "string",
                     "description": "URL of the company logo or picture."
-                  },
-                  "statusId": {
-                    "type": "string",
-                    "description": "ID of one of the team's company statuses (`cst_...`), as configured in the CRM settings. Defaults to the team's first status on creation. Under `updateStrategy=fillEmptyOnly` an existing status is never replaced."
                   },
                   "source": {
                     "type": "string",
