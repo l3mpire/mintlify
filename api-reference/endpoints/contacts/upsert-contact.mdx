@@ -4,7 +4,7 @@ description: Creates a new contact or updates an existing one based on email or 
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
-Creates a new contact in your CRM, or updates an existing one if a contact with the same `email`, `linkedinUrl`, or `linkedinUrlSalesNav` already exists (upsert).
+Creates a new contact in your CRM, or updates an existing one if a contact with the same `email`, `linkedinUrl`, or `salesnavUrl` already exists (upsert).
 
 During updates, only non-empty fields are applied — null or empty values are ignored to preserve existing data.
 
@@ -19,9 +19,9 @@ At least one identifier is required:
 | `contactId` | Existing contact ID — updates a specific contact directly, bypassing email/LinkedIn matching |
 | `email` | Primary email address — used as the main unique key |
 | `linkedinUrl` | LinkedIn profile URL — used as an alternative unique key |
-| `linkedinUrlSalesNav` | LinkedIn Sales Navigator profile URL — used as an alternative unique key |
+| `salesnavUrl` | LinkedIn Sales Navigator profile URL — used as an alternative unique key |
 
-If a contact with the same `email`, `linkedinUrl`, or `linkedinUrlSalesNav` already exists, the endpoint updates it instead of creating a duplicate.
+If a contact with the same `email`, `linkedinUrl`, or `salesnavUrl` already exists, the endpoint updates it instead of creating a duplicate.
 
 When `contactId` is provided, the contact is matched by its ID directly — `email` and `linkedinUrl` are not required and are not used for matching (they are stored as data if provided).
 
@@ -41,7 +41,7 @@ By default an existing contact receives every non-empty value you send, and an e
 
 `null` and an absent key never touch a field. Identifiers (`email`, `linkedinUrl`, `salesnavUrl`) are never cleared: an empty one is ignored whatever the strategy. To erase a field, send `""` with `updateStrategy=overwrite`.
 
-Under `fillEmptyOnly`, identifiers (`email`, `linkedinUrl`, `linkedinUrlSalesNav`), the company link, the owner and the status are kept as well: only the fields the contact has empty are filled. A contact that already has an owner keeps it, whatever `contactOwner` says; a contact that has no owner yet takes the `contactOwner` sent, as it would any other empty field. A newly created contact always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.
+Under `fillEmptyOnly`, identifiers (`email`, `linkedinUrl`, `salesnavUrl`), the company link, the owner and the status are kept as well when the contact already holds them; a missing one is set, like any other empty field. A contact that already has an owner keeps it, whatever `contactOwner` says; a contact that has no owner yet takes the `contactOwner` sent, as it would any other empty field. A newly created contact always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.
 
 ```bash
 curl -X POST "https://api.lemlist.com/api/contacts?updateStrategy=fillEmptyOnly" \

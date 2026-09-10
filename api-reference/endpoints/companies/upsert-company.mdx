@@ -41,13 +41,13 @@ By default an existing company receives every non-empty value you send, and an e
 
 `null` and an absent key never touch a field. Identifiers (`name`, `domain`, `linkedinUrl`, `linkedinUrlSalesNav`) are never cleared: an empty one is ignored whatever the strategy. To erase a field, send `""` with `updateStrategy=overwrite`.
 
-Under `fillEmptyOnly`, identifiers (`domain`, `linkedinUrl`, `linkedinUrlSalesNav`, `name`), the owner and the status are kept as well: only the fields the company has empty are filled. A company that already has an owner keeps it, whatever `companyOwner` says; a company that has no owner yet takes the `companyOwner` sent, as it would any other empty field. A newly created company always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.
+Under `fillEmptyOnly`, identifiers (`name`, `domain`, `linkedinUrl`, `linkedinUrlSalesNav`), the owner and the status are kept as well when the company already holds them; a missing one is set, like any other empty field. A company that already has an owner keeps it, whatever `companyOwner` says; a company that has no owner yet takes the `companyOwner` sent, as it would any other empty field. A newly created company always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.
 
 ```bash
 curl -X POST "https://api.lemlist.com/api/companies?updateStrategy=fillEmptyOnly" \
   -u ":YOUR_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"name": "Acme Inc", "domain": "acme.com", "industry": "Software"}'
+  -d '{"name": "Acme Inc", "domain": "acme.com", "industry": "Retail"}'
 ```
 
 When the strategy keeps a value you sent, the `200` response says so: `warnings` carries a `FIELDS_KEPT` entry whose `params.fields` lists the fields left unchanged. That happens under `fillEmptyOnly` for any non-empty value the record already holds differently, and under `overwriteIgnoreEmpty`, the default, when an empty string you sent was ignored on a filled field. A value the record already holds identically, or a filled empty field, is never listed.

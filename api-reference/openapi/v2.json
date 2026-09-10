@@ -10059,12 +10059,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when the update strategy left values you sent unchanged: `fillEmptyOnly` on a filled field, or `overwriteIgnoreEmpty` ignoring an empty string on a filled field (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
+                      "description": "Optional warnings, never a failure: company resolution issues, and `FIELDS_KEPT` when the update strategy left values you sent unchanged: `fillEmptyOnly` on a filled field, or `overwriteIgnoreEmpty` ignoring an empty string on a filled field (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "`invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed); `FIELDS_KEPT` (values the update strategy kept, see `params.fields`)."
                           },
                           "message": {
                             "type": "string"
@@ -10341,12 +10342,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when the update strategy left values you sent unchanged: `fillEmptyOnly` on a filled field, or `overwriteIgnoreEmpty` ignoring an empty string on a filled field (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
+                      "description": "Optional warnings, never a failure: company resolution issues, and `FIELDS_KEPT` when the update strategy left values you sent unchanged: `fillEmptyOnly` on a filled field, or `overwriteIgnoreEmpty` ignoring an empty string on a filled field (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "`invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed); `FIELDS_KEPT` (values the update strategy kept, see `params.fields`)."
                           },
                           "message": {
                             "type": "string"
@@ -11624,12 +11626,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "description": "Optional warnings, never a failure: the company part of the update was skipped.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "`invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed)."
                           },
                           "message": {
                             "type": "string"
@@ -11731,12 +11734,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "description": "Optional warnings, never a failure: the company part of the update was skipped.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "`invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed)."
                           },
                           "message": {
                             "type": "string"
@@ -11835,12 +11839,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "description": "Optional warnings, never a failure: the company part of the update was skipped.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "`invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed)."
                           },
                           "message": {
                             "type": "string"
@@ -15904,17 +15909,17 @@
                 "properties": {
                   "contactId": {
                     "type": "string",
-                    "description": "Existing contact ID. Updates a specific contact by ID, bypassing email/LinkedIn matching. Can only be used to update an existing contact, not to create a new one. When provided, `email` and `linkedinUrl` are not required. At least one of `contactId`, `email`, `linkedinUrl`, or `linkedinUrlSalesNav` is required."
+                    "description": "Existing contact ID. Updates a specific contact by ID, bypassing email/LinkedIn matching. Can only be used to update an existing contact, not to create a new one. When provided, `email` and `linkedinUrl` are not required. At least one of `contactId`, `email`, `linkedinUrl`, or `salesnavUrl` is required."
                   },
                   "email": {
                     "type": "string",
-                    "description": "Contact email address. Used as a unique key for upsert matching. At least one of `contactId`, `email`, `linkedinUrl`, or `linkedinUrlSalesNav` is required."
+                    "description": "Contact email address. Used as a unique key for upsert matching. At least one of `contactId`, `email`, `linkedinUrl`, or `salesnavUrl` is required."
                   },
                   "linkedinUrl": {
                     "type": "string",
-                    "description": "LinkedIn profile URL. Used as an alternative unique key for upsert matching. At least one of `contactId`, `email`, `linkedinUrl`, or `linkedinUrlSalesNav` is required."
+                    "description": "LinkedIn profile URL. Used as an alternative unique key for upsert matching. At least one of `contactId`, `email`, `linkedinUrl`, or `salesnavUrl` is required."
                   },
-                  "linkedinUrlSalesNav": {
+                  "salesnavUrl": {
                     "type": "string",
                     "description": "LinkedIn Sales Navigator profile URL. Used as an alternative unique key for upsert matching."
                   },
