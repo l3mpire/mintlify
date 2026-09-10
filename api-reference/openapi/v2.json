@@ -1033,6 +1033,10 @@
             "type": "string",
             "description": "ID of the user who owns this contact"
           },
+          "statusId": {
+            "type": "string",
+            "description": "ID of the contact status (`cst_...`), one of the team's statuses in the CRM settings."
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time",
@@ -1095,6 +1099,10 @@
           "ownerId": {
             "type": "string",
             "description": "User ID of the owner of the company"
+          },
+          "statusId": {
+            "type": "string",
+            "description": "ID of the company status (`cst_...`), one of the team's statuses in the CRM settings."
           },
           "createdAt": {
             "type": "string",
