@@ -41,7 +41,7 @@ By default an existing company receives every non-empty value you send, and an e
 
 `null` and an absent key never touch a field. Identifiers (`name`, `domain`, `linkedinUrl`, `linkedinUrlSalesNav`) are never cleared: an empty one is ignored whatever the strategy. To erase a field, send `""` with `updateStrategy=overwrite`.
 
-Under `fillEmptyOnly`, identifiers (`domain`, `linkedinUrl`, `linkedinUrlSalesNav`, `name`), the owner and the status are kept as well: only the fields the company has empty are filled. A company without an owner receives the `companyOwner` sent, like any other empty field. A newly created company always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.
+Under `fillEmptyOnly`, identifiers (`domain`, `linkedinUrl`, `linkedinUrlSalesNav`, `name`), the owner and the status are kept as well: only the fields the company has empty are filled. A company that already has an owner keeps it, whatever `companyOwner` says; a company that has no owner yet takes the `companyOwner` sent, as it would any other empty field. A newly created company always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.
 
 ```bash
 curl -X POST "https://api.lemlist.com/api/companies?updateStrategy=fillEmptyOnly" \
@@ -78,3 +78,13 @@ You can assign an owner to the company using the `companyOwner` field. Accepted 
 <Note>
 If the provided value does not match a team member (invalid format, unknown email, or unknown user ID), the company is still written and the response carries an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`. On creation, the company defaults to the API key owner; on update, the current owner is unchanged.
 </Note>
+
+On an existing company, what happens to the current owner depends on `updateStrategy`:
+
+| Strategy | Current owner set | No current owner |
+|----------|-------------------|------------------|
+| `overwriteIgnoreEmpty` (default) and `overwrite` | Replaced by `companyOwner` | Set to `companyOwner` |
+| `fillEmptyOnly` | Kept, reported as `ownerId` under `warnings` (`FIELDS_KEPT`) | Set to `companyOwner` |
+
+Sending no `companyOwner` never touches the owner.
+

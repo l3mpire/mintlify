@@ -15979,7 +15979,7 @@
                   },
                   "contactOwner": {
                     "type": "string",
-                    "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the contact is still written with an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`: the owner defaults to the API key owner on creation and is unchanged on update."
+                    "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the contact is still written with an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`: the owner defaults to the API key owner on creation and is unchanged on update. On an existing contact, the value replaces the current owner under `overwriteIgnoreEmpty` (default) and `overwrite`; under `fillEmptyOnly` it is only set when the contact has no owner yet, otherwise kept and reported as `ownerId` in a `FIELDS_KEPT` warning."
                   },
                   "statusId": {
                     "type": "string",
@@ -17622,7 +17622,7 @@
                   },
                   "companyOwner": {
                     "type": "string",
-                    "description": "Owner of the company. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the company is still written with an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`: the owner defaults to the API key owner on creation and is unchanged on update."
+                    "description": "Owner of the company. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the company is still written with an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`: the owner defaults to the API key owner on creation and is unchanged on update. On an existing company, the value replaces the current owner under `overwriteIgnoreEmpty` (default) and `overwrite`; under `fillEmptyOnly` it is only set when the company has no owner yet, otherwise kept and reported as `ownerId` in a `FIELDS_KEPT` warning."
                   },
                   "industry": {
                     "type": "string",

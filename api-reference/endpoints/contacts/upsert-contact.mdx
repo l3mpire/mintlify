@@ -41,7 +41,7 @@ By default an existing contact receives every non-empty value you send, and an e
 
 `null` and an absent key never touch a field. Identifiers (`email`, `linkedinUrl`, `salesnavUrl`) are never cleared: an empty one is ignored whatever the strategy. To erase a field, send `""` with `updateStrategy=overwrite`.
 
-Under `fillEmptyOnly`, identifiers (`email`, `linkedinUrl`, `linkedinUrlSalesNav`), the company link, the owner and the status are kept as well: only the fields the contact has empty are filled. A contact without an owner receives the `contactOwner` sent, like any other empty field. A newly created contact always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.
+Under `fillEmptyOnly`, identifiers (`email`, `linkedinUrl`, `linkedinUrlSalesNav`), the company link, the owner and the status are kept as well: only the fields the contact has empty are filled. A contact that already has an owner keeps it, whatever `contactOwner` says; a contact that has no owner yet takes the `contactOwner` sent, as it would any other empty field. A newly created contact always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.
 
 ```bash
 curl -X POST "https://api.lemlist.com/api/contacts?updateStrategy=fillEmptyOnly" \
@@ -90,3 +90,13 @@ You can assign an owner to the contact using the `contactOwner` field. Accepted 
 <Note>
 If the provided value does not match a team member (invalid format, unknown email, or unknown user ID), the contact is still written and the response carries an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`. On creation, the contact defaults to the API key owner; on update, the current owner is unchanged.
 </Note>
+
+On an existing contact, what happens to the current owner depends on `updateStrategy`:
+
+| Strategy | Current owner set | No current owner |
+|----------|-------------------|------------------|
+| `overwriteIgnoreEmpty` (default) and `overwrite` | Replaced by `contactOwner` | Set to `contactOwner` |
+| `fillEmptyOnly` | Kept, reported as `ownerId` under `warnings` (`FIELDS_KEPT`) | Set to `contactOwner` |
+
+Sending no `contactOwner` never touches the owner.
+
