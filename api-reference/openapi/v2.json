@@ -10059,7 +10059,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when `updateStrategy=fillEmptyOnly` left values you sent unchanged (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
+                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when the update strategy left values you sent unchanged: `fillEmptyOnly` on a filled field, or `overwriteIgnoreEmpty` ignoring an empty string on a filled field (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -10341,7 +10341,7 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when `updateStrategy=fillEmptyOnly` left values you sent unchanged (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
+                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when the update strategy left values you sent unchanged: `fillEmptyOnly` on a filled field, or `overwriteIgnoreEmpty` ignoring an empty string on a filled field (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -16035,13 +16035,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when `updateStrategy=fillEmptyOnly` left values you sent unchanged (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
+                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when the update strategy left values you sent unchanged: `fillEmptyOnly` on a filled field, or `overwriteIgnoreEmpty` ignoring an empty string on a filled field (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked); `FIELDS_KEPT` (values kept by `updateStrategy=fillEmptyOnly`)."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked); `FIELDS_KEPT` (values the update strategy kept)."
                           },
                           "message": {
                             "type": "string"
@@ -16183,13 +16183,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when `updateStrategy=fillEmptyOnly` left values you sent unchanged (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
+                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when the update strategy left values you sent unchanged: `fillEmptyOnly` on a filled field, or `overwriteIgnoreEmpty` ignoring an empty string on a filled field (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked); `FIELDS_KEPT` (values kept by `updateStrategy=fillEmptyOnly`)."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked); `FIELDS_KEPT` (values the update strategy kept)."
                           },
                           "message": {
                             "type": "string"
@@ -17705,13 +17705,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when `updateStrategy=fillEmptyOnly` left values you sent unchanged (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
+                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when the update strategy left values you sent unchanged: `fillEmptyOnly` on a filled field, or `overwriteIgnoreEmpty` ignoring an empty string on a filled field (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member); `FIELDS_KEPT` (values kept by `updateStrategy=fillEmptyOnly`)."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member); `FIELDS_KEPT` (values the update strategy kept)."
                           },
                           "message": {
                             "type": "string"
@@ -17823,13 +17823,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when `updateStrategy=fillEmptyOnly` left values you sent unchanged (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
+                      "description": "Optional warnings, never a failure: company or owner resolution issues, and `FIELDS_KEPT` when the update strategy left values you sent unchanged: `fillEmptyOnly` on a filled field, or `overwriteIgnoreEmpty` ignoring an empty string on a filled field (`params.fields` names them; on the lead routes company fields carry their `company` prefix).",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member); `FIELDS_KEPT` (values kept by `updateStrategy=fillEmptyOnly`)."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member); `FIELDS_KEPT` (values the update strategy kept)."
                           },
                           "message": {
                             "type": "string"
