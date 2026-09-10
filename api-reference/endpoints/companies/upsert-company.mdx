@@ -39,7 +39,7 @@ By default an existing company receives every non-empty value you send. The `upd
 | `overwriteIgnoreEmpty` | Replaced | Ignored |
 | `fillEmptyOnly` | Kept | Ignored |
 
-Under `fillEmptyOnly`, identifiers (`domain`, `linkedinUrl`, `linkedinUrlSalesNav`, `name`), the owner and the status are kept as well: only the fields the company has empty are filled. A newly created company always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.
+Under `fillEmptyOnly`, identifiers (`domain`, `linkedinUrl`, `linkedinUrlSalesNav`, `name`), the owner and the status are kept as well: only the fields the company has empty are filled. A company without an owner receives the `companyOwner` sent, like any other empty field. A newly created company always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.
 
 ```bash
 curl -X POST "https://api.lemlist.com/api/companies?updateStrategy=fillEmptyOnly" \

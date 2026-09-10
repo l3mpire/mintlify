@@ -39,7 +39,7 @@ By default an existing contact receives every non-empty value you send. The `upd
 | `overwriteIgnoreEmpty` | Replaced | Ignored |
 | `fillEmptyOnly` | Kept | Ignored |
 
-Under `fillEmptyOnly`, identifiers (`email`, `linkedinUrl`, `linkedinUrlSalesNav`), the company link, the owner and the status are kept as well: only the fields the contact has empty are filled. A newly created contact always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.
+Under `fillEmptyOnly`, identifiers (`email`, `linkedinUrl`, `linkedinUrlSalesNav`), the company link, the owner and the status are kept as well: only the fields the contact has empty are filled. A contact without an owner receives the `contactOwner` sent, like any other empty field. A newly created contact always receives every value sent. Any other value is refused with `400 INVALID_UPDATE_STRATEGY`.
 
 ```bash
 curl -X POST "https://api.lemlist.com/api/contacts?updateStrategy=fillEmptyOnly" \
