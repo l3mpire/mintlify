@@ -15909,17 +15909,17 @@
                 "properties": {
                   "contactId": {
                     "type": "string",
-                    "description": "Existing contact ID. Updates a specific contact by ID, bypassing email/LinkedIn matching. Can only be used to update an existing contact, not to create a new one. When provided, `email` and `linkedinUrl` are not required. At least one of `contactId`, `email`, `linkedinUrl`, or `salesnavUrl` is required."
+                    "description": "Existing contact ID. Updates a specific contact by ID, bypassing email/LinkedIn matching. Can only be used to update an existing contact, not to create a new one. When provided, `email` and `linkedinUrl` are not required. At least one of `contactId`, `email`, `linkedinUrl`, or `linkedinUrlSalesNav` is required."
                   },
                   "email": {
                     "type": "string",
-                    "description": "Contact email address. Used as a unique key for upsert matching. At least one of `contactId`, `email`, `linkedinUrl`, or `salesnavUrl` is required."
+                    "description": "Contact email address. Used as a unique key for upsert matching. At least one of `contactId`, `email`, `linkedinUrl`, or `linkedinUrlSalesNav` is required."
                   },
                   "linkedinUrl": {
                     "type": "string",
-                    "description": "LinkedIn profile URL. Used as an alternative unique key for upsert matching. At least one of `contactId`, `email`, `linkedinUrl`, or `salesnavUrl` is required."
+                    "description": "LinkedIn profile URL. Used as an alternative unique key for upsert matching. At least one of `contactId`, `email`, `linkedinUrl`, or `linkedinUrlSalesNav` is required."
                   },
-                  "salesnavUrl": {
+                  "linkedinUrlSalesNav": {
                     "type": "string",
                     "description": "LinkedIn Sales Navigator profile URL. Used as an alternative unique key for upsert matching."
                   },
