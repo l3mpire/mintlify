@@ -9,7 +9,7 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <SnippetObjectReference objectName="Lead" objectPath="lead" />
 
 <Note>
-  **This endpoint creates, it never updates.** When the contact identified by the body already has a lead in this campaign, the request is refused with `400 LEAD_ALREADY_IN_CAMPAIGN` and nothing is written, neither on the lead nor on its contact or company. To change an existing lead, use `PATCH /campaigns/{campaignId}/leads/{leadId}`. With `deduplicate=true` (or the campaign's own deduplication setting), a contact that already has a lead in another campaign is refused with `409 LEAD_ALREADY_IN_OTHER_CAMPAIGN`.
+  **This endpoint creates, it never updates.** When the contact identified by the body already has a lead in this campaign, the request is refused with `400 LEAD_ALREADY_IN_CAMPAIGN` and nothing is written, neither on the lead nor on its contact or company. To change an existing lead, use `PATCH /campaigns/{campaignId}/leads/{leadId}`. With `deduplicate=true`, a contact that already has a lead in another campaign is refused with `409 LEAD_ALREADY_IN_OTHER_CAMPAIGN`. Only this parameter drives that check: the campaign's own "remove duplicates" setting applies to the in-app and CRM imports, not to this endpoint.
 </Note>
 
 <Note>

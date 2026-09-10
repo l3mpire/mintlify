@@ -9875,7 +9875,7 @@
             "name": "deduplicate",
             "in": "query",
             "required": false,
-            "description": "Search the contact in other campaigns. When it already has a lead there, the request is refused with `409 LEAD_ALREADY_IN_OTHER_CAMPAIGN` and nothing is written. Default: false (the campaign's own deduplication setting still applies).",
+            "description": "Search the contact in other campaigns. When it already has a lead there, the request is refused with `409 LEAD_ALREADY_IN_OTHER_CAMPAIGN` and nothing is written. Default: false. Only this parameter drives the check: the campaign's own \"remove duplicates\" setting applies to the in-app and CRM imports, not to this endpoint.",
             "example": "true",
             "schema": {
               "type": "boolean"
