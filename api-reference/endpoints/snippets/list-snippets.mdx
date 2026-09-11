@@ -1,0 +1,19 @@
+---
+openapi: get /snippets
+description: Lists the team's snippets by name.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Snippet" objectPath="snippet" />
+
+Snippets are the fragments of the Templates page (Templates > Snippets): a
+signature, a paragraph, a call-to-action inserted *inside* a message, unlike a
+[message template](/api-reference/objects-definitions/message-template) which
+is a whole message.
+
+<Note>
+`search` is a substring match on the **name only**, case-insensitive; accented
+`a c e i n o u y` match their plain letters. `userIds` is any-of,
+comma-separated or repeated. Contents are HTML as authored — sanitize before
+rendering.
+</Note>
