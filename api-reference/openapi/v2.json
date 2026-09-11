@@ -9866,6 +9866,7 @@
       },
       "post": {
         "summary": "Create Lead in Campaign",
+        "description": "Creates a new lead in the campaign, never updates one: a contact that already has a lead in this campaign is refused with `400 LEAD_ALREADY_IN_CAMPAIGN` and nothing is written, on the lead, the contact or the company. Use `PATCH /campaigns/{campaignId}/leads/{leadId}` to change an existing lead. The contact and the company the new lead belongs to may already exist: `updateStrategy` decides how their stored values are updated, and under `fillEmptyOnly` the created lead takes the values the contact kept.",
         "tags": [
           "Leads"
         ],
@@ -9874,7 +9875,7 @@
             "name": "deduplicate",
             "in": "query",
             "required": false,
-            "description": "Search email address in other campaigns. Will not insert the lead if email address already exists. Default: false",
+            "description": "Refuse the lead with `409 LEAD_ALREADY_IN_OTHER_CAMPAIGN` when the contact already has one in another campaign. Default: false. The campaign's own \"remove duplicates\" setting does not apply here.",
             "example": "true",
             "schema": {
               "type": "boolean"
@@ -9918,6 +9919,22 @@
             "example": "true",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "updateStrategy",
+            "in": "query",
+            "required": false,
+            "description": "What the matched contact and company keep (the lead is always created). `overwrite` (default): sent values replace stored ones, an empty string clears. `overwriteIgnoreEmpty`: empty values ignored. `fillEmptyOnly`: only empty fields filled, identifiers, links, owner and status kept. Other values: 400.",
+            "example": "fillEmptyOnly",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "overwrite",
+                "overwriteIgnoreEmpty",
+                "fillEmptyOnly"
+              ],
+              "default": "overwrite"
             }
           }
         ],
@@ -10042,15 +10059,33 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "description": "Non-blocking notices: the company part was skipped, or `FIELDS_KEPT` when the update strategy kept values you sent (`params.fields` names them, company fields prefixed with `company`).",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "`invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed); `FIELDS_KEPT` (values the update strategy kept, see `params.fields`)."
                           },
                           "message": {
                             "type": "string"
+                          },
+                          "params": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              ]
+                            },
+                            "description": "Details: the input echoed back, or `fields` for `FIELDS_KEPT`."
                           }
                         }
                       }
@@ -10074,7 +10109,7 @@
             }
           },
           "400": {
-            "description": "Possible errors: No API key provided / Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile / Email address is in the graveyard / Lead already in the campaign / No valid fields to add",
+            "description": "Possible errors: No API key provided / Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile / Email address is in the graveyard / Lead already in the campaign / No valid fields to add / Invalid updateStrategy value",
             "content": {
               "text/plain": {
                 "example": "No API key provided"
@@ -10309,15 +10344,33 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "description": "Non-blocking notices: the company part was skipped, or `FIELDS_KEPT` when the update strategy kept values you sent (`params.fields` names them, company fields prefixed with `company`).",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "`invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed); `FIELDS_KEPT` (values the update strategy kept, see `params.fields`)."
                           },
                           "message": {
                             "type": "string"
+                          },
+                          "params": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              ]
+                            },
+                            "description": "Details: the input echoed back, or `fields` for `FIELDS_KEPT`."
                           }
                         }
                       }
@@ -10344,7 +10397,7 @@
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile / Lead could not be updated",
+            "description": "Possible errors: Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile / Lead could not be updated / Invalid updateStrategy value",
             "content": {
               "text/plain": {
                 "example": "Bad team"
@@ -10371,7 +10424,24 @@
             }
           }
         },
-        "parameters": []
+        "parameters": [
+          {
+            "name": "updateStrategy",
+            "in": "query",
+            "required": false,
+            "description": "What the lead, its contact and its company keep. `overwrite` (default): sent values replace stored ones, an empty string clears. `overwriteIgnoreEmpty`: empty values ignored. `fillEmptyOnly`: only empty fields filled, identifiers, links, owner and status kept. Other values: 400.",
+            "example": "fillEmptyOnly",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "overwrite",
+                "overwriteIgnoreEmpty",
+                "fillEmptyOnly"
+              ],
+              "default": "overwrite"
+            }
+          }
+        ]
       },
       "delete": {
         "summary": "Delete or Unsubscribe Lead",
@@ -11558,12 +11628,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "description": "Optional warnings, never a failure: the company part of the update was skipped.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "`invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed)."
                           },
                           "message": {
                             "type": "string"
@@ -11665,12 +11736,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "description": "Optional warnings, never a failure: the company part of the update was skipped.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "`invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed)."
                           },
                           "message": {
                             "type": "string"
@@ -11769,12 +11841,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. company resolution issues).",
+                      "description": "Optional warnings, never a failure: the company part of the update was skipped.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "`invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed)."
                           },
                           "message": {
                             "type": "string"
@@ -15825,7 +15898,7 @@
       },
       "post": {
         "summary": "Add and update contact",
-        "description": "Creates a new contact or updates an existing one (upsert). If a contact with the same email, LinkedIn URL, or Sales Navigator URL already exists, it will be updated with the provided non-empty fields. Null or empty values are ignored during updates to preserve existing data. You can target an existing contact directly by providing `contactId`, bypassing email/LinkedIn matching. You can optionally link the contact to a company by providing `companyId`, `companyDomain`, or `companyLinkedinUrl`.",
+        "description": "Creates a new contact or updates an existing one (upsert). If a contact with the same email, LinkedIn URL, or Sales Navigator URL already exists, it is updated as the `updateStrategy` query parameter says (by default, sent values replace stored ones and empty values are ignored). You can target an existing contact directly by providing `contactId`, bypassing email/LinkedIn matching. You can optionally link the contact to a company by providing `companyId`, `companyDomain`, or `companyLinkedinUrl`.",
         "tags": [
           "Contacts"
         ],
@@ -15913,7 +15986,7 @@
                   },
                   "contactOwner": {
                     "type": "string",
-                    "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the contact is still written with an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`: the owner defaults to the API key owner on creation and is unchanged on update."
+                    "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the contact is still written with an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`: the owner defaults to the API key owner on creation and is unchanged on update. On update it replaces the current owner, except under `fillEmptyOnly` where it is only set when the contact has none."
                   },
                   "source": {
                     "type": "string",
@@ -15965,13 +16038,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. owner or company resolution issues).",
+                      "description": "Non-blocking notices: owner or company not resolved, or `FIELDS_KEPT` when the update strategy kept values you sent (`params.fields` names them).",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked)."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked); `FIELDS_KEPT` (values the update strategy kept)."
                           },
                           "message": {
                             "type": "string"
@@ -15979,9 +16052,19 @@
                           "params": {
                             "type": "object",
                             "additionalProperties": {
-                              "type": "string"
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              ]
                             },
-                            "description": "The offending input, echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`)."
+                            "description": "Details: the input echoed back, or `fields` for `FIELDS_KEPT`."
                           }
                         }
                       }
@@ -16103,13 +16186,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. owner or company resolution issues).",
+                      "description": "Non-blocking notices: owner or company not resolved, or `FIELDS_KEPT` when the update strategy kept values you sent (`params.fields` names them).",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked)."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked); `FIELDS_KEPT` (values the update strategy kept)."
                           },
                           "message": {
                             "type": "string"
@@ -16117,9 +16200,19 @@
                           "params": {
                             "type": "object",
                             "additionalProperties": {
-                              "type": "string"
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              ]
                             },
-                            "description": "The offending input, echoed back (e.g. `{\"contactOwner\": \"nobody@example.com\"}`)."
+                            "description": "Details: the input echoed back, or `fields` for `FIELDS_KEPT`."
                           }
                         }
                       }
@@ -16170,7 +16263,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `MISSING_IDENTIFIER`, `INVALID_CONTACT_ID`, `INVALID_EMAIL`, `INVALID_ADDITIONAL_EMAILS`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, or `CONTACT_VALIDATION_FAILED`."
+                          "description": "Error code: `MISSING_IDENTIFIER`, `INVALID_CONTACT_ID`, `INVALID_EMAIL`, `INVALID_ADDITIONAL_EMAILS`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, `CONTACT_VALIDATION_FAILED`, or `INVALID_UPDATE_STRATEGY`."
                         },
                         "message": {
                           "type": "string"
@@ -16240,7 +16333,24 @@
             }
           }
         },
-        "parameters": []
+        "parameters": [
+          {
+            "name": "updateStrategy",
+            "in": "query",
+            "required": false,
+            "description": "What an existing record keeps. `overwriteIgnoreEmpty` (default): sent values replace stored ones, empty values are ignored. `overwrite`: an empty string clears the field. `fillEmptyOnly`: only empty fields are filled, identifiers, links, owner and status kept. A new record receives every value sent. Other values: `400 INVALID_UPDATE_STRATEGY`.",
+            "example": "fillEmptyOnly",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "overwrite",
+                "overwriteIgnoreEmpty",
+                "fillEmptyOnly"
+              ],
+              "default": "overwriteIgnoreEmpty"
+            }
+          }
+        ]
       }
     },
     "/contacts/merge": {
@@ -17482,7 +17592,7 @@
       },
       "post": {
         "summary": "Add and update company",
-        "description": "Creates a new company or updates an existing one (upsert). If a company with the same domain, LinkedIn URL, or Sales Navigator URL already exists, it will be updated with the provided non-empty fields. Null or empty values are ignored during updates to preserve existing data. You can target an existing company directly by providing `companyId`, bypassing domain/LinkedIn matching — in that case `name` and `domain` become optional.",
+        "description": "Creates a new company or updates an existing one (upsert). If a company with the same domain, LinkedIn URL, or Sales Navigator URL already exists, it is updated as the `updateStrategy` query parameter says (by default, sent values replace stored ones and empty values are ignored). You can target an existing company directly by providing `companyId`, bypassing domain/LinkedIn matching — in that case `name` and `domain` become optional.",
         "tags": [
           "Companies"
         ],
@@ -17515,7 +17625,7 @@
                   },
                   "companyOwner": {
                     "type": "string",
-                    "description": "Owner of the company. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the company is still written with an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`: the owner defaults to the API key owner on creation and is unchanged on update."
+                    "description": "Owner of the company. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the company is still written with an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`: the owner defaults to the API key owner on creation and is unchanged on update. On update it replaces the current owner, except under `fillEmptyOnly` where it is only set when the company has none."
                   },
                   "industry": {
                     "type": "string",
@@ -17594,13 +17704,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. owner resolution issues).",
+                      "description": "Non-blocking notices: owner or company not resolved, or `FIELDS_KEPT` when the update strategy kept values you sent (`params.fields` names them).",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member)."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member); `FIELDS_KEPT` (values the update strategy kept)."
                           },
                           "message": {
                             "type": "string"
@@ -17608,9 +17718,19 @@
                           "params": {
                             "type": "object",
                             "additionalProperties": {
-                              "type": "string"
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              ]
                             },
-                            "description": "The offending input, echoed back (e.g. `{\"companyOwner\": \"nobody@example.com\"}`)."
+                            "description": "Details: the input echoed back, or `fields` for `FIELDS_KEPT`."
                           }
                         }
                       }
@@ -17702,13 +17822,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings (e.g. owner resolution issues).",
+                      "description": "Non-blocking notices: owner or company not resolved, or `FIELDS_KEPT` when the update strategy kept values you sent (`params.fields` names them).",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member)."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member); `FIELDS_KEPT` (values the update strategy kept)."
                           },
                           "message": {
                             "type": "string"
@@ -17716,9 +17836,19 @@
                           "params": {
                             "type": "object",
                             "additionalProperties": {
-                              "type": "string"
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              ]
                             },
-                            "description": "The offending input, echoed back (e.g. `{\"companyOwner\": \"nobody@example.com\"}`)."
+                            "description": "Details: the input echoed back, or `fields` for `FIELDS_KEPT`."
                           }
                         }
                       }
@@ -17762,7 +17892,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `MISSING_REQUIRED_FIELD`, `INVALID_COMPANY_ID`, `INVALID_DOMAIN`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, or `COMPANY_VALIDATION_FAILED`."
+                          "description": "Error code: `MISSING_REQUIRED_FIELD`, `INVALID_COMPANY_ID`, `INVALID_DOMAIN`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, `COMPANY_VALIDATION_FAILED`, or `INVALID_UPDATE_STRATEGY`."
                         },
                         "message": {
                           "type": "string"
@@ -17832,7 +17962,24 @@
             }
           }
         },
-        "parameters": []
+        "parameters": [
+          {
+            "name": "updateStrategy",
+            "in": "query",
+            "required": false,
+            "description": "What an existing record keeps. `overwriteIgnoreEmpty` (default): sent values replace stored ones, empty values are ignored. `overwrite`: an empty string clears the field. `fillEmptyOnly`: only empty fields are filled, identifiers, links, owner and status kept. A new record receives every value sent. Other values: `400 INVALID_UPDATE_STRATEGY`.",
+            "example": "fillEmptyOnly",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "overwrite",
+                "overwriteIgnoreEmpty",
+                "fillEmptyOnly"
+              ],
+              "default": "overwriteIgnoreEmpty"
+            }
+          }
+        ]
       }
     },
     "/companies/merge": {

@@ -6,7 +6,7 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 Creates a new contact in your CRM, or updates an existing one if a contact with the same `email`, `linkedinUrl`, or `linkedinUrlSalesNav` already exists (upsert).
 
-During updates, only non-empty fields are applied — null or empty values are ignored to preserve existing data.
+On update, the `updateStrategy` query parameter decides what the existing record keeps (see below). By default, sent values replace stored ones and empty values are ignored.
 
 <SnippetObjectReference objectName="Contact" objectPath="contact" />
 
@@ -28,6 +28,37 @@ When `contactId` is provided, the contact is matched by its ID directly — `ema
 <Warning>
 `contactId` can only be used to **update** an existing contact. It cannot be used to create a new contact — use `email` or `linkedinUrl` for creation.
 </Warning>
+
+## Update strategy
+
+The `updateStrategy` query parameter decides what an existing contact keeps:
+
+| Value | Stored value | Empty string sent |
+|-------|--------------|-------------------|
+| `overwriteIgnoreEmpty` (default) | Replaced | Ignored |
+| `overwrite` | Replaced | Cleared |
+| `fillEmptyOnly` | Kept | Ignored |
+
+`null` and absent keys never touch a field. Identifiers (`email`, `linkedinUrl`, `linkedinUrlSalesNav`) are never cleared. Under `fillEmptyOnly`, the company link, the owner and the status are kept when set and filled when missing. A new contact receives every value sent. Any other value answers `400 INVALID_UPDATE_STRATEGY`.
+
+```bash
+curl -X POST "https://api.lemlist.com/api/contacts?updateStrategy=fillEmptyOnly" \
+  -u ":YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "john@example.com", "jobTitle": "Founder", "phone": "+33600000000"}'
+```
+
+Kept values are reported: `warnings` carries a `FIELDS_KEPT` entry with the field names in `params.fields`. It appears under `fillEmptyOnly` on a stored value, and under the default when an empty string is ignored on a filled field, never for an identical value.
+
+```json
+{
+  "success": true,
+  "data": { "_id": "ctc_2aB3cD4eF5gH6iJ7k", "jobTitle": "CEO", "phone": "+33600000000", "created": false, "updated": true, "companyLinked": false },
+  "warnings": [
+    { "code": "FIELDS_KEPT", "message": "Fields kept: the record already holds a different value, left unchanged by the update strategy", "params": { "fields": ["jobTitle"] } }
+  ]
+}
+```
 
 ## Linking to a company
 
@@ -53,3 +84,13 @@ You can assign an owner to the contact using the `contactOwner` field. Accepted 
 <Note>
 If the provided value does not match a team member (invalid format, unknown email, or unknown user ID), the contact is still written and the response carries an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`. On creation, the contact defaults to the API key owner; on update, the current owner is unchanged.
 </Note>
+
+On an existing contact, `updateStrategy` decides the owner:
+
+| Strategy | Current owner set | No current owner |
+|----------|-------------------|------------------|
+| `overwriteIgnoreEmpty` (default) and `overwrite` | Replaced by `contactOwner` | Set to `contactOwner` |
+| `fillEmptyOnly` | Kept, reported as `ownerId` under `warnings` (`FIELDS_KEPT`) | Set to `contactOwner` |
+
+Without `contactOwner`, the owner is never touched.
+

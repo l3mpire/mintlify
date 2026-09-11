@@ -1,12 +1,20 @@
 ---
 title: "Create Lead in Campaign"
 openapi: "post /campaigns/{campaignId}/leads/"
-description: "Creates a new lead and adds it to a specific campaign."
+description: "Creates a new lead and adds it to a specific campaign. Never updates an existing lead."
 ---
 
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Lead" objectPath="lead" />
+
+<Note>
+  **This endpoint creates, it never updates.** A contact that already has a lead in this campaign is refused with `400 LEAD_ALREADY_IN_CAMPAIGN`, nothing written; use `PATCH /campaigns/{campaignId}/leads/{leadId}` instead. With `deduplicate=true`, a contact with a lead in another campaign is refused with `409 LEAD_ALREADY_IN_OTHER_CAMPAIGN`; only this parameter drives that check, not the campaign's "remove duplicates" setting.
+</Note>
+
+<Note>
+  The lead is always new, but the contact and the company it matches are updated with the fields you send; `updateStrategy` decides what they keep. `overwrite` (default): sent values replace stored ones, an empty value clears. `overwriteIgnoreEmpty`: same, empty values ignored. `fillEmptyOnly`: only empty fields are filled, identifiers, company link, owner and status kept, and the lead takes the values the contact kept. Kept values are listed in `warnings` (`FIELDS_KEPT`, `params.fields`, company fields prefixed with `company`).
+</Note>
 
 <Note>
   Beyond the standard fields above, **any additional key/value pair you send in the body is stored as a custom variable** on the lead and can be used in your campaign with `{{yourVariableName}}`.
