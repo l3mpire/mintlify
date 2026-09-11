@@ -10220,6 +10220,7 @@
         "tags": [
           "Leads"
         ],
+        "description": "Updates an existing lead and, through it, the contact and the company the lead is linked to: contact fields such as `firstName` or `jobTitle` are written on the contact, company fields such as `companyName` on the company. Only the fields in the body change. `companyName` alone renames the company the lead is linked to. When the lead has no company yet, it gets linked to a company with that name, created when needed.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -10233,7 +10234,8 @@
                     "type": "string"
                   },
                   "companyName": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "New name of the company the lead is linked to, renamed in place. When the lead has no company yet, it gets linked to a company with that name, created when needed."
                   },
                   "jobTitle": {
                     "type": "string"
@@ -11616,7 +11618,7 @@
         "tags": [
           "Leads"
         ],
-        "description": "Update values of custom variables for a lead.",
+        "description": "Update values of custom variables for a lead. Default variables follow the Update Lead rules: they are written on the lead's contact and company as well, and `companyName` alone renames the company the lead is linked to.",
         "parameters": [
           {
             "name": "customField1",
