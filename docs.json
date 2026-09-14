@@ -208,6 +208,8 @@
                   "api-reference/endpoints/leads/mark-lead-as-interested-in-campaign",
                   "api-reference/endpoints/leads/mark-lead-as-not-interested-in-campaign",
                   "api-reference/endpoints/leads/skip-step-for-lead",
+                  "api-reference/endpoints/leads/personalize-step-for-lead",
+                  "api-reference/endpoints/leads/reset-step-personalization-for-lead",
                   "api-reference/endpoints/leads/import-leads-from-crm",
                   "api-reference/endpoints/leads/upload-audio-for-voice-message-step"
                 ]

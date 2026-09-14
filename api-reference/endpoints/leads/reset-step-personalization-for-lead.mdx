@@ -1,0 +1,12 @@
+---
+openapi: delete /campaigns/{campaignId}/leads/{leadIdOrEmail}/steps/{stepId}/personalization
+description: Removes a lead's personalization of one campaign step.
+---
+
+The lead receives the step's shared message again, and the step's A/B test
+applies to the lead again. Same as **Reset override** in the lemlist review
+page. The personalized content cannot be recovered.
+
+The call is idempotent: `reset` is `false` when the step was not personalized
+for the lead. Once the lead reached the step (sent, skipped or ignored), the
+request answers `409`.
