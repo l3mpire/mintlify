@@ -21,6 +21,10 @@ are kept; the response returns the full personalized content. Sending only
 - **Cc:** `cc: []` removes the step's cc for this lead.
 - **LinkedIn, SMS and WhatsApp:** messages are plain text; HTML you send is
   converted to text.
+- **Images:** on LinkedIn and WhatsApp messages, `images` takes public HTTPS
+  URLs. lemlist downloads and stores them for this lead only; `images: []`
+  sends the message without images. Leave `images` out to keep the lead's
+  current images.
 - **Supported steps:** email, LinkedIn message, LinkedIn invitation, SMS and
   WhatsApp message. Voice notes and conditions answer `422`, and so do steps
   in a wait-until fallback or in a branch several conditions lead to.

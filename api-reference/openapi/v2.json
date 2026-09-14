@@ -3934,6 +3934,13 @@
               "altMessagePremium": {
                 "type": "string",
                 "description": "LinkedIn message steps: the note sent from a premium account"
+              },
+              "images": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "LinkedIn and WhatsApp message steps: the URLs of the lead's own images. Absent when the lead receives the step's images; empty when it receives none."
               }
             }
           }
@@ -11717,6 +11724,14 @@
                     "minLength": 1,
                     "maxLength": 300,
                     "description": "LinkedIn message steps only. The note sent from a premium account."
+                  },
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "description": "LinkedIn message and WhatsApp message steps only. Public HTTPS URLs of the images this lead receives with the message: png, jpeg or gif (and webp on WhatsApp), 20 MB each on LinkedIn and 10 MB on WhatsApp. They are downloaded and stored by lemlist, and replace the lead's own images. An empty array sends no image to this lead; leave it out to keep the lead's current images, or the step's. 6 media at most, a LinkedIn message's videos included."
                   }
                 }
               },
@@ -11788,12 +11803,23 @@
             "description": "Rate limit exceeded - 20 requests per 2 seconds per API key"
           },
           "422": {
-            "description": "`REVIEW_DRAFT_STEP_UNSUPPORTED` (voice notes, conditions and non-message steps), `REVIEW_DRAFT_BRANCH_UNSUPPORTED` (a step in a wait-until fallback, or in a branch several conditions lead to), `REVIEW_DRAFT_VARIANT_UNAVAILABLE` (no variant B, or the other variant won), `REVIEW_DRAFT_FIELD_UNSUPPORTED` (a field the step type does not carry), `REVIEW_DRAFT_CONTENT_EMPTY` (a blank message, or a blank LinkedIn note) or `REVIEW_DRAFT_CONTENT_TOO_LONG` (a LinkedIn note over 300 characters).",
+            "description": "`REVIEW_DRAFT_STEP_UNSUPPORTED` (voice notes, conditions and non-message steps), `REVIEW_DRAFT_BRANCH_UNSUPPORTED` (a step in a wait-until fallback, or in a branch several conditions lead to), `REVIEW_DRAFT_VARIANT_UNAVAILABLE` (no variant B, or the other variant won), `REVIEW_DRAFT_FIELD_UNSUPPORTED` (a field the step type does not carry), `REVIEW_DRAFT_CONTENT_EMPTY` (a blank message, or a blank LinkedIn note), `REVIEW_DRAFT_CONTENT_TOO_LONG` (a LinkedIn note over 300 characters), `REVIEW_DRAFT_IMAGES_TOO_MANY` (more than 6 media) or `REVIEW_DRAFT_IMAGE_INVALID` (an image URL that is not public HTTPS, too large, of another type, or that could not be downloaded).",
             "content": {
               "application/json": {
                 "example": {
                   "error": "This A/B variant is not available on the step (no variant B, or the other variant won)",
                   "code": "REVIEW_DRAFT_VARIANT_UNAVAILABLE"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "`REVIEW_DRAFT_IMAGE_UNAVAILABLE` - the images could not be stored right now; nothing was changed, retry later.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "The images could not be stored right now, nothing was changed: retry later",
+                  "code": "REVIEW_DRAFT_IMAGE_UNAVAILABLE"
                 }
               }
             }
