@@ -1,0 +1,20 @@
+---
+openapi: get /message-templates
+description: Lists the team's library message templates, newest first.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Message template" objectPath="message-template" />
+
+The library is what the Templates page (Templates > Emails) shows: whole
+reusable messages saved from that page or from an editor, usable as a step on
+any channel, an inbox reply or an extension message. Campaign step bodies are
+not part of it — read a campaign's steps with
+[Get campaign sequences](/api-reference/endpoints/sequences/get-campaign-sequences).
+
+<Note>
+`search` is a substring match on the **name only**, case-insensitive; accented
+`a c e i n o u y` match their plain letters (`relance` finds `Rélance`).
+`tags` is any-of and `userIds` is any-of, both comma-separated or repeated.
+Bodies are HTML as stored, with `{{variables}}` left raw.
+</Note>

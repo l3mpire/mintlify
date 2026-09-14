@@ -1,0 +1,18 @@
+---
+openapi: get /message-templates/tags
+description: Lists the distinct tags of the team's library message templates, alphabetically.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Message template" objectPath="message-template" />
+
+Use it to discover the values `tags` accepts on
+[List message templates](/api-reference/endpoints/message-templates/list-message-templates).
+Tags are stored trimmed and lowercased; pass them back as returned.
+
+<Note>
+`search` matches inside the tag, case-insensitive, accents folded on
+`a c e i n o u y`. `userIds` keeps the tags of those creators' templates only.
+Each item is an object (`{ "name": "follow-up" }`) so a per-tag count can be
+added later without changing the contract.
+</Note>
