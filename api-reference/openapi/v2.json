@@ -4055,6 +4055,75 @@
             "description": "The person's CURRENT employer, which is not always the account classified."
           }
         }
+      },
+      "StepPersonalization": {
+        "type": "object",
+        "description": "A lead's personalized version of one campaign step. It pins the lead to the A/B variant it is written on.",
+        "properties": {
+          "leadId": {
+            "type": "string",
+            "description": "The lead the step is personalized for"
+          },
+          "stepId": {
+            "type": "string",
+            "description": "The personalized step"
+          },
+          "variant": {
+            "type": "string",
+            "enum": [
+              "A",
+              "B"
+            ],
+            "description": "The A/B variant the lead is pinned to"
+          },
+          "emailTemplateId": {
+            "type": "string",
+            "description": "The step content the personalization overrides (variant A or B of the step)"
+          },
+          "content": {
+            "type": "object",
+            "description": "The full personalized content. Only the fields of the step type are present.",
+            "properties": {
+              "subject": {
+                "type": "string",
+                "description": "Email steps. An empty subject keeps a follow-up in its thread."
+              },
+              "message": {
+                "type": "string"
+              },
+              "cc": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "plainText": {
+                "type": "boolean"
+              },
+              "altMessage": {
+                "type": "string",
+                "description": "LinkedIn invitation and message steps: the connection-request note"
+              },
+              "altMessagePremium": {
+                "type": "string",
+                "description": "LinkedIn message steps: the note sent from a premium account"
+              }
+            }
+          }
+        },
+        "example": {
+          "leadId": "lea_Example6F7g8H9i0J",
+          "stepId": "stp_Example1K2l3M4n5O",
+          "variant": "A",
+          "emailTemplateId": "etp_Example6P7q8R9s0T",
+          "content": {
+            "subject": "",
+            "message": "<p>Hi {{firstName}}, a quick follow-up on my last email.</p>",
+            "cc": [
+              "jane@example.com"
+            ]
+          }
+        }
       }
     }
   },
@@ -12289,6 +12358,264 @@
           },
           "429": {
             "description": "Rate limit exceeded - 20 requests per 2 seconds per API key"
+          }
+        }
+      }
+    },
+    "/campaigns/{campaignId}/leads/{leadIdOrEmail}/steps/{stepId}/personalization": {
+      "parameters": [
+        {
+          "name": "campaignId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the campaign",
+          "example": "cam_Example1A2b3C4d5E",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "leadIdOrEmail",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier or email of the lead",
+          "example": "lea_Example6F7g8H9i0J",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "stepId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the step, from GET /campaigns/{campaignId}/sequences",
+          "example": "stp_Example1K2l3M4n5O",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "put": {
+        "summary": "Personalize Step for Lead",
+        "tags": [
+          "Leads"
+        ],
+        "description": "Personalize the message of one campaign step for a single lead. The lead receives this version instead of the step's shared content, and is no longer A/B tested on this step.",
+        "parameters": [],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "variant": {
+                    "type": "string",
+                    "enum": [
+                      "A",
+                      "B"
+                    ],
+                    "description": "A/B variant to write on. Defaults to the variant the lead is already on: the winner once one is picked, else the variant already personalized, else the variant of the lead's scheduled task, else A."
+                  },
+                  "subject": {
+                    "type": "string",
+                    "description": "Email steps only. On a follow-up email, a non-empty subject starts a new thread; omit it to stay in the thread."
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "The message body. HTML on email steps; plain text on LinkedIn, SMS and WhatsApp steps (HTML is converted to text). Cannot be blank, except on a LinkedIn invitation."
+                  },
+                  "cc": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Email steps only. An empty array removes the cc for this lead."
+                  },
+                  "plainText": {
+                    "type": "boolean",
+                    "description": "Email steps only. Send this lead a plain-text email."
+                  },
+                  "altMessage": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "LinkedIn invitation and LinkedIn message steps only. The connection-request note, 300 characters at most on an invitation."
+                  },
+                  "altMessagePremium": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 300,
+                    "description": "LinkedIn message steps only. The note sent from a premium account."
+                  }
+                }
+              },
+              "example": {
+                "message": "<p>Hi {{firstName}}, a quick follow-up on my last email.</p>"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The step is personalized for the lead. `content` is the full personalized content, the fields you did not send included.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StepPersonalization"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A path identifier is malformed (`ROUTE_BAD_REQUEST`), the body is invalid (`VALIDATION_ERROR`), or no API key was supplied (plain text).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Validation error",
+                  "code": "VALIDATION_ERROR"
+                }
+              },
+              "text/plain": {
+                "example": "no api key provided"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key, or a key that is not linked to a user (`ROUTE_UNAUTHORIZED`).",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "`REVIEW_DRAFT_CAMPAIGN_NOT_FOUND`, `REVIEW_DRAFT_LEAD_NOT_FOUND`, `REVIEW_DRAFT_STEP_NOT_FOUND` or `REVIEW_DRAFT_TEMPLATE_NOT_FOUND` - the campaign, the lead or the step does not exist in this workspace, or the step has no message.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Lead not found in this campaign",
+                  "code": "REVIEW_DRAFT_LEAD_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed - this endpoint only accepts PUT and DELETE"
+          },
+          "409": {
+            "description": "`REVIEW_DRAFT_STEP_ALREADY_REACHED` - the lead already reached this step (sent, skipped or ignored); or `CAMPAIGN_AI_DISCONTINUED`.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "The lead already reached this step: its message can no longer be personalized",
+                  "code": "REVIEW_DRAFT_STEP_ALREADY_REACHED"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded - 20 requests per 2 seconds per API key"
+          },
+          "422": {
+            "description": "`REVIEW_DRAFT_STEP_UNSUPPORTED` (voice notes, conditions and non-message steps), `REVIEW_DRAFT_BRANCH_UNSUPPORTED` (a step in a wait-until fallback, or in a branch several conditions lead to), `REVIEW_DRAFT_VARIANT_UNAVAILABLE` (no variant B, or the other variant won), `REVIEW_DRAFT_FIELD_UNSUPPORTED` (a field the step type does not carry), `REVIEW_DRAFT_CONTENT_EMPTY` (a blank message, or a blank LinkedIn note) or `REVIEW_DRAFT_CONTENT_TOO_LONG` (a LinkedIn note over 300 characters).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This A/B variant is not available on the step (no variant B, or the other variant won)",
+                  "code": "REVIEW_DRAFT_VARIANT_UNAVAILABLE"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Reset Step Personalization for Lead",
+        "tags": [
+          "Leads"
+        ],
+        "description": "Remove a lead's personalization of one campaign step: the lead receives the step's shared message again. The personalized content cannot be recovered.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The personalization is removed. `reset` is `false` when the step was not personalized for the lead: an idempotent no-op, not an error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reset": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "reset": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A path identifier is malformed (`ROUTE_BAD_REQUEST`), the body is invalid (`VALIDATION_ERROR`), or no API key was supplied (plain text).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Validation error",
+                  "code": "VALIDATION_ERROR"
+                }
+              },
+              "text/plain": {
+                "example": "no api key provided"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key, or a key that is not linked to a user (`ROUTE_UNAUTHORIZED`).",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "`REVIEW_DRAFT_CAMPAIGN_NOT_FOUND`, `REVIEW_DRAFT_LEAD_NOT_FOUND`, `REVIEW_DRAFT_STEP_NOT_FOUND` or `REVIEW_DRAFT_TEMPLATE_NOT_FOUND` - the campaign, the lead or the step does not exist in this workspace, or the step has no message.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Lead not found in this campaign",
+                  "code": "REVIEW_DRAFT_LEAD_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed - this endpoint only accepts PUT and DELETE"
+          },
+          "409": {
+            "description": "`REVIEW_DRAFT_STEP_ALREADY_REACHED` - the lead already reached this step (sent, skipped or ignored); or `CAMPAIGN_AI_DISCONTINUED`.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "The lead already reached this step: its message can no longer be personalized",
+                  "code": "REVIEW_DRAFT_STEP_ALREADY_REACHED"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded - 20 requests per 2 seconds per API key"
+          },
+          "422": {
+            "description": "`REVIEW_DRAFT_STEP_UNSUPPORTED` - voice notes, conditions and non-message steps.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This step type cannot be personalized for a lead",
+                  "code": "REVIEW_DRAFT_STEP_UNSUPPORTED"
+                }
+              }
+            }
           }
         }
       }
