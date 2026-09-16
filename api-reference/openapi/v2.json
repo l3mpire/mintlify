@@ -18503,6 +18503,8 @@
               "type": "string",
               "enum": [
                 "crm_sync_duplicate_company",
+                "crm_sync_duplicate_company_domain",
+                "crm_sync_duplicate_company_name",
                 "crm_sync_invalid_domain",
                 "crm_sync_duplicate_linkedin_url",
                 "crm_sync_duplicate_linkedin_url_sales_nav",
