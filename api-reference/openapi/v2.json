@@ -16775,6 +16775,7 @@
               "type": "string",
               "enum": [
                 "enrichment_duplicate_linkedin_url",
+                "enrichment_duplicate_linkedin_url_sales_nav",
                 "enrichment_duplicate_email",
                 "crm_sync_duplicate_linkedin_url",
                 "crm_sync_duplicate_linkedin_url_sales_nav",
