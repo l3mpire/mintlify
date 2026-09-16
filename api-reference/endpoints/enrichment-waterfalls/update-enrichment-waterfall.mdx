@@ -1,0 +1,20 @@
+---
+openapi: patch /v2/enrichments/waterfalls/{waterfallId}
+description: Updates the name or provider order of an enrichment waterfall.
+---
+
+<Warning>
+  This endpoint only accepts `name` and `providers`. Sending `conditions` is rejected with a `400`.
+</Warning>
+
+When `providers` is sent it replaces the whole order; providers you leave out are appended, disabled. On a default waterfall this takes over from the lemlist order: `editor` becomes your user id and the list is followed as is. Use [Reset Enrichment Waterfall](/api-reference/endpoints/enrichment-waterfalls/reset-enrichment-waterfall) to hand it back to lemlist.
+
+## Error codes
+
+| Code | Cause |
+| ---- | ----- |
+| `ENRICHMENT_WATERFALL_INVALID_NAME` | `name` is empty or longer than 100 characters. |
+| `ENRICHMENT_WATERFALL_UNKNOWN_PROVIDER` | A `providers[].id` is not listed by [List Enrichment Providers](/api-reference/endpoints/enrichment-providers/list-enrichment-providers) for this `type`. |
+| `ENRICHMENT_WATERFALL_DUPLICATE_PROVIDER` | The same provider id appears twice. |
+| `ENRICHMENT_WATERFALL_PROVIDER_NOT_CONNECTED` | An external provider is enabled while its API key is not saved. |
+| `ENRICHMENT_WATERFALL_EMPTY_UPDATE` | The body is empty. |
