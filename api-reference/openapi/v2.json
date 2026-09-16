@@ -4170,11 +4170,6 @@
           "connected": {
             "type": "boolean",
             "description": "Only on external providers: `true` once its API key is saved in lemlist. A waterfall can only enable a connected provider."
-          },
-          "connectedAt": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Only on connected external providers: when the current key was saved."
           }
         }
       },
@@ -4187,6 +4182,28 @@
             "items": {
               "$ref": "#/components/schemas/EnrichmentProvider"
             }
+          }
+        }
+      },
+      "EnrichmentProviderResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/EnrichmentProvider"
+          }
+        }
+      },
+      "EnrichmentProviderConnectRequest": {
+        "type": "object",
+        "required": [
+          "apiKey"
+        ],
+        "properties": {
+          "apiKey": {
+            "type": "string",
+            "description": "API key issued by the provider to your account.",
+            "minLength": 1,
+            "writeOnly": true
           }
         }
       },
@@ -27075,8 +27092,7 @@
                       "displayName": "Lusha",
                       "types": ["email", "phone"],
                       "source": "external",
-                      "connected": true,
-                      "connectedAt": "2026-08-20T10:00:00.000Z"
+                      "connected": true
                     },
                     {
                       "id": "apollo",
@@ -27100,6 +27116,137 @@
                 "example": {
                   "error": "Parameter \"type\" must be \"email\" or \"phone\"",
                   "code": "ENRICHMENT_WATERFALL_INVALID_TYPE"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/EnrichmentWaterfallUnauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/EnrichmentWaterfallInternalError"
+          }
+        }
+      }
+    },
+    "/v2/enrichments/providers/{providerId}/connection": {
+      "parameters": [
+        {
+          "name": "providerId",
+          "in": "path",
+          "required": true,
+          "description": "Id of an external provider, as listed by `GET /enrichments/providers`.",
+          "schema": {
+            "type": "string"
+          },
+          "example": "lusha"
+        }
+      ],
+      "put": {
+        "description": "Saves your own API key for an external provider. The key is stored as-is and is NOT validated against the provider; calling it again replaces the key. The provider is connected for every enrichment type it supports.\n\nOnce connected, the provider is added, disabled, to your existing custom waterfalls.",
+        "summary": "Connect Provider",
+        "operationId": "connectEnrichmentProvider",
+        "tags": [
+          "Enrichment Providers"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnrichmentProviderConnectRequest"
+              },
+              "example": {
+                "apiKey": "lsh_live_0123456789abcdef9f3a"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentProviderResponse"
+                },
+                "example": {
+                  "data": {
+                    "id": "lusha",
+                    "displayName": "Lusha",
+                    "types": [
+                      "email",
+                      "phone"
+                    ],
+                    "source": "external",
+                    "connected": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The provider is internal or unknown (`ENRICHMENT_PROVIDER_NOT_EXTERNAL`), or the request body is missing `apiKey`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentWaterfallError"
+                },
+                "example": {
+                  "error": "This provider cannot be connected: only external providers hold your own API key",
+                  "code": "ENRICHMENT_PROVIDER_NOT_EXTERNAL"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/EnrichmentWaterfallUnauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/EnrichmentWaterfallInternalError"
+          }
+        }
+      },
+      "delete": {
+        "description": "Removes your API key for an external provider. lemlist stops calling it on your account and removes it from your custom waterfalls.",
+        "summary": "Disconnect Provider",
+        "operationId": "disconnectEnrichmentProvider",
+        "tags": [
+          "Enrichment Providers"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentProviderResponse"
+                },
+                "example": {
+                  "data": {
+                    "id": "lusha",
+                    "displayName": "Lusha",
+                    "types": [
+                      "email",
+                      "phone"
+                    ],
+                    "source": "external",
+                    "connected": false
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The provider is internal or not connected. `code` is one of `ENRICHMENT_PROVIDER_NOT_EXTERNAL`, `ENRICHMENT_PROVIDER_NOT_CONNECTED`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentWaterfallError"
+                },
+                "example": {
+                  "error": "Provider \"apollo\" is not connected",
+                  "code": "ENRICHMENT_PROVIDER_NOT_CONNECTED"
                 }
               }
             }

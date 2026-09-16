@@ -386,7 +386,9 @@
                 "group": "Enrichment Providers",
                 "expanded": false,
                 "pages": [
-                  "api-reference/endpoints/enrichment-providers/list-enrichment-providers"
+                  "api-reference/endpoints/enrichment-providers/list-enrichment-providers",
+                  "api-reference/endpoints/enrichment-providers/connect-provider",
+                  "api-reference/endpoints/enrichment-providers/disconnect-provider"
                 ]
               },
               {
