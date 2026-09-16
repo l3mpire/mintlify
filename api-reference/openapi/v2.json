@@ -16775,8 +16775,10 @@
               "type": "string",
               "enum": [
                 "enrichment_duplicate_linkedin_url",
+                "enrichment_duplicate_linkedin_url_sales_nav",
                 "enrichment_duplicate_email",
                 "crm_sync_duplicate_linkedin_url",
+                "crm_sync_duplicate_linkedin_url_sales_nav",
                 "crm_sync_invalid_linkedin_url",
                 "crm_sync_invalid_url",
                 "crm_sync_invalid_email",
@@ -18501,8 +18503,11 @@
               "type": "string",
               "enum": [
                 "crm_sync_duplicate_company",
+                "crm_sync_duplicate_company_domain",
+                "crm_sync_duplicate_company_name",
                 "crm_sync_invalid_domain",
                 "crm_sync_duplicate_linkedin_url",
+                "crm_sync_duplicate_linkedin_url_sales_nav",
                 "crm_sync_invalid_linkedin_url",
                 "crm_sync_linkedin_url_not_company",
                 "crm_sync_invalid_url",
