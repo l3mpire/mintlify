@@ -114,7 +114,7 @@ The table below summarizes the required and optional fields for each step type. 
 | `linkedinCommentLastPost` | - | `index`, `delay` |
 | `linkedinEndorse` | - | `index`, `delay`, `skillName`, `endorseAnyFallback` |
 | `linkedinWithdrawInvitation` | - | `index`, `delay` |
-| `sendToAnotherCampaign` | `campaignId` | `index`, `delay` |
+| `sendToAnotherCampaign` | `campaignId` | `leadAction`, `index`, `delay` |
 | `conditional` | `conditionKey`, `delayType` (and `delay` when `delayType` is `within`) | `index` |
 | `whatsappMessage` | `message` | `index`, `delay` |
 | `sms` | `message` | `index`, `delay` |
@@ -147,11 +147,43 @@ In conditional steps, if the `delayType` is not `"within"`, the `delay` field is
 | `customOperator` (String, Conditional) | For `customLeadInfo` conditions only. How the field is compared. Allowed values: `equal`, `contains`, `empty`, `notEmpty` |
 | `customValue` (String, Conditional) | For `customLeadInfo` conditions only. The value the field is compared to. Required for `equal` and `contains`, and refused for `empty` and `notEmpty` |
 | `campaignId` (String, Conditional) | For steps of type `sendToAnotherCampaign` only. The target campaign ID to which a lead should be sent. The specified campaign must exist in the team and not be archived |
+| `leadAction` (String, Optional) | For steps of type `sendToAnotherCampaign` only. What happens to the lead in the **source** campaign once it has been moved. Allowed values: `continue` (keeps running the remaining steps), `pause`, `stop` (ends the source campaign for that lead). Omitted leaves the step without a value, which behaves as `continue`. See [What happens to the transferred lead](#what-happens-to-the-transferred-lead) below |
 | `images` (Array of strings, Optional) | For `linkedinInvite` and `linkedinSend` steps only. Public HTTPS URLs of images to attach to the LinkedIn message. lemlist downloads each file and re-hosts it. See the [LinkedIn media constraints](#linkedin-media-constraints) below |
 | `videos` (Array of strings, Optional) | For `linkedinInvite` and `linkedinSend` steps only. Public HTTPS URLs of videos to attach to the LinkedIn message. lemlist downloads each file and re-hosts it. See the [LinkedIn media constraints](#linkedin-media-constraints) below |
 | `skillName` (String, Optional) | For `linkedinEndorse` steps only. Name of the LinkedIn skill to endorse on the lead's profile |
 | `endorseAnyFallback` (Boolean, Optional) | For `linkedinEndorse` steps only. When `true` and the named skill is not on the lead's profile, lemlist falls back to endorsing any available skill |
 | `recordMode` (String, Optional) | For `linkedinVoiceNote` steps only. Determines how the audio is sourced. Allowed values: `manual` (user records the audio after step creation; default), `ai` (audio is generated from a text template provided in the lemlist UI) |
+
+## What happens to the transferred lead
+
+A `sendToAnotherCampaign` step adds the lead to the target campaign. `leadAction` decides what the
+**source** campaign then does with it.
+
+| Value | Effect on the lead in the source campaign |
+| --- | --- |
+| `continue` | Keeps running the remaining steps (the behaviour of a step with no `leadAction`) |
+| `pause` | Paused. The next step is created but not scheduled; resuming the lead schedules it |
+| `stop` | The source campaign is ended for that lead and its pending steps are dropped |
+
+<Note>
+A transfer that fails — the target campaign is archived, full, or the lead is unsubscribed — always
+**pauses** the lead, whatever `leadAction` says, so a lead that never moved does not walk on as if it
+had.
+</Note>
+
+<Note>
+Omitting `leadAction` leaves the step without a value, which the runtime reads as `continue`. A step
+added from the lemlist UI defaults to `stop` instead; that default belongs to the editor, not to the
+API.
+</Note>
+
+```json
+{
+    "type": "sendToAnotherCampaign",
+    "campaignId": "cam_target123",
+    "leadAction": "stop"
+}
+```
 
 ## LinkedIn invitation notes
 
