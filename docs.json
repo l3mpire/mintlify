@@ -383,6 +383,25 @@
                 ]
               },
               {
+                "group": "Enrichment Providers",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/enrichment-providers/list-enrichment-providers",
+                  "api-reference/endpoints/enrichment-providers/connect-provider",
+                  "api-reference/endpoints/enrichment-providers/disconnect-provider"
+                ]
+              },
+              {
+                "group": "Enrichment Waterfalls",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/enrichment-waterfalls/list-enrichment-waterfalls",
+                  "api-reference/endpoints/enrichment-waterfalls/get-enrichment-waterfall",
+                  "api-reference/endpoints/enrichment-waterfalls/update-enrichment-waterfall",
+                  "api-reference/endpoints/enrichment-waterfalls/reset-enrichment-waterfall"
+                ]
+              },
+              {
                 "group": "lemwarm",
                 "expanded": false,
                 "pages": [
