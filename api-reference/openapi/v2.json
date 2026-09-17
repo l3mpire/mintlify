@@ -13063,31 +13063,6 @@
         ],
         "parameters": [
           {
-            "name": "crm",
-            "in": "query",
-            "required": false,
-            "description": "`hubspot`, `salesforce` or `pipedrive`. Optional: defaults to the CRM your team is connected to, and any other CRM is refused.",
-            "example": "hubspot",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "hubspot",
-                "salesforce",
-                "pipedrive"
-              ]
-            }
-          },
-          {
-            "name": "userId",
-            "in": "query",
-            "required": false,
-            "description": "Team member whose CRM access is used. Optional: defaults to your team's CRM connection user. Must belong to your team.",
-            "example": "usr_M0hO7nYLNsInJ6ar6",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "type",
             "in": "query",
             "required": false,
@@ -13145,7 +13120,7 @@
             }
           },
           "400": {
-            "description": "The request was refused; `error` explains why (e.g. `CRM not connected: ...`, `User not in team`, `Bad params`, `Upgrade your plan to use this feature`, or a refusal from the CRM).",
+            "description": "The request was refused; `error` explains why (e.g. `CRM not connected: ...`, `Filter type can be only lead, contact or report`, `Upgrade your plan to use this feature`, or a refusal from the CRM).",
             "content": {
               "application/json": {
                 "schema": {
@@ -13218,18 +13193,9 @@
                     ],
                     "description": "Salesforce only: `lead` or `contact` list views, or `report`. Ignored by HubSpot and Pipedrive. Defaults to `lead` when your Salesforce connection allows Leads, `contact` otherwise."
                   },
-                  "crm": {
-                    "type": "string",
-                    "enum": [
-                      "hubspot",
-                      "salesforce",
-                      "pipedrive"
-                    ],
-                    "description": "`hubspot`, `salesforce` or `pipedrive`. Optional: defaults to the CRM your team is connected to, and any other CRM is refused."
-                  },
                   "userId": {
                     "type": "string",
-                    "description": "Team member whose CRM access is used. Optional: defaults to your team's CRM connection user. Must belong to your team."
+                    "description": "Salesforce only, for a list view scoped to its owner (\"My leads\", \"My contacts\"…): the team member the view is read as. Leave it out in every other case (HubSpot, Pipedrive, reports, views not scoped to an owner): your team's CRM connection is used."
                   },
                   "deduplicate": {
                     "oneOf": [
