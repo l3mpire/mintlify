@@ -15,13 +15,17 @@ in your workspace.
 
 ## Why `companyId` is required
 
-The People Database resolves a person's company from their own profile. If the
-person has changed jobs since the run, they belong to a different company than
-the one you sourced — so lemlist checks, and answers `409` rather than filing
-them under the wrong account and reporting success.
+The new contact is filed under the account you pass, whatever the People
+Database resolves from the person's own profile — that is what keeps a
+recommendation on the account it was made for.
+
+Someone your workspace already has as a contact is the one case this does not
+apply to: they stay on the account they are already filed under. An Add never
+moves a contact from one account to another, so rather than report a creation
+that did not happen, the call answers `409`.
 
 | Code | Meaning |
 | ---- | ------- |
 | `201` | Contact created. |
-| `404` | The person is no longer in the People Database. Re-run the sourcing to refresh the recommendations. |
-| `409` | Their profile now lists a different employer, so they were not added to this account. |
+| `404` | The person is already one of your contacts, or no longer in the People Database. Re-run the sourcing to refresh the recommendations. |
+| `409` | The person is already one of your contacts, filed under another account. They were left there. |

@@ -26688,7 +26688,7 @@
     "/contact-sourcing/contacts": {
       "post": {
         "summary": "Add a Sourced Contact",
-        "description": "Turns one contact-sourcing recommendation into a lemlist contact.\n\n`leadId` comes from a run's `contacts[].leadId` — a People-Database id, not a contact id. `companyId` is required and verified: if the person's profile now puts them at a different company, the contact is not filed under the account asked for and the call answers 409.",
+        "description": "Turns one contact-sourcing recommendation into a lemlist contact.\n\n`leadId` comes from a run's `contacts[].leadId` — a People-Database id, not a contact id. `companyId` is required and verified: the new contact is filed under that account, whatever the person's profile lists as their current employer. Someone your workspace already has as a contact is left where they are — an Add never moves a contact from one account to another — and the call answers 409 rather than reporting a creation that did not happen.",
         "tags": [
           "Contact sourcing"
         ],
@@ -26735,10 +26735,10 @@
             "description": "`findEmail` was asked for without the credits for it."
           },
           "404": {
-            "description": "The lead is no longer in the People Database. Re-run the sourcing to refresh the recommendations."
+            "description": "The person is already one of your contacts, or no longer in the People Database. Re-run the sourcing to refresh the recommendations."
           },
           "409": {
-            "description": "The lead's profile lists a different current employer, so they were not filed under this account."
+            "description": "The person is already one of your contacts, filed under another account. They were left there."
           }
         }
       }
