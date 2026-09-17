@@ -166,15 +166,22 @@ A `sendToAnotherCampaign` step adds the lead to the target campaign. `leadAction
 | `stop` | The source campaign is ended for that lead and its pending steps are dropped |
 
 <Note>
-A transfer that fails — the target campaign is archived, full, or the lead is unsubscribed — always
-**pauses** the lead, whatever `leadAction` says, so a lead that never moved does not walk on as if it
-had.
+A transfer that fails always **pauses** the lead, whatever `leadAction` says, so a lead that never
+moved does not walk on as if it had. A transfer fails when the target campaign is missing or
+archived, when it has reached its 40,000-lead limit, when the lead's email address is unsubscribed,
+and when the lead is **already in the target campaign** — a re-run of the same step, or two
+campaigns feeding one target, both land there.
 </Note>
 
 <Note>
 Omitting `leadAction` leaves the step without a value, which the runtime reads as `continue`. A step
 added from the lemlist UI defaults to `stop` instead; that default belongs to the editor, not to the
 API.
+</Note>
+
+<Note>
+`leadAction` is read when the step runs, not when the lead reaches it. Updating it applies to every
+lead still waiting at that step, including leads whose transfer is already queued.
 </Note>
 
 ```json
