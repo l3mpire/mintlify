@@ -13195,7 +13195,7 @@
                   },
                   "userId": {
                     "type": "string",
-                    "description": "Salesforce only, for a list view scoped to its owner (\"My leads\", \"My contacts\"…): the team member the view is read as. Leave it out in every other case (HubSpot, Pipedrive, reports, views not scoped to an owner): your team's CRM connection is used."
+                    "description": "Salesforce only, for a list view scoped to its owner (\"My leads\", \"My contacts\"…): the team member the view is read as. They must have their own Salesforce account connected in lemlist. Leave it out in every other case (reports, views not scoped to an owner); it is ignored for HubSpot and Pipedrive, where your team's CRM connection is used."
                   },
                   "deduplicate": {
                     "oneOf": [
