@@ -18475,6 +18475,17 @@
             }
           },
           {
+            "name": "listId",
+            "in": "query",
+            "required": false,
+            "description": "Filter companies to the members of a static CRM company list (`clt_xxx` format). Combines with every other filter. Ignored when `idsOrDomains` is provided.",
+            "example": "clt_abc123def456ghi78",
+            "schema": {
+              "type": "string",
+              "pattern": "^clt_[a-zA-Z0-9]+$"
+            }
+          },
+          {
             "name": "crmSyncStatus",
             "in": "query",
             "required": false,
@@ -18638,10 +18649,35 @@
             }
           },
           "400": {
-            "description": "Bad team",
+            "description": "Either a plain `Bad team`, or a validation envelope. Possible error codes: `CRM_LIST_ENTITY_MISMATCH` (the `listId` points at a contact list), `CRM_LIST_DYNAMIC` (the list is filter-driven, so it has no stored membership to filter on).",
             "content": {
               "text/plain": {
                 "example": "Bad team"
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "examples": {
+                  "entity-mismatch": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_LIST_ENTITY_MISMATCH",
+                        "message": "This list holds contacts, not companies"
+                      }
+                    }
+                  },
+                  "dynamic-list": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_LIST_DYNAMIC",
+                        "message": "This list is dynamic (filter-driven) and cannot be searched by membership"
+                      }
+                    }
+                  }
+                }
               }
             }
           },
@@ -18650,6 +18686,23 @@
             "content": {
               "text/plain": {
                 "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "No list on this team matches `listId` (`CRM_LIST_NOT_FOUND`). A list of another team and a deleted list both answer this.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "CRM_LIST_NOT_FOUND",
+                    "message": "No list found with this id"
+                  }
+                }
               }
             }
           },
