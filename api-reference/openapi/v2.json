@@ -18475,6 +18475,17 @@
             }
           },
           {
+            "name": "listId",
+            "in": "query",
+            "required": false,
+            "description": "Filter companies to the members of a CRM company list (`clt_xxx` format). Static company lists only: a contact list is rejected with `CRM_LIST_ENTITY_MISMATCH`, a dynamic (filter-driven) list with `CRM_LIST_DYNAMIC`, and an unknown id with `CRM_LIST_NOT_FOUND`. Combines with every other filter. Company list ids are not listed by the API — read one from the list URL in the lemlist app. Only applies to the paginated list — ignored when `idsOrDomains` is provided (that path returns the exact companies requested, unfiltered).",
+            "example": "clt_abc123def456ghi78",
+            "schema": {
+              "type": "string",
+              "pattern": "^clt_[a-zA-Z0-9]+$"
+            }
+          },
+          {
             "name": "crmSyncStatus",
             "in": "query",
             "required": false,
@@ -18652,6 +18663,9 @@
                 "example": "The authentication you supplied is incorrect"
               }
             }
+          },
+          "404": {
+            "description": "`CRM_LIST_NOT_FOUND` - the `listId` does not match a list on this team. A list of another team and a deleted list both answer this."
           },
           "405": {
             "description": "Method not allowed"
