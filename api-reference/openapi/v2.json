@@ -5129,20 +5129,13 @@
     "/team/crmUsers": {
       "get": {
         "summary": "Get Team CRM Users",
+        "description": "Lists the team members whose CRM account is connected to lemlist.",
         "tags": [
           "Team"
         ],
         "parameters": [],
         "responses": {
           "200": {
-            "headers": {
-              "Content-Type": {
-                "schema": {
-                  "type": "string"
-                },
-                "example": "application/json"
-              }
-            },
             "description": "Success",
             "content": {
               "application/json": {
@@ -5157,33 +5150,35 @@
                       },
                       "crm": {
                         "type": "string",
-                        "description": "The CRM integrated with lemlist (e.g., salesforce, hubspot, pipedrive)"
+                        "description": "The CRM integrated with lemlist (hubspot, salesforce or pipedrive)"
                       }
                     }
                   }
                 },
                 "example": [
                   {
-                    "userId": "usr_FU6yAd3UdBFel0UDy",
-                    "crm": "salesforce"
-                  },
-                  {
-                    "userId": "usr_FU6yAd3UdBFel0UDy",
+                    "userId": "usr_M0hO7nYLNsInJ6ar6",
                     "crm": "hubspot"
-                  },
-                  {
-                    "userId": "usr_FU6yAd3UdBFel0UDy",
-                    "crm": "pipedrive"
                   }
                 ]
               }
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / Endpoint not available",
+            "description": "Bad team",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Bad team"
+                }
               }
             }
           },
@@ -13081,35 +13076,16 @@
     "/crm/filters": {
       "get": {
         "summary": "Get CRM Filters",
+        "description": "Lists the filters leads can be imported from, in the CRM your team is connected to: HubSpot contact lists, Salesforce list views or reports, Pipedrive filters. Pass the returned `id` to [Import Leads from CRM](/api-reference/endpoints/leads/import-leads-from-crm).",
         "tags": [
           "Leads"
         ],
         "parameters": [
           {
-            "name": "crm",
-            "in": "query",
-            "required": true,
-            "description": "CRM name (e.g., hubspot, salesforce, pipedrive)",
-            "example": "hubspot",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "userId",
-            "in": "query",
-            "required": true,
-            "description": "Connected user ID",
-            "example": "usr_FU6yAd3UdBFel0UDy",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "name": "type",
             "in": "query",
             "required": false,
-            "description": "Filter type for Salesforce. Can be: lead, contact, or report.",
+            "description": "Salesforce only: `lead` or `contact` list views, or `report`. Ignored by HubSpot and Pipedrive. Defaults to `lead` when your Salesforce connection allows Leads, `contact` otherwise.",
             "example": "lead",
             "schema": {
               "type": "string",
@@ -13129,7 +13105,24 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/CrmFilter"
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "oneOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "number"
+                          }
+                        ],
+                        "description": "Filter ID in the CRM"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Filter name in the CRM"
+                      }
+                    }
                   }
                 },
                 "example": [
@@ -13146,15 +13139,30 @@
             }
           },
           "400": {
-            "description": "Bad team",
+            "description": "The request was refused; `error` explains why (e.g. `CRM not connected: ...`, `Filter type can be only lead, contact or report`, `Upgrade your plan to use this feature`, or a refusal from the CRM).",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "CRM not connected: the team must connect its CRM in lemlist settings before importing"
+                }
               }
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
           }
         }
       }
@@ -13174,6 +13182,7 @@
       ],
       "post": {
         "summary": "Import Leads from CRM",
+        "description": "Links a campaign to a filter of your connected CRM and imports its records as leads.\n\n**Recurring:** the campaign stays linked to the filter, and the records the filter picks up later are imported automatically.\n\n**New link only:** the campaign must not be linked to a CRM filter yet. Changing or unlinking a campaign's CRM filter is done in the lemlist app.\n\nThe filter is checked in your CRM before anything is saved. The import runs in the background: leads appear over the next minutes, not in the response.\n\n**Credits:** the enrichments requested in `enrichFeature` run on every imported lead, now and later, and are charged to the user of the API key.",
         "tags": [
           "Leads"
         ],
@@ -13183,50 +13192,93 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "crm": {
-                    "type": "string",
-                    "description": "CRM name"
-                  },
-                  "userId": {
-                    "type": "string",
-                    "description": "User ID with CRM connection"
-                  },
                   "filterId": {
-                    "type": "string",
-                    "description": "Filter ID from the CRM"
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ],
+                    "description": "Filter ID returned by [Get CRM Filters](/api-reference/endpoints/crm/get-crm-filters)"
                   },
                   "filterType": {
                     "type": "string",
-                    "description": "Type of filter (for Salesforce)"
+                    "enum": [
+                      "lead",
+                      "contact",
+                      "report"
+                    ],
+                    "description": "Salesforce only: `lead` or `contact` list views, or `report`. Ignored by HubSpot and Pipedrive. Defaults to `lead` when your Salesforce connection allows Leads, `contact` otherwise."
+                  },
+                  "userId": {
+                    "type": "string",
+                    "description": "Salesforce only, for a list view scoped to its owner (\"My leads\", \"My contacts\"…): the team member the view is read as. They must have their own Salesforce account connected in lemlist. Leave it out in every other case (reports, views not scoped to an owner); it is ignored for HubSpot and Pipedrive, where your team's CRM connection is used."
                   },
                   "deduplicate": {
-                    "type": "boolean",
-                    "description": "Whether to deduplicate leads"
+                    "oneOf": [
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "type": "string",
+                        "enum": [
+                          "off",
+                          "all",
+                          "activeOnly"
+                        ]
+                      }
+                    ],
+                    "description": "`all` (or `true`) skips contacts already in another campaign, `activeOnly` skips only contacts still active in another campaign, `off` (or `false`, the default) imports everyone."
+                  },
+                  "enrichFeature": {
+                    "oneOf": [
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "find_email",
+                            "find_phone",
+                            "verify",
+                            "linkedin_enrichment"
+                          ]
+                        }
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ],
+                    "description": "Enrichments to run on every imported lead, as an array or a `|`-separated string (e.g. `find_email|verify`). Consumes credits for each lead."
                   }
                 },
                 "required": [
-                  "crm",
-                  "userId",
                   "filterId"
                 ]
               },
               "example": {
-                "crm": "hubspot",
-                "userId": "usr_FU6yAd3UdBFel0UDy",
                 "filterId": "16",
-                "deduplicate": true
+                "deduplicate": "all",
+                "enrichFeature": [
+                  "find_email"
+                ]
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "The campaign is linked to the filter; the import runs in the background.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "additionalProperties": true
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  }
                 },
                 "example": {
                   "ok": true
@@ -13235,18 +13287,50 @@
             }
           },
           "400": {
-            "description": "Bad team",
+            "description": "The request was refused; `error` explains why (e.g. `This campaign already imports from a CRM filter: ...`, `CRM filter not found: ...`, `CRM not connected: ...`, `User not in team`, `Bad params`, `Unsupported enrichment features`, `Upgrade your plan to use this feature`, or a credit refusal for the requested enrichments).",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "This campaign already imports from a CRM filter: change or unlink it in lemlist"
+                }
               }
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "Campaign not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Campaign not found"
+                }
+              }
+            }
           }
-        },
-        "parameters": []
+        }
       }
     },
     "/database/filters": {
