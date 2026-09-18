@@ -73,6 +73,7 @@ Only include the fields you want to update. Required fields are not enforced her
 | `customOperator` | string | `conditional` keyed `customLeadInfo` | One of `equal`, `contains`, `empty`, `notEmpty` |
 | `customValue` | string | `conditional` keyed `customLeadInfo` | The value the field is compared to. Required for `equal` and `contains`, refused for `empty` and `notEmpty` |
 | `campaignId` | string | `sendToAnotherCampaign` | ID of destination campaign |
+| `leadAction` | string | `sendToAnotherCampaign` | What happens to the lead in the source campaign once it has been moved. One of `continue`, `pause`, `stop`. See [What happens to the transferred lead](/api-reference/endpoints/sequences/add-step-to-sequence#what-happens-to-the-transferred-lead) on Add Step |
 | `images` | array of strings | `linkedinInvite`, `linkedinSend` | Public HTTPS URLs of images to attach. Replaces the step's current images — pass `[]` to clear them. See the [LinkedIn media constraints](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-media-constraints) on Add Step |
 | `videos` | array of strings | `linkedinInvite`, `linkedinSend` | Public HTTPS URLs of videos to attach. Replaces the step's current videos — pass `[]` to clear them. See the [LinkedIn media constraints](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-media-constraints) on Add Step |
 | `skillName` | string | `linkedinEndorse` | Name of the LinkedIn skill to endorse on the lead's profile |

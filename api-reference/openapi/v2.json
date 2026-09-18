@@ -1326,6 +1326,15 @@
           "emailTemplateBId": {
             "type": "string",
             "description": "Email template ID of variant B (present when an A/B test exists on the step)"
+          },
+          "sendToAnotherCampaignId": {
+            "type": "string",
+            "description": "Applies to `sendToAnotherCampaign` steps only. Target campaign the lead is moved to."
+          },
+          "leadAction": {
+            "type": "string",
+            "description": "Applies to `sendToAnotherCampaign` steps only. What happens to the lead in the source campaign once it has been moved. Absent when the step carries no value, which behaves as `continue`.",
+            "enum": ["continue", "pause", "stop"]
           }
         }
       },
@@ -8090,6 +8099,11 @@
                     "type": "string",
                     "description": "Target campaign ID for sendToAnotherCampaign steps. The campaign must exist and not be archived"
                   },
+                  "leadAction": {
+                    "type": "string",
+                    "description": "Applies to `sendToAnotherCampaign` steps only. What happens to the lead in the SOURCE campaign once it has been moved to the target one. `continue` keeps it running the remaining steps, `pause` pauses it, `stop` ends the source campaign for it. Omitted leaves the step without a value, which behaves as `continue`; a step added from the lemlist UI defaults to `stop`. A transfer that fails always pauses the lead, whatever this says.",
+                    "enum": ["continue", "pause", "stop"]
+                  },
                   "images": {
                     "type": "array",
                     "items": {
@@ -8441,6 +8455,11 @@
                   "campaignId": {
                     "type": "string",
                     "description": "Target campaign ID for sendToAnotherCampaign steps. The campaign must exist and not be archived"
+                  },
+                  "leadAction": {
+                    "type": "string",
+                    "description": "Applies to `sendToAnotherCampaign` steps only. What happens to the lead in the SOURCE campaign once it has been moved to the target one. `continue` keeps it running the remaining steps, `pause` pauses it, `stop` ends the source campaign for it. Omitted leaves the step without a value, which behaves as `continue`; a step added from the lemlist UI defaults to `stop`. A transfer that fails always pauses the lead, whatever this says.",
+                    "enum": ["continue", "pause", "stop"]
                   },
                   "images": {
                     "type": "array",
