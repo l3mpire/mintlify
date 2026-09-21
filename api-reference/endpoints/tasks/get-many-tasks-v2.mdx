@@ -1,0 +1,178 @@
+---
+openapi: "get /v2/tasks"
+description: "Searches your team's tasks with the filters of the Tasks page, and returns every status."
+---
+
+This is the v2 of [Get Many Tasks](/api-reference/endpoints/tasks/get-many-tasks). It
+addresses the same search engine as the Tasks page in the app, so anything you can
+filter on there, you can filter on here.
+
+Two tiers of filtering:
+
+- **Flat query parameters** for the common cases — `status=due&assignedTo=usr_...`
+- **`advancedFilters`**, a JSON tree, for everything else, including your custom
+  fields. [List the available fields](/api-reference/endpoints/tasks/get-task-filters)
+  to discover them.
+
+<Note>
+  Unlike v1, completed tasks are returned. v1 only ever served `due`, `upcoming`
+  and `paused` tasks; v2 returns every status unless `status` narrows it.
+</Note>
+
+## Filtering
+
+Any list parameter takes a single value, a comma-separated list, or the repeated
+`key[]=` notation — the three are equivalent. Values are OR-ed inside a parameter,
+AND-ed across parameters. `taskId`, `contactId`, `companyId`, `leadId`,
+`campaignId`, `assignedTo` and `type` each take a `…Not` counterpart for exclusion.
+
+| Parameter                           | Narrows to                                                           |
+| ----------------------------------- | -------------------------------------------------------------------- |
+| `taskId`                            | These task ids (100 max)                                             |
+| `objectType`                        | Contact tasks, or company tasks                                      |
+| `contactId`                         | The contact's tasks, its leads' tasks included                       |
+| `companyId`                         | The company's tasks, and the tasks of its contacts                   |
+| `leadId`, `campaignId`, `assignedTo` | The given ids                                                       |
+| `type`, `channel`                   | The step type, or the coarser channel                                |
+| `status`, `priority`                | Task status and priority                                             |
+| `title`, `contactLinkedinUrl`       | Substring match                                                      |
+| `dueDateFrom` / `dueDateTo`         | Due-date range, inclusive, ISO-8601                                  |
+| `completedAtFrom` / `completedAtTo` | Completion-date range (done or ignored)                              |
+| `hasCampaign`, `hasDueDate`         | Presence of a campaign, of a due date                                |
+| `search`                            | Free text over the title and the contact / company fields            |
+| `advancedFilters`                   | Anything else — see below                                            |
+
+### Statuses
+
+`due`, `upcoming`, `paused`, `done`, `ignored`. `pending` is an alias for
+`due,upcoming,paused`.
+
+<Note>
+  `upcoming` is maintained by a background job, not computed when you read: a task
+  crossing its due date flips to `due` on the next sweep, not at the exact instant.
+  Filter on `dueDate` when you need a read-time-exact answer.
+</Note>
+
+## Advanced filters
+
+`advancedFilters` takes a filter tree encoded as JSON. A node is either a
+**group** (`connector` `and` / `or`, plus `children`) or a **condition**
+(`property`, `operator`, `value`). The tree is bounded: **depth 5, 50 conditions**.
+
+```json
+{
+  "type": "group",
+  "id": "root",
+  "connector": "and",
+  "children": [
+    {
+      "type": "condition",
+      "id": "c1",
+      "property": "contactLeadStatus",
+      "operator": "is_any_of",
+      "value": ["Email sent"]
+    },
+    {
+      "type": "group",
+      "id": "g1",
+      "connector": "or",
+      "children": [
+        {
+          "type": "condition",
+          "id": "c2",
+          "property": "companyIndustry",
+          "operator": "contains",
+          "value": "software"
+        },
+        {
+          "type": "condition",
+          "id": "c3",
+          "property": "cf_contact_tier",
+          "operator": "is",
+          "value": "A"
+        }
+      ]
+    }
+  ]
+}
+```
+
+Every `property` must be a field returned by
+[List Task Filters](/api-reference/endpoints/tasks/get-task-filters), and every
+`operator` must be one that field's type allows. An unknown field or a wrong
+operator is a `400` — never a silently ignored condition.
+
+## Sorting and pagination
+
+`sortBy` accepts `dueDate` (default), `status`, `priority`, `assignedTo`,
+`campaignId`, `score`, `handledOn` and `contactJobTitle`; `sortOrder` is `asc` or
+`desc` (default `desc`).
+
+Pagination is offset-based and **1-based**: `page` (default 1) and `limit`
+(default 50, max 100). `page * limit` must not exceed **10 000** — past that the
+request returns `400 PAGE_OUT_OF_RANGE` rather than silently serving another page.
+
+## Coming from v1
+
+| v1 filter       | v2                            | Note                                                     |
+| --------------- | ----------------------------- | -------------------------------------------------------- |
+| `fullName`      | `advancedFilters` on `contactName` |                                                     |
+| `email`         | `advancedFilters` on `contactEmail` |                                                    |
+| `phone`         | `advancedFilters` on `contactPhone` |                                                    |
+| `campaignId`    | `campaignId` / `campaignIdNot` |                                                         |
+| `assignedTo`    | `assignedTo` / `assignedToNot` | User ids, same values                                   |
+| `type`          | `type` / `typeNot`             | Same raw vocabulary                                     |
+| `dueDate`       | `dueDateFrom` / `dueDateTo`    | ISO-8601 instead of `YYYY-MM-DD`                        |
+| `linkedin`      | `contactLinkedinUrl`           | Matches the **contact's** URL, where v1 matched the lead's |
+| `campaignState` | —                              | No equivalent, see below                                |
+
+Also worth knowing when porting a query:
+
+- `page` is 1-based here, where v1 is 0-indexed.
+- The response is `{ results, total, limit, page }`, and every task key is always
+  present — `null` rather than omitted.
+- Dates are ISO-8601 instants.
+
+## Limits
+
+- **No `createdAt` / `updatedAt`.** A task's real creation timestamp only exists on
+  part of the data, and no update timestamp is indexed — so neither can be filtered
+  nor sorted on. `dueDate` and `completedAt` are the reliable ones.
+- **No `campaignState`.** v1 could filter tasks by the state of their campaign; the
+  task document does not carry it. Fetch the campaigns and filter on your side.
+- **No cursor pagination.** Offset only, capped at 10 000 rows: narrow with a date
+  range to walk a larger set.
+- **`source` is not available.** The nearest signals are `manual` in the response
+  and the `hasCampaign` parameter.
+
+## Examples
+
+<CodeGroup>
+
+```bash Due tasks of one user
+curl --request GET \
+  --url 'https://api.lemlist.com/api/v2/tasks?status=due&assignedTo=usr_A1B2C3D4E5F6G7H8I&limit=50' \
+  --header 'Authorization: Basic <encoded-value>'
+```
+
+```bash Every task of a company, its contacts included
+curl --request GET \
+  --url 'https://api.lemlist.com/api/v2/tasks?companyId=cmp_A1B2C3D4E5F6G7H8I&sortBy=dueDate&sortOrder=asc' \
+  --header 'Authorization: Basic <encoded-value>'
+```
+
+```bash Tasks completed in January
+curl --request GET \
+  --url 'https://api.lemlist.com/api/v2/tasks?status=done&completedAtFrom=2026-01-01T00:00:00.000Z&completedAtTo=2026-01-31T23:59:59.999Z' \
+  --header 'Authorization: Basic <encoded-value>'
+```
+
+```bash Advanced filter, with the contact embedded
+curl --request GET \
+  --url 'https://api.lemlist.com/api/v2/tasks?include=contact' \
+  --data-urlencode 'advancedFilters={"type":"condition","id":"c1","property":"contactLeadStatus","operator":"is_any_of","value":["Email sent"]}' \
+  --get \
+  --header 'Authorization: Basic <encoded-value>'
+```
+
+</CodeGroup>

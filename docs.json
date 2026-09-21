@@ -285,6 +285,8 @@
                 "expanded": false,
                 "pages": [
                   "api-reference/endpoints/tasks/create-task",
+                  "api-reference/endpoints/tasks/get-many-tasks-v2",
+                  "api-reference/endpoints/tasks/get-task-filters",
                   "api-reference/endpoints/tasks/get-many-tasks",
                   "api-reference/endpoints/tasks/update-task",
                   "api-reference/endpoints/tasks/ignore-tasks"
