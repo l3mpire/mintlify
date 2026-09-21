@@ -18763,7 +18763,7 @@
       },
       "post": {
         "summary": "Add and update company",
-        "description": "Creates a new company or updates an existing one (upsert). If a company with the same domain, LinkedIn URL, or Sales Navigator URL already exists, it is updated as the `updateStrategy` query parameter says (by default, sent values replace stored ones and empty values are ignored). You can target an existing company directly by providing `companyId`, bypassing domain/LinkedIn matching — in that case `name` and `domain` become optional.",
+        "description": "Creates a new company or updates an existing one (upsert). If a company with the same domain, LinkedIn URL, or Sales Navigator URL already exists, it is updated as the `updateStrategy` query parameter says (by default, sent values replace stored ones and empty values are ignored). You can target an existing company directly by providing `companyId`, bypassing domain/LinkedIn matching, in which case `name` and the identifiers become optional. Without `companyId`, `name` is required together with at least one identifier: `domain`, `linkedinUrl` or `linkedinUrlSalesNav`.",
         "tags": [
           "Companies"
         ],
@@ -18776,7 +18776,7 @@
                 "properties": {
                   "companyId": {
                     "type": "string",
-                    "description": "Existing company ID. Updates a specific company by ID, bypassing domain/LinkedIn matching. Can only be used to update an existing company, not to create a new one. When provided, `name` and `domain` become optional."
+                    "description": "Existing company ID. Updates a specific company by ID, bypassing domain/LinkedIn matching. Can only be used to update an existing company, not to create a new one. When provided, `name` and the identifiers become optional."
                   },
                   "name": {
                     "type": "string",
@@ -18784,15 +18784,15 @@
                   },
                   "domain": {
                     "type": "string",
-                    "description": "Company website domain (e.g. `lemlist.com`). Used as a unique key for upsert matching. Required unless `companyId` is provided."
+                    "description": "Company website domain (e.g. `lemlist.com`). Used as a unique key for upsert matching. Without `companyId`, at least one identifier is required among `domain`, `linkedinUrl` and `linkedinUrlSalesNav`."
                   },
                   "linkedinUrl": {
                     "type": "string",
-                    "description": "LinkedIn company page URL. Used as an alternative unique key for upsert matching."
+                    "description": "LinkedIn company page URL. Used as an alternative unique key for upsert matching, and accepted as the sole identifier of a new company."
                   },
                   "linkedinUrlSalesNav": {
                     "type": "string",
-                    "description": "LinkedIn Sales Navigator company URL. Used as an alternative unique key for upsert matching."
+                    "description": "LinkedIn Sales Navigator company URL. Used as an alternative unique key for upsert matching, and accepted as the sole identifier of a new company."
                   },
                   "companyOwner": {
                     "type": "string",
