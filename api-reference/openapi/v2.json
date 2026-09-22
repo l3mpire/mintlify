@@ -768,6 +768,26 @@
             "type": "string",
             "format": "date-time",
             "description": "When the activity occurred"
+          },
+          "contactId": {
+            "type": "string",
+            "description": "Contact the activity relates to. Present on every activity, campaign or not."
+          },
+          "leadEmail": {
+            "type": "string",
+            "description": "Lead email as it was when the activity happened. Campaign activities only (absent when the activity has no `leadId`)."
+          },
+          "leadFirstName": {
+            "type": "string",
+            "description": "Lead first name as it was when the activity happened. Campaign activities only, and only if the lead had the variable at that moment. For a name on every activity, read the current lead (`lead.variables.firstName` in v2) or the contact instead."
+          },
+          "leadLastName": {
+            "type": "string",
+            "description": "Lead last name as it was when the activity happened. Same scope as `leadFirstName`."
+          },
+          "leadCompanyName": {
+            "type": "string",
+            "description": "Lead company name as it was when the activity happened. Same scope as `leadFirstName`."
           }
         }
       },
