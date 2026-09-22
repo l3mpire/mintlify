@@ -243,11 +243,24 @@ Each event is delivered as a `POST` to your `targetUrl` with a JSON body that mi
 | `sequenceId` | string | Sequence the task belonged to |
 | `sequenceStep` | number | 0-based step index in the sequence |
 | `stepId` | string | Stable identifier of the step (survives a reorder — see note below) |
-| `leadId` | string | Lead targeted by the activity |
-| `leadEmail`, `leadFirstName`, `leadLastName` | string | Denormalized lead identity |
+| `leadId` | string | Lead targeted by the activity (campaign events only) |
+| `contactId` | string | Contact the activity relates to |
+| `leadEmail`, `leadFirstName`, `leadLastName`, `leadCompanyName`, `leadPhone`, `leadPicture` | string | Lead identity as it was when the event happened. Campaign events only, and only the variables the lead had at that moment |
+| `email`, `firstName`, `lastName`, `linkedinUrl`, `phone`, `jobTitle`, `companyName`, … | string | Current contact record (its fields, custom fields and company), added at delivery time to every event that has a `contactId`. Never overrides a key already set on the event |
 | `sendUserId`, `sendUserEmail`, `sendUserName` | string | Sender (lemlist user) identity |
 | `subject` | string | Email subject (email events only) |
 | `secret` | string | Echoed back if a `secret` was set on the webhook |
+
+<Note>
+  **Non-campaign events carry no `lead*` keys.** An activity created from a
+  contact page or the inbox rather than from a campaign step (a LinkedIn message
+  sent outside a campaign, its opens and replies) has a
+  `contactId` but no `leadId`, so `leadFirstName`, `leadLastName` and `leadEmail`
+  are absent: there is no lead to take them from. `firstName`, `lastName` and
+  `email` are still present, read from the contact. To get a name on every
+  event, read `firstName` / `lastName`, or `leadFirstName` / `leadLastName` with
+  a fallback to them.
+</Note>
 
 <Note>
   `stepId` identifies the step itself, while `sequenceStep` is a position that
