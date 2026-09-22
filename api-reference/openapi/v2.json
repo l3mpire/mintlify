@@ -15,6 +15,16 @@
       "basicAuth": []
     }
   ],
+  "tags": [
+    {
+      "name": "Enrichment Providers",
+      "description": "The data providers lemlist can call to find an email or a phone.\n\nInternal providers are paid with lemlist credits and always available. External providers run on your own account: connect one by saving its API key, and it becomes available to your waterfalls. `GET /enrichments/providers` is the catalog of provider ids accepted by the waterfall endpoints."
+    },
+    {
+      "name": "Enrichment Waterfalls",
+      "description": "Control which data providers lemlist calls when enriching a contact, and in which order.\n\nA waterfall is an ordered list of providers for one enrichment `type` (`email` or `phone`). Providers are tried one after the other until one returns a result.\n\nEvery team has exactly one default waterfall per type (`isDefault: true`). While its `editor` is `lemlist` it follows the lemlist behaviour: providers you connected with your own API key are tried first, then internal providers in a random order. Once a team member edits its provider list, `editor` becomes that user's id and the list is followed as is; resetting it hands it back to `lemlist`.\n\nCustom waterfalls (`isDefault: false`) carry `conditions` on the contact being enriched, keyed by contact property; every key present must match. When a contact is enriched, lemlist runs a single waterfall: the custom waterfall of the requested type whose conditions match the contact, or the default waterfall when none does. If several match, the one with the most condition keys wins, then the most recently updated. Only that waterfall runs; when it finds nothing, the enrichment ends without falling back to another one."
+    }
+  ],
   "components": {
     "securitySchemes": {
       "basicAuth": {
@@ -4151,6 +4161,311 @@
             "cc": [
               "jane@example.com"
             ]
+          }
+        }
+      },
+      "EnrichmentWaterfallType": {
+        "type": "string",
+        "description": "Kind of data the waterfall looks for.",
+        "enum": ["email", "phone"]
+      },
+      "EnrichmentProvider": {
+        "type": "object",
+        "description": "A data provider your team can place in a waterfall.",
+        "required": ["id", "displayName", "types", "source"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable identifier, to use as `providers[].id` in the waterfall endpoints.",
+            "example": "prospeo"
+          },
+          "displayName": {
+            "type": "string",
+            "description": "Name shown in the lemlist app.",
+            "example": "Prospeo"
+          },
+          "types": {
+            "type": "array",
+            "description": "Enrichment types this provider supports.",
+            "items": {
+              "$ref": "#/components/schemas/EnrichmentWaterfallType"
+            }
+          },
+          "source": {
+            "type": "string",
+            "description": "`internal`: paid with lemlist credits, always available. `external`: called with your own API key, saved through the connection endpoint.",
+            "enum": ["internal", "external"]
+          },
+          "connected": {
+            "type": "boolean",
+            "description": "Only on external providers: `true` once its API key is saved in lemlist. A waterfall can only enable a connected provider."
+          }
+        }
+      },
+      "EnrichmentProviderListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "Providers available for the requested type, in the lemlist default order",
+            "items": {
+              "$ref": "#/components/schemas/EnrichmentProvider"
+            }
+          }
+        }
+      },
+      "EnrichmentProviderResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/EnrichmentProvider"
+          }
+        }
+      },
+      "EnrichmentProviderConnectRequest": {
+        "type": "object",
+        "required": [
+          "apiKey"
+        ],
+        "properties": {
+          "apiKey": {
+            "type": "string",
+            "description": "API key issued by the provider to your account.",
+            "minLength": 1,
+            "writeOnly": true
+          }
+        }
+      },
+      "EnrichmentWaterfallConditions": {
+        "type": "object",
+        "description": "Conditions on the contact being enriched, keyed by contact property. Every key present must match for the waterfall to run. New keys will be added over time; unknown keys are rejected.",
+        "additionalProperties": false,
+        "properties": {
+          "country": {
+            "type": "object",
+            "description": "The contact's resolved country (from its `location`, `country` or company data), as ISO 3166-1 alpha-2 codes.",
+            "properties": {
+              "in": {
+                "type": "array",
+                "description": "Countries that match. Unique.",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Z]{2}$"
+                },
+                "example": ["FR", "DE"]
+              },
+              "out": {
+                "type": "array",
+                "description": "Countries that exclude the contact. Unique, disjoint from `in`. At least one of `in` or `out` must be non-empty.",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Z]{2}$"
+                }
+              }
+            }
+          }
+        }
+      },
+      "EnrichmentWaterfallProvider": {
+        "type": "object",
+        "description": "One step of a waterfall. In requests, the position in the `providers` array is the execution order and `order` is ignored. In responses, `order` is always present.",
+        "required": ["id", "enabled"],
+        "properties": {
+          "order": {
+            "type": "integer",
+            "description": "Execution rank, starting at 1, matching the position in the array. Returned only.",
+            "minimum": 1
+          },
+          "id": {
+            "type": "string",
+            "description": "Provider id, from `GET /enrichments/providers`.",
+            "example": "prospeo"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Disabled providers keep their position but are skipped at enrichment time."
+          },
+          "image": {
+            "type": "string",
+            "description": "Path of the provider logo shown in the lemlist app, relative to the app origin. Read-only.",
+            "example": "/lemrich/prospeo.svg"
+          },
+          "source": {
+            "type": "string",
+            "description": "`internal`: paid with lemlist credits. `external`: called with your own API key. Read-only.",
+            "enum": ["internal", "external"]
+          },
+          "shuffled": {
+            "type": "boolean",
+            "description": "Only on a default waterfall while its `editor` is `lemlist`. `true`: tried in a random position among the other shuffled providers; `false`: always tried first, at its position (providers you connected with your own API key). Read-only."
+          },
+          "tier": {
+            "type": "integer",
+            "description": "Only on the default phone waterfall while its `editor` is `lemlist`. Phone providers are tried tier by tier, in a random order inside each tier. Read-only.",
+            "minimum": 1
+          }
+        }
+      },
+      "EnrichmentWaterfall": {
+        "type": "object",
+        "description": "An ordered list of providers for one enrichment type.",
+        "required": [
+          "id",
+          "type",
+          "name",
+          "isDefault",
+          "editor",
+          "providers",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Waterfall id. Always `default_email` or `default_phone` for a default waterfall, even after it was edited; custom waterfalls get an id prefixed with `ecw_`.",
+            "example": "ecw_ExAmPlE1234567890a"
+          },
+          "type": {
+            "$ref": "#/components/schemas/EnrichmentWaterfallType"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name, 1 to 100 characters.",
+            "example": "Europe email waterfall"
+          },
+          "isDefault": {
+            "type": "boolean",
+            "description": "`true` for the team's default waterfall of this type (one per type, cannot be created or deleted). `false` for a custom waterfall."
+          },
+          "editor": {
+            "type": "string",
+            "description": "Who defined the provider order. `lemlist` on a default waterfall nobody edited: connected external providers first, then internal providers in a random order (tier by tier for phone, see `providers[].tier`); `providers` then shows a reference order. Otherwise the id of the team member who last edited the waterfall (`usr_` prefix): `providers` is then followed as is. Custom waterfalls always have a user editor.",
+            "example": "lemlist"
+          },
+          "conditions": {
+            "description": "Only on custom waterfalls; a default waterfall applies to every contact not matched by a custom one.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EnrichmentWaterfallConditions"
+              }
+            ]
+          },
+          "providers": {
+            "type": "array",
+            "description": "Execution order. Always contains every provider of the catalog for this `type` exactly once, disabled ones included. External providers appear only while connected; a newly connected one is appended disabled on custom waterfalls.",
+            "items": {
+              "$ref": "#/components/schemas/EnrichmentWaterfallProvider"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "`null` on a default waterfall that was never edited."
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "`null` on a default waterfall that was never edited."
+          }
+        }
+      },
+      "EnrichmentWaterfallUpdateRequest": {
+        "type": "object",
+        "description": "At least one property is required.",
+        "minProperties": 1,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "providers": {
+            "type": "array",
+            "description": "Replaces the whole order, may be partial; left-out providers are appended, disabled.",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/EnrichmentWaterfallProvider"
+            }
+          }
+        }
+      },
+      "EnrichmentWaterfallResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/EnrichmentWaterfall"
+          }
+        }
+      },
+      "EnrichmentWaterfallListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "Default waterfalls first, then custom waterfalls most recently created first",
+            "items": {
+              "$ref": "#/components/schemas/EnrichmentWaterfall"
+            }
+          }
+        }
+      },
+      "EnrichmentWaterfallError": {
+        "type": "object",
+        "description": "Error envelope returned by the enrichment waterfall endpoints.",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Human-readable explanation of the failure"
+          },
+          "code": {
+            "type": "string",
+            "description": "Machine-readable error code, stable across releases"
+          }
+        }
+      }
+    },
+    "responses": {
+      "EnrichmentWaterfallUnauthorized": {
+        "description": "Unauthorized - invalid or missing API key",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/EnrichmentWaterfallError"
+            },
+            "example": {
+              "error": "Route unauthorized",
+              "code": "ROUTE_UNAUTHORIZED"
+            }
+          }
+        }
+      },
+      "EnrichmentWaterfallNotFound": {
+        "description": "No waterfall with this id in your team",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/EnrichmentWaterfallError"
+            },
+            "example": {
+              "error": "Waterfall not found",
+              "code": "ENRICHMENT_WATERFALL_NOT_FOUND"
+            }
+          }
+        }
+      },
+      "EnrichmentWaterfallInternalError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/EnrichmentWaterfallError"
+            },
+            "example": {
+              "error": "Internal error",
+              "code": "INTERNAL_ERROR"
+            }
           }
         }
       }
@@ -26862,6 +27177,615 @@
           },
           "409": {
             "description": "The person is already one of your contacts, filed under another account. They were left there."
+          }
+        }
+      }
+    },
+    "/v2/enrichments/providers": {
+      "get": {
+        "summary": "List Enrichment Providers",
+        "description": "Lists the providers your team can place in a waterfall, for one enrichment type.\n\nThis is the catalog of legal `providers[].id` values for the waterfall endpoints: read it before creating or updating a waterfall. It includes lemlist internal providers and the external providers lemlist supports through your own API key. An external provider has `connected: false` until you connect it with your own API key; a waterfall cannot enable a provider that is not connected.",
+        "operationId": "listEnrichmentProviders",
+        "tags": ["Enrichment Providers"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "description": "Enrichment type of the providers to list.",
+            "schema": {
+              "$ref": "#/components/schemas/EnrichmentWaterfallType"
+            },
+            "example": "email"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentProviderListResponse"
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": "prospeo",
+                      "displayName": "Prospeo",
+                      "types": ["email", "phone"],
+                      "source": "internal"
+                    },
+                    {
+                      "id": "findymail",
+                      "displayName": "Findymail",
+                      "types": ["email"],
+                      "source": "internal"
+                    },
+                    {
+                      "id": "lusha",
+                      "displayName": "Lusha",
+                      "types": ["email", "phone"],
+                      "source": "external",
+                      "connected": true
+                    },
+                    {
+                      "id": "apollo",
+                      "displayName": "Apollo",
+                      "types": ["email"],
+                      "source": "external",
+                      "connected": false
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error - invalid or missing `type`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentWaterfallError"
+                },
+                "example": {
+                  "error": "Parameter \"type\" must be \"email\" or \"phone\"",
+                  "code": "ENRICHMENT_WATERFALL_INVALID_TYPE"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/EnrichmentWaterfallUnauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/EnrichmentWaterfallInternalError"
+          }
+        }
+      }
+    },
+    "/v2/enrichments/providers/{providerId}/connection": {
+      "parameters": [
+        {
+          "name": "providerId",
+          "in": "path",
+          "required": true,
+          "description": "Id of an external provider, as listed by `GET /enrichments/providers`.",
+          "schema": {
+            "type": "string"
+          },
+          "example": "lusha"
+        }
+      ],
+      "put": {
+        "description": "Saves your own API key for an external provider. The key is stored as-is and is NOT validated against the provider; calling it again replaces the key. The provider is connected for every enrichment type it supports.\n\nOnce connected, the provider is added, disabled, to your existing custom waterfalls.",
+        "summary": "Connect Provider",
+        "operationId": "connectEnrichmentProvider",
+        "tags": [
+          "Enrichment Providers"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnrichmentProviderConnectRequest"
+              },
+              "example": {
+                "apiKey": "lsh_live_0123456789abcdef9f3a"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentProviderResponse"
+                },
+                "example": {
+                  "data": {
+                    "id": "lusha",
+                    "displayName": "Lusha",
+                    "types": [
+                      "email",
+                      "phone"
+                    ],
+                    "source": "external",
+                    "connected": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The provider is internal or unknown (`ENRICHMENT_PROVIDER_NOT_EXTERNAL`), or the request body is missing `apiKey`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentWaterfallError"
+                },
+                "example": {
+                  "error": "This provider cannot be connected: only external providers hold your own API key",
+                  "code": "ENRICHMENT_PROVIDER_NOT_EXTERNAL"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/EnrichmentWaterfallUnauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/EnrichmentWaterfallInternalError"
+          }
+        }
+      },
+      "delete": {
+        "description": "Removes your API key for an external provider. lemlist stops calling it on your account and removes it from your custom waterfalls.",
+        "summary": "Disconnect Provider",
+        "operationId": "disconnectEnrichmentProvider",
+        "tags": [
+          "Enrichment Providers"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentProviderResponse"
+                },
+                "example": {
+                  "data": {
+                    "id": "lusha",
+                    "displayName": "Lusha",
+                    "types": [
+                      "email",
+                      "phone"
+                    ],
+                    "source": "external",
+                    "connected": false
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The provider is internal or not connected. `code` is one of `ENRICHMENT_PROVIDER_NOT_EXTERNAL`, `ENRICHMENT_PROVIDER_NOT_CONNECTED`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentWaterfallError"
+                },
+                "example": {
+                  "error": "Provider \"apollo\" is not connected",
+                  "code": "ENRICHMENT_PROVIDER_NOT_CONNECTED"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/EnrichmentWaterfallUnauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/EnrichmentWaterfallInternalError"
+          }
+        }
+      }
+    },
+    "/v2/enrichments/waterfalls": {
+      "get": {
+        "summary": "List Enrichment Waterfalls",
+        "description": "Lists the waterfalls of your team: the default waterfall of each type, plus every custom waterfall. Default waterfalls come first, then custom waterfalls by creation date, most recent first.\n\nWaterfalls are team-shared: every member sees the same list.",
+        "operationId": "listEnrichmentWaterfalls",
+        "tags": ["Enrichment Waterfalls"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Restrict the list to one enrichment type. Omit to return both.",
+            "schema": {
+              "$ref": "#/components/schemas/EnrichmentWaterfallType"
+            },
+            "example": "email"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentWaterfallListResponse"
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": "default_email",
+                      "type": "email",
+                      "name": "Default email waterfall",
+                      "isDefault": true,
+                      "editor": "lemlist",
+                      "providers": [
+                        {
+                          "id": "lusha",
+                          "order": 1,
+                          "enabled": true
+                        },
+                        {
+                          "id": "prospeo",
+                          "order": 2,
+                          "enabled": true
+                        },
+                        {
+                          "id": "findymail",
+                          "order": 3,
+                          "enabled": true
+                        },
+                        {
+                          "id": "datagma",
+                          "order": 4,
+                          "enabled": true
+                        }
+                      ],
+                      "createdAt": null,
+                      "updatedAt": null
+                    },
+                    {
+                      "id": "ecw_ExAmPlE1234567890a",
+                      "type": "email",
+                      "name": "Europe email waterfall",
+                      "isDefault": false,
+                      "editor": "usr_ExAmPlE1234567890a",
+                      "conditions": {
+                        "country": {
+                          "in": ["FR", "DE", "ES", "IT", "GB"]
+                        }
+                      },
+                      "providers": [
+                        {
+                          "id": "prospeo",
+                          "order": 1,
+                          "enabled": true
+                        },
+                        {
+                          "id": "lusha",
+                          "order": 2,
+                          "enabled": true
+                        },
+                        {
+                          "id": "findymail",
+                          "order": 3,
+                          "enabled": true
+                        },
+                        {
+                          "id": "datagma",
+                          "order": 4,
+                          "enabled": false
+                        }
+                      ],
+                      "createdAt": "2026-09-10T14:03:00.000Z",
+                      "updatedAt": "2026-09-10T14:03:00.000Z"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error - invalid `type`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentWaterfallError"
+                },
+                "example": {
+                  "error": "Parameter \"type\" must be \"email\" or \"phone\"",
+                  "code": "ENRICHMENT_WATERFALL_INVALID_TYPE"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/EnrichmentWaterfallUnauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/EnrichmentWaterfallInternalError"
+          }
+        }
+      }
+    },
+    "/v2/enrichments/waterfalls/{waterfallId}": {
+      "parameters": [
+        {
+          "name": "waterfallId",
+          "in": "path",
+          "required": true,
+          "description": "Id of the waterfall, as returned by the list endpoint: `default_email` or `default_phone` for a default waterfall, an `ecw_` id for a custom one.",
+          "schema": {
+            "type": "string"
+          },
+          "example": "ecw_ExAmPlE1234567890a"
+        }
+      ],
+      "get": {
+        "summary": "Get Enrichment Waterfall",
+        "description": "Returns one waterfall of your team, default or custom.",
+        "operationId": "getEnrichmentWaterfall",
+        "tags": ["Enrichment Waterfalls"],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentWaterfallResponse"
+                },
+                "example": {
+                  "data": {
+                    "id": "ecw_ExAmPlE1234567890a",
+                    "type": "email",
+                    "name": "Europe email waterfall",
+                    "isDefault": false,
+                    "editor": "usr_ExAmPlE1234567890a",
+                    "conditions": {
+                      "country": {
+                        "in": ["FR", "DE", "ES", "IT", "GB"]
+                      }
+                    },
+                    "providers": [
+                      {
+                        "id": "prospeo",
+                        "order": 1,
+                        "enabled": true
+                      },
+                      {
+                        "id": "lusha",
+                        "order": 2,
+                        "enabled": true
+                      },
+                      {
+                        "id": "findymail",
+                        "order": 3,
+                        "enabled": true
+                      },
+                      {
+                        "id": "datagma",
+                        "order": 4,
+                        "enabled": false
+                      }
+                    ],
+                    "createdAt": "2026-09-10T14:03:00.000Z",
+                    "updatedAt": "2026-09-10T14:03:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/EnrichmentWaterfallUnauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/EnrichmentWaterfallNotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/EnrichmentWaterfallInternalError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Enrichment Waterfall",
+        "description": "Updates the `name` or `providers` of a waterfall. Only the fields present in the body change; `type` and `isDefault` cannot change, and `conditions` is rejected with a `400`.\n\nWhen `providers` is sent it replaces the whole order; providers you leave out are appended, disabled. On a default waterfall this takes over from the lemlist order: `editor` becomes your user id and the list is followed as is; use the reset endpoint to hand it back to lemlist.\n\nThe full stored waterfall is returned.",
+        "operationId": "updateEnrichmentWaterfall",
+        "tags": ["Enrichment Waterfalls"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnrichmentWaterfallUpdateRequest"
+              },
+              "example": {
+                "providers": [
+                  {
+                    "id": "findymail",
+                    "enabled": true
+                  },
+                  {
+                    "id": "prospeo",
+                    "enabled": true
+                  },
+                  {
+                    "id": "lusha",
+                    "enabled": false
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentWaterfallResponse"
+                },
+                "example": {
+                  "data": {
+                    "id": "ecw_ExAmPlE1234567890a",
+                    "type": "email",
+                    "name": "Europe email waterfall",
+                    "isDefault": false,
+                    "editor": "usr_ExAmPlE1234567890a",
+                    "conditions": {
+                      "country": {
+                        "in": ["FR", "DE", "ES", "IT", "GB"]
+                      }
+                    },
+                    "providers": [
+                      {
+                        "id": "findymail",
+                        "order": 1,
+                        "enabled": true
+                      },
+                      {
+                        "id": "prospeo",
+                        "order": 2,
+                        "enabled": true
+                      },
+                      {
+                        "id": "lusha",
+                        "order": 3,
+                        "enabled": false
+                      },
+                      {
+                        "id": "datagma",
+                        "order": 4,
+                        "enabled": false
+                      }
+                    ],
+                    "createdAt": "2026-09-10T14:03:00.000Z",
+                    "updatedAt": "2026-09-11T08:20:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+              "description": "Validation error. `code` is one of `ENRICHMENT_WATERFALL_INVALID_NAME`, `ENRICHMENT_WATERFALL_UNKNOWN_PROVIDER`, `ENRICHMENT_WATERFALL_DUPLICATE_PROVIDER`, `ENRICHMENT_WATERFALL_PROVIDER_NOT_CONNECTED`, `ENRICHMENT_WATERFALL_EMPTY_UPDATE`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentWaterfallError"
+                },
+                "example": {
+                  "error": "Unknown provider \"hunter\" for type \"email\"",
+                  "code": "ENRICHMENT_WATERFALL_UNKNOWN_PROVIDER"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/EnrichmentWaterfallUnauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/EnrichmentWaterfallNotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/EnrichmentWaterfallInternalError"
+          }
+        }
+      }
+    },
+    "/v2/enrichments/waterfalls/{waterfallId}/reset": {
+      "parameters": [
+        {
+          "name": "waterfallId",
+          "in": "path",
+          "required": true,
+          "description": "`default_email` or `default_phone`.",
+          "schema": {
+            "type": "string",
+            "enum": ["default_email", "default_phone"]
+          },
+          "example": "default_email"
+        }
+      ],
+      "put": {
+        "summary": "Reset Enrichment Waterfall",
+        "description": "Hands a default waterfall back to lemlist: `editor` becomes `lemlist` and the provider order is random again, as if nobody had ever edited it.\n\nThe reset waterfall is returned.",
+        "operationId": "resetEnrichmentWaterfall",
+        "tags": ["Enrichment Waterfalls"],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentWaterfallResponse"
+                },
+                "example": {
+                  "data": {
+                    "id": "default_email",
+                    "type": "email",
+                    "name": "Default email waterfall",
+                    "isDefault": true,
+                    "editor": "lemlist",
+                    "providers": [
+                      {
+                        "id": "lusha",
+                        "order": 1,
+                        "enabled": true
+                      },
+                      {
+                        "id": "prospeo",
+                        "order": 2,
+                        "enabled": true
+                      },
+                      {
+                        "id": "findymail",
+                        "order": 3,
+                        "enabled": true
+                      },
+                      {
+                        "id": "datagma",
+                        "order": 4,
+                        "enabled": true
+                      }
+                    ],
+                    "createdAt": null,
+                    "updatedAt": null
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The waterfall is a custom one",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentWaterfallError"
+                },
+                "example": {
+                  "error": "Only default waterfalls can be reset",
+                  "code": "ENRICHMENT_WATERFALL_NOT_DEFAULT"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/EnrichmentWaterfallUnauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/EnrichmentWaterfallNotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/EnrichmentWaterfallInternalError"
           }
         }
       }
