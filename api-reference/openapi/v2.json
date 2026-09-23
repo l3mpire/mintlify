@@ -13994,6 +13994,112 @@
         "parameters": []
       }
     },
+    "/database/people/export": {
+      "get": {
+        "summary": "Export People database search",
+        "description": "Exports the People Database leads matching a search as a CSV file. The response is streamed as `text/csv` with a `Content-Disposition: attachment` header.\n\nThe export is defined by the search itself — there is no hand-picked selection: rows come back in the team's stable search order, capped by `limit`.\n\n**Billing** — charged on the team's existing 24h search quota, one unit per 100 exported rows (an export of 1000 rows costs 10). Nothing is charged if the export fails.\n\n**Caps** — 1000 rows maximum; a higher `limit` is rejected with a 400. Free-trial and freemium teams are capped lower, at one page (100 rows), matching the search window their plan allows.",
+        "tags": ["People Database"],
+        "parameters": [
+          {
+            "name": "filters",
+            "in": "query",
+            "required": true,
+            "description": "The search to export, URL-encoded JSON array — the same `filters` array `POST /database/people` takes. Each entry needs a `filterId` and at least one `in`/`out` value.\n\nFilter ids and their allowed values come from `GET /database/filters`. That endpoint returns `values` only for filters with a closed list; filters of type `autocomplete` (job titles, companies, countries, skills, technologies…) have no enumerable list, so their values are discovered by running a search rather than read upfront.",
+            "example": "[{\"filterId\":\"currentTitle\",\"in\":[\"CTO\"],\"out\":[]}]",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "How many rows to export. Defaults to 1000, which is also the maximum.",
+            "schema": { "type": "integer", "minimum": 1, "maximum": 1000, "default": 1000 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CSV file download",
+            "content": {
+              "text/csv": {
+                "example": "Full name,Email,Phone,LinkedIn URL,Company name,Job title,Country\nJohn Doe,john@example.com,+33100000000,https://www.linkedin.com/in/example-profile,Acme Inc,CTO,France"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid `filters` JSON, a filter unavailable for API usage, or a `limit` above the cap",
+            "content": {
+              "application/json": {
+                "example": { "error": "A CSV export holds at most 1000 rows" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "The team's 24h search quota does not cover this export",
+            "content": {
+              "application/json": {
+                "example": { "error": "This export needs 10 searches from your 24h quota, and you have 3 left." }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/database/companies/export": {
+      "get": {
+        "summary": "Export Companies database search",
+        "description": "Exports the companies matching a search as a CSV file. The response is streamed as `text/csv` with a `Content-Disposition: attachment` header.\n\nThe export is defined by the search itself — there is no hand-picked selection: rows come back in the team's stable search order, capped by `limit`.\n\n**Billing** — charged on the team's existing 24h search quota, one unit per 100 exported rows (an export of 1000 rows costs 10). Nothing is charged if the export fails.\n\n**Caps** — 1000 rows maximum; a higher `limit` is rejected with a 400. Free-trial and freemium teams are capped lower, at one page (100 rows), matching the search window their plan allows.",
+        "tags": ["People Database"],
+        "parameters": [
+          {
+            "name": "filters",
+            "in": "query",
+            "required": true,
+            "description": "The search to export, URL-encoded JSON array — the same `filters` array `POST /database/companies` takes. Each entry needs a `filterId` and at least one `in`/`out` value.\n\nFilter ids and their allowed values come from `GET /database/filters?mode=companies`. That endpoint returns `values` only for filters with a closed list; filters of type `autocomplete` (companies, countries, technologies…) have no enumerable list, so their values are discovered by running a search rather than read upfront.",
+            "example": "[{\"filterId\":\"currentCompanyCountry\",\"in\":[\"France\"],\"out\":[]}]",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "How many rows to export. Defaults to 1000, which is also the maximum.",
+            "schema": { "type": "integer", "minimum": 1, "maximum": 1000, "default": 1000 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CSV file download",
+            "content": {
+              "text/csv": {
+                "example": "Company name,LinkedIn URL,Industry,Website,Size,Employee count,City,Country\nAcme Inc,https://www.linkedin.com/company/example-company,Software Development,https://acme.com,11-50,42,Paris,France"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid `filters` JSON, a filter unavailable for API usage, or a `limit` above the cap",
+            "content": {
+              "application/json": {
+                "example": { "error": "A CSV export holds at most 1000 rows" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "The team's 24h search quota does not cover this export",
+            "content": {
+              "application/json": {
+                "example": { "error": "This export needs 10 searches from your 24h quota, and you have 3 left." }
+              }
+            }
+          }
+        }
+      }
+    },
     "/database/personas": {
       "get": {
         "summary": "List Personas",
