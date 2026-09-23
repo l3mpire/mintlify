@@ -17903,6 +17903,11 @@
                       "dynamic": {
                         "type": "boolean",
                         "description": "Whether the list is dynamic (auto-populated by filters) or static (manually managed)"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the list was created. Lists are returned newest first."
                       }
                     }
                   }
@@ -17911,12 +17916,14 @@
                   {
                     "_id": "clt_abc123def456ghi78",
                     "name": "Nurturing",
-                    "dynamic": false
+                    "dynamic": false,
+                    "createdAt": "2026-09-23T10:15:00.000Z"
                   },
                   {
                     "_id": "clt_xyz789uvw012rst34",
                     "name": "Enterprise Prospects",
-                    "dynamic": true
+                    "dynamic": true,
+                    "createdAt": "2026-09-20T08:00:00.000Z"
                   }
                 ]
               }
@@ -17962,7 +17969,7 @@
                   "name": {
                     "type": "string",
                     "maxLength": 200,
-                    "description": "Name of the contact list to create (max 200 characters)."
+                    "description": "Name of the contact list to create (max 200 characters). Cannot contain `<` or `>`."
                   }
                 }
               },
@@ -19224,6 +19231,333 @@
             }
           }
         ]
+      }
+    },
+    "/companies/lists": {
+      "get": {
+        "summary": "Get Company Lists",
+        "description": "Retrieves all static and dynamic company lists for the team. Optionally filter by name.",
+        "tags": [
+          "Companies"
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Filter lists by name (case-insensitive partial match).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "description": "Unique list ID (`clt_xxx` format)"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Name of the company list"
+                      },
+                      "dynamic": {
+                        "type": "boolean",
+                        "description": "Whether the list is dynamic (auto-populated by filters) or static (manually managed)"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the list was created. Lists are returned newest first."
+                      }
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "_id": "clt_abc123def456ghi78",
+                    "name": "Target accounts",
+                    "dynamic": false,
+                    "createdAt": "2026-09-23T10:15:00.000Z"
+                  },
+                  {
+                    "_id": "clt_xyz789uvw012rst34",
+                    "name": "Churn risk",
+                    "dynamic": true,
+                    "createdAt": "2026-09-20T08:00:00.000Z"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Bad team",
+            "content": {
+              "text/plain": {
+                "example": "Bad team"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Company List",
+        "description": "Creates a new static company list. After creating the list, use `POST /companies/lists/{listId}/entities` to add companies to it.",
+        "tags": [
+          "Companies"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Name of the company list to create (max 200 characters). Cannot contain `<` or `>`."
+                  }
+                }
+              },
+              "example": {
+                "name": "Target accounts"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Company list created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "list": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Unique list ID (`clt_xxx` format)"
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Name of the created list"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Company list created successfully",
+                  "list": {
+                    "id": "clt_abc123def456ghi78",
+                    "name": "Target accounts"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible errors: Bad team / name is required / name too long / name must not contain \"<\" or \">\" characters",
+            "content": {
+              "text/plain": {
+                "example": "name is required and must be a non-empty string"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      }
+    },
+    "/companies/lists/{listId}/entities": {
+      "parameters": [
+        {
+          "name": "listId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the company list (`clt_xxx` format). Must be a **static** company list.",
+          "example": "clt_xxxxxxxxxxxxxxxxx",
+          "schema": {
+            "type": "string",
+            "pattern": "^clt_[a-zA-Z0-9]+$"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Add or Remove Companies in a List",
+        "description": "Adds existing CRM companies to a static company list, or removes them when `?action=remove` is set.\n\n- **Add** (default): send a `POST` with a `companyIds` body. Companies already in the list are silently skipped (no duplicates) and reported in `alreadyInList`.\n- **Remove**: send a `POST` with `?action=remove` and a `companyIds` body. Companies that are not in the list are silently skipped; `removedCount` reflects the associations actually removed. This only affects list membership, the companies are not deleted from your CRM.\n\nThe list must be a **static** company list (`clt_xxx`). Dynamic lists (auto-populated by filter rules) and contact lists are rejected.\n\n**Removal uses `POST ?action=remove` on purpose:** a `DELETE` request body is dropped by our stack, so `DELETE` on this path is **not supported** and returns `405 Method Not Allowed`.",
+        "tags": [
+          "Companies"
+        ],
+        "parameters": [
+          {
+            "name": "action",
+            "in": "query",
+            "required": false,
+            "description": "Omit to **add** the companies to the list. Set to `remove` to **remove** them from the list.",
+            "example": "remove",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "remove"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "companyIds"
+                ],
+                "properties": {
+                  "companyIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^cpn_[a-zA-Z0-9]+$"
+                    },
+                    "minItems": 1,
+                    "maxItems": 1000,
+                    "description": "Array of company IDs (`cpn_xxx` format) to add to or remove from the list. Required, non-empty, maximum 1,000 per request."
+                  }
+                }
+              },
+              "example": {
+                "companyIds": [
+                  "cpn_xxxxxxxxxxxxxxxxx",
+                  "cpn_yyyyyyyyyyyyyyyyy"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Companies added to or removed from the list successfully. The response body depends on `action`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "addedCount": {
+                      "type": "integer",
+                      "description": "Number of companies added to the list (add only)."
+                    },
+                    "alreadyInList": {
+                      "type": "integer",
+                      "description": "Number of companies that were already in the list and therefore skipped (add only)."
+                    },
+                    "removedCount": {
+                      "type": "integer",
+                      "description": "Number of list associations actually removed (remove only). Companies that were not in the list are not counted."
+                    }
+                  }
+                },
+                "examples": {
+                  "add": {
+                    "summary": "Add companies (no action)",
+                    "value": {
+                      "message": "Companies added to list successfully",
+                      "addedCount": 2,
+                      "alreadyInList": 0
+                    }
+                  },
+                  "remove": {
+                    "summary": "Remove companies (action=remove)",
+                    "value": {
+                      "message": "Companies removed from list successfully",
+                      "removedCount": 2
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible errors: Bad team / Invalid listId format (expected clt_xxx) / companyIds is required and must be a non-empty array / Maximum 1,000 companies per request / All companyIds must be in cpn_xxx format / List is not a company list / Cannot manually add companies to a dynamic list / Cannot manually remove companies from a dynamic list.",
+            "content": {
+              "text/plain": {
+                "example": "companyIds is required and must be a non-empty array"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "Company list not found",
+            "content": {
+              "text/plain": {
+                "example": "Company list not found"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed. `DELETE` on this path is not supported because the request body is dropped by our stack. Use `POST ?action=remove` to remove companies.",
+            "content": {
+              "text/plain": {
+                "example": "Method not allowed"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal error while updating the list",
+            "content": {
+              "text/plain": {
+                "example": "Failed to add companies to list"
+              }
+            }
+          }
+        }
       }
     },
     "/companies/merge": {
