@@ -23,10 +23,12 @@ The endpoint matches existing companies by:
 
 If a company with the same `domain`, `linkedinUrl`, or `linkedinUrlSalesNav` already exists, the endpoint updates it instead of creating a duplicate.
 
-When `companyId` is provided, the company is matched by its ID directly — `name` and `domain` are not required and are not used for matching (they are stored as data if provided). Without `companyId`, both `name` and `domain` remain required.
+Without `companyId`, `name` is required together with at least one identifier: `domain`, `linkedinUrl` or `linkedinUrlSalesNav`. A company known only by its LinkedIn page can be created with `name` and `linkedinUrl`; a name alone is refused with `400 MISSING_REQUIRED_FIELD`.
+
+When `companyId` is provided, the company is matched by its ID directly. `name` and the identifiers are not required and are not used for matching (they are stored as data if provided).
 
 <Warning>
-`companyId` can only be used to **update** an existing company. It cannot be used to create a new company — use `name` and `domain` for creation.
+`companyId` can only be used to **update** an existing company. It cannot be used to create a new company: use `name` and an identifier for creation.
 </Warning>
 
 ## Update strategy
