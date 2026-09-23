@@ -7990,6 +7990,17 @@
           },
           "405": {
             "description": "Method not allowed"
+          },
+          "409": {
+            "description": "`campaign-reroute-in-progress` - a previous step change on this campaign is still being applied to its leads; nothing was written, retry in a minute. `SEQUENCE_STEP_INSERT_ON_SEQUENCE_IN_USE` / `SEQUENCE_STEP_ADD_ON_LOCKED_SEQUENCE` - leads have entered the campaign and the team does not have live campaign editing, so the step can only be appended to a sequence leads still reach.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "A step is still being added for the leads of this campaign. Retry in a minute.",
+                  "code": "campaign-reroute-in-progress"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -8023,7 +8034,7 @@
                   },
                   "index": {
                     "type": "integer",
-                    "description": "The position within the sequence to insert the new step (≥ -1). If omitted or greater than the number of steps, the new step is added to the end"
+                    "description": "The position within the sequence to insert the new step (≥ -1). If omitted or greater than the number of steps, the new step is added to the end. On a campaign leads have entered, a step inserted before an existing one moves the leads waiting on that step onto the new one; leads already past that position never receive it. Teams without live campaign editing can only append once leads have entered, and a non-tail `index` is refused with `409 SEQUENCE_STEP_INSERT_ON_SEQUENCE_IN_USE`"
                   },
                   "delay": {
                     "type": "integer",

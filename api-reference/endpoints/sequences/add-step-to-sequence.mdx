@@ -220,6 +220,25 @@ step error: the campaign refuses to launch until you shorten it.
 Sending either field here on a step type that does not take it is rejected with `400 Invalid request
 body`.
 
+## Running campaigns
+
+A campaign that leads have entered still accepts new steps. Where the step lands decides who
+receives it:
+
+- **Appended after the last step** of a sequence leads finish on: the leads parked on that last
+  step move on to the new one.
+- **Inserted before an existing step** (with `index`): the leads waiting on that step are moved
+  onto the new one and run it first. Leads already past that position never receive it.
+
+The move is applied to the campaign's leads right after the response. While it runs, another
+structural change on the same campaign answers `409 campaign-reroute-in-progress`; nothing is
+written and the same call succeeds a minute later.
+
+Inserting before an existing step on a running campaign is being rolled out progressively. A team
+that does not have it yet gets `409 SEQUENCE_STEP_INSERT_ON_SEQUENCE_IN_USE` on a non-tail `index`
+and `409 SEQUENCE_STEP_ADD_ON_LOCKED_SEQUENCE` on a branch no lead can reach anymore; calling again
+without `index` appends the step.
+
 ## LinkedIn media constraints
 
 When you pass `images` or `videos` to a `linkedinInvite` or `linkedinSend` step, each URL must be a publicly reachable HTTPS URL. lemlist fetches the file, validates it, and re-hosts it before attaching it to the LinkedIn message.
