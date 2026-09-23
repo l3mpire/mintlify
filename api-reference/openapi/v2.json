@@ -8359,6 +8359,28 @@
           },
           "405": {
             "description": "Method not allowed"
+          },
+          "402": {
+            "description": "`upper-plan-required` - the edited step or condition needs a higher plan or an add-on.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Upgrade your plan to use this feature",
+                  "code": "upper-plan-required"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The edit conflicts with what the campaign's leads are already running - for instance `incomplete-branch-on-sequence-in-use`, a condition branch left without a value to test.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Every branch of this condition needs a value once leads have entered the campaign",
+                  "code": "incomplete-branch-on-sequence-in-use"
+                }
+              }
+            }
           }
         },
         "requestBody": {

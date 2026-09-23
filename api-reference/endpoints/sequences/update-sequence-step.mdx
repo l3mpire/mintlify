@@ -31,6 +31,17 @@ use [`PATCH …/branches/{branchSequenceId}`](/api-reference/endpoints/sequences
 instead.
 </Warning>
 
+
+## Running campaigns
+
+Editing a step does not require pausing the campaign. The new content applies to the sends that
+follow: a lead who already received that step keeps the version that was sent to them, and a lead
+who has not reached it yet gets the edited one.
+
+A refusal carries a `code` in the body next to the message, so a rejected edit can be told apart
+from a transport failure.
+
+
 ## Supported Step Types
 
 | Type | Editable Fields | Description |
