@@ -10892,13 +10892,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Non-blocking notices: the company part was skipped, or `FIELDS_KEPT` when the update strategy kept values you sent (`params.fields` names them, company fields prefixed with `company`).",
+                      "description": "Non-blocking notices, never a failure — the request went through: the `company`-prefixed keys you sent were written on the company record, the company part was skipped, or `FIELDS_KEPT` when the update strategy kept values you sent (`params.fields` names them, company fields prefixed with `company`).",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed); `FIELDS_KEPT` (values the update strategy kept, see `params.fields`)."
+                            "description": "`company-fields-write-company-record` (the `company`-prefixed keys you sent were written on the company record the lead is linked to, shared by every lead linked to it, not on the lead — `params.fields` names them); `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed); `FIELDS_KEPT` (values the update strategy kept, see `params.fields`)."
                           },
                           "message": {
                             "type": "string"
@@ -10918,7 +10918,7 @@
                                 }
                               ]
                             },
-                            "description": "Details: the input echoed back, or `fields` for `FIELDS_KEPT`."
+                            "description": "Details: the input echoed back, or `fields` for `company-fields-write-company-record` and `FIELDS_KEPT`."
                           }
                         }
                       }
@@ -11177,13 +11177,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Non-blocking notices: the company part was skipped, or `FIELDS_KEPT` when the update strategy kept values you sent (`params.fields` names them, company fields prefixed with `company`).",
+                      "description": "Non-blocking notices, never a failure — the request went through: the `company`-prefixed keys you sent were written on the company record, the company part was skipped, or `FIELDS_KEPT` when the update strategy kept values you sent (`params.fields` names them, company fields prefixed with `company`).",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed); `FIELDS_KEPT` (values the update strategy kept, see `params.fields`)."
+                            "description": "`company-fields-write-company-record` (the `company`-prefixed keys you sent were written on the company record the lead is linked to, shared by every lead linked to it, not on the lead — `params.fields` names them); `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed); `FIELDS_KEPT` (values the update strategy kept, see `params.fields`)."
                           },
                           "message": {
                             "type": "string"
@@ -11203,7 +11203,7 @@
                                 }
                               ]
                             },
-                            "description": "Details: the input echoed back, or `fields` for `FIELDS_KEPT`."
+                            "description": "Details: the input echoed back, or `fields` for `company-fields-write-company-record` and `FIELDS_KEPT`."
                           }
                         }
                       }
@@ -12719,16 +12719,33 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings, never a failure: the company part of the update was skipped.",
+                      "description": "Optional warnings, never a failure: the `company`-prefixed keys you sent were written on the company record, or the company part of the update was skipped.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed)."
+                            "description": "`company-fields-write-company-record` (the `company`-prefixed keys you sent were written on the company record the lead is linked to, shared by every lead linked to it, not on the lead — `params.fields` names them); `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed)."
                           },
                           "message": {
                             "type": "string"
+                          },
+                          "params": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              ]
+                            },
+                            "description": "Details: `fields` for `company-fields-write-company-record`, the keys that went to the company record."
                           }
                         }
                       }
@@ -12827,16 +12844,33 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings, never a failure: the company part of the update was skipped.",
+                      "description": "Optional warnings, never a failure: the `company`-prefixed keys you sent were written on the company record, or the company part of the update was skipped.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed)."
+                            "description": "`company-fields-write-company-record` (the `company`-prefixed keys you sent were written on the company record the lead is linked to, shared by every lead linked to it, not on the lead — `params.fields` names them); `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed)."
                           },
                           "message": {
                             "type": "string"
+                          },
+                          "params": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              ]
+                            },
+                            "description": "Details: `fields` for `company-fields-write-company-record`, the keys that went to the company record."
                           }
                         }
                       }
@@ -12932,16 +12966,33 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Optional warnings, never a failure: the company part of the update was skipped.",
+                      "description": "Optional warnings, never a failure: the `company`-prefixed keys you sent were written on the company record, or the company part of the update was skipped.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed)."
+                            "description": "`company-fields-write-company-record` (the `company`-prefixed keys you sent were written on the company record the lead is linked to, shared by every lead linked to it, not on the lead — `params.fields` names them); `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (the company part was skipped: malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the company write failed)."
                           },
                           "message": {
                             "type": "string"
+                          },
+                          "params": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "anyOf": [
+                                {
+                                  "type": "string"
+                                },
+                                {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              ]
+                            },
+                            "description": "Details: `fields` for `company-fields-write-company-record`, the keys that went to the company record."
                           }
                         }
                       }
