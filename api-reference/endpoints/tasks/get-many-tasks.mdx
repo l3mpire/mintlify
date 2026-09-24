@@ -1,6 +1,6 @@
 ---
 openapi: get /tasks
-description: Retrieves all pending tasks assigned to your team members.
+description: Retrieves your team's pending tasks, or its done tasks for an owner, a campaign, a contact or a company.
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
@@ -11,7 +11,7 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <SnippetObjectReference objectName="Task" objectPath="task" />
 
 <Note>
-Tasks marked as done are automatically excluded from results.
+Done tasks are excluded unless you filter on `status` `done`. A done list needs a scope (`owner`, `campaignId`, `contactId` or `companyId`) and reaches the first 10 000 done tasks.
 </Note>
 
 ## Filtering
@@ -20,8 +20,10 @@ Use the `filters` query parameter to narrow results by:
 
 - **Lead attributes**: `fullName`, `email`, `phone`, `linkedin` (supports `value` or `regex`)
 - **Campaign**: `campaignId` (supports `in`/`out` arrays), `campaignState` (draft, running, ended, paused, errors, archived)
-- **Task properties**: `type` (manual, phone, email, linkedin, etc.), `assignedTo` (userId)
-- **Date range**: `dueDate` (supports `from`/`to` in YYYY-MM-DD format)
+- **Task properties**: `type` (manual, phone, email, linkedin, etc.), `owner` (userId)
+- **Record**: `contactId` (one contact, its campaign leads included), `companyId`
+- **Status**: `status` (`pending`, the default, or `done`)
+- **Date range**: `dueDate` (supports `from`/`to` in YYYY-MM-DD format), `completedAt` (`from`/`to`, with `status` `done` only)
 
 Examples:
 <CodeGroup>
@@ -33,6 +35,14 @@ Examples:
     ```
 
     ```json by user
-    [{"filterId": "assignedTo", "in": ["usr_abc123", "usr_def456"]}]
+    [{"filterId": "owner", "in": ["usr_aB3dE5gH7jK9mN1pQ", "usr_cD4eF6hJ8kL0nP2rS"]}]
+    ```
+
+    ```json done for a contact
+    [
+    {"filterId": "status", "in": ["done"]},
+    {"filterId": "contactId", "in": ["ctc_aB3dE5gH7jK9mN1pQ"]},
+    {"filterId": "completedAt", "from": "2025-01-01", "to": "2025-01-31"}
+    ]
     ```
 </CodeGroup>
