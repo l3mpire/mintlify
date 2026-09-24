@@ -101,7 +101,7 @@ The table below summarizes the required and optional fields for each step type. 
 
 | Step Type | Required Fields | Optional Fields |
 | --- | --- | --- |
-| `email` | `subject`, `message` | `index`, `delay` |
+| `email` | `message` | `subject`, `index`, `delay` |
 | `manual` | `title` | `message`, `index`, `delay` |
 | `phone` | - | `message`, `index`, `delay` |
 | `api` | `method`, `url` | `index`, `delay` |
@@ -134,7 +134,7 @@ In conditional steps, if the `delayType` is not `"within"`, the `delay` field is
 | `type` (String, Required) | The type of step to create. Allowed values: `email`, `manual`, `phone`, `api`, `linkedinVisit`, `linkedinInvite`, `linkedinSend`, `linkedinVoiceNote`, `linkedinFollow`, `linkedinLikeLastPost`, `linkedinCommentLastPost`, `linkedinEndorse`, `linkedinWithdrawInvitation`, `sendToAnotherCampaign`, `conditional`, `whatsappMessage`, `sms` |
 | `index` (Integer, Optional) | The position within the sequence to insert the new step. Must be an integer ≥ -1. If omitted or if the index is greater than the number of steps, the new step is added to the end |
 | `delay` (Integer, Optional) | The delay (in days) before executing the step. Must be between 0 and 1500. Defaults to 0 for the first step and to 1 for subsequent steps (except for certain conditional configurations) |
-| `subject` (String, Conditional) | The email subject. Required for steps of type `email`. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
+| `subject` (String, Optional) | For `email` steps only. The email subject. Omit it or send an empty string on a follow-up so the email replies in the thread of the previous one. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
 | `message` (String, Conditional) | Content of the email or message. Used for `email`, `linkedinInvite`, `linkedinSend`, `whatsappMessage`, and `sms` step types, the AI script of a `linkedinVoiceNote` step in `ai` record mode, or the note of `manual` and `phone` step types. Required for `linkedinSend`, `whatsappMessage`, and `sms` |
 | `altMessage` (String, Conditional) | For `linkedinInvite`, `linkedinSend` and `linkedinVoiceNote` steps only. The premium invitation note on an invite, the out-of-network note on the other two. See [LinkedIn invitation notes](#linkedin-invitation-notes) below |
 | `altMessagePremium` (String, Conditional) | For `linkedinSend` steps only. The premium variant of the out-of-network note. See [LinkedIn invitation notes](#linkedin-invitation-notes) below |
