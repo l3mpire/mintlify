@@ -1,0 +1,18 @@
+---
+openapi: "get /v2/tasks/filters"
+description: "Lists every field you can use in the advancedFilters tree of Search Tasks."
+---
+
+Each row tells you how a field can be addressed:
+
+- **`type`** decides the allowed **`operators`** — a `date` field takes
+  `is_before`, an `enum` field takes `is_any_of`, and so on.
+- **`queryParam`** is the bridge between the two tiers: when it is set, a flat
+  query parameter of that name addresses the field on
+  [Search Tasks](/api-reference/endpoints/tasks/get-many-tasks-v2); when it is
+  `null`, go through `advancedFilters`.
+- **`custom: true`** marks one of your team's custom fields. They are resolved per
+  team, so this response is the authoritative list for your account.
+
+Use `scope` to keep only the task, contact or company fields, and `search` to
+match a field id or label.

@@ -1992,6 +1992,314 @@
           }
         }
       },
+      "TaskV2": {
+        "type": "object",
+        "description": "A task as returned by `GET /v2/tasks`. Every key is always present — `null` rather than omitted.",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Unique task identifier"
+          },
+          "objectType": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "contact",
+              "company"
+            ],
+            "description": "Which record the task hangs off, derived from the ids"
+          },
+          "recordId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Id of that record — the company id for a company task, the contact id (or the lead id) otherwise"
+          },
+          "contactId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Associated contact id"
+          },
+          "companyId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Company id of the task, or of its contact"
+          },
+          "leadId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Associated lead id"
+          },
+          "campaignId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Campaign id"
+          },
+          "assignedTo": {
+            "type": "string",
+            "nullable": true,
+            "description": "Id of the user the task is assigned to"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true,
+            "description": "Task title"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true,
+            "description": "Body of the task"
+          },
+          "text": {
+            "type": "string",
+            "nullable": true,
+            "description": "Body of the reply that opened the task — `opportunityReplied` tasks only"
+          },
+          "type": {
+            "type": "string",
+            "nullable": true,
+            "description": "Raw step type",
+            "enum": [
+              "manual",
+              "phone",
+              "email",
+              "linkedinInvite",
+              "linkedinSend",
+              "linkedinVoiceNote",
+              "whatsappMessage",
+              "opportunityReplied",
+              "opportunityClicked"
+            ]
+          },
+          "channel": {
+            "type": "string",
+            "nullable": true,
+            "description": "Channel of the task",
+            "enum": [
+              "aircall",
+              "email",
+              "linkedin",
+              "whatsapp",
+              "sms",
+              "manual"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "nullable": true,
+            "description": "Task status",
+            "enum": [
+              "due",
+              "upcoming",
+              "paused",
+              "done",
+              "ignored"
+            ]
+          },
+          "priority": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Task priority"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Due date"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Date the task was done or ignored"
+          },
+          "manual": {
+            "type": "boolean",
+            "description": "True when the task comes from a manual campaign step"
+          },
+          "ownerName": {
+            "type": "string",
+            "nullable": true,
+            "description": "Full name of the assigned user"
+          },
+          "campaign": {
+            "type": "object",
+            "nullable": true,
+            "description": "Campaign the task belongs to",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "sequenceId": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          },
+          "leadFirstName": {
+            "type": "string",
+            "nullable": true,
+            "description": "Lead's first name"
+          },
+          "leadLastName": {
+            "type": "string",
+            "nullable": true,
+            "description": "Lead's last name"
+          },
+          "leadCompanyName": {
+            "type": "string",
+            "nullable": true,
+            "description": "Lead's company name"
+          },
+          "contact": {
+            "type": "object",
+            "nullable": true,
+            "description": "Denormalized contact — only with `include=contact`"
+          },
+          "company": {
+            "type": "object",
+            "nullable": true,
+            "description": "Denormalized company — only with `include=company`"
+          }
+        }
+      },
+      "TaskV2ListResponse": {
+        "type": "object",
+        "description": "Paginated response of `GET /v2/tasks`.",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskV2"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of matching tasks"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Page size used"
+          },
+          "page": {
+            "type": "integer",
+            "description": "Page returned, 1-based"
+          }
+        }
+      },
+      "TaskV2FilterDescriptor": {
+        "type": "object",
+        "description": "One field addressable by `advancedFilters`.",
+        "properties": {
+          "field": {
+            "type": "string",
+            "description": "Field id, as used in an `advancedFilters` condition"
+          },
+          "label": {
+            "type": "string",
+            "description": "Human-readable name"
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "task",
+              "contact",
+              "company"
+            ],
+            "description": "Section the field belongs to"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "text",
+              "number",
+              "date",
+              "enum",
+              "relation",
+              "tags",
+              "boolean"
+            ],
+            "description": "Data type, which decides the allowed operators"
+          },
+          "custom": {
+            "type": "boolean",
+            "description": "True for a custom field of the team"
+          },
+          "operators": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Operators allowed on this field"
+          },
+          "queryParam": {
+            "type": "string",
+            "nullable": true,
+            "description": "Flat query parameter addressing this field; `null` means `advancedFilters` only"
+          },
+          "values": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            },
+            "description": "Reserved — always `null` today"
+          }
+        }
+      },
+      "TaskV2FiltersResponse": {
+        "type": "object",
+        "description": "Response of `GET /v2/tasks/filters`.",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskV2FilterDescriptor"
+            }
+          },
+          "total": {
+            "type": "integer"
+          }
+        }
+      },
+      "TaskV2Error": {
+        "type": "object",
+        "description": "Error envelope of the v2 task routes.",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Machine-readable error code",
+                "enum": [
+                  "INVALID_PARAMETER",
+                  "UNKNOWN_FIELD",
+                  "FIELD_TYPE_MISMATCH",
+                  "INVALID_ADVANCED_FILTERS",
+                  "FILTER_TREE_TOO_COMPLEX",
+                  "UNKNOWN_SORT_FIELD",
+                  "INVALID_DATE_RANGE",
+                  "PAGE_OUT_OF_RANGE",
+                  "SEARCH_FAILED",
+                  "ROUTE_UNAUTHORIZED",
+                  "ROUTE_BAD_METHOD"
+                ]
+              },
+              "message": {
+                "type": "string",
+                "description": "What was wrong, and what is allowed"
+              }
+            }
+          }
+        }
+      },
       "DatabaseFilter": {
         "type": "object",
         "description": "Saved search criteria for querying the People database.",
@@ -14409,8 +14717,652 @@
         }
       }
     },
+    "/v2/tasks": {
+      "get": {
+        "summary": "Search Tasks",
+        "description": "Searches the team's tasks with the same vocabulary as the Tasks page: flat query parameters for the common filters, and an `advancedFilters` tree for everything else. Every status is returned unless `status` narrows it.",
+        "tags": [
+          "Tasks"
+        ],
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "query",
+            "required": false,
+            "description": "Task ids. At most 100. Several values (comma-separated or repeated) are OR-ed.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "opp_A1B2C3D4E5F6G7H8I"
+          },
+          {
+            "name": "contactId",
+            "in": "query",
+            "required": false,
+            "description": "Contact ids. A single id also matches the tasks of that contact's leads, exactly like the contact panel does. Several values (comma-separated or repeated) are OR-ed.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "ctc_A1B2C3D4E5F6G7H8I"
+          },
+          {
+            "name": "contactIdNot",
+            "in": "query",
+            "required": false,
+            "description": "Excludes the given `contactId` values.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "ctc_A1B2C3D4E5F6G7H8I"
+          },
+          {
+            "name": "companyId",
+            "in": "query",
+            "required": false,
+            "description": "Company ids. Matches company-level tasks AND tasks on that company's contacts. Several values (comma-separated or repeated) are OR-ed.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "cmp_A1B2C3D4E5F6G7H8I"
+          },
+          {
+            "name": "companyIdNot",
+            "in": "query",
+            "required": false,
+            "description": "Excludes the given `companyId` values.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "cmp_A1B2C3D4E5F6G7H8I"
+          },
+          {
+            "name": "leadId",
+            "in": "query",
+            "required": false,
+            "description": "Lead ids. Several values (comma-separated or repeated) are OR-ed.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "lea_A1B2C3D4E5F6G7H8I"
+          },
+          {
+            "name": "leadIdNot",
+            "in": "query",
+            "required": false,
+            "description": "Excludes the given `leadId` values.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "lea_A1B2C3D4E5F6G7H8I"
+          },
+          {
+            "name": "campaignId",
+            "in": "query",
+            "required": false,
+            "description": "Campaign ids. Several values (comma-separated or repeated) are OR-ed.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "cam_A1B2C3D4E5F6G7H8I"
+          },
+          {
+            "name": "campaignIdNot",
+            "in": "query",
+            "required": false,
+            "description": "Excludes the given `campaignId` values.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "cam_A1B2C3D4E5F6G7H8I"
+          },
+          {
+            "name": "assignedTo",
+            "in": "query",
+            "required": false,
+            "description": "Ids of the users the task is assigned to. Several values (comma-separated or repeated) are OR-ed.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "usr_A1B2C3D4E5F6G7H8I"
+          },
+          {
+            "name": "assignedToNot",
+            "in": "query",
+            "required": false,
+            "description": "Excludes the given `assignedTo` values.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "usr_A1B2C3D4E5F6G7H8I"
+          },
+          {
+            "name": "objectType",
+            "in": "query",
+            "required": false,
+            "description": "Restricts to the tasks hanging off a contact (a `contactId` or a `leadId` is present) or off a company (a `companyId` with no contact and no lead). Derived from the ids, never stored.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "contact",
+                "company"
+              ]
+            },
+            "example": "company"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Raw step types, comma-separated. This is the same vocabulary as v1 `type`.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "phone,linkedinSend"
+          },
+          {
+            "name": "typeNot",
+            "in": "query",
+            "required": false,
+            "description": "Excludes the given `type` values.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "required": false,
+            "description": "Channel the task belongs to — the coarser nomenclature shown in the app as \"Task type\".",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "aircall",
+                "email",
+                "linkedin",
+                "whatsapp",
+                "sms",
+                "manual"
+              ]
+            },
+            "example": "linkedin"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "Task statuses, comma-separated. `pending` is an alias for `due,upcoming,paused`. Unlike v1, completed tasks are returned unless you filter them out.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "due",
+                "upcoming",
+                "paused",
+                "done",
+                "ignored",
+                "pending"
+              ]
+            },
+            "example": "pending"
+          },
+          {
+            "name": "priority",
+            "in": "query",
+            "required": false,
+            "description": "Task priorities (integers), comma-separated.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "1,2"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "description": "Matches tasks whose title contains this text.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contactLinkedinUrl",
+            "in": "query",
+            "required": false,
+            "description": "Matches tasks whose contact's LinkedIn URL contains this text. v1's `linkedin` filter matched the lead's URL instead.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "linkedin.com/in/johndoe"
+          },
+          {
+            "name": "dueDateFrom",
+            "in": "query",
+            "required": false,
+            "description": "Lower bound of the due date, inclusive. ISO-8601.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2026-01-01T00:00:00.000Z"
+          },
+          {
+            "name": "dueDateTo",
+            "in": "query",
+            "required": false,
+            "description": "Upper bound of the due date, inclusive. ISO-8601.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2026-01-31T23:59:59.999Z"
+          },
+          {
+            "name": "completedAtFrom",
+            "in": "query",
+            "required": false,
+            "description": "Lower bound of the completion date (done or ignored), inclusive. ISO-8601.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "completedAtTo",
+            "in": "query",
+            "required": false,
+            "description": "Upper bound of the completion date (done or ignored), inclusive. ISO-8601.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "hasCampaign",
+            "in": "query",
+            "required": false,
+            "description": "Restricts to the tasks attached to a campaign (`true`) or to the standalone ones (`false`).",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "hasDueDate",
+            "in": "query",
+            "required": false,
+            "description": "Restricts to the tasks carrying a due date (`true`) or to those without one (`false`).",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Free-text search over the task title and the contact / company text fields.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "advancedFilters",
+            "in": "query",
+            "required": false,
+            "description": "A filter tree encoded as JSON, addressing any field returned by `GET /v2/tasks/filters`. Max depth 5, max 50 conditions.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "{\"type\":\"group\",\"id\":\"root\",\"connector\":\"and\",\"children\":[{\"type\":\"condition\",\"id\":\"c1\",\"property\":\"contactLeadStatus\",\"operator\":\"is_any_of\",\"value\":[\"Email sent\"]}]}"
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "required": false,
+            "description": "Embeds the denormalized objects already carried by the task. Comma-separated.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "contact",
+                "company",
+                "contact,company"
+              ]
+            },
+            "example": "contact"
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": false,
+            "description": "Field to sort on.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "dueDate",
+                "status",
+                "priority",
+                "assignedTo",
+                "campaignId",
+                "score",
+                "handledOn",
+                "contactJobTitle"
+              ],
+              "default": "dueDate"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "required": false,
+            "description": "Sort direction.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number, 1-based. `page * limit` must not exceed 10000.",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Page size.",
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskV2ListResponse"
+                },
+                "example": {
+                  "results": [
+                    {
+                      "_id": "opp_A1B2C3D4E5F6G7H8I",
+                      "objectType": "contact",
+                      "recordId": "ctc_A1B2C3D4E5F6G7H8I",
+                      "contactId": "ctc_A1B2C3D4E5F6G7H8I",
+                      "companyId": "cmp_A1B2C3D4E5F6G7H8I",
+                      "leadId": "lea_A1B2C3D4E5F6G7H8I",
+                      "campaignId": "cam_A1B2C3D4E5F6G7H8I",
+                      "assignedTo": "usr_A1B2C3D4E5F6G7H8I",
+                      "title": "Call John Doe",
+                      "message": "Ask about the new pricing",
+                      "text": null,
+                      "type": "phone",
+                      "channel": "aircall",
+                      "status": "due",
+                      "priority": 2,
+                      "dueDate": "2026-01-12T09:00:00.000Z",
+                      "completedAt": null,
+                      "manual": true,
+                      "ownerName": "Jane Smith",
+                      "campaign": {
+                        "id": "cam_A1B2C3D4E5F6G7H8I",
+                        "name": "Q1 outbound",
+                        "sequenceId": "seq_A1B2C3D4E5F6G7H8I"
+                      },
+                      "leadFirstName": "John",
+                      "leadLastName": "Doe",
+                      "leadCompanyName": "Acme Inc"
+                    }
+                  ],
+                  "total": 1,
+                  "limit": 50,
+                  "page": 1
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid parameter — an unknown field, an operator the field type does not allow, an unknown `sortBy`, a malformed date range, a filter tree over the allowed bounds, or a page beyond the maximum result window.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskV2Error"
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "UNKNOWN_FIELD",
+                    "message": "Unknown filter field: contactFoo"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskV2Error"
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "ROUTE_UNAUTHORIZED",
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed — these routes are read-only.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Method not allowed"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "The search failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskV2Error"
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "SEARCH_FAILED",
+                    "message": "Failed to search tasks"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/tasks/filters": {
+      "get": {
+        "summary": "List Task Filters",
+        "description": "Lists every field addressable by `advancedFilters` on `GET /v2/tasks`, with its type, its allowed operators and the flat query parameter that addresses it, when there is one. The team's custom fields are included.",
+        "tags": [
+          "Tasks"
+        ],
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "description": "Restricts the response to one section.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "task",
+                "contact",
+                "company"
+              ]
+            },
+            "example": "contact"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Keeps the fields whose id or label contains this text.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "campaign"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskV2FiltersResponse"
+                },
+                "example": {
+                  "results": [
+                    {
+                      "field": "status",
+                      "label": "Status",
+                      "scope": "task",
+                      "type": "enum",
+                      "custom": false,
+                      "operators": [
+                        "is",
+                        "is_not",
+                        "is_any_of",
+                        "is_none_of",
+                        "is_empty",
+                        "is_not_empty"
+                      ],
+                      "queryParam": "status",
+                      "values": null
+                    },
+                    {
+                      "field": "contactLeadStatus",
+                      "label": "Lead status",
+                      "scope": "contact",
+                      "type": "enum",
+                      "custom": false,
+                      "operators": [
+                        "is",
+                        "is_not",
+                        "is_any_of",
+                        "is_none_of",
+                        "is_empty",
+                        "is_not_empty"
+                      ],
+                      "queryParam": null,
+                      "values": null
+                    }
+                  ],
+                  "total": 57
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid parameter — an unknown field, an operator the field type does not allow, an unknown `sortBy`, a malformed date range, a filter tree over the allowed bounds, or a page beyond the maximum result window.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskV2Error"
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "UNKNOWN_FIELD",
+                    "message": "Unknown filter field: contactFoo"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskV2Error"
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "ROUTE_UNAUTHORIZED",
+                    "message": "Unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed — these routes are read-only.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Method not allowed"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "The search failed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskV2Error"
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "SEARCH_FAILED",
+                    "message": "Failed to search tasks"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/tasks": {
       "get": {
+        "deprecated": true,
         "summary": "Get Many Tasks",
         "description": "Retrieve tasks with optional filtering and pagination. Tasks marked as `done` are excluded from results.",
         "tags": [
