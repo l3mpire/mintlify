@@ -923,7 +923,7 @@
       },
       "Task": {
         "type": "object",
-        "description": "A manual action assigned to a user to complete.",
+        "description": "A manual action assigned to a user to complete. Only the fields set on the task are returned.",
         "properties": {
           "_id": {
             "type": "string",
@@ -931,43 +931,69 @@
           },
           "type": {
             "type": "string",
-            "description": "Task type"
+            "description": "Task type as stored, never `null`. Tasks created through the API use `email`, `manual`, `phone`, `linkedinSend` or `whatsappMessage`. Campaign tasks carry the type of their step (for example `linkedinInvite`, `whatsappVoiceNote` or `sms`), and reply and click tasks use `opportunityReplied` and `opportunityClicked`."
+          },
+          "title": {
+            "type": "string",
+            "description": "Task title"
+          },
+          "content": {
+            "type": "string",
+            "description": "Task instruction, sent as `message` when the task is created or updated."
+          },
+          "text": {
+            "type": "string",
+            "description": "Text of the lead's LinkedIn reply, when it has one, on `opportunityReplied` tasks."
+          },
+          "priority": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2
+            ],
+            "description": "`0` low, `1` medium, `2` high. Absent when the task has no priority."
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Due date. Tasks carry no creation date."
+          },
+          "userId": {
+            "type": "string",
+            "description": "ID of the assigned user, sent as `assignedTo`."
           },
           "leadId": {
             "type": "string",
             "description": "Associated lead ID"
           },
+          "contactId": {
+            "type": "string",
+            "description": "Associated contact ID"
+          },
           "campaignId": {
             "type": "string",
-            "description": "Campaign ID"
+            "description": "Campaign ID. A task on a lead carries the campaign of that lead."
           },
-          "userId": {
+          "sequenceId": {
             "type": "string",
-            "description": "Assigned user ID"
+            "description": "Sequence ID"
           },
-          "status": {
+          "leadFirstName": {
             "type": "string",
-            "description": "Task status",
-            "enum": [
-              "pending",
-              "completed",
-              "ignored"
-            ]
+            "description": "First name of the lead or contact"
           },
-          "dueDate": {
+          "leadLastName": {
             "type": "string",
-            "format": "date-time",
-            "description": "Due date timestamp"
+            "description": "Last name of the lead or contact"
           },
-          "createdAt": {
+          "leadCompanyName": {
             "type": "string",
-            "format": "date-time",
-            "description": "Creation timestamp"
+            "description": "Company name of the lead or contact. On a company task, the name (or domain) of the company, the only field that identifies it: the response carries no `companyId`."
           },
-          "completedAt": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Completion timestamp"
+          "manual": {
+            "type": "boolean",
+            "description": "`true` on tasks created by hand in lemlist or through the API, on campaign tasks whose step has its manual option on, and on out-of-office tasks. Absent otherwise, never `false`."
           }
         }
       },
@@ -1954,10 +1980,15 @@
             }
           },
           "page": {
-            "type": "integer"
-          },
-          "total": {
-            "type": "integer"
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "description": "Value of the `page` query parameter, as sent (a string). The number `0` when the parameter is omitted."
           }
         }
       },
@@ -14418,11 +14449,53 @@
                     "results": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/Task"
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/Task"
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "campaign": {
+                                "type": "object",
+                                "nullable": true,
+                                "description": "Campaign of the task, or `null` when the task has none.",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "description": "Campaign ID"
+                                  },
+                                  "name": {
+                                    "type": "string",
+                                    "description": "Campaign name, or its ID when the campaign has no name"
+                                  },
+                                  "sequenceId": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "description": "Sequence ID of the campaign, or `null`"
+                                  }
+                                }
+                              },
+                              "ownerName": {
+                                "type": "string",
+                                "nullable": true,
+                                "description": "First and last name of the assigned user, or `null` when unknown."
+                              }
+                            }
+                          }
+                        ]
                       }
                     },
                     "page": {
-                      "type": "string"
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "integer"
+                        }
+                      ],
+                      "description": "Value of the `page` query parameter, as sent (a string). The number `0` when the parameter is omitted."
                     }
                   }
                 },
@@ -14438,7 +14511,13 @@
                       "contactId": "ctc_xW8Ou6C03Csv8vatp",
                       "dueDate": "2025-11-10T09:58:57.169Z",
                       "userId": "usr_ahfFktBBHUIxbVG5P",
-                      "content": "does he have bandwidth to help us? would be grand"
+                      "content": "does he have bandwidth to help us? would be grand",
+                      "campaign": {
+                        "id": "cam_bSn8EORHQxbWPjHvu",
+                        "name": "Acme outreach",
+                        "sequenceId": "seq_9brn1aEKdYbDerkqq"
+                      },
+                      "ownerName": "John Doe"
                     },
                     {
                       "_id": "opp_KNQOrrlGnLvEXDDS9",
@@ -14447,7 +14526,9 @@
                       "priority": 2,
                       "dueDate": "2025-10-31T07:58:00.000Z",
                       "userId": "usr_ahfFktBBHUIxbVG5P",
-                      "content": ""
+                      "content": "",
+                      "campaign": null,
+                      "ownerName": "John Doe"
                     }
                   ],
                   "page": "0"
@@ -14487,7 +14568,12 @@
                 "properties": {
                   "recordId": {
                     "type": "string",
-                    "description": "The ID of the contact company or lead associated with the task."
+                    "description": "ID of the record the task is about: a contact (`ctc_`), a company (`cpn_`) or a lead (`lea_`). Required unless the legacy `leadId` is sent. A company task can only be of type `manual`."
+                  },
+                  "leadId": {
+                    "type": "string",
+                    "deprecated": true,
+                    "description": "Legacy name of `recordId`, still accepted for backward compatibility. Use `recordId` instead. When both are sent, `leadId` is used."
                   },
                   "type": {
                     "type": "string",
@@ -14496,7 +14582,8 @@
                       "email",
                       "manual",
                       "phone",
-                      "linkedin"
+                      "linkedin",
+                      "whatsapp"
                     ]
                   },
                   "assignedTo": {
@@ -14506,17 +14593,38 @@
                   "dueDate": {
                     "type": "string",
                     "format": "date-time",
-                    "description": "The due date in ISO 8601 format (e.g., 2025-02-12T00:00:00.000Z)."
+                    "description": "The due date in ISO 8601 format (e.g., 2025-02-12T00:00:00.000Z). A date in the past is accepted: the task is created already due."
                   },
                   "title": {
                     "type": "string",
                     "description": "Optional title of the task. Defaults to an empty string if omitted.",
+                    "maxLength": 400,
                     "default": ""
                   },
                   "message": {
                     "type": "string",
-                    "description": "Optional message/description of the task. Defaults to an empty string if omitted.",
+                    "description": "Optional instruction of the task, returned as `content` in the response. Defaults to an empty string if omitted. On a `linkedin` task for a lead (`lea_` ID), it also pre-fills the draft when `taskData.content` is omitted.",
+                    "maxLength": 32000,
                     "default": ""
+                  },
+                  "taskData": {
+                    "type": "object",
+                    "description": "Draft of the message to send on `email`, `linkedin` and `whatsapp` tasks, and fallback number on `phone` tasks.",
+                    "properties": {
+                      "subject": {
+                        "type": "string",
+                        "maxLength": 400,
+                        "description": "Subject of the email. Only used on `email` tasks, ignored on other types."
+                      },
+                      "content": {
+                        "type": "string",
+                        "description": "Draft of the message to send. Only used on `email`, `linkedin` and `whatsapp` tasks, ignored on other types. Must stay under 1 MB, measured in bytes once UTF-8 encoded (1,000,000 bytes)."
+                      },
+                      "phone": {
+                        "type": "string",
+                        "description": "On a `phone` task, number the lemlist dialer offers when neither the contact nor the lead has one. Ignored on other types."
+                      }
+                    }
                   },
                   "priority": {
                     "type": "string",
@@ -14535,7 +14643,7 @@
                       "type": "string",
                       "format": "uri"
                     },
-                    "description": "Public HTTPS URLs of images to attach to a `linkedin` task. lemlist downloads each file and re-hosts it. Ignored when `type` is not `linkedin`. Allowed MIME types: `image/png`, `image/jpeg`, `image/gif`. Up to 20 MB per file, and up to 6 items total combined with `videos`."
+                    "description": "Public HTTPS URLs of images to attach to a `linkedin` task. lemlist downloads each file and re-hosts it. On other types they are not downloaded, but still count toward the limit of 6. Allowed MIME types: `image/png`, `image/jpeg`, `image/gif`. Up to 20 MB per file, and up to 6 items total combined with `videos`."
                   },
                   "videos": {
                     "type": "array",
@@ -14543,30 +14651,43 @@
                       "type": "string",
                       "format": "uri"
                     },
-                    "description": "Public HTTPS URLs of videos to attach to a `linkedin` task. lemlist downloads each file and re-hosts it. Ignored when `type` is not `linkedin`. Allowed MIME types: `video/mp4`, `video/quicktime`. Up to 20 MB per file, and up to 6 items total combined with `images`."
+                    "description": "Public HTTPS URLs of videos to attach to a `linkedin` task. lemlist downloads each file and re-hosts it. On other types they are not downloaded, but still count toward the limit of 6. Allowed MIME types: `video/mp4`, `video/quicktime`. Up to 20 MB per file, and up to 6 items total combined with `images`."
                   }
                 },
                 "required": [
-                  "leadId",
                   "type",
                   "assignedTo",
                   "dueDate"
+                ],
+                "anyOf": [
+                  {
+                    "title": "recordId",
+                    "required": [
+                      "recordId"
+                    ]
+                  },
+                  {
+                    "title": "leadId (legacy)",
+                    "required": [
+                      "leadId"
+                    ]
+                  }
                 ]
               },
               "example": {
+                "recordId": "ctc_ZpFy8SXl51PsctTGf",
                 "type": "phone",
-                "assignedTo": "usr_7YzNqVRMCfdeHEzMn",
+                "assignedTo": "usr_6nVZY7je1zSBXZgZK",
                 "dueDate": "2025-02-10T09:58:57.169Z",
-                "message": "this is my message",
-                "title": "this is my title",
-                "leadId": "lea_zUwSUPSxozD9fLVGw"
+                "title": "Call to follow up on the demo",
+                "message": "Ask whether the team had time to review the proposal."
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "The created task. The `message` you sent is returned as `content` and `assignedTo` as `userId`. A `linkedin` or `whatsapp` task comes back with its internal type, `linkedinSend` or `whatsappMessage`. `priority` comes back as a number (`0`, `1` or `2`) and is omitted when empty.",
             "content": {
               "application/json": {
                 "schema": {
@@ -14588,10 +14709,15 @@
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / Bad method",
+            "description": "The body is `{ \"error\": \"<message>\" }`, where the message is one of:\n\n- `One of your fields is invalid or missing` - `type`, `dueDate` or `assignedTo` is missing or invalid (`assignedTo` must be a user ID), `priority` is not one of the accepted values, `title` or `message` is not a string, `images` / `videos` is not an array of strings, `taskData` is not an object, or `recordId` / `leadId` is not a well-formed ID.\n- `recordId is required` - neither `recordId` nor `leadId` was sent.\n- `recordId is invalid` - the ID does not start with `ctc_`, `cpn_` or `lea_`.\n- A message starting with `Match error:` - `title` is longer than 400 characters, `message` is longer than 32,000 characters, `taskData.subject` is not a string or is longer than 400 characters on an `email` task, `taskData.content` is not a string on an `email`, `linkedin` or `whatsapp` task, `taskData.phone` is not a string, or a company task is not of type `manual`.\n- `No contact, company or lead found for this id in the team` - the record does not exist in your team.\n- `The assignee is not a member of the team` - `assignedTo` is not a member of your team.\n- `The message content is too big (max 1 MB)` - `taskData.content` reaches 1,000,000 bytes once UTF-8 encoded, on an `email`, `linkedin` or `whatsapp` task.\n- `dueDate must be a valid future ISO 8601 date` - `dueDate` is exactly the Unix epoch (`1970-01-01T00:00:00.000Z`). Other past dates are accepted.\n- `LINKEDIN_MEDIA_TOO_MANY` - more than 6 `images` and `videos` combined, whatever the task `type`.\n- On a `linkedin` task, a media URL that fails ingestion sets `error` to a JSON-encoded array of items, each with a `url`, `index`, `code` and `message`. The status follows the first item's code: 400 for `LINKEDIN_MEDIA_UNSAFE_URL`, the other codes answer with the statuses listed on [Add Step to Sequence](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-media-constraints).\n\nWhen no API key is supplied, the answer is the plain text `no api key provided`.",
             "content": {
+              "application/json": {
+                "example": {
+                  "error": "recordId is required"
+                }
+              },
               "text/plain": {
-                "example": "Bad team"
+                "example": "no api key provided"
               }
             }
           },

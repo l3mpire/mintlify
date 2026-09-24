@@ -8,6 +8,10 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 Create a manual task (opportunity) associated with a contact/company or lead. The task must be assigned to a team member and have a due date. Optional fields let you set a title, message, and priority.
 
+## Draft of message tasks
+
+On `email`, `linkedin` and `whatsapp` tasks, lemlist also creates the draft of the message to send. Set its body with `taskData.content` and, on an `email` task, its subject with `taskData.subject`. `message` is the task instruction.
+
 ## LinkedIn task attachments
 
 When creating a task with `type: "linkedin"`, you can attach images and videos to the LinkedIn message by passing public HTTPS URLs in the `images` and `videos` arrays. lemlist downloads each file and re-hosts it before attaching it to the task.
@@ -19,4 +23,4 @@ When creating a task with `type: "linkedin"`, you can attach images and videos t
 | Allowed image MIME types | `image/png`, `image/jpeg`, `image/gif` |
 | Allowed video MIME types | `video/mp4`, `video/quicktime` |
 
-The `images` and `videos` fields are ignored when `type` is not `linkedin`. Ingestion errors return the same `LINKEDIN_MEDIA_*` codes documented on [Add Step to Sequence](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-media-constraints).
+On other types, `images` and `videos` are not downloaded, but they are still validated and count toward the limit of 6. Ingestion errors return the same `LINKEDIN_MEDIA_*` codes and HTTP statuses as [Add Step to Sequence](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-media-constraints), with `error` holding a JSON-encoded array of `{ url, index, code, message }` items.
