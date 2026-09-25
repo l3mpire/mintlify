@@ -10892,13 +10892,13 @@
                     },
                     "warnings": {
                       "type": "array",
-                      "description": "Non-blocking notices, never a failure — the request went through. They tell you what happened to the company part (written, or skipped and why) and which values the update strategy kept. See `code`.",
+                      "description": "Non-blocking notices, never a failure — the request went through. They tell you why the company part was skipped, when it was, and which values the update strategy kept. See `code`.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "**The company WAS written** — `company-fields-write-company-record`: the `company`-prefixed keys you sent went to the company record the lead is linked to, shared by every lead linked to it, not to the lead alone. `params.fields` names them.\n\n**The company was NOT written** — `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the write failed). The lead itself went through in every case.\n\n**Values left unchanged** — `FIELDS_KEPT`: what the update strategy kept, named in `params.fields` (company fields prefixed with `company`)."
+                            "description": "**The company was NOT written** — `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the write failed). The lead itself went through in every case.\n\n**Values left unchanged** — `FIELDS_KEPT`: what the update strategy kept, named in `params.fields` (company fields prefixed with `company`)."
                           },
                           "message": {
                             "type": "string"
@@ -10918,7 +10918,7 @@
                                 }
                               ]
                             },
-                            "description": "Details: the input echoed back, or `fields` for `company-fields-write-company-record` and `FIELDS_KEPT`."
+                            "description": "Details: the input echoed back, or `fields` for `FIELDS_KEPT`."
                           }
                         }
                       }
@@ -11210,21 +11210,57 @@
                     }
                   }
                 },
-                "example": {
-                  "campaignId": "cam_bSn8EORHQxbWPjHvu",
-                  "campaignName": "NEW TO DELETE",
-                  "leadUrl": "https://api.lemlist.com/api/leads/alex.doe%40example.com",
-                  "firstName": "John",
-                  "lastName": "Doe",
-                  "companyName": "Acme Inc",
-                  "jobTitle": "Growth Engineer",
-                  "companyDomain": "example.com",
-                  "email": "support@lemlist.com",
-                  "preferredContactMethod": "email",
-                  "_id": "lea_fiDpiGV585wy3Oii2",
-                  "isPaused": false,
-                  "contactId": "ctc_xW8Ou6C03Csv8vatp",
-                  "emailStatus": "deliverable"
+                "examples": {
+                  "written": {
+                    "summary": "Lead updated, no company key sent",
+                    "value":     {
+                      "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
+                      "campaignName": "Example campaign",
+                      "leadUrl": "https://api.lemlist.com/api/leads/alex.doe%40example.com",
+                      "firstName": "John",
+                      "lastName": "Doe",
+                      "companyName": "Acme Inc",
+                      "jobTitle": "Growth Engineer",
+                      "companyDomain": "example.com",
+                      "email": "support@lemlist.com",
+                      "preferredContactMethod": "email",
+                      "_id": "lea_A1B2C3D4E5F6G7H8I9",
+                      "isPaused": false,
+                      "contactId": "ctc_A1B2C3D4E5F6G7H8I9",
+                      "emailStatus": "deliverable"
+                    }
+                  },
+                  "companyKeys": {
+                    "summary": "Company keys sent: the company record was written",
+                    "value": {
+                      "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
+                      "campaignName": "Example campaign",
+                      "leadUrl": "https://api.lemlist.com/api/leads/john%40example.com",
+                      "firstName": "John",
+                      "lastName": "Doe",
+                      "companyName": "Acme Inc",
+                      "jobTitle": "Growth Engineer",
+                      "companyDomain": "acme.com",
+                      "email": "john@example.com",
+                      "preferredContactMethod": "email",
+                      "_id": "lea_A1B2C3D4E5F6G7H8I9",
+                      "isPaused": false,
+                      "contactId": "ctc_A1B2C3D4E5F6G7H8I9",
+                      "emailStatus": "deliverable",
+                      "warnings": [
+                        {
+                          "code": "company-fields-write-company-record",
+                          "message": "These keys update the company record shared by every lead pointing at it, not the lead. Use POST /api/companies to edit a company.",
+                          "params": {
+                            "fields": [
+                              "companyDomain",
+                              "companyName"
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
                 }
               }
             }
@@ -12877,8 +12913,30 @@
                     }
                   }
                 },
-                "example": {
-                  "ok": true
+                "examples": {
+                  "written": {
+                    "summary": "Variables updated, no company key sent",
+                    "value": {
+                      "ok": true
+                    }
+                  },
+                  "companyKeys": {
+                    "summary": "Company keys sent: the company record was written",
+                    "value": {
+                      "ok": true,
+                      "warnings": [
+                        {
+                          "code": "company-fields-write-company-record",
+                          "message": "These keys update the company record shared by every lead pointing at it, not the lead. Use POST /api/companies to edit a company.",
+                          "params": {
+                            "fields": [
+                              "companyName"
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
                 }
               }
             }

@@ -25,5 +25,5 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 </Note>
 
 <Note>
-  Company fields — `companyName`, `companyDomain`, `companyIndustry`, any `company`-prefixed key — are written on the **company record** the lead is linked to, the same record every other lead linked to it reads, not on that lead alone. The response says so: `warnings` carries a `company-fields-write-company-record` entry naming those keys in `params.fields`. It is informational, your request went through. To edit a company on purpose, use [Upsert Company](/api-reference/endpoints/companies/upsert-company).
+  Company fields — `companyName`, `companyDomain`, `companyIndustry`, any `company`-prefixed key — reach the **company record** the lead is matched to, the same record every other lead linked to it reads, not that lead alone. Creating a lead with its company is the intended flow; to edit a company on purpose, use [Upsert Company](/api-reference/endpoints/companies/upsert-company).
 </Note>
