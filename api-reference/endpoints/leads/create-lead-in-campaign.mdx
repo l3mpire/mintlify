@@ -23,3 +23,7 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
   Naming rules: only letters, digits, `_`, `-`, space and `#` are kept — any other character (e.g. `.` or `$`) is replaced by `_`. Values are stored as text.
 </Note>
+
+<Note>
+  Company fields — `companyName`, `companyDomain`, `companyIndustry`, any `company`-prefixed key — reach the **company record** the lead is matched to, the same record every other lead linked to it reads, not that lead alone. Creating a lead with its company is the intended flow; to edit a company on purpose, use [Upsert Company](/api-reference/endpoints/companies/upsert-company).
+</Note>
