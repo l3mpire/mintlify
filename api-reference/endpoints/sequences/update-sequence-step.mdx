@@ -91,6 +91,11 @@ Only include the fields you want to update. Required fields are not enforced her
 | `endorseAnyFallback` | boolean | `linkedinEndorse` | When `true` and the named skill is not on the lead's profile, lemlist falls back to endorsing any available skill |
 | `recordMode` | string | `linkedinVoiceNote` | One of `manual` (user records the audio after step creation; default) or `ai` (audio is generated from a text template provided in the lemlist UI) |
 
+<Note>
+To remove the subject of an `email` step, send `"subject": ""`. The email then replies in the thread
+of the previous email sent to the lead in this campaign instead of starting a new one.
+</Note>
+
 ## Supported Condition Keys
 
 For `conditional` steps:

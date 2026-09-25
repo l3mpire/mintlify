@@ -8381,7 +8381,7 @@
                   },
                   "subject": {
                     "type": "string",
-                    "description": "Email subject line (required for email steps)"
+                    "description": "Email subject line (for email steps). Optional: omit it or send an empty string on a follow-up so the email replies in the thread of the previous one. If no email has been sent to the lead in this campaign yet, it goes out with an empty subject."
                   },
                   "message": {
                     "type": "string",
@@ -8760,7 +8760,7 @@
                   },
                   "subject": {
                     "type": "string",
-                    "description": "Email subject line (for email steps)"
+                    "description": "Email subject line (for email steps). Pass an empty string to remove it: the email then replies in the thread of the previous email sent to the lead in this campaign."
                   },
                   "message": {
                     "type": "string",
@@ -27445,7 +27445,7 @@
                 "properties": {
                   "subject": {
                     "type": "string",
-                    "description": "Variant B subject"
+                    "description": "Variant B subject. An empty string removes it: variant B then replies in the thread of the previous email sent to the lead in this campaign, like variant A would."
                   },
                   "message": {
                     "type": "string",
