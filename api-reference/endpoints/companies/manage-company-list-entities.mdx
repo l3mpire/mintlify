@@ -1,0 +1,27 @@
+---
+openapi: post /companies/lists/{listId}/entities
+description: Add companies to a static company list, or remove them with ?action=remove.
+---
+
+Adds existing CRM companies to a **static** company list, or removes them when you set `?action=remove`. The list must be a static company list (`clt_xxx`); dynamic lists (auto-populated by filter rules) and contact lists are rejected.
+
+<Warning>
+**Removal uses `POST ?action=remove`, not `DELETE`.** A `DELETE` request body is dropped by our stack, so `DELETE` on this path is not supported and returns `405 Method Not Allowed`.
+</Warning>
+
+<Note>
+Removing a company from a list only affects list **membership** — it does not delete the company from your CRM.
+</Note>
+
+## Add vs remove
+
+| Action | Request | Result |
+| --- | --- | --- |
+| **Add** | `POST` with `{ "companyIds": [...] }` | Companies are added. Those already in the list are silently skipped (counted in `alreadyInList`). |
+| **Remove** | `POST ?action=remove` with `{ "companyIds": [...] }` | Companies are removed. Those not in the list are silently skipped (`removedCount` reflects associations actually removed). |
+
+## Typical workflow
+
+1. **Find or create a list** — use `GET /companies/lists` to find an existing static list, or `POST /companies/lists` to create one (`clt_xxx`).
+2. **Find companies** — use `GET /companies` with `search` or `listId` to get company IDs (`cpn_xxx`).
+3. **Add or remove** — call this endpoint with the company IDs and list ID. Up to 1,000 companies per request.
