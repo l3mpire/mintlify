@@ -22206,7 +22206,7 @@
                 },
                 "example": [
                   {
-                    "_id": "uns_ZfdZWc7dvCqXdgQmb",
+                    "_id": "uns_ZmzP7K61EMIT9fBSj",
                     "createdAt": "2023-06-12T10:45:21.367Z",
                     "value": "john.doe@example.com",
                     "source": "user"
@@ -22326,7 +22326,7 @@
                 },
                 "example": [
                   {
-                    "_id": "uns_ZfdZWc7dvCqXdgQmb",
+                    "_id": "uns_ZmzP7K61EMIT9fBSj",
                     "value": "john.doe@example.com",
                     "source": "user",
                     "createdAt": "2023-06-12T10:45:21.367Z"
@@ -22460,7 +22460,7 @@
                   }
                 },
                 "example": {
-                  "_id": "uns_ZfdZWc7dvCqXdgQmb",
+                  "_id": "uns_ZmzP7K61EMIT9fBSj",
                   "value": "john.doe@example.com",
                   "variable": "john.doe@example.com",
                   "source": "user"
@@ -22541,7 +22541,7 @@
                   }
                 },
                 "example": {
-                  "_id": "uns_ZfdZWc7dvCqXdgQmb",
+                  "_id": "uns_ZmzP7K61EMIT9fBSj",
                   "value": "john.doe@example.com",
                   "variable": "john.doe@example.com",
                   "source": "api"
@@ -22774,24 +22774,65 @@
     "/v2/unsubscribes/exports/variables": {
       "get": {
         "summary": "Export Unsubscribed Variables",
-        "description": "Exports all unsubscribed variables to a CSV file.",
+        "description": "Exports all unsubscribed variables. The response is a CSV file by default. Set `format=json` to get a JSON array.",
         "tags": [
           "Unsubscribes"
+        ],
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "Output format: 'json' or 'csv'. Default is CSV.",
+            "example": "json",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "csv",
+                "json"
+              ],
+              "default": "csv"
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "text/csv": {
-                "example": "_id,value,source,createdAt\nuns_ZfdZWc7dvCqXdgQmb,john.doe@example.com,user,2023-06-12T10:45:21.367Z\nuns_fH5gNhZnIpnwRlxZw,@example.org,api,2023-07-21T09:14:25.521Z"
+                "example": "_id,value,source,createdAt\nuns_ZmzP7K61EMIT9fBSj,john@example.com,user,2023-06-12T10:45:21.367Z\nuns_0X5cBxEldVyOIz0VQ,@example.org,api,2023-07-21T09:14:25.521Z"
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UnsubscribedVariable"
+                  }
+                },
+                "example": [
+                  {
+                    "_id": "uns_ZmzP7K61EMIT9fBSj",
+                    "value": "john@example.com",
+                    "source": "user",
+                    "createdAt": "2023-06-12T10:45:21.367Z"
+                  },
+                  {
+                    "_id": "uns_0X5cBxEldVyOIz0VQ",
+                    "value": "@example.org",
+                    "source": "api",
+                    "createdAt": "2023-07-21T09:14:25.521Z"
+                  }
+                ]
               }
             }
           },
           "400": {
-            "description": "Bad team",
+            "description": "Bad request",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "example": {
+                  "error": "Invalid format (must be one of: csv, json)"
+                }
               }
             }
           },
@@ -22804,9 +22845,26 @@
     "/v2/unsubscribes/exports/contacts": {
       "get": {
         "summary": "Export Unsubscribed Contacts",
-        "description": "Exports all contacts with their subscription status to a CSV file.",
+        "description": "Exports all contacts with their subscription status. The response is a CSV file by default. Set `format=json` to get a JSON array.",
         "tags": [
           "Unsubscribes"
+        ],
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "Output format: 'json' or 'csv'. Default is CSV.",
+            "example": "json",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "csv",
+                "json"
+              ],
+              "default": "csv"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -22814,14 +22872,34 @@
             "content": {
               "text/csv": {
                 "example": "_id,doNotContact\ncon_aB1cD2eF3gH4iJ5kL,true\ncon_mN6oP7qR8sT9uV0wX,false"
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ContactSubscriptionStatus"
+                  }
+                },
+                "example": [
+                  {
+                    "_id": "con_aB1cD2eF3gH4iJ5kL",
+                    "doNotContact": true
+                  },
+                  {
+                    "_id": "con_mN6oP7qR8sT9uV0wX",
+                    "doNotContact": false
+                  }
+                ]
               }
             }
           },
           "400": {
-            "description": "Bad team",
+            "description": "Bad request",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "example": {
+                  "error": "Invalid format (must be one of: csv, json)"
+                }
               }
             }
           },
@@ -22879,7 +22957,7 @@
                   }
                 },
                 "example": {
-                  "_id": "uns_ZfdZWc7dvCqXdgQmb",
+                  "_id": "uns_ZmzP7K61EMIT9fBSj",
                   "createdAt": "2023-06-12T10:45:21.367Z",
                   "value": "john.doe@example.com",
                   "source": "user"
@@ -22972,7 +23050,7 @@
                   ]
                 },
                 "example": {
-                  "_id": "uns_fH5gNhZnIpnwRlxZw",
+                  "_id": "uns_0X5cBxEldVyOIz0VQ",
                   "value": "user@domain.com",
                   "email": "user@domain.com"
                 }
