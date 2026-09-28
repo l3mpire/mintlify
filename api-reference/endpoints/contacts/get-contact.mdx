@@ -5,3 +5,5 @@ description: Retrieves a specific contact by their ID or email address.
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Contact" objectPath="contact" />
+
+The path takes a lemlist contact id (`ctc_xxx`) or an email address. To find a contact from its CRM record id, use [`GET /contacts?crmIds=`](/api-reference/endpoints/contacts/get-many-contacts).
