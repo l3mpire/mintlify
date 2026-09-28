@@ -239,6 +239,9 @@
                   "api-reference/endpoints/companies/get-many-companies",
                   "api-reference/endpoints/companies/delete-company",
                   "api-reference/endpoints/companies/merge-companies",
+                  "api-reference/endpoints/companies/get-company-lists",
+                  "api-reference/endpoints/companies/create-company-list",
+                  "api-reference/endpoints/companies/manage-company-list-entities",
                   "api-reference/endpoints/companies/create-company-note",
                   "api-reference/endpoints/companies/get-company-notes"
                 ]
