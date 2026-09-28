@@ -2958,16 +2958,25 @@
               "customSignals",
               "competitorConnections",
               "competitorReactions",
-              "companyFollowers",
               "technologyChange",
               "linkedinPeopleProfile",
               "linkedinCompanyProfile",
               "mergersAcquisitions",
               "promotion",
               "linkedinKeywords",
+              "republishedJobOffers",
               "externalSignalContact",
               "externalSignalCompany",
-              "buyingIntent"
+              "buyingIntent",
+              "newProductLaunch",
+              "companyAward",
+              "newPartnership",
+              "newOffice",
+              "closingOffice",
+              "costCutting",
+              "outagesAndSecurityBreaches",
+              "lawsuitsAndLegalIssues",
+              "githubStargazer"
             ]
           },
           "status": {
@@ -3116,7 +3125,7 @@
               },
               "startDate": {
                 "type": "string",
-                "description": "[jobChange/newHire/competitorConnections/companyFollowers] Start date at the tracked company"
+                "description": "[jobChange/newHire/competitorConnections] Start date at the tracked company"
               },
               "previousCompany": {
                 "type": "string",
@@ -3128,7 +3137,7 @@
               },
               "trackedCompanyUrl": {
                 "type": "string",
-                "description": "Tracked company LinkedIn URL (competitorConnections, companyFollowers, ...)"
+                "description": "Tracked company LinkedIn URL (competitorConnections, ...)"
               },
               "linkedinPeopleProfilePostUrl": {
                 "type": "string",
@@ -3446,16 +3455,25 @@
               "customSignals",
               "competitorConnections",
               "competitorReactions",
-              "companyFollowers",
               "technologyChange",
               "linkedinPeopleProfile",
               "linkedinCompanyProfile",
               "mergersAcquisitions",
               "promotion",
               "linkedinKeywords",
+              "republishedJobOffers",
               "externalSignalContact",
               "externalSignalCompany",
-              "buyingIntent"
+              "buyingIntent",
+              "newProductLaunch",
+              "companyAward",
+              "newPartnership",
+              "newOffice",
+              "closingOffice",
+              "costCutting",
+              "outagesAndSecurityBreaches",
+              "lawsuitsAndLegalIssues",
+              "githubStargazer"
             ]
           },
           "status": {
@@ -3617,7 +3635,8 @@
               "seniority",
               "crmListIds",
               "minJobCount",
-              "timeframe"
+              "timeframe",
+              "githubRepoUrls"
             ]
           },
           "in": {
@@ -3878,16 +3897,25 @@
               "customSignals",
               "competitorConnections",
               "competitorReactions",
-              "companyFollowers",
               "technologyChange",
               "linkedinPeopleProfile",
               "linkedinCompanyProfile",
               "mergersAcquisitions",
               "promotion",
               "linkedinKeywords",
+              "republishedJobOffers",
               "externalSignalContact",
               "externalSignalCompany",
-              "buyingIntent"
+              "buyingIntent",
+              "newProductLaunch",
+              "companyAward",
+              "newPartnership",
+              "newOffice",
+              "closingOffice",
+              "costCutting",
+              "outagesAndSecurityBreaches",
+              "lawsuitsAndLegalIssues",
+              "githubStargazer"
             ]
           },
           "entity": {
@@ -3998,22 +4026,28 @@
               "companyIsHiring",
               "companyRaisedFunds",
               "recruitmentCampaign",
-              "jobChange",
               "newHire",
               "companyEmployeeVisitedMyWebsite",
               "customSignals",
               "competitorConnections",
               "competitorReactions",
-              "companyFollowers",
               "technologyChange",
               "linkedinPeopleProfile",
               "linkedinCompanyProfile",
               "mergersAcquisitions",
               "promotion",
               "linkedinKeywords",
-              "externalSignalContact",
-              "externalSignalCompany",
-              "buyingIntent"
+              "republishedJobOffers",
+              "buyingIntent",
+              "newProductLaunch",
+              "companyAward",
+              "newPartnership",
+              "newOffice",
+              "closingOffice",
+              "costCutting",
+              "outagesAndSecurityBreaches",
+              "lawsuitsAndLegalIssues",
+              "githubStargazer"
             ]
           },
           "title": {
@@ -4118,6 +4152,24 @@
               "deletedCount": {
                 "type": "integer",
                 "description": "Number of documents removed"
+              }
+            }
+          }
+        }
+      },
+      "WatchListApiUpdateSignalStatusResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "updatedCount": {
+                "type": "integer",
+                "description": "Number of signals whose status was updated. Can be lower than requestedCount: the write is team-scoped, so ids that were deleted or belong to another team are skipped."
+              },
+              "requestedCount": {
+                "type": "integer",
+                "description": "Number of signal ids sent in the request"
               }
             }
           }
@@ -24938,6 +24990,94 @@
             }
           }
         }
+      },
+      "put": {
+        "summary": "Mark signals handled or ignored",
+        "description": "Bulk-set the status of one or several signals to handled or ignored.",
+        "tags": [
+          "Signal Agents"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "signalIds",
+                  "status"
+                ],
+                "properties": {
+                  "signalIds": {
+                    "type": "array",
+                    "description": "Signal ids (wsi_xxx) to update, from List signals. Between 1 and 1000 per call.",
+                    "minItems": 1,
+                    "maxItems": 1000,
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "Target status to set on every signal.",
+                    "enum": [
+                      "handled",
+                      "ignored"
+                    ]
+                  },
+                  "reason": {
+                    "type": "string",
+                    "description": "Optional note explaining the decision. Only meaningful when status is \"ignored\"."
+                  }
+                }
+              },
+              "example": {
+                "signalIds": [
+                  "wsi_Example000000001",
+                  "wsi_Example000000002"
+                ],
+                "status": "ignored",
+                "reason": "Not a fit"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WatchListApiUpdateSignalStatusResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error - invalid signalIds, invalid status, or more than 1000 ids",
+            "content": {
+              "text/plain": {
+                "example": "signalIds must contain between 1 and 1000 ids"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "text/plain": {
+                "example": "Unauthorized"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "text/plain": {
+                "example": "Internal server error"
+              }
+            }
+          }
+        }
       }
     },
     "/user/email-accounts": {
@@ -26238,22 +26378,28 @@
                       "companyIsHiring",
                       "companyRaisedFunds",
                       "recruitmentCampaign",
-                      "jobChange",
                       "newHire",
                       "companyEmployeeVisitedMyWebsite",
                       "customSignals",
                       "competitorConnections",
                       "competitorReactions",
-                      "companyFollowers",
                       "technologyChange",
                       "linkedinPeopleProfile",
                       "linkedinCompanyProfile",
                       "mergersAcquisitions",
                       "promotion",
                       "linkedinKeywords",
-                      "externalSignalContact",
-                      "externalSignalCompany",
-                      "buyingIntent"
+                      "republishedJobOffers",
+                      "buyingIntent",
+                      "newProductLaunch",
+                      "companyAward",
+                      "newPartnership",
+                      "newOffice",
+                      "closingOffice",
+                      "costCutting",
+                      "outagesAndSecurityBreaches",
+                      "lawsuitsAndLegalIssues",
+                      "githubStargazer"
                     ]
                   },
                   "filters": {
@@ -26341,6 +26487,10 @@
                         }
                       }
                     }
+                  },
+                  "personaId": {
+                    "type": "string",
+                    "description": "Persona (pdp_xxx) used to source contacts from the People Database. Only for a company Signal Agent with signalProcessingType = push_to_campaign whose signal type does not already ship its own contact (those company signals carry no contact, so the persona is the only way to know who to reach). Optional; rejected on any other configuration."
                   },
                   "activate": {
                     "type": "boolean",
@@ -26459,12 +26609,20 @@
                       "create_opportunity",
                       "push_to_campaign"
                     ]
+                  },
+                  "personaId": {
+                    "type": "string",
+                    "description": "Persona (pdp_xxx) used to source contacts from the People Database. Only for a company Signal Agent with signalProcessingType = push_to_campaign whose signal type does not already ship its own contact. Optional; rejected on any other configuration."
+                  },
+                  "activate": {
+                    "type": "boolean",
+                    "description": "Toggle the agent status. false deactivates (pauses) it immediately. true reactivates a paused agent (triggers billing and external watcher setup). A draft cannot be toggled this way. Omit to leave the status unchanged."
                   }
                 }
               },
               "example": {
                 "watchListId": "wl_Example000000001",
-                "name": "Renamed agent"
+                "activate": false
               }
             }
           }
@@ -26496,6 +26654,14 @@
               }
             }
           },
+          "402": {
+            "description": "Insufficient credits to reactivate the agent (activate: true)",
+            "content": {
+              "text/plain": {
+                "example": "Insufficient credits"
+              }
+            }
+          },
           "404": {
             "description": "Signal Agent not found",
             "content": {
@@ -26509,6 +26675,14 @@
             "content": {
               "text/plain": {
                 "example": "Watch list type cannot be changed after creation"
+              }
+            }
+          },
+          "429": {
+            "description": "Monitored-entity limit exceeded when reactivating (activate: true)",
+            "content": {
+              "text/plain": {
+                "example": "Monitoring limit exceeded"
               }
             }
           },
@@ -26720,22 +26894,28 @@
                 "companyIsHiring",
                 "companyRaisedFunds",
                 "recruitmentCampaign",
-                "jobChange",
                 "newHire",
                 "companyEmployeeVisitedMyWebsite",
                 "customSignals",
                 "competitorConnections",
                 "competitorReactions",
-                "companyFollowers",
                 "technologyChange",
                 "linkedinPeopleProfile",
                 "linkedinCompanyProfile",
                 "mergersAcquisitions",
                 "promotion",
                 "linkedinKeywords",
-                "externalSignalContact",
-                "externalSignalCompany",
-                "buyingIntent"
+                "republishedJobOffers",
+                "buyingIntent",
+                "newProductLaunch",
+                "companyAward",
+                "newPartnership",
+                "newOffice",
+                "closingOffice",
+                "costCutting",
+                "outagesAndSecurityBreaches",
+                "lawsuitsAndLegalIssues",
+                "githubStargazer"
               ]
             },
             "example": "companyIsHiring"
