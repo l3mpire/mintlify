@@ -1,0 +1,8 @@
+---
+openapi: put /v2/enrichments/providers/{providerId}/connection
+description: Saves your own API key for an external enrichment provider, connecting it for your waterfalls.
+---
+
+Only external providers are connectable; find the ids with [List Enrichment Providers](/api-reference/endpoints/enrichment-providers/list-enrichment-providers).
+
+A saved key is never checked against the provider — mistakes surface at enrichment time, not here.
