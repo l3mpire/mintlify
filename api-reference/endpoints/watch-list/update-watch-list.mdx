@@ -8,4 +8,6 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <Note>
 The signal `type` is immutable — it cannot be changed after creation. When you send `filters`, they replace the existing ones and are validated against the agent's signal type.
+
+Use `activate` to change the run status: `activate: false` pauses the agent immediately, `activate: true` reactivates a paused one (which re-runs billing and external watcher setup). A draft cannot be toggled this way — activate a draft through [Create Signal Agent](/api-reference/endpoints/watch-list/create-watch-list) instead. Omit `activate` to leave the status unchanged.
 </Note>
