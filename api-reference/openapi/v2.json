@@ -18497,7 +18497,6 @@
                 "crm_sync_duplicate_contact_blocked",
                 "crm_sync_duplicate_company_blocked",
                 "crm_sync_company_data_rejected",
-                "crm_sync_custom_field_creation_failed",
                 "crm_sync_unsub_state_protected",
                 "crm_sync_value_oscillating",
                 "crm_sync_owner_sync_loop",
