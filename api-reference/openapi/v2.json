@@ -19380,7 +19380,7 @@
                       },
                       "dynamic": {
                         "type": "boolean",
-                        "description": "Whether the list is dynamic (auto-populated by filters) or static (manually managed)"
+                        "description": "`true` on a dynamic list (auto-populated by filters). Absent on a static list (manually managed): treat a missing key as `false`."
                       },
                       "createdAt": {
                         "type": "string",
@@ -19394,7 +19394,6 @@
                   {
                     "_id": "clt_abc123def456ghi78",
                     "name": "Nurturing",
-                    "dynamic": false,
                     "createdAt": "2026-09-23T10:15:00.000Z"
                   },
                   {
@@ -20749,7 +20748,7 @@
                       },
                       "dynamic": {
                         "type": "boolean",
-                        "description": "Whether the list is dynamic (auto-populated by filters) or static (manually managed)"
+                        "description": "`true` on a dynamic list (auto-populated by filters). Absent on a static list (manually managed): treat a missing key as `false`."
                       },
                       "createdAt": {
                         "type": "string",
@@ -20763,7 +20762,6 @@
                   {
                     "_id": "clt_abc123def456ghi78",
                     "name": "Target accounts",
-                    "dynamic": false,
                     "createdAt": "2026-09-23T10:15:00.000Z"
                   },
                   {
