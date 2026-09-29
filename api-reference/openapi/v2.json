@@ -1290,7 +1290,7 @@
       },
       "ContactNote": {
         "type": "object",
-        "description": "A text note attached to a contact record, as returned by `GET /contacts/{idOrEmail}/notes`.",
+        "description": "A text note attached to a contact record, as returned by `GET` and `POST /contacts/{idOrEmail}/notes`.",
         "properties": {
           "_id": {
             "type": "string",
@@ -19612,6 +19612,103 @@
                 },
                 "example": {
                   "error": "Match error: Failed Match.Where validation in field limit"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "No contact with this id or email in your team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Contact not found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Contact Note",
+        "description": "Writes a note on a contact resolved by its id (`ctc_xxx`) or email, exactly as a note written in the lemlist app: it is stored as a note of the contact, **pushed to your connected CRM** (HubSpot, Salesforce, Pipedrive) like an in-app note, and logged in the team activity feed. The author is the user of the API key. The note is plain text, trimmed, at most 10000 characters, and cannot contain `<` or `>`.",
+        "tags": [
+          "Contacts"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "note"
+                ],
+                "properties": {
+                  "note": {
+                    "type": "string",
+                    "maxLength": 10000,
+                    "description": "The note content. Plain text, at most 10000 characters, without `<` or `>`."
+                  }
+                }
+              },
+              "example": {
+                "note": "Asked for a demo next week"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Note created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactNote"
+                },
+                "example": {
+                  "_id": "act_j0NrG6rYEPP9TMmWC",
+                  "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                  "contactId": "ctc_XXBXpAxmxwg24IzBI",
+                  "createdAt": "2026-09-28T09:12:00.653Z",
+                  "note": "Asked for a demo next week",
+                  "userId": "usr_ahfFktBBHUIxbVG5P"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid note: missing or blank (`note is required: a non-empty string`), over 10000 characters (`note exceeds the maximum of 10000 characters`) or containing `<` / `>` (`note cannot contain the characters < or >`). A request without an API key also answers `400`, with the plain-text message `no api key provided`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "note is required: a non-empty string"
                 }
               }
             }
