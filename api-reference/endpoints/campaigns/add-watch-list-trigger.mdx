@@ -1,0 +1,33 @@
+---
+openapi: post /campaigns/{campaignId}/triggers/watch-lists
+description: Links a Signal Agent to a campaign as its signal trigger.
+---
+
+<Note>
+This endpoint is in beta: it requires the `campaignSignalTrigger` beta on your team (`403 BETA_NOT_ENABLED` otherwise).
+</Note>
+
+Once linked, every new signal of the Signal Agent pushes its contact into the
+campaign as a lead. Signals detected before the link are not backfilled.
+
+The link is additive: linking a second Signal Agent adds it next to the first,
+and `watchListIds` in the response lists every agent linked to the campaign.
+The link uses the default import options — deduplicate on, duplicates handled
+manually, no backfill. Adjust them in the campaign editor in the lemlist app.
+
+A campaign created through the API or the MCP has no creation mode yet: the
+first link makes it a signal-based campaign, so the trigger shows in its
+sequence editor. A campaign set up as manual in the lemlist app cannot take a
+signal trigger (`409`): create a signal-based campaign instead.
+
+A draft Signal Agent can be linked, but the campaign cannot be launched from
+the lemlist app until at least one linked agent is active.
+
+<Warning>
+A company-level Signal Agent without a persona sources no contact, so nothing
+reaches the campaign. Set its `personaId` first — see
+[List personas](/api-reference/endpoints/people-database/list-personas).
+</Warning>
+
+To create a Signal Agent and link it in one call, pass `campaignId` to
+[Create Signal Agent](/api-reference/endpoints/watch-list/create-watch-list).
