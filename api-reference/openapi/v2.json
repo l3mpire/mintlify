@@ -19649,7 +19649,7 @@
       },
       "post": {
         "summary": "Create Contact Note",
-        "description": "Writes a note on a contact resolved by its id (`ctc_xxx`) or email, exactly as a note written in the lemlist app: it is stored as a note of the contact, **pushed to your connected CRM** (HubSpot, Salesforce, Pipedrive) like an in-app note, and logged in the team activity feed. The author is the user of the API key. The note is plain text, trimmed, at most 10000 characters, and cannot contain `<` or `>`.",
+        "description": "Writes a note on a contact resolved by its id (`ctc_xxx`) or email, exactly as a note written in the lemlist app: it is stored as a note of the contact, **pushed to your connected CRM** (HubSpot, Salesforce, Pipedrive) like an in-app note, and logged in the team activity feed. The author is the user of the API key. The note is plain text, trimmed, at most 10000 characters, and cannot contain a `<` followed by a `>` (the app's guard against markup). A lone `<` is stored HTML-escaped as `&lt;`, as in the app.",
         "tags": [
           "Contacts"
         ],
@@ -19666,7 +19666,7 @@
                   "note": {
                     "type": "string",
                     "maxLength": 10000,
-                    "description": "The note content. Plain text, at most 10000 characters, without `<` or `>`."
+                    "description": "The note content. Plain text, at most 10000 characters; a `<` followed by a `>` is refused, a lone `<` is stored as `&lt;`."
                   }
                 }
               },
