@@ -9,4 +9,6 @@ description: Updates the values of custom variables on a lead.
 
 <Note>
   Default variables follow the [Update Lead](./update-lead) rules: they are written on the lead's contact and company as well, and `companyName` alone renames the company the lead is linked to.
+
+  The response reports it: `warnings` carries a `company-fields-write-company-record` entry naming the `company`-prefixed keys you sent in `params.fields`. It is informational, the update went through. To edit a company on purpose, use [Upsert Company](/api-reference/endpoints/companies/upsert-company).
 </Note>
