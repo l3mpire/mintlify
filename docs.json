@@ -402,7 +402,9 @@
                 "pages": [
                   "api-reference/endpoints/enrichment-waterfalls/list-enrichment-waterfalls",
                   "api-reference/endpoints/enrichment-waterfalls/get-enrichment-waterfall",
+                  "api-reference/endpoints/enrichment-waterfalls/create-enrichment-waterfall",
                   "api-reference/endpoints/enrichment-waterfalls/update-enrichment-waterfall",
+                  "api-reference/endpoints/enrichment-waterfalls/delete-enrichment-waterfall",
                   "api-reference/endpoints/enrichment-waterfalls/reset-enrichment-waterfall"
                 ]
               },

@@ -25,6 +25,10 @@ The bulk enrichment API is ideal for:
 | `verify` | `email` | Verify email deliverability |
 | `linkedin_enrichment` | `linkedinUrl` OR `email` OR (`firstName` + `lastName` + (`companyName` OR `companyDomain`)) | Enrich with LinkedIn profile data |
 
+### Location
+
+`input.location` is an optional free-text location of the person, such as `Paris, France`. lemlist maps it to a country to pick the [enrichment waterfall](/api-reference/endpoints/enrichment-waterfalls/list-enrichment-waterfalls) of `find_email` and `find_phone`: a custom waterfall listing that country, or the default one when there is no location or no recognizable country. It is not sent to the data providers.
+
 ### Metadata
 
 The `metadata` field can be a string or an object. This data will be returned in both the API response and webhook notifications, allowing you to track and correlate enrichment requests.
