@@ -20,4 +20,4 @@ Only the fields you send change. When `providers` is sent it replaces the whole 
 | `ENRICHMENT_WATERFALL_CUSTOM_WITHOUT_CONDITION` | 400 | `conditions.country.in` is empty. |
 | `ENRICHMENT_WATERFALL_DEFAULT_HAS_NO_CONDITION` | 400 | `conditions` was sent for a default waterfall. |
 | `ENRICHMENT_WATERFALL_COUNTRY_CONFLICT` | 409 | A country already belongs to another custom waterfall of this type. |
-| `ENRICHMENT_WATERFALL_DUPLICATE_NAME` | 409 | Another waterfall of this type has this name, or the name is a reserved default name. |
+| `ENRICHMENT_WATERFALL_DUPLICATE_NAME` | 409 | Another waterfall of this type has this name, or the name is a default waterfall name (a default may keep its own). |
