@@ -28211,7 +28211,7 @@
     "/sender-picture/mailboxes": {
       "get": {
         "summary": "Get Sender Picture Status",
-        "description": "Lists the mailboxes a user bought through lemlist in your team, with whether their lemlist profile picture has been pushed to each one.\n\nOnly active mailboxes assigned to the user are returned. Omit `userId` to read your own mailboxes; a teammate's `userId` must belong to your team.\n\nThis endpoint is in closed beta and answers `403` unless the beta is enabled for your team.",
+        "description": "Lists the mailboxes a user bought through lemlist in your team, with whether their lemlist profile picture has been pushed to each one.\n\nOnly active mailboxes assigned to the user are returned. Omit `userId` to read your own mailboxes; a teammate's `userId` must belong to your team.",
         "operationId": "getSenderPictureStatus",
         "tags": ["Sender picture"],
         "parameters": [
@@ -28301,25 +28301,15 @@
             }
           },
           "403": {
-            "description": "The beta is not enabled for your team, or `userId` is not a member of your team",
+            "description": "`userId` is not a member of your team",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SenderPictureError"
                 },
-                "examples": {
-                  "betaNotEnabled": {
-                    "value": {
-                      "error": "Beta is not enabled",
-                      "code": "BETA_NOT_ENABLED"
-                    }
-                  },
-                  "userNotInTeam": {
-                    "value": {
-                      "error": "This user is not a member of your team.",
-                      "code": "SENDER_PICTURE_USER_NOT_IN_TEAM"
-                    }
-                  }
+                "example": {
+                  "error": "This user is not a member of your team.",
+                  "code": "SENDER_PICTURE_USER_NOT_IN_TEAM"
                 }
               }
             }
@@ -28344,7 +28334,7 @@
     "/sender-picture/sync": {
       "post": {
         "summary": "Sync Sender Picture",
-        "description": "Queues a push of a user's lemlist profile picture onto the Google Workspace and Microsoft 365 mailboxes they bought through lemlist, so recipients see it next to their emails.\n\nThe push is asynchronous: the call only queues it. A background job processes the queue about every minute, and a Google Workspace mailbox takes a few tens of seconds more. Follow the progress with [Get Sender Picture Status](/api-reference/endpoints/sender-picture/get-sender-picture-status).\n\nThere is no confirmation step: the mailboxes are queued as soon as the call succeeds.\n\nThis endpoint is in closed beta and answers `403` unless the beta is enabled for your team.",
+        "description": "Queues a push of a user's lemlist profile picture onto the Google Workspace and Microsoft 365 mailboxes they bought through lemlist, so recipients see it next to their emails.\n\nThe push is asynchronous: the call only queues it. A background job processes the queue about every minute, and a Google Workspace mailbox takes a few tens of seconds more. Follow the progress with [Get Sender Picture Status](/api-reference/endpoints/sender-picture/get-sender-picture-status).\n\nThere is no confirmation step: the mailboxes are queued as soon as the call succeeds.",
         "operationId": "syncSenderPicture",
         "tags": ["Sender picture"],
         "requestBody": {
@@ -28447,25 +28437,15 @@
             }
           },
           "403": {
-            "description": "The beta is not enabled for your team, or `userId` is not a member of your team",
+            "description": "`userId` is not a member of your team",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SenderPictureError"
                 },
-                "examples": {
-                  "betaNotEnabled": {
-                    "value": {
-                      "error": "Beta is not enabled",
-                      "code": "BETA_NOT_ENABLED"
-                    }
-                  },
-                  "userNotInTeam": {
-                    "value": {
-                      "error": "This user is not a member of your team.",
-                      "code": "SENDER_PICTURE_USER_NOT_IN_TEAM"
-                    }
-                  }
+                "example": {
+                  "error": "This user is not a member of your team.",
+                  "code": "SENDER_PICTURE_USER_NOT_IN_TEAM"
                 }
               }
             }
