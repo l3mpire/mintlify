@@ -445,6 +445,14 @@
                 ]
               },
               {
+                "group": "Sender picture",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/sender-picture/get-sender-picture-status",
+                  "api-reference/endpoints/sender-picture/sync-sender-picture"
+                ]
+              },
+              {
                 "group": "Fields",
                 "expanded": false,
                 "pages": ["api-reference/endpoints/fields/list-fields"]
@@ -493,7 +501,8 @@
               "api-reference/objects-definitions/company-note",
               "api-reference/objects-definitions/signal",
               "api-reference/objects-definitions/watch-list",
-              "api-reference/objects-definitions/deliverability-alert"
+              "api-reference/objects-definitions/deliverability-alert",
+              "api-reference/objects-definitions/sender-picture"
             ]
           }
         ]
