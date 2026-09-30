@@ -4404,6 +4404,146 @@
           }
         }
       },
+      "SenderPictureMailbox": {
+        "type": "object",
+        "description": "The sender picture sync state of one mailbox bought through lemlist.",
+        "properties": {
+          "mailboxId": {
+            "type": "string",
+            "description": "Unique identifier of the purchased mailbox (`dem_...`). Pass it as `mailboxId` to [Sync Sender Picture](/api-reference/endpoints/sender-picture/sync-sender-picture)."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Address of the mailbox"
+          },
+          "provider": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["google", "m365", null],
+            "description": "Where the picture is pushed. `null` when the mailbox cannot take a picture (see `not-supported`)."
+          },
+          "status": {
+            "type": "string",
+            "enum": ["synced", "not-synced", "queued", "syncing", "failed", "not-supported"],
+            "description": "`synced`: the current picture is on the mailbox. `not-synced`: never pushed, or the picture changed since. `queued` / `syncing`: a push is in progress. `failed`: the last push failed, `lastError` says why. `not-supported`: not a Google Workspace or Microsoft 365 mailbox bought through lemlist, nothing can be pushed."
+          },
+          "syncedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "When the picture was last pushed, `null` if never"
+          },
+          "lastError": {
+            "type": "string",
+            "nullable": true,
+            "description": "Why the last push failed, `null` otherwise"
+          },
+          "hasOverride": {
+            "type": "boolean",
+            "description": "`true` when this mailbox uses its own picture instead of its owner's lemlist profile picture"
+          }
+        }
+      },
+      "SenderPictureStatusResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "userId": {
+                "type": "string",
+                "description": "The user whose mailboxes are listed"
+              },
+              "hasPicture": {
+                "type": "boolean",
+                "description": "Whether the user has a lemlist profile picture. When `false`, every sync is refused until they upload one in Settings > Account."
+              },
+              "mailboxes": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SenderPictureMailbox"
+                }
+              },
+              "counts": {
+                "type": "object",
+                "description": "How many mailboxes sit in each status",
+                "properties": {
+                  "total": {
+                    "type": "integer"
+                  },
+                  "synced": {
+                    "type": "integer"
+                  },
+                  "notSynced": {
+                    "type": "integer"
+                  },
+                  "queued": {
+                    "type": "integer"
+                  },
+                  "syncing": {
+                    "type": "integer"
+                  },
+                  "failed": {
+                    "type": "integer"
+                  },
+                  "notSupported": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "SenderPictureSyncResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "enqueued": {
+                "type": "integer",
+                "description": "How many mailboxes were queued. `0` when every mailbox in scope is already synced or already being pushed."
+              },
+              "mailboxes": {
+                "type": "array",
+                "description": "The mailboxes targeted by the sync",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "mailboxId": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "provider": {
+                      "type": "string",
+                      "enum": ["google", "m365"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "SenderPictureError": {
+        "type": "object",
+        "description": "Error envelope returned by the sender picture endpoints.",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Human-readable explanation of the failure"
+          },
+          "code": {
+            "type": "string",
+            "description": "Machine-readable error code, stable across releases"
+          }
+        }
+      },
       "ContactSourcingRun": {
         "type": "object",
         "properties": {
@@ -28064,6 +28204,323 @@
           },
           "404": {
             "description": "Alert not found"
+          }
+        }
+      }
+    },
+    "/sender-picture/mailboxes": {
+      "get": {
+        "summary": "Get Sender Picture Status",
+        "description": "Lists the mailboxes a user bought through lemlist in your team, with whether their lemlist profile picture has been pushed to each one.\n\nOnly active mailboxes assigned to the user are returned. Omit `userId` to read your own mailboxes; a teammate's `userId` must belong to your team.\n\nThis endpoint is in closed beta and answers `403` unless the beta is enabled for your team.",
+        "operationId": "getSenderPictureStatus",
+        "tags": ["Sender picture"],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "description": "A teammate whose mailboxes to read. Omit to read the mailboxes of the API key owner.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "usr_Tn8Bv2Mc4Xz6Lq1Pw"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SenderPictureStatusResponse"
+                },
+                "example": {
+                  "data": {
+                    "userId": "usr_Tn8Bv2Mc4Xz6Lq1Pw",
+                    "hasPicture": true,
+                    "mailboxes": [
+                      {
+                        "mailboxId": "dem_Xq7Lm2Pz9Rt4Vb8Nc",
+                        "email": "john@example.com",
+                        "provider": "google",
+                        "status": "synced",
+                        "syncedAt": "2026-09-28T14:05:00.000Z",
+                        "lastError": null,
+                        "hasOverride": false
+                      },
+                      {
+                        "mailboxId": "dem_Hw3Jk6Ds1Fy5Gu0Ea",
+                        "email": "john@acme.com",
+                        "provider": "m365",
+                        "status": "not-synced",
+                        "syncedAt": null,
+                        "lastError": null,
+                        "hasOverride": false
+                      }
+                    ],
+                    "counts": {
+                      "total": 2,
+                      "synced": 1,
+                      "notSynced": 1,
+                      "queued": 0,
+                      "syncing": 0,
+                      "failed": 0,
+                      "notSupported": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error - `userId` is not a valid user id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SenderPictureError"
+                },
+                "example": {
+                  "error": "Invalid sender picture request.",
+                  "code": "SENDER_PICTURE_INVALID_INPUT"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SenderPictureError"
+                },
+                "example": {
+                  "error": "Route unauthorized",
+                  "code": "ROUTE_UNAUTHORIZED"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The beta is not enabled for your team, or `userId` is not a member of your team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SenderPictureError"
+                },
+                "examples": {
+                  "betaNotEnabled": {
+                    "value": {
+                      "error": "Beta is not enabled",
+                      "code": "BETA_NOT_ENABLED"
+                    }
+                  },
+                  "userNotInTeam": {
+                    "value": {
+                      "error": "This user is not a member of your team.",
+                      "code": "SENDER_PICTURE_USER_NOT_IN_TEAM"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SenderPictureError"
+                },
+                "example": {
+                  "error": "Internal error",
+                  "code": "INTERNAL_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sender-picture/sync": {
+      "post": {
+        "summary": "Sync Sender Picture",
+        "description": "Queues a push of a user's lemlist profile picture onto the Google Workspace and Microsoft 365 mailboxes they bought through lemlist, so recipients see it next to their emails.\n\nThe push is asynchronous: the call only queues it. A background job processes the queue about every minute, and a Google Workspace mailbox takes a few tens of seconds more. Follow the progress with [Get Sender Picture Status](/api-reference/endpoints/sender-picture/get-sender-picture-status).\n\nThere is no confirmation step: the mailboxes are queued as soon as the call succeeds.\n\nThis endpoint is in closed beta and answers `403` unless the beta is enabled for your team.",
+        "operationId": "syncSenderPicture",
+        "tags": ["Sender picture"],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "enum": ["not_synced", "all", "mailbox"],
+                    "default": "not_synced",
+                    "description": "`not_synced`: every mailbox of the user that is not up to date; synced ones are left alone. `all`: every mailbox of the user, synced ones pushed again. `mailbox`: one mailbox, pushed again even when already synced."
+                  },
+                  "mailboxId": {
+                    "type": "string",
+                    "description": "`scope=mailbox` only: the mailbox to push, as returned by Get Sender Picture Status. Either `mailboxId` or `email` is required with `scope=mailbox`.",
+                    "example": "dem_Xq7Lm2Pz9Rt4Vb8Nc"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "`scope=mailbox` only: the address of the mailbox to push, instead of `mailboxId`.",
+                    "example": "john@example.com"
+                  },
+                  "userId": {
+                    "type": "string",
+                    "description": "`scope=not_synced` or `scope=all` only: a teammate whose mailboxes to push. Omit to push the API key owner's. Ignored with `scope=mailbox`, which always pushes the picture of the mailbox's own owner.",
+                    "example": "usr_Tn8Bv2Mc4Xz6Lq1Pw"
+                  }
+                }
+              },
+              "examples": {
+                "notSynced": {
+                  "summary": "Push every mailbox not up to date",
+                  "value": {}
+                },
+                "oneMailbox": {
+                  "summary": "Push one mailbox again",
+                  "value": {
+                    "scope": "mailbox",
+                    "mailboxId": "dem_Xq7Lm2Pz9Rt4Vb8Nc"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Mailboxes queued",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SenderPictureSyncResponse"
+                },
+                "example": {
+                  "data": {
+                    "enqueued": 1,
+                    "mailboxes": [
+                      {
+                        "mailboxId": "dem_Hw3Jk6Ds1Fy5Gu0Ea",
+                        "email": "john@acme.com",
+                        "provider": "m365"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error - unknown field, invalid `scope`, or `scope=mailbox` without `mailboxId` or `email`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SenderPictureError"
+                },
+                "example": {
+                  "error": "Invalid sender picture request.",
+                  "code": "SENDER_PICTURE_INVALID_INPUT"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SenderPictureError"
+                },
+                "example": {
+                  "error": "Route unauthorized",
+                  "code": "ROUTE_UNAUTHORIZED"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The beta is not enabled for your team, or `userId` is not a member of your team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SenderPictureError"
+                },
+                "examples": {
+                  "betaNotEnabled": {
+                    "value": {
+                      "error": "Beta is not enabled",
+                      "code": "BETA_NOT_ENABLED"
+                    }
+                  },
+                  "userNotInTeam": {
+                    "value": {
+                      "error": "This user is not a member of your team.",
+                      "code": "SENDER_PICTURE_USER_NOT_IN_TEAM"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`scope=mailbox`: your team has no active mailbox with this `mailboxId` or `email`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SenderPictureError"
+                },
+                "example": {
+                  "error": "This mailbox no longer exists.",
+                  "code": "SENDER_PICTURE_MAILBOX_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Nothing can be pushed: no mailbox in scope was bought through lemlist on Google Workspace or Microsoft 365, or the user has no lemlist profile picture",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SenderPictureError"
+                },
+                "examples": {
+                  "notSupported": {
+                    "value": {
+                      "error": "Only Google Workspace and Microsoft 365 mailboxes bought through lemlist can have their picture synced.",
+                      "code": "SENDER_PICTURE_NOT_SUPPORTED"
+                    }
+                  },
+                  "noSource": {
+                    "value": {
+                      "error": "Upload a profile picture before syncing it to your mailboxes.",
+                      "code": "SENDER_PICTURE_NO_SOURCE"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SenderPictureError"
+                },
+                "example": {
+                  "error": "Internal error",
+                  "code": "INTERNAL_ERROR"
+                }
+              }
+            }
           }
         }
       }
