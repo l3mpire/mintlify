@@ -1,0 +1,27 @@
+---
+openapi: post /sender-picture/sync
+description: Queues a push of a user's lemlist profile picture onto the mailboxes they bought through lemlist.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Sender picture" objectPath="sender-picture" />
+
+## Choosing a scope
+
+| scope | Mailboxes pushed | Target |
+| ----- | ---------------- | ------ |
+| `not_synced` (default) | Every mailbox of the user that is not up to date. Synced ones are left alone. | The API key owner, or `userId` |
+| `all` | Every mailbox of the user, synced ones pushed again. | The API key owner, or `userId` |
+| `mailbox` | One mailbox, pushed again even when it is already synced. | `mailboxId` or `email` (required). `userId` is ignored: the mailbox's own owner's picture is pushed. |
+
+Pushing a synced mailbox again is useful when its picture was changed by hand on Google or Microsoft: lemlist cannot see that change, so the mailbox still reads `synced`.
+
+Mailboxes already `queued` or `syncing` are never queued twice. `enqueued` is `0` when every mailbox in scope is already up to date or already being pushed.
+
+<Note>
+The call only queues the push; there is no confirmation step. A background job processes the queue about every minute, and a Google Workspace mailbox takes a few tens of seconds more. Follow the progress with [Get Sender Picture Status](/api-reference/endpoints/sender-picture/get-sender-picture-status).
+</Note>
+
+<Warning>
+This endpoint is in closed beta. It answers `403` with the code `BETA_NOT_ENABLED` unless the sender picture beta is enabled for your team.
+</Warning>
