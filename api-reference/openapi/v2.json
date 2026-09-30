@@ -24594,6 +24594,16 @@
             }
           },
           {
+            "name": "location",
+            "in": "query",
+            "required": false,
+            "description": "Free-text location of the person, e.g. `Paris, France`. Its country picks the enrichment waterfall of `findEmail` and `findPhone`: a custom waterfall listing that country, or the default one. Not sent to providers.",
+            "example": "Paris, France",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "findPhone",
             "in": "query",
             "required": false,
