@@ -19506,7 +19506,7 @@
             "name": "limit",
             "in": "query",
             "required": false,
-            "description": "Number of notes per page, a positive integer. Default: 100. Maximum: 100.",
+            "description": "Number of notes per page. Default: 100. Maximum: 100. A missing, invalid or non-positive value falls back to 100.",
             "example": "2",
             "schema": {
               "type": "integer"
@@ -19516,7 +19516,7 @@
             "name": "page",
             "in": "query",
             "required": false,
-            "description": "Page number to retrieve, starting at 1. Default: 1.",
+            "description": "Page number to retrieve, starting at 1. Default: 1. An invalid value falls back to 1; a page beyond the last one answers an empty `data`.",
             "example": "1",
             "schema": {
               "type": "integer"
@@ -19526,7 +19526,7 @@
             "name": "sortBy",
             "in": "query",
             "required": false,
-            "description": "The field to sort by. Only `createdAt` is supported.",
+            "description": "The field to sort by. Only `createdAt` is supported; any other value is ignored.",
             "example": "createdAt",
             "schema": {
               "type": "string",
@@ -19539,7 +19539,7 @@
             "name": "sortOrder",
             "in": "query",
             "required": false,
-            "description": "The sort direction. Default: `desc` (newest first).",
+            "description": "The sort direction. Default: `desc` (newest first). Any other value sorts ascending.",
             "example": "desc",
             "schema": {
               "type": "string",
@@ -19599,53 +19599,10 @@
             }
           },
           "400": {
-            "description": "A query parameter is outside its contract, or the path is malformed. The body is `{ error }`, as on `GET /companies/{companyId}/notes`; the message names the failing field. `page` and `limit` must be positive integers (`0`, negatives, decimals, non-numeric values and values above 2^53 are refused), `sortBy` must be `createdAt`, `sortOrder` must be `asc` or `desc`. A repeated query parameter is not an error: its last value is used. A request without an API key answers `400` with the plain-text message `no api key provided`.",
+            "description": "A request without an API key answers `400` with the plain-text message `no api key provided`. Query parameters never answer `400`: a value outside the contract falls back to its default, as on `GET /companies/{companyId}/notes`.",
             "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string",
-                      "description": "What was refused; for a query parameter, the message ends with the field name"
-                    }
-                  },
-                  "required": [
-                    "error"
-                  ]
-                },
-                "examples": {
-                  "invalid-page": {
-                    "summary": "page is not a positive integer",
-                    "value": {
-                      "error": "Match error: Failed Match.Where validation in field page"
-                    }
-                  },
-                  "invalid-limit": {
-                    "summary": "limit is not a positive integer",
-                    "value": {
-                      "error": "Match error: Failed Match.Where validation in field limit"
-                    }
-                  },
-                  "invalid-sort-by": {
-                    "summary": "sortBy is not createdAt",
-                    "value": {
-                      "error": "Match error: Failed Match.OneOf, Match.Maybe or Match.Optional validation in field sortBy"
-                    }
-                  },
-                  "invalid-sort-order": {
-                    "summary": "sortOrder is neither asc nor desc",
-                    "value": {
-                      "error": "Match error: Failed Match.OneOf, Match.Maybe or Match.Optional validation in field sortOrder"
-                    }
-                  },
-                  "malformed-path": {
-                    "summary": "idOrEmail is not valid percent-encoding (e.g. `%E0`)",
-                    "value": {
-                      "error": "URI malformed"
-                    }
-                  }
-                }
+              "text/plain": {
+                "example": "no api key provided"
               }
             }
           },
@@ -19658,7 +19615,7 @@
             }
           },
           "404": {
-            "description": "No contact with this id or email in your team",
+            "description": "No contact with this id or email in your team (a path that is not valid percent-encoding matches no contact)",
             "content": {
               "application/json": {
                 "schema": {
@@ -19682,7 +19639,7 @@
       },
       "post": {
         "summary": "Create Contact Note",
-        "description": "Writes a note on a contact resolved by its id (`ctc_xxx`) or email, exactly as a note written in the lemlist app: it is stored as a note of the contact, **pushed to your connected CRM** (HubSpot, Salesforce, Pipedrive) like an in-app note, and logged in the team activity feed. The author is the user of the API key. The note is plain text, trimmed, at most 10000 characters, and cannot contain a `<` followed by a `>` (the app's guard against markup). A lone `<` is stored HTML-escaped as `&lt;`, as in the app.",
+        "description": "Writes a note on a contact resolved by its id (`ctc_xxx`) or email, exactly as a note written in the lemlist app: it is stored as a note of the contact, **pushed to your connected CRM** (HubSpot, Salesforce, Pipedrive) like an in-app note, and logged in the team activity feed. The author is the user of the API key. The note is plain text, stored as sent, at most 10000 characters, and cannot contain a `<` followed by a `>` (the app's guard against markup). A lone `<` is stored HTML-escaped as `&lt;`, as in the app. A missing, empty or non-text `note` creates an empty note, as on `POST /companies/{companyId}/notes`.",
         "tags": [
           "Contacts"
         ],
@@ -19692,9 +19649,6 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "note"
-                ],
                 "properties": {
                   "note": {
                     "type": "string",
@@ -19710,7 +19664,7 @@
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "Note created",
             "content": {
               "application/json": {
@@ -19729,7 +19683,7 @@
             }
           },
           "400": {
-            "description": "The note is refused, or the path is malformed. The body is `{ error }`, as on `POST /companies/{companyId}/notes`, with one message per case: the note is missing, blank, not a string or the body is not JSON; the note exceeds 10000 characters after trimming; the note contains a `<` followed by a `>` (the app's guard against markup). Extra body fields are ignored. A request without an API key answers `400` with the plain-text message `no api key provided`.",
+            "description": "The note is refused. The body is `{ error }`, with one message per case: the note exceeds 10000 characters; the note contains a `<` followed by a `>` (the app's guard against markup). A request without an API key answers `400` with the plain-text message `no api key provided`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -19737,7 +19691,7 @@
                   "properties": {
                     "error": {
                       "type": "string",
-                      "description": "One of the three note messages below, or `URI malformed`"
+                      "description": "One of the two note messages below"
                     }
                   },
                   "required": [
@@ -19745,12 +19699,6 @@
                   ]
                 },
                 "examples": {
-                  "note-required": {
-                    "summary": "note missing, blank, not a string, or body not JSON",
-                    "value": {
-                      "error": "note is required: a non-empty string"
-                    }
-                  },
                   "note-too-long": {
                     "summary": "note over 10000 characters",
                     "value": {
@@ -19761,12 +19709,6 @@
                     "summary": "note contains a < followed by a >",
                     "value": {
                       "error": "note cannot contain the characters < or >"
-                    }
-                  },
-                  "malformed-path": {
-                    "summary": "idOrEmail is not valid percent-encoding (e.g. `%E0`)",
-                    "value": {
-                      "error": "URI malformed"
                     }
                   }
                 }
@@ -19782,7 +19724,7 @@
             }
           },
           "404": {
-            "description": "No contact with this id or email in your team",
+            "description": "No contact with this id or email in your team (a path that is not valid percent-encoding matches no contact)",
             "content": {
               "application/json": {
                 "schema": {
@@ -21970,7 +21912,8 @@
                 "properties": {
                   "note": {
                     "type": "string",
-                    "description": "The note content"
+                    "maxLength": 10000,
+                    "description": "The note content. Plain text, at most 10000 characters; a `<` followed by a `>` is refused."
                   }
                 },
                 "required": [
@@ -22005,10 +21948,35 @@
             }
           },
           "400": {
-            "description": "Bad team",
+            "description": "The note is refused. The body is `{ error }`, with one message per case: the note exceeds 10000 characters; the note contains a `<` followed by a `>` (markup is refused, as when writing a note in the lemlist app; a lone `<` or `>` is accepted). A request without an API key answers `400` with the plain-text message `no api key provided`.",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "One of the two note messages below"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "note-too-long": {
+                    "summary": "note over 10000 characters",
+                    "value": {
+                      "error": "note exceeds the maximum of 10000 characters"
+                    }
+                  },
+                  "note-invalid": {
+                    "summary": "note contains a < followed by a >",
+                    "value": {
+                      "error": "note cannot contain the characters < or >"
+                    }
+                  }
+                }
               }
             }
           },
