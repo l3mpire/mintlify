@@ -365,7 +365,12 @@
                   "api-reference/endpoints/people-database/get-database-filters",
                   "api-reference/endpoints/people-database/list-personas",
                   "api-reference/endpoints/people-database/create-persona",
-                  "api-reference/endpoints/people-database/delete-persona"
+                  "api-reference/endpoints/people-database/delete-persona",
+                  "api-reference/endpoints/people-database/list-saved-searches",
+                  "api-reference/endpoints/people-database/create-saved-search",
+                  "api-reference/endpoints/people-database/get-saved-search",
+                  "api-reference/endpoints/people-database/update-saved-search",
+                  "api-reference/endpoints/people-database/delete-saved-search"
                 ]
               },
               {
@@ -473,7 +478,8 @@
                   "api-reference/objects-definitions/database",
                   "api-reference/objects-definitions/people-database",
                   "api-reference/objects-definitions/company-database",
-                  "api-reference/objects-definitions/persona"
+                  "api-reference/objects-definitions/persona",
+                  "api-reference/objects-definitions/saved-search"
                 ]
               },
               "api-reference/objects-definitions/crm-filter",

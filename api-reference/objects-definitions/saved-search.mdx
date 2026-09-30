@@ -1,0 +1,10 @@
+---
+title: Saved search
+openapi-schema: SavedSearch
+---
+
+A saved search is a named set of People Database filters saved by your team. It shows up in the "Saved searches" menu of the People Database.
+
+Saved searches are team-shared: every member of the team sees and can edit the same saved searches. Their `filters` have the same shape as the search endpoints accept, so they can be sent back as is to [Search People Database](/api-reference/endpoints/people-database/search-people-database) or [Search Companies Database](/api-reference/endpoints/people-database/search-companies-database).
+
+Use [Create saved search](/api-reference/endpoints/people-database/create-saved-search) to save one, [List saved searches](/api-reference/endpoints/people-database/list-saved-searches) to retrieve the ones your team already has, and [Get Database Filters](/api-reference/endpoints/people-database/get-database-filters) with `usage=ui` to discover the `filterId` values a saved search can hold.
