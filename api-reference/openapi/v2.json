@@ -2871,7 +2871,7 @@
       },
       "PersonaError": {
         "type": "object",
-        "description": "Error envelope returned by the persona and saved-search endpoints.",
+        "description": "Error envelope returned by the persona, saved-search and Get Database Filters endpoints.",
         "properties": {
           "error": {
             "type": "string",
@@ -14353,10 +14353,26 @@
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / invalid `usage` (`API_INVALID_USAGE`)",
+            "description": "Validation error - invalid query parameters",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "examples": {
+                  "invalidUsage": {
+                    "value": {
+                      "error": "Parameter usage is invalid",
+                      "code": "API_INVALID_USAGE"
+                    }
+                  },
+                  "invalidMode": {
+                    "value": {
+                      "error": "Parameter mode is invalid",
+                      "code": "API_INVALID_MODE"
+                    }
+                  }
+                }
               }
             }
           },
@@ -14369,7 +14385,18 @@
             }
           },
           "405": {
-            "description": "Method not allowed"
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
           }
         },
         "parameters": [
