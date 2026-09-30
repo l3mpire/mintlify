@@ -2312,17 +2312,88 @@
       },
       "DatabaseFilter": {
         "type": "object",
-        "description": "Saved search criteria for querying the People database.",
+        "description": "A filter usable in the People and Companies database searches, as listed by Get Database Filters.",
+        "required": [
+          "filterId",
+          "description",
+          "type"
+        ],
         "properties": {
-          "_id": {
-            "type": "string"
+          "filterId": {
+            "type": "string",
+            "description": "Filter identifier, to send as `filterId` in the search filters",
+            "example": "department"
           },
-          "name": {
-            "type": "string"
+          "description": {
+            "type": "string",
+            "description": "Human-readable filter name, followed by a description of what the filter matches when one exists",
+            "example": "Department: Filter by the lead's department (e.g. 'Sales', 'Marketing', 'Engineering', 'Finance / Legal / Admin', 'Human Resources'). Use to target a functional buyer persona regardless of the exact job title."
           },
-          "criteria": {
+          "mode": {
+            "type": "array",
+            "description": "Search modes the filter can be used in: `leads` for Search People Database, `companies` for Search Companies Database. Omitted when the request is scoped to a single `mode`.",
+            "items": {
+              "type": "string",
+              "enum": [
+                "leads",
+                "companies"
+              ]
+            },
+            "example": [
+              "leads"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "description": "Kind of input the filter expects. `level` is a two-level dropdown of the People Database UI; it is reported as `select` by default.",
+            "enum": [
+              "text",
+              "select",
+              "autocomplete",
+              "static",
+              "slider",
+              "level",
+              "elasticId"
+            ],
+            "example": "select"
+          },
+          "values": {
+            "type": "array",
+            "description": "Allowed values, for the filters that have a fixed list",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "Sales",
+              "Marketing",
+              "Engineering"
+            ]
+          },
+          "range": {
             "type": "object",
-            "additionalProperties": true
+            "description": "Slider configuration, for the `slider` filters",
+            "properties": {
+              "min": {
+                "type": "number",
+                "description": "Lowest accepted value",
+                "example": 0
+              },
+              "max": {
+                "type": "number",
+                "description": "Highest accepted value",
+                "example": 10000
+              },
+              "default": {
+                "type": "string",
+                "description": "Default range, formatted `min|max`",
+                "example": "1|10000"
+              },
+              "percentage": {
+                "type": "boolean",
+                "description": "Whether the values are percentages",
+                "example": false
+              }
+            }
           }
         }
       },
@@ -14221,22 +14292,29 @@
                 "example": [
                   {
                     "filterId": "country",
-                    "description": "Filter by country",
+                    "description": "Country: Filter by the lead's country of residence (e.g. 'United States', 'France'). Targets where the person lives, not where their employer is headquartered.",
                     "mode": [
-                      "leads",
-                      "companies"
+                      "leads"
                     ],
-                    "type": "text",
-                    "helper": "Use free text search"
+                    "type": "autocomplete"
                   },
                   {
                     "filterId": "department",
-                    "description": "Filter by department",
+                    "description": "Department: Filter by the lead's department (e.g. 'Sales', 'Marketing', 'Engineering', 'Finance / Legal / Admin', 'Human Resources'). Use to target a functional buyer persona regardless of the exact job title.",
                     "mode": [
                       "leads"
                     ],
                     "type": "select",
-                    "helper": "Allowed values: Sales, Customer service, Engineering, Marketing, Operations, Human Resources, Finance / Legal / Admin, Other"
+                    "values": [
+                      "Sales",
+                      "Customer service",
+                      "Engineering",
+                      "Marketing",
+                      "Operations",
+                      "Human Resources",
+                      "Finance / Legal / Admin",
+                      "Other"
+                    ]
                   }
                 ]
               }
@@ -14910,16 +14988,10 @@
             }
           },
           "401": {
-            "description": "Unauthorized - invalid or missing API key",
+            "description": "Unauthorized - invalid or missing API key. An API key with no user attached answers `{ \"error\": \"Route unauthorized\", \"code\": \"ROUTE_UNAUTHORIZED\" }` in JSON instead.",
             "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PersonaError"
-                },
-                "example": {
-                  "error": "Route unauthorized",
-                  "code": "ROUTE_UNAUTHORIZED"
-                }
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
               }
             }
           },
@@ -15059,16 +15131,10 @@
             }
           },
           "401": {
-            "description": "Unauthorized - invalid or missing API key",
+            "description": "Unauthorized - invalid or missing API key. An API key with no user attached answers `{ \"error\": \"Route unauthorized\", \"code\": \"ROUTE_UNAUTHORIZED\" }` in JSON instead.",
             "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PersonaError"
-                },
-                "example": {
-                  "error": "Route unauthorized",
-                  "code": "ROUTE_UNAUTHORIZED"
-                }
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
               }
             }
           },
@@ -15168,16 +15234,10 @@
             }
           },
           "401": {
-            "description": "Unauthorized - invalid or missing API key",
+            "description": "Unauthorized - invalid or missing API key. An API key with no user attached answers `{ \"error\": \"Route unauthorized\", \"code\": \"ROUTE_UNAUTHORIZED\" }` in JSON instead.",
             "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PersonaError"
-                },
-                "example": {
-                  "error": "Route unauthorized",
-                  "code": "ROUTE_UNAUTHORIZED"
-                }
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
               }
             }
           },
