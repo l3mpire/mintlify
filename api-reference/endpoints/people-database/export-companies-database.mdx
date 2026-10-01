@@ -1,0 +1,16 @@
+---
+openapi: "get /database/companies/export"
+description: "Exports the companies matching a search as a CSV file."
+title: "Export Companies database"
+---
+<Info>
+  This endpoint is rolling out progressively. If it returns a 403, ask support to enable it for your team.
+</Info>
+
+<Note>
+  Filter ids come from [GET Filters](/api-reference/endpoints/people-database/get-database-filters), called with `mode=companies`. That endpoint lists the allowed `values` for filters with a closed list; for `autocomplete` filters (companies, countries, technologies) there is no enumerable list — run a [search](/api-reference/endpoints/people-database/search-companies-database) to discover which values match.
+</Note>
+
+<Warning>
+  This export is billed on your team's 24h search quota, one unit per 100 exported rows. Exporting the 1000-row maximum costs 10 searches.
+</Warning>
