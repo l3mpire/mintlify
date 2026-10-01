@@ -1,6 +1,6 @@
 ---
 openapi: get /contacts
-description: Retrieves contacts from your CRM. Use `idsOrEmails` to fetch specific contacts by ID or email in a single request (max 100), or omit it to search/list contacts by name, email, contact list, or campaign membership.
+description: Retrieves contacts from your CRM. Use `idsOrEmails` to fetch specific contacts by ID or email in a single request (max 100), `crmIds` to find them from their record id in your connected CRM, or omit them to search/list contacts by name, email, contact list, or campaign membership.
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
@@ -8,12 +8,26 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 ## Query modes
 
-This endpoint supports two query modes:
+This endpoint supports the following query modes:
 
 | Mode | Parameters | Response format |
 |------|-----------|----------------|
-| **By IDs/emails** | `idsOrEmails` | Array of contacts |
-| **Search/filter** | `search`, `email`, `listId`, and/or `notInAnyCampaign` | Paginated object with `data`, `total`, `limit`, `offset` |
+| **By IDs/emails** | `idsOrEmails` | Array of `Contact` |
+| **By CRM record ids** | `crmIds` | Array of `Contact`, the ones found |
+| **Search/filter** | `search`, `email`, `listId`, and/or `notInAnyCampaign` | Paginated object with `data`, `total`, `limit`, `offset`, where `data` holds `ContactListItem` objects |
+
+A request uses one lookup at most: `idsOrEmails` takes precedence over `crmIds`. A lookup ignores the search filters and the pagination.
+
+### Response shapes
+
+- A lookup (`idsOrEmails`, `crmIds`) returns full `Contact` objects: fields under `fields`, campaigns with their lead id, and `crmSync` when the contact has a record in the connected CRM.
+- The list returns `ContactListItem` objects.
+
+When nothing matches, `idsOrEmails` answers `404` and `crmIds` answers `200` with an empty array.
+
+### Finding a contact from your CRM
+
+Use `crmIds` (up to 100, comma-separated) with the record ids of your connected CRM, for example `GET /contacts?crmIds=123456789` with a HubSpot contact id; for Salesforce, pass the 18-character Contact or Lead id. Each contact found carries the matched id under `crmSync.crmRecordId`; ids that match nothing are skipped.
 
 ### Filtering by contact list
 

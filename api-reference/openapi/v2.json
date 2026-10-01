@@ -64,6 +64,19 @@
           "error"
         ]
       },
+      "ApiErrorMessage": {
+        "type": "object",
+        "description": "Error answered as a plain message by the contact and company endpoints.",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Human-readable explanation."
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
       "ActivityType": {
         "type": "string",
         "description": "A lemlist activity type. These are the exact values accepted by the `type` filter on GET /activities and returned as an activity's `type`. Mind the spelling: email types are plural (emailsSent), invites are linkedinInvite*.",
@@ -1040,7 +1053,7 @@
       },
       "Contact": {
         "type": "object",
-        "description": "A contact record in your CRM. Not to be confused with a lead which is a contact specifically added to a campaign.",
+        "description": "A contact record in your CRM, as the lookups (`GET /contacts?idsOrEmails=`, `GET /contacts?crmIds=`, `GET /contacts/{idOrEmail}`) return it. Not to be confused with a lead which is a contact specifically added to a campaign.",
         "properties": {
           "_id": {
             "type": "string",
@@ -1061,7 +1074,7 @@
           },
           "fields": {
             "type": "object",
-            "description": "Custom fields associated with the contact",
+            "description": "Contact fields, standard (`firstName`, `lastName`, `phone`, `jobTitle`...) and custom",
             "additionalProperties": true
           },
           "campaigns": {
@@ -1085,6 +1098,14 @@
               }
             }
           },
+          "linkedinUrl": {
+            "type": "string",
+            "description": "Contact's LinkedIn profile URL"
+          },
+          "linkedinUrlSalesNav": {
+            "type": "string",
+            "description": "Contact's LinkedIn Sales Navigator URL"
+          },
           "ownerId": {
             "type": "string",
             "description": "ID of the user who owns this contact"
@@ -1101,6 +1122,156 @@
           "unsubscribed": {
             "type": "boolean",
             "description": "Whether the contact is globally unsubscribed. When true, no outreach will be sent to this contact."
+          },
+          "phonesStatuses": {
+            "type": "array",
+            "description": "Verification status of each verified phone number.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "phone": {
+                  "type": "string",
+                  "description": "The phone number, as stored in `fields`"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "valid",
+                    "invalid"
+                  ]
+                }
+              }
+            }
+          },
+          "crmSync": {
+            "type": "object",
+            "description": "CRM sync status for the contact, resolved against the team's active CRM provider (Hubspot, Salesforce, or Pipedrive). Only present when a CRM is connected and the contact has a record in it. `crmRecordId` maps a `crmIds` lookup back to the ids sent.",
+            "properties": {
+              "provider": {
+                "type": "string",
+                "enum": [
+                  "hubspot",
+                  "salesforce",
+                  "pipedrive"
+                ],
+                "description": "Active CRM provider for the team."
+              },
+              "crmRecordId": {
+                "type": "string",
+                "nullable": true,
+                "description": "Identifier of the contact record on the CRM side. `null` when the lemlist contact has not been synced yet."
+              },
+              "syncDisabled": {
+                "type": "boolean",
+                "description": "When `true`, automatic sync is paused for this contact."
+              },
+              "errors": {
+                "type": "array",
+                "description": "List of recent sync errors. Empty when the contact is synced cleanly.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Coarse error category (e.g. `CONNECT_FAILED`, `CREATE_FAILED`, `UPDATE_FAILED`)."
+                    },
+                    "reason": {
+                      "type": "string",
+                      "description": "Specific error reason (e.g. `UNIQUE_INDEX_ERROR_CONTACT`, `INVALID_EMAIL`, `PROPERTY_DOESNT_EXIST`)."
+                    },
+                    "raisedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp when the error was last raised."
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "additionalProperties": true,
+                      "description": "Extra context. For `UNIQUE_INDEX_ERROR_COMPANY`, contains `alreadyExistingCompanyId` — the lemlist company that already occupies the conflicting CRM record. Use it to remap contacts onto the right lemlist company before deleting the duplicate."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "fieldRejections": {
+            "type": "array",
+            "description": "Values lemlist refused to write on this contact, each with its reason. Empty when none. Filter the list endpoint to only flagged contacts via `GET /contacts?fieldRejectionReason=...`.",
+            "items": {
+              "$ref": "#/components/schemas/FieldRejection"
+            }
+          }
+        }
+      },
+      "ContactListItem": {
+        "type": "object",
+        "description": "A contact as the list (`GET /contacts` with filters or no parameter) returns it, with the main fields flattened. Properties with no value are omitted.",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Unique contact identifier"
+          },
+          "teamId": {
+            "type": "string",
+            "description": "Team identifier the contact belongs to"
+          },
+          "fullName": {
+            "type": "string",
+            "description": "Contact's calculated full name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Contact's primary email address"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "Contact's first name"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Contact's last name"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact's phone number"
+          },
+          "jobTitle": {
+            "type": "string",
+            "description": "Contact's job title"
+          },
+          "linkedinUrl": {
+            "type": "string",
+            "description": "Contact's LinkedIn profile URL"
+          },
+          "linkedinUrlSalesNav": {
+            "type": "string",
+            "description": "Contact's LinkedIn Sales Navigator URL"
+          },
+          "ownerId": {
+            "type": "string",
+            "description": "ID of the user who owns this contact"
+          },
+          "companyId": {
+            "type": "string",
+            "description": "ID of the company the contact is attached to (`cpn_xxx`)"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Contact creation timestamp"
+          },
+          "createdBy": {
+            "type": "string",
+            "description": "ID of the user who created the contact"
+          },
+          "unsubscribed": {
+            "type": "boolean",
+            "description": "Whether the contact is globally unsubscribed. When true, no outreach will be sent to this contact."
+          },
+          "campaignCount": {
+            "type": "integer",
+            "description": "Number of campaigns the contact is in"
           },
           "fieldRejections": {
             "type": "array",
@@ -18847,7 +19018,7 @@
     "/contacts": {
       "get": {
         "summary": "Get Many Contacts",
-        "description": "Retrieves contacts by IDs/emails, or searches/lists contacts by name, email, contact list, campaign membership, or company link.\n\nWhen using `idsOrEmails`, returns an array of matching contacts directly.\n\nWhen using `search`, `email`, `listId`, `notInAnyCampaign`, any of the `company*` filters, or no filter at all, returns a paginated response with `data`, `total`, `limit`, and `offset` fields. You can combine filters together to narrow results (e.g. `listId` with `search`, or `notInAnyCampaign` with `companyId`). Calling the endpoint without any filter returns all contacts of the team, paginated.\n\nThe `company*` filters (`companyId`, `companyDomain`, `companyLinkedinUrl`, `companySalesnavUrl`) are mutually exclusive — use only one at a time. `companyDomain` / `companyLinkedinUrl` / `companySalesnavUrl` are resolved to a `companyId` through the Companies collection; if no matching company exists, the endpoint returns an empty list with `total: 0` (not an error), which keeps automation flows simple.",
+        "description": "Retrieves contacts by IDs/emails or by CRM record ids, or searches/lists contacts by name, email, contact list, campaign membership, or company link.\n\nWhen using `idsOrEmails`, returns an array of matching contacts directly.\n\nWhen using `crmIds`, looks the contacts up by their record id in the connected CRM (HubSpot, Salesforce, or Pipedrive) and returns an array of the contacts found, each with the matched id under `crmSync.crmRecordId`. `idsOrEmails` takes precedence over `crmIds`; a lookup ignores the search filters and the pagination.\n\nWhen using `search`, `email`, `listId`, `notInAnyCampaign`, any of the `company*` filters, or no filter at all, returns a paginated response with `data`, `total`, `limit`, and `offset` fields. You can combine filters together to narrow results (e.g. `listId` with `search`, or `notInAnyCampaign` with `companyId`). Calling the endpoint without any filter returns all contacts of the team, paginated.\n\nA lookup returns full contacts (`Contact`); the list returns `ContactListItem` objects.\n\nThe `company*` filters (`companyId`, `companyDomain`, `companyLinkedinUrl`, `companySalesnavUrl`) are mutually exclusive: use only one at a time. `companyDomain` / `companyLinkedinUrl` / `companySalesnavUrl` are resolved to a `companyId` through the Companies collection; if no matching company exists, the endpoint returns an empty list with `total: 0` (not an error), which keeps automation flows simple.",
         "tags": [
           "Contacts"
         ],
@@ -18858,6 +19029,18 @@
             "required": false,
             "description": "A comma separated string of either valid contact IDs (MongoDB ObjectId) or valid email addresses. Optional — when omitted, returns the paginated list of all contacts of the team. Maximum 100 values.",
             "example": "ctc_xW8Ou6C03Csv8vatp,riley@example.com",
+            "schema": {
+              "type": "string"
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
+            "name": "crmIds",
+            "in": "query",
+            "required": false,
+            "description": "Comma-separated record ids of contacts in the CRM connected to the team (HubSpot, Salesforce, or Pipedrive); for Salesforce, the 18-character Contact or Lead id. Returns an array of the contacts found, each with the matched id under `crmSync.crmRecordId`; ids that match nothing are skipped, and the array is empty when no CRM is connected. Duplicates are removed; an empty value is ignored. Maximum 100 values (`TOO_MANY_CRM_IDS`); a value over 25 characters answers `INVALID_CRM_ID`. Ignored when `idsOrEmails` is provided.",
+            "example": "123456789,987654321",
             "schema": {
               "type": "string"
             },
@@ -19011,24 +19194,26 @@
         ],
         "responses": {
           "200": {
-            "description": "Success. When using `idsOrEmails`, returns an array of contacts. Otherwise, returns a paginated object with `data`, `total`, `limit`, and `offset`.",
+            "description": "Success. When using `idsOrEmails` or `crmIds`, returns an array of contacts (empty when no `crmIds` value matches). Otherwise, returns a paginated object with `data` (`ContactListItem` items), `total`, `limit`, and `offset`.",
             "content": {
               "application/json": {
                 "schema": {
                   "oneOf": [
                     {
+                      "title": "Lookup by idsOrEmails or crmIds",
                       "type": "array",
                       "items": {
                         "$ref": "#/components/schemas/Contact"
                       }
                     },
                     {
+                      "title": "List",
                       "type": "object",
                       "properties": {
                         "data": {
                           "type": "array",
                           "items": {
-                            "$ref": "#/components/schemas/Contact"
+                            "$ref": "#/components/schemas/ContactListItem"
                           }
                         },
                         "total": {
@@ -19050,84 +19235,160 @@
                     }
                   ]
                 },
-                "example": [
-                  {
-                    "_id": "ctc_xW8Ou6C03Csv8vatp",
-                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
-                    "fullName": "John Doe",
-                    "email": "support@lemlist.com",
-                    "fields": {
-                      "firstName": "John",
-                      "jobTitle": "Growth Engineer",
-                      "lastName": "Doe",
-                      "industry": "Technology",
-                      "isActiveInCampaigns": false,
-                      "lastCampaign": "NEW TO DELETE",
-                      "lastLeadMarkedAsInterestedDate": "2025-10-28T02:12:31.971Z",
-                      "leadStatus": "Marked as not Interested by api"
-                    },
-                    "campaigns": [
+                "examples": {
+                  "lookup": {
+                    "summary": "idsOrEmails or crmIds",
+                    "value": [
                       {
-                        "campaignId": "cam_bSn8EORHQxbWPjHvu",
-                        "campaignState": "running",
-                        "leadState": "review",
-                        "leadId": "lea_fiDpiGV585wy3Oii2"
+                        "_id": "ctc_xW8Ou6C03Csv8vatp",
+                        "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                        "fullName": "John Doe",
+                        "email": "support@lemlist.com",
+                        "fields": {
+                          "firstName": "John",
+                          "jobTitle": "Growth Engineer",
+                          "lastName": "Doe",
+                          "industry": "Technology",
+                          "isActiveInCampaigns": false,
+                          "lastCampaign": "NEW TO DELETE",
+                          "lastLeadMarkedAsInterestedDate": "2025-10-28T02:12:31.971Z",
+                          "leadStatus": "Marked as not Interested by api"
+                        },
+                        "campaigns": [
+                          {
+                            "campaignId": "cam_bSn8EORHQxbWPjHvu",
+                            "campaignState": "running",
+                            "leadState": "review",
+                            "leadId": "lea_fiDpiGV585wy3Oii2"
+                          }
+                        ],
+                        "ownerId": "usr_ahfFktBBHUIxbVG5P",
+                        "createdAt": "2025-10-28T00:40:37.917Z",
+                        "createdBy": "usr_ahfFktBBHUIxbVG5P",
+                        "unsubscribed": false,
+                        "crmSync": {
+                          "provider": "hubspot",
+                          "crmRecordId": "123456789",
+                          "syncDisabled": false,
+                          "errors": []
+                        }
+                      },
+                      {
+                        "_id": "ctc_a9RxJNa7pmMd85H9b",
+                        "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                        "fullName": "Casey",
+                        "email": "riley@example.com",
+                        "fields": {
+                          "firstName": "Casey",
+                          "isActiveInCampaigns": false
+                        },
+                        "campaigns": [
+                          {
+                            "campaignId": "cam_jwm7THjgGFE3ylR85",
+                            "campaignState": "running",
+                            "leadState": "done",
+                            "leadId": "lea_XKjAytuJhBKZhxhWh"
+                          },
+                          {
+                            "campaignId": "cam_eF4DlNERV0CW1TwRd",
+                            "campaignState": "running",
+                            "leadState": "done",
+                            "leadId": "lea_fJcS9D3UtEqZcDcAG"
+                          },
+                          {
+                            "campaignId": "cam_UBbMt30jHq0vNJKJr",
+                            "campaignState": "running",
+                            "leadState": "done",
+                            "leadId": "lea_GlaMfjxlUYuwEDL0w"
+                          },
+                          {
+                            "campaignId": "cam_pijDVnytN5S7frriD",
+                            "campaignState": "running",
+                            "leadState": "review",
+                            "leadId": "lea_Bs9aMGCcjdzTDvixY"
+                          }
+                        ],
+                        "ownerId": "usr_Emu1g29BMtBixhMSP",
+                        "createdAt": "2024-10-01T09:00:13.831Z",
+                        "createdBy": "usr_Emu1g29BMtBixhMSP",
+                        "unsubscribed": true
                       }
-                    ],
-                    "ownerId": "usr_ahfFktBBHUIxbVG5P",
-                    "createdAt": "2025-10-28T00:40:37.917Z",
-                    "createdBy": "usr_ahfFktBBHUIxbVG5P",
-                    "unsubscribed": false
+                    ]
                   },
-                  {
-                    "_id": "ctc_a9RxJNa7pmMd85H9b",
-                    "teamId": "tea_8QvkOiBfPdb2ZRhHi",
-                    "fullName": "Casey",
-                    "email": "riley@example.com",
-                    "fields": {
-                      "firstName": "Casey",
-                      "isActiveInCampaigns": false
-                    },
-                    "campaigns": [
-                      {
-                        "campaignId": "cam_jwm7THjgGFE3ylR85",
-                        "campaignState": "running",
-                        "leadState": "done",
-                        "leadId": "lea_XKjAytuJhBKZhxhWh"
-                      },
-                      {
-                        "campaignId": "cam_eF4DlNERV0CW1TwRd",
-                        "campaignState": "running",
-                        "leadState": "done",
-                        "leadId": "lea_fJcS9D3UtEqZcDcAG"
-                      },
-                      {
-                        "campaignId": "cam_UBbMt30jHq0vNJKJr",
-                        "campaignState": "running",
-                        "leadState": "done",
-                        "leadId": "lea_GlaMfjxlUYuwEDL0w"
-                      },
-                      {
-                        "campaignId": "cam_pijDVnytN5S7frriD",
-                        "campaignState": "running",
-                        "leadState": "review",
-                        "leadId": "lea_Bs9aMGCcjdzTDvixY"
-                      }
-                    ],
-                    "ownerId": "usr_Emu1g29BMtBixhMSP",
-                    "createdAt": "2024-10-01T09:00:13.831Z",
-                    "createdBy": "usr_Emu1g29BMtBixhMSP",
-                    "unsubscribed": true
+                  "list": {
+                    "summary": "List",
+                    "value": {
+                      "data": [
+                        {
+                          "_id": "ctc_xW8Ou6C03Csv8vatp",
+                          "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                          "fullName": "John Doe",
+                          "email": "support@lemlist.com",
+                          "firstName": "John",
+                          "lastName": "Doe",
+                          "jobTitle": "Growth Engineer",
+                          "ownerId": "usr_ahfFktBBHUIxbVG5P",
+                          "companyId": "cpn_Hk2Wd9LmQx7RtB4sN",
+                          "createdAt": "2025-10-28T00:40:37.917Z",
+                          "createdBy": "usr_ahfFktBBHUIxbVG5P",
+                          "unsubscribed": false,
+                          "campaignCount": 1,
+                          "fieldRejections": []
+                        }
+                      ],
+                      "total": 1,
+                      "limit": 100,
+                      "offset": 0
+                    }
                   }
-                ]
+                }
               }
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / search query too short / invalid listId format",
+            "description": "Either a plain `{ \"error\": \"...\" }` (`Bad team`, search query too short, invalid `listId` format, invalid `withPrimaryCompany`, `limit` below 1, more than 100 `idsOrEmails` values), or a validation envelope. Possible error codes: `INVALID_CRM_ID` (a `crmIds` list with no usable value, or a value longer than 25 characters), `TOO_MANY_CRM_IDS` (more than 100 `crmIds` values), `MULTIPLE_COMPANY_FILTERS`, `INVALID_COMPANY_ID`, `INVALID_FIELD_REJECTION_REASON`.",
             "content": {
-              "text/plain": {
-                "example": "Search query must be at least 2 characters"
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiErrorMessage"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ApiErrorEnvelope"
+                    }
+                  ]
+                },
+                "examples": {
+                  "search-too-short": {
+                    "value": {
+                      "error": "Search query must be at least 2 characters"
+                    }
+                  },
+                  "too-many-ids-or-emails": {
+                    "value": {
+                      "error": "Too many ids or emails (max 100)"
+                    }
+                  },
+                  "invalid-crm-id": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "INVALID_CRM_ID",
+                        "message": "Invalid crmId value"
+                      }
+                    }
+                  },
+                  "too-many-crm-ids": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "TOO_MANY_CRM_IDS",
+                        "message": "crmIds exceeds the maximum of 100 values"
+                      }
+                    }
+                  }
+                }
               }
             }
           },
@@ -19136,6 +19397,19 @@
             "content": {
               "text/plain": {
                 "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "No contact matches the `idsOrEmails` values.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Contact not found"
+                }
               }
             }
           },
@@ -19864,6 +20138,7 @@
       },
       "get": {
         "summary": "Get Contact",
+        "description": "Retrieves a contact by its lemlist id (`ctc_xxx`) or email address. The path does not take a CRM record id: use `GET /contacts?crmIds=` for that.",
         "tags": [
           "Contacts"
         ],
@@ -19907,10 +20182,15 @@
             }
           },
           "400": {
-            "description": "Bad team",
+            "description": "`Bad team`, or a path value that is neither a contact id nor an email address.",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Match error: Failed Match.Where validation in field [0]"
+                }
               }
             }
           },
@@ -19919,6 +20199,19 @@
             "content": {
               "text/plain": {
                 "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "No contact matches this id or email.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Contact not found"
+                }
               }
             }
           },
@@ -20583,6 +20876,7 @@
     "/companies": {
       "get": {
         "summary": "Get Many Companies",
+        "description": "Retrieves companies by IDs/domains or by CRM record ids, or lists them with filters.\n\nWhen using `idsOrDomains`, returns the matching companies in `data`, with `total` and no pagination.\n\nWhen using `crmIds`, looks the companies up by their record id in the connected CRM (HubSpot, Salesforce, or Pipedrive) and returns them like `idsOrDomains` does, each with the matched id under `crmSync.crmRecordId`.\n\nOtherwise, returns a paginated response with `data`, `total`, `limit`, and `offset`.\n\n`idsOrDomains` takes precedence over `crmIds`; a lookup ignores the list filters and the pagination.",
         "tags": [
           "Companies"
         ],
@@ -20596,6 +20890,18 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "crmIds",
+            "in": "query",
+            "required": false,
+            "description": "Comma-separated record ids of companies in the CRM connected to the team (HubSpot, Salesforce, or Pipedrive); for Salesforce, the 18-character Account id. Returns the companies found in `data`, with `total` and no pagination, each with the matched id under `crmSync.crmRecordId`; ids that match nothing are skipped, and `data` is empty when no CRM is connected. Duplicates are removed; an empty value is ignored. Maximum 100 values (`TOO_MANY_CRM_IDS`); a value over 25 characters answers `INVALID_CRM_ID`. Ignored when `idsOrDomains` is provided.",
+            "example": "123456789,987654321",
+            "schema": {
+              "type": "string"
+            },
+            "style": "form",
+            "explode": false
           },
           {
             "name": "offset",
@@ -20733,7 +21039,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "Success. Returns an object with `data` and `total`; `limit` and `offset` are only present on the paginated list, not with `idsOrDomains` or `crmIds`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -20749,17 +21055,17 @@
                       "type": "integer"
                     },
                     "limit": {
-                      "type": "integer"
+                      "type": "integer",
+                      "description": "Only on the paginated list."
                     },
                     "offset": {
-                      "type": "integer"
+                      "type": "integer",
+                      "description": "Only on the paginated list."
                     }
                   },
                   "required": [
                     "data",
-                    "total",
-                    "limit",
-                    "offset"
+                    "total"
                   ]
                 },
                 "example": {
@@ -20843,16 +21149,57 @@
             }
           },
           "400": {
-            "description": "Either a plain `Bad team`, or a validation envelope. Possible error codes: `CRM_LIST_ENTITY_MISMATCH` (the `listId` points at a contact list), `CRM_LIST_DYNAMIC` (the list is filter-driven, so it has no stored membership to filter on).",
+            "description": "Either a plain `{ \"error\": \"...\" }` (`Bad team`, `limit` below 1), or a validation envelope. Possible error codes: `INVALID_CRM_ID` (a `crmIds` list with no usable value, or a value longer than 25 characters), `TOO_MANY_CRM_IDS` (more than 100 `crmIds` values), `INVALID_IDS_OR_DOMAINS` (no valid id or domain in `idsOrDomains`), `TOO_MANY_IDS_OR_DOMAINS` (more than 100 `idsOrDomains` values), `CRM_LIST_ENTITY_MISMATCH` (the `listId` points at a contact list), `CRM_LIST_DYNAMIC` (the list is filter-driven, so it has no stored membership to filter on), `INVALID_CRM_SYNC_STATUS`, `NO_CRM_CONNECTED` (`crmSyncStatus` without a connected CRM), `INVALID_FIELD_REJECTION_REASON`.",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
-              },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiErrorMessage"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ApiErrorEnvelope"
+                    }
+                  ]
                 },
                 "examples": {
+                  "bad-team": {
+                    "value": {
+                      "error": "Bad team"
+                    }
+                  },
+                  "limit-below-1": {
+                    "value": {
+                      "error": "limit must be >= 1"
+                    }
+                  },
+                  "invalid-crm-id": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "INVALID_CRM_ID",
+                        "message": "Invalid crmId value"
+                      }
+                    }
+                  },
+                  "too-many-crm-ids": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "TOO_MANY_CRM_IDS",
+                        "message": "crmIds exceeds the maximum of 100 values"
+                      }
+                    }
+                  },
+                  "no-crm-connected": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "NO_CRM_CONNECTED",
+                        "message": "No CRM connected for this team"
+                      }
+                    }
+                  },
                   "entity-mismatch": {
                     "value": {
                       "success": false,

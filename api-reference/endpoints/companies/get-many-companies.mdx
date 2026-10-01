@@ -1,7 +1,13 @@
 ---
 openapi: get /companies
-description: Retrieves companies from your CRM. Use `idsOrDomains` to fetch specific companies by ID or domain in a single request (max 100), or omit it to get a paginated list of all companies.
+description: Retrieves companies from your CRM. Use `idsOrDomains` to fetch specific companies by ID or domain in a single request (max 100), `crmIds` to find them from their record id in your connected CRM, or omit them to get a paginated list of all companies.
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Company" objectPath="company" />
+
+## Finding a company from your CRM
+
+Use `crmIds` (up to 100, comma-separated) with the record ids of your connected CRM, for example `GET /companies?crmIds=123456789` with a HubSpot company id; for Salesforce, pass the 18-character Account id. The answer is the same as with `idsOrDomains`: the companies found in `data`, each with the matched id under `crmSync.crmRecordId`; ids that match nothing are skipped.
+
+`idsOrDomains` takes precedence over `crmIds`; a lookup ignores the list filters and the pagination.
