@@ -7151,6 +7151,485 @@
         }
       }
     },
+    "/campaigns/{campaignId}/triggers/watch-lists": {
+      "post": {
+        "summary": "Add Signal Agent Trigger",
+        "tags": [
+          "Signal Agents"
+        ],
+        "description": "Links a Signal Agent to a campaign as its signal trigger. Every new signal of the agent then pushes its contact into the campaign as a lead. Requires the `campaignSignalTrigger` beta.",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "in": "path",
+            "required": true,
+            "description": "The unique identifier of the campaign",
+            "example": "cam_ExAmPlE4k8Qz2Wn7R",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "watchListId"
+                ],
+                "properties": {
+                  "watchListId": {
+                    "type": "string",
+                    "description": "Id of the Signal Agent (wat_xxx) to link to the campaign.",
+                    "example": "wat_ExAmPlE9Hd3Vx6Tp1"
+                  }
+                }
+              },
+              "example": {
+                "watchListId": "wat_ExAmPlE9Hd3Vx6Tp1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The Signal Agent is linked. `data` is the campaign's signal-trigger configuration, with every linked agent in `watchListIds`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "watchListIds": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Every Signal Agent linked to the campaign as a signal trigger."
+                        },
+                        "importFromExistingSignals": {
+                          "type": "boolean",
+                          "description": "Whether signals detected before the link are backfilled into the campaign. `false` on a link made through the API; change it in the campaign editor."
+                        },
+                        "deduplicate": {
+                          "type": "boolean",
+                          "description": "Whether a contact already in the campaign is skipped instead of being added again."
+                        },
+                        "duplicateProcessingType": {
+                          "type": "string",
+                          "enum": [
+                            "manual",
+                            "create_opportunity"
+                          ],
+                          "description": "How a duplicate contact is handled."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "watchListIds": [
+                      "wat_ExAmPlE9Hd3Vx6Tp1"
+                    ],
+                    "importFromExistingSignals": false,
+                    "deduplicate": true,
+                    "duplicateProcessingType": "manual"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`ROUTE_BAD_REQUEST` - `campaignId` is malformed, or `watchListId` is missing, not a string, or malformed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "badRequest": {
+                    "value": {
+                      "error": "Route bad request",
+                      "code": "ROUTE_BAD_REQUEST"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`ROUTE_UNAUTHORIZED` - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "unauthorized": {
+                    "value": {
+                      "error": "Route unauthorized",
+                      "code": "ROUTE_UNAUTHORIZED"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`BETA_NOT_ENABLED` - the `campaignSignalTrigger` beta is not enabled for this team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "betaNotEnabled": {
+                    "value": {
+                      "error": "Beta is not enabled",
+                      "code": "BETA_NOT_ENABLED"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`WATCH_LIST_IMPORT_LEADS_CAMPAIGN_NOT_FOUND` or `WATCH_LIST_NOT_FOUND` - the campaign or the Signal Agent does not exist in this workspace.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "campaignNotFound": {
+                    "value": {
+                      "error": "Campaign not found",
+                      "code": "WATCH_LIST_IMPORT_LEADS_CAMPAIGN_NOT_FOUND"
+                    }
+                  },
+                  "watchListNotFound": {
+                    "value": {
+                      "error": "Watch list not found",
+                      "code": "WATCH_LIST_NOT_FOUND"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "`ROUTE_BAD_METHOD` - method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "badMethod": {
+                    "value": {
+                      "error": "Route bad method",
+                      "code": "ROUTE_BAD_METHOD"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`WATCH_LIST_CAMPAIGN_IS_MANUAL` - the campaign was set up as a manual campaign in the lemlist app and cannot take a signal trigger.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "campaignIsManual": {
+                    "value": {
+                      "error": "This campaign was set up as a manual campaign and cannot take a signal trigger; create a signal-based campaign instead",
+                      "code": "WATCH_LIST_CAMPAIGN_IS_MANUAL"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/campaigns/{campaignId}/triggers/watch-lists/{watchListId}": {
+      "parameters": [
+        {
+          "name": "campaignId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the campaign",
+          "example": "cam_ExAmPlE4k8Qz2Wn7R",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "watchListId",
+          "in": "path",
+          "required": true,
+          "description": "Id of the Signal Agent (wat_xxx) to detach",
+          "example": "wat_ExAmPlE9Hd3Vx6Tp1",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "delete": {
+        "summary": "Remove Signal Agent Trigger",
+        "tags": [
+          "Signal Agents"
+        ],
+        "description": "Detaches a Signal Agent from a campaign's signal triggers. Leads already pushed stay in the campaign. Requires the `campaignSignalTrigger` beta.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The Signal Agent is detached. `data` is the campaign's signal-trigger configuration without that agent in `watchListIds`. When the campaign never had a signal trigger, the body is `{}`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "watchListIds": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "Every Signal Agent linked to the campaign as a signal trigger."
+                        },
+                        "importFromExistingSignals": {
+                          "type": "boolean",
+                          "description": "Whether signals detected before the link are backfilled into the campaign. `false` on a link made through the API; change it in the campaign editor."
+                        },
+                        "deduplicate": {
+                          "type": "boolean",
+                          "description": "Whether a contact already in the campaign is skipped instead of being added again."
+                        },
+                        "duplicateProcessingType": {
+                          "type": "string",
+                          "enum": [
+                            "manual",
+                            "create_opportunity"
+                          ],
+                          "description": "How a duplicate contact is handled."
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "detached": {
+                    "value": {
+                      "data": {
+                        "watchListIds": [
+                          "wat_ExAmPlE2Gc5Nb8Ys4"
+                        ],
+                        "importFromExistingSignals": false,
+                        "deduplicate": true,
+                        "duplicateProcessingType": "manual"
+                      }
+                    }
+                  },
+                  "noTrigger": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`ROUTE_BAD_REQUEST` - `campaignId` or `watchListId` is malformed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "badRequest": {
+                    "value": {
+                      "error": "Route bad request",
+                      "code": "ROUTE_BAD_REQUEST"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "`ROUTE_UNAUTHORIZED` - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "unauthorized": {
+                    "value": {
+                      "error": "Route unauthorized",
+                      "code": "ROUTE_UNAUTHORIZED"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "`BETA_NOT_ENABLED` - the `campaignSignalTrigger` beta is not enabled for this team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "betaNotEnabled": {
+                    "value": {
+                      "error": "Beta is not enabled",
+                      "code": "BETA_NOT_ENABLED"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`WATCH_LIST_IMPORT_LEADS_CAMPAIGN_NOT_FOUND` - the campaign does not exist in this workspace.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "campaignNotFound": {
+                    "value": {
+                      "error": "Campaign not found",
+                      "code": "WATCH_LIST_IMPORT_LEADS_CAMPAIGN_NOT_FOUND"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "`ROUTE_BAD_METHOD` - method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "badMethod": {
+                    "value": {
+                      "error": "Route bad method",
+                      "code": "ROUTE_BAD_METHOD"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/campaigns/{campaignId}/start": {
       "parameters": [
         {
@@ -26932,6 +27411,11 @@
                     "type": "string",
                     "description": "Persona (pdp_xxx) used to source contacts from the People Database. Only for a company Signal Agent with signalProcessingType = push_to_campaign whose signal type does not already ship its own contact (those company signals carry no contact, so the persona is the only way to know who to reach). Optional; rejected on any other configuration."
                   },
+                  "campaignId": {
+                    "type": "string",
+                    "description": "Campaign (cam_xxx) to link as this Signal Agent's signal trigger, in the same call: every new signal pushes its contact into that campaign as a lead. Only with signalProcessingType = push_to_campaign. A campaign set up as manual in the lemlist app is refused (409). Requires the campaignSignalTrigger beta. Optional; on any refusal no agent is created.",
+                    "example": "cam_ExAmPlE4k8Qz2Wn7R"
+                  },
                   "activate": {
                     "type": "boolean",
                     "description": "Fully set up and activate the agent. Requires segmentType and signalProcessingType."
@@ -26966,10 +27450,16 @@
             }
           },
           "400": {
-            "description": "Validation error - invalid body, filters, or activate prerequisites",
+            "description": "Validation error - invalid body, filters, or activate prerequisites. `WATCH_LIST_API_INVALID_CAMPAIGN_ID` when `campaignId` is malformed or sent without signalProcessingType = push_to_campaign.",
             "content": {
               "text/plain": {
                 "example": "activate requires both segmentType and signalProcessingType"
+              },
+              "application/json": {
+                "example": {
+                  "error": "campaignId must be a campaign id (cam_xxx) and requires signalProcessingType = \"push_to_campaign\"",
+                  "code": "WATCH_LIST_API_INVALID_CAMPAIGN_ID"
+                }
               }
             }
           },
@@ -26986,6 +27476,39 @@
             "content": {
               "text/plain": {
                 "example": "Insufficient credits"
+              }
+            }
+          },
+          "403": {
+            "description": "`BETA_NOT_ENABLED` - `campaignId` was sent but the `campaignSignalTrigger` beta is not enabled for this team. No agent is created.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Beta is not enabled",
+                  "code": "BETA_NOT_ENABLED"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`WATCH_LIST_IMPORT_LEADS_CAMPAIGN_NOT_FOUND` - the `campaignId` campaign does not exist in this workspace. No agent is created.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Campaign not found",
+                  "code": "WATCH_LIST_IMPORT_LEADS_CAMPAIGN_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "`WATCH_LIST_CAMPAIGN_IS_MANUAL` - the `campaignId` campaign was set up as a manual campaign and cannot take a signal trigger. No agent is created.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This campaign was set up as a manual campaign and cannot take a signal trigger; create a signal-based campaign instead",
+                  "code": "WATCH_LIST_CAMPAIGN_IS_MANUAL"
+                }
               }
             }
           },

@@ -9,3 +9,7 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <Note>
 A Signal Agent is created as a draft by default. Pass `segmentType`, `signalProcessingType` and `activate: true` to run the full setup and start monitoring immediately. `filters` are validated against the chosen `type` — use [List allowed filters](/api-reference/endpoints/watch-list/get-filters) to discover which filters a type accepts.
 </Note>
+
+<Note>
+Pass `campaignId` with `signalProcessingType: "push_to_campaign"` to link the new agent to that campaign as its signal trigger in the same call — same effect as [Add Signal Agent trigger](/api-reference/endpoints/campaigns/add-watch-list-trigger). It requires the `campaignSignalTrigger` beta. If the call is refused (`400`, `403`, `404` or `409`), no agent is created. `campaignId` is not accepted by [Update Signal Agent](/api-reference/endpoints/watch-list/update-watch-list): to link an existing agent, use Add Signal Agent trigger.
+</Note>
