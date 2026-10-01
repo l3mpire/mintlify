@@ -1,0 +1,11 @@
+---
+openapi: get /database/saved-searches/{savedSearchId}
+description: Retrieves one People Database saved search of your team.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Saved search" objectPath="saved-search" />
+
+<Note>
+An unknown id and a saved search belonging to another team answer the same `404`.
+</Note>
