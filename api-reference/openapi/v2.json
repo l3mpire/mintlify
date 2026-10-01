@@ -1290,29 +1290,25 @@
             "type": "string",
             "description": "Unique company identifier"
           },
-          "name": {
+          "teamId": {
             "type": "string",
-            "description": "Company name (may also be present under fields.name)"
+            "description": "Team the company belongs to. Returned by `GET /companies/{companyId}` and the `idsOrDomains` and `crmIds` lookups; the paginated list returns it only when requested with `fields`."
           },
           "domain": {
             "type": "string",
             "description": "Website domain"
           },
-          "industry": {
+          "linkedinUrl": {
             "type": "string",
-            "description": "Industry sector"
+            "description": "LinkedIn company page URL. Returned by `GET /companies/{companyId}` and the `idsOrDomains` and `crmIds` lookups; the paginated list returns it only when requested with `fields`."
           },
-          "size": {
+          "linkedinUrlSalesNav": {
             "type": "string",
-            "description": "Company size"
-          },
-          "location": {
-            "type": "string",
-            "description": "Geographic location"
+            "description": "Sales Navigator company URL. Returned by `GET /companies/{companyId}` and the `idsOrDomains` and `crmIds` lookups; the paginated list returns it only when requested with `fields`."
           },
           "fields": {
             "type": "object",
-            "description": "Flexible key/value fields of the company (e.g., name, picture, industry, location, size, foundedOn)",
+            "description": "Key/value attributes of the company, standard and custom (e.g., name, picture, industry, location, size, foundedOn). These values are always under `fields`, never at the top level of the object.",
             "additionalProperties": true
           },
           "createdBy": {
@@ -1327,6 +1323,10 @@
             "type": "string",
             "format": "date-time",
             "description": "Creation timestamp"
+          },
+          "source": {
+            "type": "string",
+            "description": "Origin of the company record, e.g. `api` when it was created through this API. Returned by `GET /companies/{companyId}` and the `idsOrDomains` and `crmIds` lookups, not by the paginated list."
           },
           "fieldRejections": {
             "type": "array",
@@ -22440,6 +22440,99 @@
       }
     },
     "/companies/{companyId}": {
+      "get": {
+        "summary": "Get Company",
+        "description": "Retrieves one lemlist company by its id (`cpn_xxx`) and returns the company object itself, unwrapped. Answers `404 COMPANY_NOT_FOUND_BY_ID` when no company of your team carries this id, where `GET /companies?idsOrDomains=` answers `200` with an empty `data` array. Lookups by domain stay on `GET /companies?idsOrDomains=`: a domain is not guaranteed to designate a single company, so this endpoint takes ids only.\n\nWhen a CRM is connected the company carries the `crmSync` block; `fieldRejections` lists the values lemlist refused to write on it.",
+        "tags": [
+          "Companies"
+        ],
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "description": "The lemlist company ID.",
+            "example": "cpn_A1B2C3D4E5F6G7H8I",
+            "schema": {
+              "type": "string",
+              "pattern": "^cpn_[a-zA-Z0-9]+$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The company.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Company"
+                },
+                "example": {
+                  "_id": "cpn_A1B2C3D4E5F6G7H8I",
+                  "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                  "domain": "acme.com",
+                  "linkedinUrl": "https://www.linkedin.com/company/acme",
+                  "fields": {
+                    "name": "Acme Corp",
+                    "industry": "Technology",
+                    "location": "San Francisco, CA"
+                  },
+                  "ownerId": "usr_ahfFktBBHUIxbVG5P",
+                  "source": "api",
+                  "createdAt": "2025-10-28T00:40:37.917Z",
+                  "createdBy": "usr_ahfFktBBHUIxbVG5P",
+                  "fieldRejections": [],
+                  "crmSync": {
+                    "provider": "hubspot",
+                    "crmRecordId": "12345678901",
+                    "syncDisabled": false,
+                    "errors": []
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request: `INVALID_COMPANY_ID` (the id is not a `cpn_xxx` id).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "INVALID_COMPANY_ID",
+                    "message": "Invalid companyId format"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect.",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "No company of your team carries this id (`COMPANY_NOT_FOUND_BY_ID`).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "COMPANY_NOT_FOUND_BY_ID",
+                    "message": "No company found with id"
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed."
+          }
+        }
+      },
       "delete": {
         "summary": "Delete Company",
         "description": "Deletes a lemlist company. Refuses by default when contacts are still attached — pass `force=true` to detach them (the `companyId` field is unset on each contact) before deleting the company.\n\n**No CRM-side propagation:** only the lemlist record is removed. Designed for the contact-to-company remapping workflow: after reassigning the contacts of a duplicate company to the canonical one (via `POST /contacts/{idOrEmail}`), call this endpoint to drop the now-empty duplicate.",
@@ -22567,7 +22660,7 @@
                   "success": false,
                   "error": {
                     "code": "COMPANY_NOT_FOUND_BY_ID",
-                    "message": "Company not found by ID"
+                    "message": "No company found with id"
                   }
                 }
               }
