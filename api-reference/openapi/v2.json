@@ -27154,6 +27154,165 @@
         }
       }
     },
+    "/users/{userId}/linkedin-limits": {
+      "patch": {
+        "summary": "Update User LinkedIn Limits",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the team member whose LinkedIn limits to update (usr_xxx)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The team member's daily LinkedIn limits to change. Provide only the limits you want to change; omitted ones keep their current value. At least one is required, and unknown fields are refused: an invalid body fails the whole update and nothing is written. Same limits as Settings > Sending limits: a value above the recommended maximum is stored and the response carries a warning.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "properties": {
+                  "dailyInviteLimit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Max LinkedIn invitations per day"
+                  },
+                  "dailySendLimit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Max LinkedIn direct messages per day"
+                  },
+                  "dailyVisitLimit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Max LinkedIn profile visits per day"
+                  },
+                  "dailyInMailLimit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Max LinkedIn InMails per day: a daily throttle, the monthly InMail credits of the LinkedIn plan stay the hard cap"
+                  }
+                }
+              },
+              "example": {
+                "dailyInMailLimit": 8,
+                "dailyInviteLimit": 25
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "All four daily LinkedIn limits of the team member after the update",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "description": "ID of the team member (usr_xxx)"
+                        },
+                        "dailyInviteLimit": {
+                          "type": "integer",
+                          "description": "Max LinkedIn invitations per day"
+                        },
+                        "dailySendLimit": {
+                          "type": "integer",
+                          "description": "Max LinkedIn direct messages per day"
+                        },
+                        "dailyVisitLimit": {
+                          "type": "integer",
+                          "description": "Max LinkedIn profile visits per day"
+                        },
+                        "dailyInMailLimit": {
+                          "type": "integer",
+                          "description": "Max LinkedIn InMails per day: a daily throttle, the monthly InMail credits of the LinkedIn plan stay the hard cap"
+                        },
+                        "warning": {
+                          "type": "string",
+                          "description": "Present when a stored value is above its recommended maximum; LinkedIn may restrict the account"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "userId": "usr_Q7mT2vLx9KpR4nWbZ",
+                    "dailyInviteLimit": 25,
+                    "dailySendLimit": 30,
+                    "dailyVisitLimit": 30,
+                    "dailyInMailLimit": 8
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed userId, invalid body (unknown field, non-positive or non-integer value), or no limit provided",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Provide at least one of dailyInviteLimit, dailySendLimit, dailyVisitLimit, dailyInMailLimit",
+                  "code": "LINKEDIN_LIMITS_NOTHING_TO_UPDATE"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The API key does not resolve a user"
+          },
+          "402": {
+            "description": "The team is on a free trial or has no lemlist plan",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "You cannot change the LinkedIn limits during free trial.",
+                  "code": "LINKEDIN_LIMITS_NO_PAID_PLAN"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The user lacks the permission to edit sending limits",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "You cannot edit sending limits for this team",
+                  "code": "LINKEDIN_LIMITS_PERMISSION_DENIED"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The user is not a member of the team",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This user is not a member of your team",
+                  "code": "LINKEDIN_LIMITS_USER_NOT_IN_TEAM"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method other than PATCH"
+          }
+        }
+      }
+    },
     "/campaigns/{campaignId}/duplicate": {
       "parameters": [
         {
