@@ -1459,6 +1459,37 @@
           }
         }
       },
+      "ContactNote": {
+        "type": "object",
+        "description": "A text note attached to a contact record, as returned by `GET` and `POST /contacts/{idOrEmail}/notes`.",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Unique note identifier (`act_xxx`)"
+          },
+          "teamId": {
+            "type": "string",
+            "description": "Team ID that owns the contact"
+          },
+          "contactId": {
+            "type": "string",
+            "description": "Parent contact ID (`ctc_xxx`)"
+          },
+          "note": {
+            "type": "string",
+            "description": "Note text content"
+          },
+          "userId": {
+            "type": "string",
+            "description": "ID of the user who wrote the note"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          }
+        }
+      },
       "Sequence": {
         "type": "object",
         "description": "An ordered series of steps within a campaign.",
@@ -20222,6 +20253,271 @@
         "parameters": []
       }
     },
+    "/contacts/{idOrEmail}/notes": {
+      "parameters": [
+        {
+          "name": "idOrEmail",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier (`ctc_xxx`) or email of the contact",
+          "example": "ctc_XXBXpAxmxwg24IzBI",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Get Contact Notes",
+        "description": "Retrieves the notes attached to a contact, newest first by default. The contact is resolved by its id (`ctc_xxx`) or email within your team. Only notes are returned, not the contact's other activities. Use `page` and `limit` to paginate: the response carries the page in `data` and the number of notes in `total`; a contact without notes answers `200` with an empty `data`.",
+        "tags": [
+          "Contacts"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Number of notes per page. Default: 100. Maximum: 100. A missing, invalid or non-positive value falls back to 100.",
+            "example": "2",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number to retrieve, starting at 1. Default: 1. An invalid value falls back to 1; a page beyond the last one answers an empty `data`.",
+            "example": "1",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": false,
+            "description": "The field to sort by. Only `createdAt` is supported; any other value is ignored.",
+            "example": "createdAt",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "createdAt"
+              ]
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "required": false,
+            "description": "The sort direction. Default: `desc` (newest first). Any other value sorts ascending.",
+            "example": "desc",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ContactNote"
+                      }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "description": "Number of notes attached to the contact, across all pages"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "total"
+                  ]
+                },
+                "example": {
+                  "data": [
+                    {
+                      "_id": "act_j0NrG6rYEPP9TMmWC",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "contactId": "ctc_XXBXpAxmxwg24IzBI",
+                      "createdAt": "2026-09-28T09:12:00.653Z",
+                      "note": "Asked for a demo next week",
+                      "userId": "usr_ahfFktBBHUIxbVG5P"
+                    },
+                    {
+                      "_id": "act_BYF2j06u0wgeLncub",
+                      "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                      "contactId": "ctc_XXBXpAxmxwg24IzBI",
+                      "createdAt": "2026-09-21T15:40:10.605Z",
+                      "note": "Met at SaaStock",
+                      "userId": "usr_ahfFktBBHUIxbVG5P"
+                    }
+                  ],
+                  "total": 2
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A request without an API key answers `400` with the plain-text message `no api key provided`. Query parameters never answer `400`: a value outside the contract falls back to its default, as on `GET /companies/{companyId}/notes`.",
+            "content": {
+              "text/plain": {
+                "example": "no api key provided"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "No contact with this id or email in your team (a path that is not valid percent-encoding matches no contact)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Contact not found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Contact Note",
+        "description": "Writes a note on a contact resolved by its id (`ctc_xxx`) or email, exactly as a note written in the lemlist app: it is stored as a note of the contact, **pushed to your connected CRM** (HubSpot, Salesforce, Pipedrive) like an in-app note, and logged in the team activity feed. The author is the user of the API key. The note is plain text, stored as sent, at most 10000 characters, and cannot contain a `<` followed by a `>` (the app's guard against markup). A lone `<` is stored HTML-escaped as `&lt;`, as in the app. A missing, empty or non-text `note` creates an empty note, as on `POST /companies/{companyId}/notes`.",
+        "tags": [
+          "Contacts"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "note": {
+                    "type": "string",
+                    "maxLength": 10000,
+                    "description": "The note content. Plain text, at most 10000 characters; a `<` followed by a `>` is refused, a lone `<` is stored as `&lt;`."
+                  }
+                }
+              },
+              "example": {
+                "note": "Asked for a demo next week"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Note created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactNote"
+                },
+                "example": {
+                  "_id": "act_j0NrG6rYEPP9TMmWC",
+                  "teamId": "tea_8QvkOiBfPdb2ZRhHi",
+                  "contactId": "ctc_XXBXpAxmxwg24IzBI",
+                  "createdAt": "2026-09-28T09:12:00.653Z",
+                  "note": "Asked for a demo next week",
+                  "userId": "usr_ahfFktBBHUIxbVG5P"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The note is refused. The body is `{ error }`, with one message per case: the note exceeds 10000 characters; the note contains a `<` followed by a `>` (the app's guard against markup). A request without an API key answers `400` with the plain-text message `no api key provided`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "One of the two note messages below"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "note-too-long": {
+                    "summary": "note over 10000 characters",
+                    "value": {
+                      "error": "note exceeds the maximum of 10000 characters"
+                    }
+                  },
+                  "note-invalid": {
+                    "summary": "note contains a < followed by a >",
+                    "value": {
+                      "error": "note cannot contain the characters < or >"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "No contact with this id or email in your team (a path that is not valid percent-encoding matches no contact)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Contact not found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      }
+    },
     "/contacts/lists": {
       "get": {
         "summary": "Get Contact Lists",
@@ -22439,7 +22735,8 @@
                 "properties": {
                   "note": {
                     "type": "string",
-                    "description": "The note content"
+                    "maxLength": 10000,
+                    "description": "The note content. Plain text, at most 10000 characters; a `<` followed by a `>` is refused."
                   }
                 },
                 "required": [
@@ -22474,10 +22771,35 @@
             }
           },
           "400": {
-            "description": "Bad team",
+            "description": "The note is refused. The body is `{ error }`, with one message per case: the note exceeds 10000 characters; the note contains a `<` followed by a `>` (markup is refused, as when writing a note in the lemlist app; a lone `<` or `>` is accepted). A request without an API key answers `400` with the plain-text message `no api key provided`.",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "One of the two note messages below"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                },
+                "examples": {
+                  "note-too-long": {
+                    "summary": "note over 10000 characters",
+                    "value": {
+                      "error": "note exceeds the maximum of 10000 characters"
+                    }
+                  },
+                  "note-invalid": {
+                    "summary": "note contains a < followed by a >",
+                    "value": {
+                      "error": "note cannot contain the characters < or >"
+                    }
+                  }
+                }
               }
             }
           },
