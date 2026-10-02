@@ -53,6 +53,7 @@ from a transport failure.
 | `linkedinVisit` | `delay` | Simulates a profile visit on LinkedIn |
 | `linkedinInvite` | `message`, `altMessage`, `images`, `videos`, `delay` | Sends a LinkedIn invite with message |
 | `linkedinSend` | `message`, `altMessage`, `altMessagePremium`, `images`, `videos`, `delay` | Sends a LinkedIn message |
+| `linkedinInMail` | `subject`, `message`, `title`, `delay` | Sends a LinkedIn InMail, from a Premium or Sales Navigator sender only |
 | `linkedinVoiceNote` | `message`, `altMessage`, `delay`, `recordMode` | Sends a LinkedIn voice note. Audio is either recorded manually or AI-generated from a text template, depending on `recordMode` |
 | `linkedinFollow` | `delay` | Follows the lead on LinkedIn |
 | `linkedinLikeLastPost` | `delay` | Likes the lead's most recent LinkedIn post |
@@ -70,11 +71,11 @@ Only include the fields you want to update. Required fields are not enforced her
 
 | Field | Type | Applies To | Description |
 | --- | --- | --- | --- |
-| `subject` | string | `email` | Email subject line. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
+| `subject` | string | `email`, `linkedinInMail` | Email or InMail subject line. Cannot be blank on `linkedinInMail`. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
 | `message` | string | `email`, `linkedin*`, `manual`, `phone`, `whatsappMessage`, `sms` | Message text |
 | `altMessage` | string | `linkedinInvite`, `linkedinSend`, `linkedinVoiceNote` | The premium invitation note on an invite, the out-of-network note on the other two. Pass an empty string to clear it. See [LinkedIn invitation notes](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-invitation-notes) on Add Step |
 | `altMessagePremium` | string | `linkedinSend` | The premium variant of the out-of-network note. Pass an empty string to clear it. See [LinkedIn invitation notes](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-invitation-notes) on Add Step |
-| `title` | string | `manual` | Title for manual task. Maximum 400 characters |
+| `title` | string | `manual`, `linkedinInMail` | Title for manual task. On `linkedinInMail`, used only when the step is manual. Maximum 400 characters |
 | `method` | string | `api` | One of `GET`, `POST`, `PUT`, `DELETE`, `PATCH` |
 | `url` | string | `api` | Valid HTTP/HTTPS URL |
 | `delay` | integer | all except `sendToAnotherCampaign` | Delay before this step, in days. Must be between 0 and 1500 |
@@ -90,6 +91,11 @@ Only include the fields you want to update. Required fields are not enforced her
 | `skillName` | string | `linkedinEndorse` | Name of the LinkedIn skill to endorse on the lead's profile |
 | `endorseAnyFallback` | boolean | `linkedinEndorse` | When `true` and the named skill is not on the lead's profile, lemlist falls back to endorsing any available skill |
 | `recordMode` | string | `linkedinVoiceNote` | One of `manual` (user records the audio after step creation; default) or `ai` (audio is generated from a text template provided in the lemlist UI) |
+
+<Note>
+On a `linkedinInMail` step, a blank `subject` or `message` (empty or whitespace only) is refused with
+`400 <field> cannot be blank on a linkedinInMail step`. Both are sent as plain text.
+</Note>
 
 <Note>
 To remove the subject of an `email` step, send `"subject": ""`. The email then replies in the thread

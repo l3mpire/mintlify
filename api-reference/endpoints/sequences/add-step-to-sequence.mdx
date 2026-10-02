@@ -108,6 +108,7 @@ The table below summarizes the required and optional fields for each step type. 
 | `linkedinVisit` | - | `index`, `delay` |
 | `linkedinInvite` | - | `message`, `altMessage`, `images`, `videos`, `index`, `delay` |
 | `linkedinSend` | `message` | `altMessage`, `altMessagePremium`, `images`, `videos`, `index`, `delay` |
+| `linkedinInMail` | `subject`, `message` | `title`, `index`, `delay` |
 | `linkedinVoiceNote` | - | `message`, `altMessage`, `index`, `delay`, `recordMode` |
 | `linkedinFollow` | - | `index`, `delay` |
 | `linkedinLikeLastPost` | - | `index`, `delay` |
@@ -124,6 +125,16 @@ In conditional steps, if the `delayType` is not `"within"`, the `delay` field is
 </Note>
 
 <Note>
+A `linkedinInMail` step sends a LinkedIn InMail, so it reaches leads who are not connected to the
+sender — the step to use in the "invite not accepted" branch of a `linkedinInviteAccepted`
+condition. It needs a LinkedIn Premium or Sales Navigator sender: a sender without one is skipped.
+Each send spends one of the sender's InMail credits. `subject` and `message` cannot be blank
+(`400 <field> cannot be blank on a linkedinInMail step`), and both are sent as plain text: LinkedIn
+does not render HTML. The step takes no `altMessage`, `images` or `videos`. Send `"manual": true` to
+turn it into a per-lead task the user sends by hand.
+</Note>
+
+<Note>
 `linkedinVoiceNote` steps are created as skeletons via the API: the audio payload itself is not accepted here and must be added afterwards from the lemlist UI. The `recordMode` field controls how the audio is sourced — with `manual` (default), a user records the note themselves; with `ai`, a user provides a text template that lemlist converts to audio at send time.
 </Note>
 
@@ -131,14 +142,14 @@ In conditional steps, if the `delayType` is not `"within"`, the `delay` field is
 
 | Field | Description |
 | --- | --- |
-| `type` (String, Required) | The type of step to create. Allowed values: `email`, `manual`, `phone`, `api`, `linkedinVisit`, `linkedinInvite`, `linkedinSend`, `linkedinVoiceNote`, `linkedinFollow`, `linkedinLikeLastPost`, `linkedinCommentLastPost`, `linkedinEndorse`, `linkedinWithdrawInvitation`, `sendToAnotherCampaign`, `conditional`, `whatsappMessage`, `sms` |
+| `type` (String, Required) | The type of step to create. Allowed values: `email`, `manual`, `phone`, `api`, `linkedinVisit`, `linkedinInvite`, `linkedinSend`, `linkedinInMail`, `linkedinVoiceNote`, `linkedinFollow`, `linkedinLikeLastPost`, `linkedinCommentLastPost`, `linkedinEndorse`, `linkedinWithdrawInvitation`, `sendToAnotherCampaign`, `conditional`, `whatsappMessage`, `sms` |
 | `index` (Integer, Optional) | The position within the sequence to insert the new step. Must be an integer ≥ -1. If omitted or if the index is greater than the number of steps, the new step is added to the end |
 | `delay` (Integer, Optional) | The delay (in days) before executing the step. Must be between 0 and 1500. Defaults to 0 for the first step and to 1 for subsequent steps (except for certain conditional configurations) |
-| `subject` (String, Optional) | For `email` steps only. The email subject. Omit it or send an empty string on a follow-up so the email replies in the thread of the previous one. If no email has been sent to the lead in this campaign yet, it goes out with an empty subject. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
-| `message` (String, Conditional) | Content of the email or message. Used for `email`, `linkedinInvite`, `linkedinSend`, `whatsappMessage`, and `sms` step types, the AI script of a `linkedinVoiceNote` step in `ai` record mode, or the note of `manual` and `phone` step types. Required for `linkedinSend`, `whatsappMessage`, and `sms` |
+| `subject` (String, Conditional) | For `email` and `linkedinInMail` steps. Required on `linkedinInMail`, where it is the InMail subject and cannot be blank. On `email`, the email subject. Omit it or send an empty string on a follow-up so the email replies in the thread of the previous one. If no email has been sent to the lead in this campaign yet, it goes out with an empty subject. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
+| `message` (String, Conditional) | Content of the email or message. Used for `email`, `linkedinInvite`, `linkedinSend`, `linkedinInMail`, `whatsappMessage`, and `sms` step types, the AI script of a `linkedinVoiceNote` step in `ai` record mode, or the note of `manual` and `phone` step types. Required for `linkedinSend`, `linkedinInMail`, `whatsappMessage`, and `sms` |
 | `altMessage` (String, Conditional) | For `linkedinInvite`, `linkedinSend` and `linkedinVoiceNote` steps only. The premium invitation note on an invite, the out-of-network note on the other two. See [LinkedIn invitation notes](#linkedin-invitation-notes) below |
 | `altMessagePremium` (String, Conditional) | For `linkedinSend` steps only. The premium variant of the out-of-network note. See [LinkedIn invitation notes](#linkedin-invitation-notes) below |
-| `title` (String, Conditional) | A title or label used in `manual` steps. Maximum 400 characters |
+| `title` (String, Conditional) | A title or label used in `manual` steps. On a `linkedinInMail` step, the label of the task created when `"manual": true` is sent. Maximum 400 characters |
 | `method` (String, Conditional) | The HTTP method to use for API steps. Allowed values: `GET`, `POST`, `PUT`, `DELETE`, `PATCH` |
 | `url` (String, Conditional) | The URL of the API endpoint to call. Must be a valid URL (starting with `http://` or `https://`) |
 | `conditionKey` (String, Conditional) | For conditional steps only. Defines the condition key. Allowed values: `hasEmailAddress`, `hasLinkedinUrl`, `hasPhoneNumber`, `customLeadInfo`, `hasScore`, `emailsOpened`, `emailsClicked`, `emailsUnsubscribed`, `meetingBooked`, `linkedinInviteAccepted`, `linkedinOpened`, `aircallDone`, `linkedinNetworkCheck`, `hasWhatsappAccount` |
