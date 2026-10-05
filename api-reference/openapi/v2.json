@@ -566,6 +566,10 @@
               "visitLimit": {
                 "type": "integer",
                 "description": "Daily limit for LinkedIn profile visits"
+              },
+              "inMailLimit": {
+                "type": "integer",
+                "description": "Daily limit for LinkedIn InMails (defaults to 5). The monthly InMail credits of the LinkedIn plan remain the hard cap"
               }
             }
           },
@@ -6165,7 +6169,8 @@
                     "status": true,
                     "inviteLimit": 25,
                     "sendLimit": 33,
-                    "visitLimit": 36
+                    "visitLimit": 36,
+                    "inMailLimit": 5
                   },
                   "mailboxes": [
                     {
