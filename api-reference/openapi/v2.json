@@ -13965,9 +13965,10 @@
         }
       ],
       "post": {
+        "deprecated": true,
         "summary": "Skip Step for Lead",
         "tags": ["Leads"],
-        "description": "Skip one step of a running campaign for a single lead. Cannot be undone.",
+        "description": "Skip one step of a running campaign for a single lead. Cannot be undone. Deprecated, still working: use POST /campaigns/{campaignId}/steps/{stepId}/skip-for-leads, which takes 1 to 100 leads per call.",
         "parameters": [],
         "responses": {
           "200": {

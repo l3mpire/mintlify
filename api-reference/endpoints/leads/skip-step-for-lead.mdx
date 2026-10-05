@@ -3,6 +3,10 @@ openapi: post /campaigns/{campaignId}/leads/{leadIdOrEmail}/steps/{stepId}/skip
 description: Skips one step of a running campaign for a single lead.
 ---
 
+<Warning>
+    This endpoint is **deprecated** and keeps working. Use [Skip Step for Leads](/api-reference/endpoints/campaigns/skip-step-for-leads) instead: it takes 1 to 100 leads per call, each as a lead id or an email, and answers per lead.
+</Warning>
+
 The lead is not stopped: the step never runs and the lead continues with the
 next one after that step's own delay. A step the lead already ran is
 unaffected — nothing already sent changes.
