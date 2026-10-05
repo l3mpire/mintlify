@@ -2998,7 +2998,7 @@
       },
       "PersonaFilter": {
         "type": "object",
-        "description": "One People Database filter of a persona. `in` includes matching values, `out` excludes them. There is no `type` property: it is derived from `filterId` server-side.",
+        "description": "One People Database filter, as stored in a persona or a saved search. `in` includes matching values, `out` excludes them. There is no `type` property: it is derived from `filterId` server-side.",
         "required": ["filterId"],
         "properties": {
           "filterId": {
@@ -3077,7 +3077,7 @@
       },
       "PersonaError": {
         "type": "object",
-        "description": "Error envelope returned by the persona endpoints.",
+        "description": "Error envelope returned by the persona, saved-search and Get Database Filters endpoints.",
         "properties": {
           "error": {
             "type": "string",
@@ -3086,6 +3086,110 @@
           "code": {
             "type": "string",
             "description": "Machine-readable error code, stable across releases"
+          }
+        }
+      },
+      "SavedSearch": {
+        "type": "object",
+        "description": "A People Database saved search: a named set of People Database filters saved by your team. It appears in the \"Saved searches\" menu of the People Database.",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Unique saved search identifier",
+            "example": "lss_ExAmPlE4f7Kq2Wz9x"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name. Unique within your team.",
+            "example": "Paris SaaS founders"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "leads",
+              "companies"
+            ],
+            "description": "Search mode the filters target. Always set: saved searches created before modes existed read as `leads`.",
+            "example": "leads"
+          },
+          "filters": {
+            "type": "array",
+            "description": "People Database filters of the saved search. Same shape as the search endpoints accept, so they can be sent back as is to [Search People Database](/api-reference/endpoints/people-database/search-people-database) or [Search Companies Database](/api-reference/endpoints/people-database/search-companies-database).",
+            "items": {
+              "$ref": "#/components/schemas/PersonaFilter"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date the saved search was created",
+            "example": "2026-09-14T08:30:00.000Z"
+          },
+          "lastResultsCount": {
+            "type": "number",
+            "description": "Number of results the saved search returned the last time it was saved or run",
+            "example": 1240
+          },
+          "lastResultsCountUpdatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date `lastResultsCount` was last computed",
+            "example": "2026-09-14T08:30:00.000Z"
+          }
+        }
+      },
+      "SavedSearchListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "The team's saved searches, sorted by name",
+            "items": {
+              "$ref": "#/components/schemas/SavedSearch"
+            }
+          }
+        }
+      },
+      "SavedSearchResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SavedSearch"
+          }
+        }
+      },
+      "SavedSearchCreateResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "description": "Id of the created saved search",
+                "example": "lss_ExAmPlE4f7Kq2Wz9x"
+              }
+            }
+          }
+        }
+      },
+      "SavedSearchDeleteResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "description": "Id of the deleted saved search",
+                "example": "lss_ExAmPlE4f7Kq2Wz9x"
+              },
+              "deleted": {
+                "type": "boolean",
+                "description": "Always `true` when the saved search was removed",
+                "example": true
+              }
+            }
           }
         }
       },
@@ -14929,10 +15033,26 @@
             }
           },
           "400": {
-            "description": "Bad team",
+            "description": "Validation error - invalid query parameters",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "examples": {
+                  "invalidUsage": {
+                    "value": {
+                      "error": "Parameter usage is invalid",
+                      "code": "API_INVALID_USAGE"
+                    }
+                  },
+                  "invalidMode": {
+                    "value": {
+                      "error": "Parameter mode is invalid",
+                      "code": "API_INVALID_MODE"
+                    }
+                  }
+                }
               }
             }
           },
@@ -14945,10 +15065,51 @@
             }
           },
           "405": {
-            "description": "Method not allowed"
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
           }
         },
-        "parameters": []
+        "parameters": [
+          {
+            "name": "usage",
+            "in": "query",
+            "required": false,
+            "description": "Context the filters will be used in. `api` (default) lists the filters accepted by the search endpoints. `ui` lists the filters usable in the People Database UI: use it to pick the filters of a [saved search](/api-reference/objects-definitions/saved-search), which refuses the others.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "api",
+                "ui"
+              ],
+              "default": "api"
+            },
+            "example": "ui"
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "required": false,
+            "description": "Restrict the list to the filters of one search mode",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "leads",
+                "companies"
+              ]
+            },
+            "example": "leads"
+          }
+        ]
       }
     },
     "/database/people": {
@@ -15905,6 +16066,730 @@
                 "example": {
                   "error": "Internal error",
                   "code": "INTERNAL_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/database/saved-searches": {
+      "get": {
+        "summary": "List Saved Searches",
+        "description": "Lists the People Database saved searches of your team, sorted by name. Saved searches are team-shared: every member sees the same list.",
+        "operationId": "listSavedSearches",
+        "tags": [
+          "People Database"
+        ],
+        "parameters": [
+          {
+            "name": "mode",
+            "in": "query",
+            "required": false,
+            "description": "Restrict the list to saved searches of one search mode. Saved searches created before modes existed are returned for both modes. Omit to return every saved search of the team.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "leads",
+                "companies"
+              ]
+            },
+            "example": "leads"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedSearchListResponse"
+                },
+                "example": {
+                  "data": [
+                    {
+                      "_id": "lss_ExAmPlE4f7Kq2Wz9x",
+                      "name": "Paris SaaS founders",
+                      "mode": "leads",
+                      "filters": [
+                        {
+                          "filterId": "currentTitle",
+                          "in": [
+                            "Founder"
+                          ],
+                          "out": []
+                        },
+                        {
+                          "filterId": "country",
+                          "in": [
+                            "France"
+                          ],
+                          "out": []
+                        }
+                      ],
+                      "createdAt": "2026-09-14T08:30:00.000Z",
+                      "lastResultsCount": 1240,
+                      "lastResultsCountUpdatedAt": "2026-09-14T08:30:00.000Z"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error - invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Parameter mode is invalid",
+                  "code": "API_INVALID_MODE"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key. An API key with no user attached answers `{ \"error\": \"Route unauthorized\", \"code\": \"ROUTE_UNAUTHORIZED\" }` in JSON instead.",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Saved Search",
+        "description": "Creates a People Database saved search for your team. It shows up in the \"Saved searches\" menu of the People Database.\n\nFilters come from [Get Database Filters](/api-reference/endpoints/people-database/get-database-filters) called with `usage=ui`: a filter not usable in the People Database UI is refused with `FILTER_UNAVAILABLE_FOR_USAGE`, and the error message names the refused filters, comma-separated. Filters incompatible with the `mode` or with your team's plan are dropped silently; if none remain, the request answers `400`.\n\nOnly the created id is returned. The stored `name` and `filters` are sanitized and plan-gated server-side, so echoing the request payload back would misreport what was persisted; call [Get Saved Search](/api-reference/endpoints/people-database/get-saved-search) to read the stored saved search.",
+        "operationId": "createSavedSearch",
+        "tags": [
+          "People Database"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "filters",
+                  "mode"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "description": "Display name, 1 to 200 characters after trimming. Unique within your team.",
+                    "example": "Paris SaaS founders"
+                  },
+                  "filters": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 10,
+                    "description": "People Database filters of the saved search. 1 to 10 filters of shape `{ filterId, in?, out?, exactMatch? }` (no other key: an unknown key such as `type` answers `API_INVALID_FILTERS`), at most 1000 values per `in` / `out` and 1000 characters per value.",
+                    "items": {
+                      "$ref": "#/components/schemas/PersonaFilter"
+                    }
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "leads",
+                      "companies"
+                    ],
+                    "description": "Search mode the filters target",
+                    "example": "leads"
+                  }
+                }
+              },
+              "example": {
+                "name": "Paris SaaS founders",
+                "mode": "leads",
+                "filters": [
+                  {
+                    "filterId": "currentTitle",
+                    "in": [
+                      "Founder"
+                    ],
+                    "out": []
+                  },
+                  {
+                    "filterId": "country",
+                    "in": [
+                      "France"
+                    ],
+                    "out": []
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Saved search created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedSearchCreateResponse"
+                },
+                "example": {
+                  "data": {
+                    "_id": "lss_ExAmPlE4f7Kq2Wz9x"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. Possible codes: `API_INVALID_PARAMS`, `API_INVALID_NAME`, `API_INVALID_FILTERS`, `API_INVALID_MODE`, `SEARCH_FILTERS_MISSING`, `SEARCH_FILTERS_EMPTY`, `SEARCH_FILTERS_INVALID`, `SEARCH_FILTERS_INPUT_TOO_LONG`, `SEARCH_FILTERS_INPUT_TOO_MANY_VALUES`, `FILTER_UNAVAILABLE_FOR_USAGE`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "examples": {
+                  "invalidName": {
+                    "value": {
+                      "error": "Parameter name is invalid",
+                      "code": "API_INVALID_NAME"
+                    }
+                  },
+                  "invalidFilters": {
+                    "value": {
+                      "error": "Parameter filters is invalid",
+                      "code": "API_INVALID_FILTERS"
+                    }
+                  },
+                  "invalidMode": {
+                    "value": {
+                      "error": "Parameter mode is invalid",
+                      "code": "API_INVALID_MODE"
+                    }
+                  },
+                  "emptyFilter": {
+                    "value": {
+                      "error": "One of your filter is empty",
+                      "code": "SEARCH_FILTERS_EMPTY"
+                    }
+                  },
+                  "tooManyValues": {
+                    "value": {
+                      "error": "One of your filter has too many values",
+                      "code": "SEARCH_FILTERS_INPUT_TOO_MANY_VALUES"
+                    }
+                  },
+                  "noValidFilter": {
+                    "value": {
+                      "error": "You have no valid filters with the current search mode",
+                      "code": "SEARCH_FILTERS_INVALID"
+                    }
+                  },
+                  "filterUnavailable": {
+                    "value": {
+                      "error": "The \"companiesByIds\" filter is not available for this type of search",
+                      "code": "FILTER_UNAVAILABLE_FOR_USAGE"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key. An API key with no user attached answers `{ \"error\": \"Route unauthorized\", \"code\": \"ROUTE_UNAUTHORIZED\" }` in JSON instead.",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A saved search with this name already exists for your team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "A search with this name already exists",
+                  "code": "SEARCH_NAME_ALREADY_EXISTS"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "The saved search could not be stored",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "We could not save your search",
+                  "code": "SEARCH_INSERT_FAILED"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/database/saved-searches/{savedSearchId}": {
+      "get": {
+        "summary": "Get Saved Search",
+        "description": "Retrieves one of your team's saved searches.\n\nAn unknown id and a saved search belonging to another team answer the same `404`.",
+        "operationId": "getSavedSearch",
+        "tags": [
+          "People Database"
+        ],
+        "parameters": [
+          {
+            "name": "savedSearchId",
+            "in": "path",
+            "required": true,
+            "description": "Id of the saved search",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "example": "lss_ExAmPlE4f7Kq2Wz9x"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedSearchResponse"
+                },
+                "example": {
+                  "data": {
+                    "_id": "lss_ExAmPlE4f7Kq2Wz9x",
+                    "name": "Paris SaaS founders",
+                    "mode": "leads",
+                    "filters": [
+                      {
+                        "filterId": "currentTitle",
+                        "in": [
+                          "Founder"
+                        ],
+                        "out": []
+                      },
+                      {
+                        "filterId": "country",
+                        "in": [
+                          "France"
+                        ],
+                        "out": []
+                      }
+                    ],
+                    "createdAt": "2026-09-14T08:30:00.000Z",
+                    "lastResultsCount": 1240,
+                    "lastResultsCountUpdatedAt": "2026-09-14T08:30:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error - malformed savedSearchId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Wrong param lemleads saved search id",
+                  "code": "WRONG_PARAM_LEMLEADS_SAVED_SEARCH_ID"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key. An API key with no user attached answers `{ \"error\": \"Route unauthorized\", \"code\": \"ROUTE_UNAUTHORIZED\" }` in JSON instead.",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "No such saved search for your team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "No saved search found for this id",
+                  "code": "SAVED_SEARCH_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Saved Search",
+        "description": "Renames a saved search and/or replaces its filters. At least one of `name` and `filters` is required.\n\n`filters` replace the saved filters entirely: they are not merged. `mode` is only read together with `filters` and defaults to the current mode of the saved search. Filters come from [Get Database Filters](/api-reference/endpoints/people-database/get-database-filters) called with `usage=ui`: a filter not usable in the People Database UI is refused with `FILTER_UNAVAILABLE_FOR_USAGE`, and the error message names the refused filters, comma-separated. Filters incompatible with the `mode` or with your team's plan are dropped silently; if none remain, the request answers `400`.\n\nThe filters and the name are applied as two separate writes: if the rename is refused because the name is already taken (`409`), the new filters are already saved.",
+        "operationId": "updateSavedSearch",
+        "tags": [
+          "People Database"
+        ],
+        "parameters": [
+          {
+            "name": "savedSearchId",
+            "in": "path",
+            "required": true,
+            "description": "Id of the saved search",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "example": "lss_ExAmPlE4f7Kq2Wz9x"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "description": "Display name, 1 to 200 characters after trimming. Unique within your team.",
+                    "example": "Lyon SaaS founders"
+                  },
+                  "filters": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 10,
+                    "description": "New filters, replacing the saved ones entirely. 1 to 10 filters of shape `{ filterId, in?, out?, exactMatch? }` (no other key: an unknown key such as `type` answers `API_INVALID_FILTERS`), at most 1000 values per `in` / `out` and 1000 characters per value.",
+                    "items": {
+                      "$ref": "#/components/schemas/PersonaFilter"
+                    }
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "leads",
+                      "companies"
+                    ],
+                    "description": "Search mode of the new `filters`. Only read with `filters`; defaults to the current mode of the saved search.",
+                    "example": "leads"
+                  }
+                }
+              },
+              "example": {
+                "name": "Lyon SaaS founders",
+                "filters": [
+                  {
+                    "filterId": "currentTitle",
+                    "in": [
+                      "Founder"
+                    ],
+                    "out": []
+                  },
+                  {
+                    "filterId": "country",
+                    "in": [
+                      "France"
+                    ],
+                    "out": []
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Saved search updated, in its new state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedSearchResponse"
+                },
+                "example": {
+                  "data": {
+                    "_id": "lss_ExAmPlE4f7Kq2Wz9x",
+                    "name": "Lyon SaaS founders",
+                    "mode": "leads",
+                    "filters": [
+                      {
+                        "filterId": "currentTitle",
+                        "in": [
+                          "Founder"
+                        ],
+                        "out": []
+                      },
+                      {
+                        "filterId": "country",
+                        "in": [
+                          "France"
+                        ],
+                        "out": []
+                      }
+                    ],
+                    "createdAt": "2026-09-14T08:30:00.000Z",
+                    "lastResultsCount": 1240,
+                    "lastResultsCountUpdatedAt": "2026-09-14T08:30:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. Possible codes: `API_INVALID_SAVED_SEARCH_UPDATE` (neither `name` nor `filters`), `WRONG_PARAM_LEMLEADS_SAVED_SEARCH_ID`, `API_INVALID_PARAMS`, `API_INVALID_NAME`, `API_INVALID_FILTERS`, `API_INVALID_MODE`, `SEARCH_FILTERS_MISSING`, `SEARCH_FILTERS_EMPTY`, `SEARCH_FILTERS_INVALID`, `SEARCH_FILTERS_INPUT_TOO_LONG`, `SEARCH_FILTERS_INPUT_TOO_MANY_VALUES`, `FILTER_UNAVAILABLE_FOR_USAGE`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "examples": {
+                  "emptyUpdate": {
+                    "value": {
+                      "error": "Provide a name or filters to update the saved search",
+                      "code": "API_INVALID_SAVED_SEARCH_UPDATE"
+                    }
+                  },
+                  "malformedId": {
+                    "value": {
+                      "error": "Wrong param lemleads saved search id",
+                      "code": "WRONG_PARAM_LEMLEADS_SAVED_SEARCH_ID"
+                    }
+                  },
+                  "invalidName": {
+                    "value": {
+                      "error": "Parameter name is invalid",
+                      "code": "API_INVALID_NAME"
+                    }
+                  },
+                  "invalidFilters": {
+                    "value": {
+                      "error": "Parameter filters is invalid",
+                      "code": "API_INVALID_FILTERS"
+                    }
+                  },
+                  "invalidMode": {
+                    "value": {
+                      "error": "Parameter mode is invalid",
+                      "code": "API_INVALID_MODE"
+                    }
+                  },
+                  "emptyFilter": {
+                    "value": {
+                      "error": "One of your filter is empty",
+                      "code": "SEARCH_FILTERS_EMPTY"
+                    }
+                  },
+                  "tooManyValues": {
+                    "value": {
+                      "error": "One of your filter has too many values",
+                      "code": "SEARCH_FILTERS_INPUT_TOO_MANY_VALUES"
+                    }
+                  },
+                  "noValidFilter": {
+                    "value": {
+                      "error": "You have no valid filters with the current search mode",
+                      "code": "SEARCH_FILTERS_INVALID"
+                    }
+                  },
+                  "filterUnavailable": {
+                    "value": {
+                      "error": "The \"companiesByIds\" filter is not available for this type of search",
+                      "code": "FILTER_UNAVAILABLE_FOR_USAGE"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key. An API key with no user attached answers `{ \"error\": \"Route unauthorized\", \"code\": \"ROUTE_UNAUTHORIZED\" }` in JSON instead.",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "No such saved search for your team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "No saved search found for this id",
+                  "code": "SAVED_SEARCH_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A saved search with this name already exists for your team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "A search with this name already exists",
+                  "code": "SEARCH_NAME_ALREADY_EXISTS"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Saved Search",
+        "description": "Permanently deletes one of your team's saved searches. There is no undo.\n\nAn unknown id and a saved search belonging to another team answer the same `404`.",
+        "operationId": "deleteSavedSearch",
+        "tags": [
+          "People Database"
+        ],
+        "parameters": [
+          {
+            "name": "savedSearchId",
+            "in": "path",
+            "required": true,
+            "description": "Id of the saved search",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "example": "lss_ExAmPlE4f7Kq2Wz9x"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Saved search deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedSearchDeleteResponse"
+                },
+                "example": {
+                  "data": {
+                    "_id": "lss_ExAmPlE4f7Kq2Wz9x",
+                    "deleted": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error - malformed savedSearchId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Wrong param lemleads saved search id",
+                  "code": "WRONG_PARAM_LEMLEADS_SAVED_SEARCH_ID"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key. An API key with no user attached answers `{ \"error\": \"Route unauthorized\", \"code\": \"ROUTE_UNAUTHORIZED\" }` in JSON instead.",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "No such saved search for your team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "No saved search found for this id",
+                  "code": "SAVED_SEARCH_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
                 }
               }
             }
