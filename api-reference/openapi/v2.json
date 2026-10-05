@@ -555,6 +555,10 @@
                 "type": "boolean",
                 "description": "Whether LinkedIn is connected"
               },
+              "followLimit": {
+                "type": "integer",
+                "description": "Daily limit for LinkedIn follows"
+              },
               "inviteLimit": {
                 "type": "integer",
                 "description": "Daily limit for LinkedIn connection invites"
@@ -570,6 +574,35 @@
               "inMailLimit": {
                 "type": "integer",
                 "description": "Daily limit for LinkedIn InMails (defaults to 5). The monthly InMail credits of the LinkedIn plan remain the hard cap"
+              },
+              "networkCheckLimit": {
+                "type": "integer",
+                "description": "Daily limit for LinkedIn network checks"
+              },
+              "withdrawInvitationLimit": {
+                "type": "integer",
+                "description": "Daily limit for LinkedIn invitation withdrawals"
+              },
+              "likeLastPostLimit": {
+                "type": "integer",
+                "description": "Daily limit for LinkedIn last-post likes"
+              },
+              "endorseLimit": {
+                "type": "integer",
+                "description": "Daily limit for LinkedIn endorsements"
+              },
+              "commentLastPostRetrieveLimit": {
+                "type": "integer",
+                "description": "Daily limit for LinkedIn last-post retrievals"
+              },
+              "commentLastPostSendLimit": {
+                "type": "integer",
+                "description": "Daily limit for LinkedIn last-post comments"
+              },
+              "inviteRampUp": {
+                "type": "integer",
+                "nullable": true,
+                "description": "How much the daily invitation limit grows each day until it reaches inviteLimit; null when the ramp-up is off"
               }
             }
           },
@@ -6161,20 +6194,28 @@
                   "$ref": "#/components/schemas/User"
                 },
                 "example": {
-                  "_id": "usr_eSrHPSoL9QVPUOsho",
-                  "email": "example@lemlist.co",
+                  "_id": "usr_Hv3pXc8RtW2nLq6Ya",
+                  "email": "john@example.com",
                   "role": "admin",
                   "linkedIn": {
                     "linkedinUrl": "https://www.linkedin.com/in/john-doe",
                     "status": true,
+                    "followLimit": 20,
                     "inviteLimit": 25,
                     "sendLimit": 33,
                     "visitLimit": 36,
-                    "inMailLimit": 5
+                    "inMailLimit": 5,
+                    "networkCheckLimit": 30,
+                    "withdrawInvitationLimit": 30,
+                    "likeLastPostLimit": 30,
+                    "endorseLimit": 20,
+                    "commentLastPostRetrieveLimit": 20,
+                    "commentLastPostSendLimit": 20,
+                    "inviteRampUp": 5
                   },
                   "mailboxes": [
                     {
-                      "_id": "usm_2mkqJNUjnJQiyVBht",
+                      "_id": "usm_Bk7mQz4FsN9dTr2Wx",
                       "email": "example@gmail.com",
                       "provider": "google",
                       "status": "ERROR",
@@ -6186,7 +6227,7 @@
                       }
                     },
                     {
-                      "_id": "usm_gqlN3jKWoGo1Je8El",
+                      "_id": "usm_Jy5LcR8hVp3eKs6Nm",
                       "email": "example@outlook.com",
                       "status": "ERROR",
                       "lemlist": {
@@ -27172,7 +27213,7 @@
           }
         ],
         "requestBody": {
-          "description": "The team member's daily LinkedIn limits to change. Provide only the limits you want to change; omitted ones keep their current value. At least one is required, and unknown fields are refused: an invalid body fails the whole update and nothing is written. Same limits as Settings > Sending limits: a value above the recommended maximum is stored and the response carries a warning.",
+          "description": "The team member's daily LinkedIn limits to change, named like the `linkedIn` limits of GET /users/{userId}. Provide only the fields you want to change; omitted ones keep their current value. At least one is required, and unknown fields are refused: an invalid body fails the whole update and nothing is written. Same limits as Settings > Sending limits: a value above the recommended maximum is stored and the response carries a warning.",
           "content": {
             "application/json": {
               "schema": {
@@ -27180,38 +27221,80 @@
                 "minProperties": 1,
                 "additionalProperties": false,
                 "properties": {
-                  "dailyInviteLimit": {
+                  "followLimit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Max LinkedIn follows per day"
+                  },
+                  "inviteLimit": {
                     "type": "integer",
                     "minimum": 1,
                     "description": "Max LinkedIn invitations per day"
                   },
-                  "dailySendLimit": {
+                  "sendLimit": {
                     "type": "integer",
                     "minimum": 1,
                     "description": "Max LinkedIn direct messages per day"
                   },
-                  "dailyVisitLimit": {
+                  "visitLimit": {
                     "type": "integer",
                     "minimum": 1,
                     "description": "Max LinkedIn profile visits per day"
                   },
-                  "dailyInMailLimit": {
+                  "inMailLimit": {
                     "type": "integer",
                     "minimum": 1,
                     "description": "Max LinkedIn InMails per day: a daily throttle, the monthly InMail credits of the LinkedIn plan stay the hard cap"
+                  },
+                  "networkCheckLimit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Max LinkedIn network checks per day"
+                  },
+                  "withdrawInvitationLimit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Max LinkedIn invitation withdrawals per day"
+                  },
+                  "likeLastPostLimit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Max LinkedIn last-post likes per day"
+                  },
+                  "endorseLimit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Max LinkedIn endorsements per day"
+                  },
+                  "commentLastPostRetrieveLimit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Max LinkedIn last-post retrievals per day"
+                  },
+                  "commentLastPostSendLimit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Max LinkedIn last-post comments per day"
+                  },
+                  "inviteRampUp": {
+                    "type": "integer",
+                    "nullable": true,
+                    "minimum": 1,
+                    "description": "Invite ramp-up: how much the daily invitation limit grows each day until it reaches inviteLimit. null turns the ramp-up off; omit it to keep it as is"
                   }
                 }
               },
               "example": {
-                "dailyInMailLimit": 8,
-                "dailyInviteLimit": 25
+                "inviteLimit": 35,
+                "inMailLimit": 8,
+                "inviteRampUp": 3
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "All four daily LinkedIn limits of the team member after the update",
+            "description": "Every daily LinkedIn limit and the invite ramp-up of the team member after the update",
             "content": {
               "application/json": {
                 "schema": {
@@ -27224,25 +27307,58 @@
                           "type": "string",
                           "description": "ID of the team member (usr_xxx)"
                         },
-                        "dailyInviteLimit": {
+                        "followLimit": {
+                          "type": "integer",
+                          "description": "Max LinkedIn follows per day"
+                        },
+                        "inviteLimit": {
                           "type": "integer",
                           "description": "Max LinkedIn invitations per day"
                         },
-                        "dailySendLimit": {
+                        "sendLimit": {
                           "type": "integer",
                           "description": "Max LinkedIn direct messages per day"
                         },
-                        "dailyVisitLimit": {
+                        "visitLimit": {
                           "type": "integer",
                           "description": "Max LinkedIn profile visits per day"
                         },
-                        "dailyInMailLimit": {
+                        "inMailLimit": {
                           "type": "integer",
                           "description": "Max LinkedIn InMails per day: a daily throttle, the monthly InMail credits of the LinkedIn plan stay the hard cap"
                         },
+                        "networkCheckLimit": {
+                          "type": "integer",
+                          "description": "Max LinkedIn network checks per day"
+                        },
+                        "withdrawInvitationLimit": {
+                          "type": "integer",
+                          "description": "Max LinkedIn invitation withdrawals per day"
+                        },
+                        "likeLastPostLimit": {
+                          "type": "integer",
+                          "description": "Max LinkedIn last-post likes per day"
+                        },
+                        "endorseLimit": {
+                          "type": "integer",
+                          "description": "Max LinkedIn endorsements per day"
+                        },
+                        "commentLastPostRetrieveLimit": {
+                          "type": "integer",
+                          "description": "Max LinkedIn last-post retrievals per day"
+                        },
+                        "commentLastPostSendLimit": {
+                          "type": "integer",
+                          "description": "Max LinkedIn last-post comments per day"
+                        },
+                        "inviteRampUp": {
+                          "type": "integer",
+                          "nullable": true,
+                          "description": "Invite ramp-up: how much the daily invitation limit grows each day until it reaches inviteLimit; null when the ramp-up is off"
+                        },
                         "warning": {
                           "type": "string",
-                          "description": "Present when a stored value is above its recommended maximum; LinkedIn may restrict the account"
+                          "description": "Present when a value written is above its recommended daily maximum; names each such field with its maximum. The value is stored anyway, LinkedIn may restrict the account"
                         }
                       }
                     }
@@ -27251,22 +27367,31 @@
                 "example": {
                   "data": {
                     "userId": "usr_Q7mT2vLx9KpR4nWbZ",
-                    "dailyInviteLimit": 25,
-                    "dailySendLimit": 30,
-                    "dailyVisitLimit": 30,
-                    "dailyInMailLimit": 8
+                    "followLimit": 20,
+                    "inviteLimit": 35,
+                    "sendLimit": 30,
+                    "visitLimit": 30,
+                    "inMailLimit": 8,
+                    "networkCheckLimit": 30,
+                    "withdrawInvitationLimit": 30,
+                    "likeLastPostLimit": 30,
+                    "endorseLimit": 20,
+                    "commentLastPostRetrieveLimit": 20,
+                    "commentLastPostSendLimit": 20,
+                    "inviteRampUp": 3,
+                    "warning": "Above the recommended daily maximum: inviteLimit (30); LinkedIn may restrict the account"
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Malformed userId, invalid body (unknown field, non-positive or non-integer value), or no limit provided",
+            "description": "Malformed userId, invalid body (unknown field, non-positive or non-integer value), or nothing to update (`LINKEDIN_LIMITS_NOTHING_TO_UPDATE`)",
             "content": {
               "application/json": {
                 "example": {
-                  "error": "Provide at least one of dailyInviteLimit, dailySendLimit, dailyVisitLimit, dailyInMailLimit",
-                  "code": "LINKEDIN_LIMITS_NOTHING_TO_UPDATE"
+                  "error": "Send only LinkedIn limits named like GET /api/users/:userId (e.g. inviteLimit, inMailLimit), as positive integers",
+                  "code": "LINKEDIN_LIMITS_INVALID_INPUT"
                 }
               }
             }
@@ -27309,6 +27434,17 @@
           },
           "405": {
             "description": "Method other than PATCH"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Internal error",
+                  "code": "INTERNAL_ERROR"
+                }
+              }
+            }
           }
         }
       }
