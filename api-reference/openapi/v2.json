@@ -2919,12 +2919,6 @@
             "description": "Date the saved search was created",
             "example": "2026-09-14T08:30:00.000Z"
           },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Date of the last modification",
-            "example": "2026-09-14T08:30:00.000Z"
-          },
           "lastResultsCount": {
             "type": "number",
             "description": "Number of results the saved search returned the last time it was saved or run",
@@ -15448,7 +15442,6 @@
                         }
                       ],
                       "createdAt": "2026-09-14T08:30:00.000Z",
-                      "updatedAt": "2026-09-14T08:30:00.000Z",
                       "lastResultsCount": 1240,
                       "lastResultsCountUpdatedAt": "2026-09-14T08:30:00.000Z"
                     }
@@ -15738,7 +15731,6 @@
                       }
                     ],
                     "createdAt": "2026-09-14T08:30:00.000Z",
-                    "updatedAt": "2026-09-14T08:30:00.000Z",
                     "lastResultsCount": 1240,
                     "lastResultsCountUpdatedAt": "2026-09-14T08:30:00.000Z"
                   }
@@ -15904,7 +15896,6 @@
                       }
                     ],
                     "createdAt": "2026-09-14T08:30:00.000Z",
-                    "updatedAt": "2026-09-15T10:00:00.000Z",
                     "lastResultsCount": 1240,
                     "lastResultsCountUpdatedAt": "2026-09-14T08:30:00.000Z"
                   }
