@@ -238,6 +238,7 @@
                 "expanded": false,
                 "pages": [
                   "api-reference/endpoints/companies/upsert-company",
+                  "api-reference/endpoints/companies/get-company",
                   "api-reference/endpoints/companies/get-many-companies",
                   "api-reference/endpoints/companies/delete-company",
                   "api-reference/endpoints/companies/merge-companies",
