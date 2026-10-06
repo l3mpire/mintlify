@@ -423,7 +423,8 @@
                   "api-reference/endpoints/lemwarm/start-lemwarm",
                   "api-reference/endpoints/lemwarm/pause-lemwarm",
                   "api-reference/endpoints/lemwarm/get-lemwarm-settings",
-                  "api-reference/endpoints/lemwarm/update-lemwarm-settings"
+                  "api-reference/endpoints/lemwarm/update-lemwarm-settings",
+                  "api-reference/endpoints/lemwarm/get-warmup-errors"
                 ]
               },
               {
@@ -490,6 +491,7 @@
               "api-reference/objects-definitions/crm-filter",
               "api-reference/objects-definitions/company",
               "api-reference/objects-definitions/lemwarm",
+              "api-reference/objects-definitions/warmup-error",
               "api-reference/objects-definitions/campaign-status",
               "api-reference/objects-definitions/channel",
               "api-reference/objects-definitions/sequence",
