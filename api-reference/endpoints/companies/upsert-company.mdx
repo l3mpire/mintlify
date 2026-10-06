@@ -25,6 +25,8 @@ If a company with the same `domain`, `linkedinUrl`, or `linkedinUrlSalesNav` alr
 
 Without `companyId`, `name` is required together with at least one identifier: `domain`, `linkedinUrl` or `linkedinUrlSalesNav`. A company known only by its LinkedIn page can be created with `name` and `linkedinUrl`; a name alone is refused with `400 MISSING_REQUIRED_FIELD`.
 
+A `domain` that designates no single company is not stored: a personal email provider (`gmail.com`) or a platform host (`facebook.com`, `linkedin.com`, a bare `wordpress.com`). The company is still written, without it, and `warnings` carries a `COMPANY_DOMAIN_IGNORED` entry naming the domain in `params.companyDomain`. A site hosted on a site builder keeps its own address (`acme.wordpress.com`).
+
 When `companyId` is provided, the company is matched by its ID directly. `name` and the identifiers are not required and are not used for matching (they are stored as data if provided).
 
 <Warning>

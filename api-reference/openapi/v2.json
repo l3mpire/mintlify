@@ -12539,7 +12539,7 @@
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "**The company was NOT written** — `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the write failed). The lead itself went through in every case.\n\n**Values left unchanged** — `FIELDS_KEPT`: what the update strategy kept, named in `params.fields` (company fields prefixed with `company`)."
+                            "description": "**The company was NOT written**: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the write failed). The lead itself went through in every case.\n\n**The company domain was dropped**: `COMPANY_DOMAIN_IGNORED`, `companyDomain` is a personal email provider or a platform host shared by many companies (`gmail.com`, a `facebook.com` page, a bare `wordpress.com`). The lead and its company went through without it; `params.companyDomain` names it.\n\n**Values left unchanged**: `FIELDS_KEPT`, what the update strategy kept, named in `params.fields` (company fields prefixed with `company`)."
                           },
                           "message": {
                             "type": "string"
@@ -12824,7 +12824,7 @@
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "**The company WAS written** — `company-fields-write-company-record`: the `company`-prefixed keys you sent went to the company record the lead is linked to, shared by every lead linked to it, not to the lead alone. `params.fields` names them.\n\n**The company was NOT written** — `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the write failed). The lead itself went through in every case.\n\n**Values left unchanged** — `FIELDS_KEPT`: what the update strategy kept, named in `params.fields` (company fields prefixed with `company`)."
+                            "description": "**The company WAS written**: `company-fields-write-company-record`, the `company`-prefixed keys you sent went to the company record the lead is linked to, shared by every lead linked to it, not to the lead alone. `params.fields` names them.\n\n**The company was NOT written**: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the write failed). The lead itself went through in every case.\n\n**The company domain was dropped**: `COMPANY_DOMAIN_IGNORED`, `companyDomain` is a personal email provider or a platform host shared by many companies (`gmail.com`, a `facebook.com` page, a bare `wordpress.com`). The lead and its company went through without it; `params.companyDomain` names it.\n\n**Values left unchanged**: `FIELDS_KEPT`, what the update strategy kept, named in `params.fields` (company fields prefixed with `company`)."
                           },
                           "message": {
                             "type": "string"
@@ -14402,7 +14402,7 @@
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "**The company WAS written** — `company-fields-write-company-record`: the `company`-prefixed keys you sent went to the company record the lead is linked to, shared by every lead linked to it, not to the lead alone. `params.fields` names them.\n\n**The company was NOT written** — `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the write failed). The lead itself went through in every case."
+                            "description": "**The company WAS written**: `company-fields-write-company-record`, the `company`-prefixed keys you sent went to the company record the lead is linked to, shared by every lead linked to it, not to the lead alone. `params.fields` names them.\n\n**The company was NOT written**: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the write failed). The lead itself went through in every case.\n\n**The company domain was dropped**: `COMPANY_DOMAIN_IGNORED`, `companyDomain` is a personal email provider or a platform host shared by many companies (`gmail.com`, a `facebook.com` page, a bare `wordpress.com`). The lead and its company went through without it; `params.companyDomain` names it."
                           },
                           "message": {
                             "type": "string"
@@ -14527,7 +14527,7 @@
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "**The company WAS written** — `company-fields-write-company-record`: the `company`-prefixed keys you sent went to the company record the lead is linked to, shared by every lead linked to it, not to the lead alone. `params.fields` names them.\n\n**The company was NOT written** — `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the write failed). The lead itself went through in every case."
+                            "description": "**The company WAS written**: `company-fields-write-company-record`, the `company`-prefixed keys you sent went to the company record the lead is linked to, shared by every lead linked to it, not to the lead alone. `params.fields` names them.\n\n**The company was NOT written**: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the write failed). The lead itself went through in every case.\n\n**The company domain was dropped**: `COMPANY_DOMAIN_IGNORED`, `companyDomain` is a personal email provider or a platform host shared by many companies (`gmail.com`, a `facebook.com` page, a bare `wordpress.com`). The lead and its company went through without it; `params.companyDomain` names it."
                           },
                           "message": {
                             "type": "string"
@@ -22562,7 +22562,7 @@
                   },
                   "domain": {
                     "type": "string",
-                    "description": "Company website domain (e.g. `lemlist.com`). Used as a unique key for upsert matching. Without `companyId`, at least one identifier is required among `domain`, `linkedinUrl` and `linkedinUrlSalesNav`."
+                    "description": "Company website domain (e.g. `lemlist.com`). Used as a unique key for upsert matching. Without `companyId`, at least one identifier is required among `domain`, `linkedinUrl` and `linkedinUrlSalesNav`. A personal email provider or a platform host (`gmail.com`, `facebook.com`, `linkedin.com`, a bare `wordpress.com`) is not stored: the company is written without it and `warnings` reports `COMPANY_DOMAIN_IGNORED`."
                   },
                   "linkedinUrl": {
                     "type": "string",
@@ -22659,7 +22659,7 @@
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member); `FIELDS_KEPT` (values the update strategy kept)."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member); `FIELDS_KEPT` (values the update strategy kept); `COMPANY_DOMAIN_IGNORED` (`domain` is a personal email provider or a platform host such as `gmail.com` or a `facebook.com` page: the company is written without it, `params.companyDomain` names it)."
                           },
                           "message": {
                             "type": "string"
@@ -22777,7 +22777,7 @@
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member); `FIELDS_KEPT` (values the update strategy kept)."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`companyOwner` matches no team member); `FIELDS_KEPT` (values the update strategy kept); `COMPANY_DOMAIN_IGNORED` (`domain` is a personal email provider or a platform host such as `gmail.com` or a `facebook.com` page: the company is written without it, `params.companyDomain` names it)."
                           },
                           "message": {
                             "type": "string"
