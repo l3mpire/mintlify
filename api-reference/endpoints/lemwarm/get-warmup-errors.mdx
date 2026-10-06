@@ -11,7 +11,3 @@ Only mailboxes with a recorded cause are returned: a disconnected mailbox, a DNS
 
 Once the cause is fixed, resume warmup with [Start lemwarm](/api-reference/endpoints/lemwarm/start-lemwarm), using `mailboxId` as the `userMailboxId`.
 </Note>
-
-<Warning>
-This endpoint is in closed beta. It answers `403` with the code `BETA_NOT_ENABLED` unless the warmup error guidance beta is enabled for your team.
-</Warning>
