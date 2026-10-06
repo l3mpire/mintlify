@@ -3297,6 +3297,150 @@
           }
         }
       },
+      "WarmupErrorsResponse": {
+        "type": "object",
+        "description": "Warmup errors of the team.",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WarmupError"
+            }
+          }
+        },
+        "required": [
+          "errors"
+        ]
+      },
+      "WarmupError": {
+        "type": "object",
+        "description": "A mailbox kept out of warmup, with the cause and the fix.",
+        "properties": {
+          "mailboxId": {
+            "type": "string",
+            "description": "The user mailbox id. Use it as `userMailboxId` to resume warmup with [Start lemwarm](/api-reference/endpoints/lemwarm/start-lemwarm).",
+            "example": "usm_ssaV1cwVs8iEW9IYO"
+          },
+          "userId": {
+            "type": "string",
+            "description": "The owner of the mailbox.",
+            "example": "usr_P0w2DKRAQZitHjkdV"
+          },
+          "email": {
+            "type": "string",
+            "description": "The sending address of the mailbox.",
+            "example": "john@example.com"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "paused",
+              "warning"
+            ],
+            "description": "`paused`: warmup is stopped until the cause is fixed. `warning`: temporary lock, warmup resumes on its own."
+          },
+          "since": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the cause was recorded. Absent when the state carries no date (DNS lock)."
+          },
+          "key": {
+            "type": "string",
+            "enum": [
+              "ERR_REP_10001",
+              "ERR_REP_10002",
+              "ERR_REP_10003",
+              "ERR_REP_10004",
+              "ERR_REP_10005",
+              "ERR_REP_10006",
+              "ERR_REP_10008",
+              "ERR_REP_10009",
+              "ERR_REP_10010",
+              "ERR_SETUP_10001",
+              "ERR_SETUP_10002",
+              "ERR_SETUP_10003",
+              "ERR_SETUP_10004",
+              "ERR_SETUP_10005",
+              "ERR_SETUP_10006",
+              "ERR_SETUP_10007",
+              "ERR_SETUP_10008",
+              "ERR_SETUP_10009",
+              "ERR_SETUP_10010",
+              "ERR_SETUP_10011",
+              "ERR_SETUP_10012",
+              "ERR_SETUP_10013",
+              "ERR_SETUP_10014",
+              "ERR_SETUP_10015",
+              "ERR_SETUP_10016",
+              "ERR_SETUP_10017",
+              "ERR_SETUP_10018",
+              "ERR_SETUP_10019",
+              "ERR_SETUP_10020",
+              "ERR_PROV_10002",
+              "ERR_PROV_10003",
+              "ERR_PROV_10004",
+              "ERR_PROV_10005",
+              "ERR_PROV_10006",
+              "ERR_PROV_10007",
+              "ERR_PROV_10008",
+              "ERR_PROV_10009",
+              "ERR_PROV_10010",
+              "MAILBOX_DISCONNECTED",
+              "DNS_LOCKED",
+              "EMAIL_FAILED",
+              "HIGH_SPAM_LOCK"
+            ],
+            "description": "The catalogued cause. Absent when the stored code is not catalogued yet; `code` then holds the raw value."
+          },
+          "code": {
+            "type": "string",
+            "description": "The raw code shown in the lemlist notification, for support."
+          },
+          "family": {
+            "type": "string",
+            "enum": [
+              "disconnected",
+              "setup",
+              "reputation",
+              "provider",
+              "unknown"
+            ],
+            "description": "Group of causes."
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "reconnect",
+              "checkTechSetup",
+              "resume"
+            ],
+            "description": "The one-click fix in the app: reconnect the mailbox, run the technical setup audit, or resume warmup. Absent when only support can help."
+          },
+          "title": {
+            "type": "string",
+            "description": "Short description of the cause."
+          },
+          "whatHappened": {
+            "type": "string",
+            "description": "What lemwarm observed."
+          },
+          "whatToCheck": {
+            "type": "string",
+            "description": "What to verify before resuming warmup."
+          }
+        },
+        "required": [
+          "mailboxId",
+          "userId",
+          "email",
+          "state",
+          "code",
+          "family",
+          "title",
+          "whatHappened",
+          "whatToCheck"
+        ]
+      },
       "LemwarmSettings": {
         "type": "object",
         "description": "Lemwarm configuration for a mailbox.",
@@ -22077,6 +22221,90 @@
           },
           "401": {
             "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/lemwarm/errors": {
+      "get": {
+        "summary": "Get warmup errors",
+        "description": "Lists the mailboxes of your team that lemwarm keeps out of warmup, with the cause and the fix for each one. Paused mailboxes come first, then warnings (temporary locks), newest first. Healthy or manually paused mailboxes are not returned.",
+        "tags": [
+          "lemwarm"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/WarmupErrorsResponse"
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "errors": [
+                      {
+                        "mailboxId": "usm_ssaV1cwVs8iEW9IYO",
+                        "userId": "usr_P0w2DKRAQZitHjkdV",
+                        "email": "john@example.com",
+                        "state": "paused",
+                        "since": "2025-04-09T13:34:43.998Z",
+                        "key": "ERR_REP_10001",
+                        "code": "ERR_REP_10001",
+                        "family": "reputation",
+                        "action": "resume",
+                        "title": "Low sender reputation on john@example.com",
+                        "whatHappened": "Several warmup emails bounced because recipient email providers rated the reputation of this mailbox too low. lemwarm paused warmup to protect your domain.",
+                        "whatToCheck": "Your recent sending volume, bounce rate and content on this mailbox. Lower the warmup volume before resuming."
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "403": {
+            "description": "`BETA_NOT_ENABLED` - the warmup error guidance beta is not enabled for this team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "betaNotEnabled": {
+                    "value": {
+                      "error": "Beta is not enabled",
+                      "code": "BETA_NOT_ENABLED"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "`ROUTE_BAD_METHOD` - only GET is allowed"
           }
         }
       }
