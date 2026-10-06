@@ -22,7 +22,7 @@
     },
     {
       "name": "Enrichment Waterfalls",
-      "description": "Control which data providers lemlist calls when enriching a contact, and in which order.\n\nA waterfall is an ordered list of providers for one enrichment `type` (`email` or `phone`). Providers are tried one after the other until one returns a result.\n\nEvery team has exactly one default waterfall per type (`isDefault: true`). While its `editor` is `lemlist` it follows the lemlist behaviour: providers you connected with your own API key are tried first, then internal providers in a random order. Once a team member edits its provider list, `editor` becomes that user's id and the list is followed as is; resetting it hands it back to `lemlist`.\n\nCustom waterfalls (`isDefault: false`) carry `conditions` on the contact being enriched, keyed by contact property; every key present must match. When a contact is enriched, lemlist runs a single waterfall: the custom waterfall of the requested type whose conditions match the contact, or the default waterfall when none does. If several match, the one with the most condition keys wins, then the most recently updated. Only that waterfall runs; when it finds nothing, the enrichment ends without falling back to another one."
+      "description": "Control which data providers lemlist calls when enriching a contact, and in which order.\n\nA waterfall is an ordered list of providers for one enrichment `type` (`email` or `phone`). Providers are tried one after the other until one returns a result.\n\nEvery team has exactly one default waterfall per type (`isDefault: true`). While its `editor` is `lemlist` it follows the lemlist behaviour: providers you connected with your own API key are tried first, then internal providers in a random order. Once a team member edits its provider list, `editor` becomes that user's id and the list is followed as is; resetting it hands it back to `lemlist`.\n\nCustom waterfalls (`isDefault: false`) target a set of countries through `conditions.country.in`. A country belongs to at most one custom waterfall per type, and a type holds at most 20 waterfalls, the default included. When a contact is enriched, lemlist resolves its country from its `location` — free text such as `Paris, France` or `Berlin Area, Germany`, sent as `input.location` on the bulk enrichment endpoint or read from the `location` field of a contact — and runs a single waterfall: the custom waterfall of the requested type listing that country, or the default waterfall when there is no location, no recognizable country, or no custom waterfall for it. The choice is made once, when the enrichment is requested; data found during the enrichment does not change it. Only that waterfall runs; when it finds nothing, the enrichment ends without falling back to another one."
     }
   ],
   "components": {
@@ -5010,29 +5010,24 @@
       },
       "EnrichmentWaterfallConditions": {
         "type": "object",
-        "description": "Conditions on the contact being enriched, keyed by contact property. Every key present must match for the waterfall to run. New keys will be added over time; unknown keys are rejected.",
+        "description": "Which contacts a custom waterfall serves. Only `country` is supported for now; unknown keys are rejected.",
         "additionalProperties": false,
+        "required": ["country"],
         "properties": {
           "country": {
             "type": "object",
-            "description": "The contact's resolved country (from its `location`, `country` or company data), as ISO 3166-1 alpha-2 codes.",
+            "description": "The contact's country, resolved from its free-text `location` at request time.",
+            "required": ["in"],
             "properties": {
               "in": {
                 "type": "array",
-                "description": "Countries that match. Unique.",
+                "description": "ISO 3166-1 alpha-2 codes the waterfall serves. At least one; lower-case codes are accepted and stored upper-case. A country may belong to only one custom waterfall per type.",
+                "minItems": 1,
                 "items": {
                   "type": "string",
-                  "pattern": "^[A-Z]{2}$"
+                  "pattern": "^[A-Za-z]{2}$"
                 },
                 "example": ["FR", "DE"]
-              },
-              "out": {
-                "type": "array",
-                "description": "Countries that exclude the contact. Unique, disjoint from `in`. At least one of `in` or `out` must be non-empty.",
-                "items": {
-                  "type": "string",
-                  "pattern": "^[A-Z]{2}$"
-                }
               }
             }
           }
@@ -5107,7 +5102,7 @@
           },
           "isDefault": {
             "type": "boolean",
-            "description": "`true` for the team's default waterfall of this type (one per type, cannot be created or deleted). `false` for a custom waterfall."
+            "description": "`true` for the team's default waterfall of this type (one per type, cannot be created or deleted, only reset). `false` for a custom waterfall, which you create and delete."
           },
           "editor": {
             "type": "string",
@@ -5115,7 +5110,7 @@
             "example": "lemlist"
           },
           "conditions": {
-            "description": "Only on custom waterfalls; a default waterfall applies to every contact not matched by a custom one.",
+            "description": "Only on custom waterfalls: the countries it serves. A default waterfall has no conditions and applies to every contact not served by a custom one.",
             "allOf": [
               {
                 "$ref": "#/components/schemas/EnrichmentWaterfallConditions"
@@ -5143,6 +5138,32 @@
           }
         }
       },
+      "EnrichmentWaterfallCreateRequest": {
+        "type": "object",
+        "required": ["type", "name", "conditions", "providers"],
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/EnrichmentWaterfallType"
+          },
+          "name": {
+            "type": "string",
+            "description": "1 to 100 characters, unique within the type (case-insensitive). The default waterfall names are reserved.",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "conditions": {
+            "$ref": "#/components/schemas/EnrichmentWaterfallConditions"
+          },
+          "providers": {
+            "type": "array",
+            "description": "Execution order, may be partial; providers left out are appended, disabled. At least one must be enabled.",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/EnrichmentWaterfallProvider"
+            }
+          }
+        }
+      },
       "EnrichmentWaterfallUpdateRequest": {
         "type": "object",
         "description": "At least one property is required.",
@@ -5155,11 +5176,19 @@
           },
           "providers": {
             "type": "array",
-            "description": "Replaces the whole order, may be partial; left-out providers are appended, disabled.",
+            "description": "Replaces the whole order, may be partial; left-out providers are appended, disabled. At least one must be enabled.",
             "minItems": 1,
             "items": {
               "$ref": "#/components/schemas/EnrichmentWaterfallProvider"
             }
+          },
+          "conditions": {
+            "description": "Custom waterfalls only; replaces the whole country list. Rejected on a default waterfall.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EnrichmentWaterfallConditions"
+              }
+            ]
           }
         }
       },
@@ -26756,6 +26785,16 @@
             }
           },
           {
+            "name": "location",
+            "in": "query",
+            "required": false,
+            "description": "Free-text location of the person, e.g. `Paris, France`. Its country picks the enrichment waterfall of `findEmail` and `findPhone`: a custom waterfall listing that country, or the default one. Not sent to providers.",
+            "example": "Paris, France",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "findPhone",
             "in": "query",
             "required": false,
@@ -26882,6 +26921,11 @@
                           "type": "string",
                           "description": "The job title of the person. Optional hint that improves the find rate when matching the right person.",
                           "example": "Marketing Manager"
+                        },
+                        "location": {
+                          "type": "string",
+                          "description": "Free-text location of the person, e.g. `Paris, France`. Its country picks the enrichment waterfall: a custom waterfall listing that country, or the default one. Not sent to providers.",
+                          "example": "Paris, France"
                         }
                       }
                     },
@@ -27007,7 +27051,8 @@
                         "companyDomain": "example.com",
                         "firstName": "John",
                         "lastName": "Doe",
-                        "jobTitle": "Marketing Manager"
+                        "jobTitle": "Marketing Manager",
+                        "location": "Paris, France"
                       },
                       "enrichmentRequests": [
                         "find_email",
@@ -31612,6 +31657,129 @@
             "$ref": "#/components/responses/EnrichmentWaterfallInternalError"
           }
         }
+      },
+      "post": {
+        "summary": "Create Enrichment Waterfall",
+        "description": "Creates a custom waterfall serving the contacts whose country is in `conditions.country.in`. A country may belong to only one custom waterfall per `type`, names are unique within a type, and a type holds at most 20 waterfalls (default included).\n\n`providers` is the execution order; providers you leave out are appended, disabled. Provider ids come from `GET /enrichments/providers`; an external provider must be connected before it can be enabled.\n\nThe stored waterfall is returned.",
+        "operationId": "createEnrichmentWaterfall",
+        "tags": ["Enrichment Waterfalls"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnrichmentWaterfallCreateRequest"
+              },
+              "example": {
+                "type": "email",
+                "name": "Europe email waterfall",
+                "conditions": {
+                  "country": {
+                    "in": ["FR", "DE", "ES", "IT", "GB"]
+                  }
+                },
+                "providers": [
+                  {
+                    "id": "prospeo",
+                    "enabled": true
+                  },
+                  {
+                    "id": "lusha",
+                    "enabled": true
+                  },
+                  {
+                    "id": "findymail",
+                    "enabled": true
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentWaterfallResponse"
+                },
+                "example": {
+                  "data": {
+                    "id": "ecw_ExAmPlE1234567890a",
+                    "type": "email",
+                    "name": "Europe email waterfall",
+                    "isDefault": false,
+                    "editor": "usr_ExAmPlE1234567890a",
+                    "conditions": {
+                      "country": {
+                        "in": ["FR", "DE", "ES", "IT", "GB"]
+                      }
+                    },
+                    "providers": [
+                      {
+                        "id": "prospeo",
+                        "order": 1,
+                        "enabled": true
+                      },
+                      {
+                        "id": "lusha",
+                        "order": 2,
+                        "enabled": true
+                      },
+                      {
+                        "id": "findymail",
+                        "order": 3,
+                        "enabled": true
+                      },
+                      {
+                        "id": "datagma",
+                        "order": 4,
+                        "enabled": false
+                      }
+                    ],
+                    "createdAt": "2026-09-10T14:03:00.000Z",
+                    "updatedAt": "2026-09-10T14:03:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. `code` is one of `ROUTE_BAD_REQUEST` (malformed body), `ENRICHMENT_WATERFALL_INVALID_TYPE`, `ENRICHMENT_WATERFALL_INVALID_COUNTRY`, `ENRICHMENT_WATERFALL_CUSTOM_WITHOUT_CONDITION`, `ENRICHMENT_WATERFALL_NO_ENABLED_PROVIDER`, `ENRICHMENT_WATERFALL_UNKNOWN_PROVIDER`, `ENRICHMENT_WATERFALL_DUPLICATE_PROVIDER`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentWaterfallError"
+                },
+                "example": {
+                  "error": "Unknown country \"XX\"",
+                  "code": "ENRICHMENT_WATERFALL_INVALID_COUNTRY"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/EnrichmentWaterfallUnauthorized"
+          },
+          "409": {
+            "description": "Conflict with another waterfall of the type. `code` is one of `ENRICHMENT_WATERFALL_COUNTRY_CONFLICT` (a country already belongs to another custom waterfall), `ENRICHMENT_WATERFALL_DUPLICATE_NAME`, `ENRICHMENT_WATERFALL_LIMIT_REACHED`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentWaterfallError"
+                },
+                "example": {
+                  "error": "France is already served by \"Europe email waterfall\"",
+                  "code": "ENRICHMENT_WATERFALL_COUNTRY_CONFLICT"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/EnrichmentWaterfallInternalError"
+          }
+        }
       }
     },
     "/v2/enrichments/waterfalls/{waterfallId}": {
@@ -31694,7 +31862,7 @@
       },
       "patch": {
         "summary": "Update Enrichment Waterfall",
-        "description": "Updates the `name` or `providers` of a waterfall. Only the fields present in the body change; `type` and `isDefault` cannot change, and `conditions` is rejected with a `400`.\n\nWhen `providers` is sent it replaces the whole order; providers you leave out are appended, disabled. On a default waterfall this takes over from the lemlist order: `editor` becomes your user id and the list is followed as is; use the reset endpoint to hand it back to lemlist.\n\nThe full stored waterfall is returned.",
+        "description": "Updates the `name`, `providers` or `conditions` of a waterfall. Only the fields present in the body change; `type` and `isDefault` cannot change.\n\nWhen `providers` is sent it replaces the whole order; providers you leave out are appended, disabled. On a default waterfall this takes over from the lemlist order: `editor` becomes your user id and the list is followed as is; use the reset endpoint to hand it back to lemlist.\n\n`conditions` is accepted on custom waterfalls only and replaces the whole country list; a default waterfall answers `400 ENRICHMENT_WATERFALL_DEFAULT_HAS_NO_CONDITION`.\n\nThe full stored waterfall is returned.",
         "operationId": "updateEnrichmentWaterfall",
         "tags": ["Enrichment Waterfalls"],
         "requestBody": {
@@ -31773,7 +31941,7 @@
             }
           },
           "400": {
-              "description": "Validation error. `code` is one of `ENRICHMENT_WATERFALL_INVALID_NAME`, `ENRICHMENT_WATERFALL_UNKNOWN_PROVIDER`, `ENRICHMENT_WATERFALL_DUPLICATE_PROVIDER`, `ENRICHMENT_WATERFALL_PROVIDER_NOT_CONNECTED`, `ENRICHMENT_WATERFALL_EMPTY_UPDATE`.",
+            "description": "Validation error. `code` is one of `ROUTE_BAD_REQUEST` (malformed body or invalid `name`), `ENRICHMENT_WATERFALL_EMPTY_UPDATE`, `ENRICHMENT_WATERFALL_UNKNOWN_PROVIDER`, `ENRICHMENT_WATERFALL_DUPLICATE_PROVIDER`, `ENRICHMENT_WATERFALL_NO_ENABLED_PROVIDER`, `ENRICHMENT_WATERFALL_INVALID_COUNTRY`, `ENRICHMENT_WATERFALL_CUSTOM_WITHOUT_CONDITION`, `ENRICHMENT_WATERFALL_DEFAULT_HAS_NO_CONDITION`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -31782,6 +31950,82 @@
                 "example": {
                   "error": "Unknown provider \"hunter\" for type \"email\"",
                   "code": "ENRICHMENT_WATERFALL_UNKNOWN_PROVIDER"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict with another waterfall of the type. `code` is `ENRICHMENT_WATERFALL_COUNTRY_CONFLICT` (a country already belongs to another custom waterfall) or `ENRICHMENT_WATERFALL_DUPLICATE_NAME`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentWaterfallError"
+                },
+                "example": {
+                  "error": "France is already served by \"Europe email waterfall\"",
+                  "code": "ENRICHMENT_WATERFALL_COUNTRY_CONFLICT"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/EnrichmentWaterfallUnauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/EnrichmentWaterfallNotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/EnrichmentWaterfallInternalError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Enrichment Waterfall",
+        "description": "Deletes a custom waterfall. The contacts of its countries are served by the default waterfall of the type from then on. Enrichments already requested keep the path they were given.\n\nDefault waterfalls cannot be deleted; use the reset endpoint to hand one back to lemlist.",
+        "operationId": "deleteEnrichmentWaterfall",
+        "tags": ["Enrichment Waterfalls"],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "ecw_ExAmPlE1234567890a"
+                        },
+                        "deleted": {
+                          "type": "boolean",
+                          "example": true
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "id": "ecw_ExAmPlE1234567890a",
+                    "deleted": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The waterfall is a default one",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrichmentWaterfallError"
+                },
+                "example": {
+                  "error": "Default waterfalls cannot be deleted",
+                  "code": "ENRICHMENT_WATERFALL_CANNOT_DELETE_DEFAULT"
                 }
               }
             }
