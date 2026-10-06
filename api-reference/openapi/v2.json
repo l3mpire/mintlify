@@ -22046,32 +22046,6 @@
               }
             }
           },
-          "403": {
-            "description": "`BETA_NOT_ENABLED` - the warmup error guidance beta is not enabled for this team",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    },
-                    "code": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "examples": {
-                  "betaNotEnabled": {
-                    "value": {
-                      "error": "Beta is not enabled",
-                      "code": "BETA_NOT_ENABLED"
-                    }
-                  }
-                }
-              }
-            }
-          },
           "405": {
             "description": "`ROUTE_BAD_METHOD` - only GET is allowed"
           }
