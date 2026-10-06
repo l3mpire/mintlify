@@ -1,0 +1,14 @@
+---
+title: Sender picture
+openapi-schema: SenderPictureMailbox
+---
+
+The sender picture is the avatar recipients see next to the emails a mailbox sends. lemlist pushes each user's lemlist profile picture onto the Google Workspace and Microsoft 365 mailboxes bought through lemlist, so every mailbox shows a face instead of a grey placeholder.
+
+A mailbox is addressed by its `mailboxId` (`dem_...`), the id of the purchased mailbox. Mailboxes connected by hand (not bought through lemlist) read `not-supported`: lemlist holds no admin access to them.
+
+Use [Get Sender Picture Status](/api-reference/endpoints/sender-picture/get-sender-picture-status) to see where each mailbox stands, and [Sync Sender Picture](/api-reference/endpoints/sender-picture/sync-sender-picture) to queue a push.
+
+<Note>
+Changing a lemlist profile picture does not push it on its own: call Sync Sender Picture, or use the sync buttons in the mailbox settings. A mailbox that reads `synced` then goes back to `not-synced` until the new picture is pushed.
+</Note>
