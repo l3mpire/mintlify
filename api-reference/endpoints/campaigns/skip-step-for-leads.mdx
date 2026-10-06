@@ -1,0 +1,20 @@
+---
+openapi: post /campaigns/{campaignId}/steps/{stepId}/skip-for-leads
+description: Skips one step of a running campaign for a list of leads.
+---
+
+Send up to 100 leads per call, each as a lead id or an email. For each lead the
+step never runs: the lead moves on to the next step after that step's own
+delay. Leads that already ran the step are unaffected — nothing already sent
+changes.
+
+The call answers per item and never fails on one: a lead that already had the
+step skipped answers `already_skipped`, an item that matches no lead of the
+campaign answers `not_found`. Only a request that must be fixed as a whole is
+refused, such as more than 100 items (`400`, never truncated) or a condition
+step (`422`).
+
+A skip cannot be undone, here or in the lemlist app. To skip a step for every
+lead of the campaign, including leads added later, use
+[Skip Step for Everyone](/api-reference/endpoints/campaigns/skip-step-for-everyone)
+instead.
