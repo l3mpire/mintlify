@@ -53,6 +53,7 @@ from a transport failure.
 | `linkedinVisit` | `delay` | Simulates a profile visit on LinkedIn |
 | `linkedinInvite` | `message`, `altMessage`, `images`, `videos`, `delay` | Sends a LinkedIn invite with message |
 | `linkedinSend` | `message`, `altMessage`, `altMessagePremium`, `images`, `videos`, `delay` | Sends a LinkedIn message |
+| `linkedinInMail` | `subject`, `message`, `delay` | Sends a LinkedIn InMail, from a Premium or Sales Navigator sender only |
 | `linkedinVoiceNote` | `message`, `altMessage`, `delay`, `recordMode` | Sends a LinkedIn voice note. Audio is either recorded manually or AI-generated from a text template, depending on `recordMode` |
 | `linkedinFollow` | `delay` | Follows the lead on LinkedIn |
 | `linkedinLikeLastPost` | `delay` | Likes the lead's most recent LinkedIn post |
@@ -70,8 +71,8 @@ Only include the fields you want to update. Required fields are not enforced her
 
 | Field | Type | Applies To | Description |
 | --- | --- | --- | --- |
-| `subject` | string | `email` | Email subject line. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
-| `message` | string | `email`, `linkedin*`, `manual`, `phone`, `whatsappMessage`, `sms` | Message text |
+| `subject` | string | `email`, `linkedinInMail` | Email or InMail subject line. On `linkedinInMail`, a blank one is saved but blocks the campaign launch. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
+| `message` | string | `email`, `linkedin*`, `manual`, `phone`, `whatsappMessage`, `sms` | Message text. Pass an empty string to clear it (ignored on `manual` and `phone` steps) |
 | `altMessage` | string | `linkedinInvite`, `linkedinSend`, `linkedinVoiceNote` | The premium invitation note on an invite, the out-of-network note on the other two. Pass an empty string to clear it. See [LinkedIn invitation notes](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-invitation-notes) on Add Step |
 | `altMessagePremium` | string | `linkedinSend` | The premium variant of the out-of-network note. Pass an empty string to clear it. See [LinkedIn invitation notes](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-invitation-notes) on Add Step |
 | `title` | string | `manual` | Title for manual task. Maximum 400 characters |

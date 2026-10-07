@@ -9478,7 +9478,7 @@
                             },
                             "type": {
                               "type": "string",
-                              "description": "The type of step (e.g., email, linkedinSend, linkedinInvite, conditional)"
+                              "description": "The type of step (e.g., email, linkedinSend, linkedinInMail, linkedinInvite, conditional)"
                             },
                             "index": {
                               "type": "integer",
@@ -9817,6 +9817,7 @@
                       "linkedinVisit",
                       "linkedinInvite",
                       "linkedinSend",
+                      "linkedinInMail",
                       "linkedinVoiceNote",
                       "linkedinFollow",
                       "linkedinLikeLastPost",
@@ -9839,11 +9840,11 @@
                   },
                   "subject": {
                     "type": "string",
-                    "description": "Email subject line (for email steps). Optional: omit it or send an empty string on a follow-up so the email replies in the thread of the previous one. If no email has been sent to the lead in this campaign yet, it goes out with an empty subject."
+                    "description": "Email subject line (for email steps). Optional: omit it or send an empty string on a follow-up so the email replies in the thread of the previous one. If no email has been sent to the lead in this campaign yet, it goes out with an empty subject. Required on `linkedinInMail` steps, where it is the InMail subject: a blank one is saved but blocks the campaign launch"
                   },
                   "message": {
                     "type": "string",
-                    "description": "Content of the email or message (used for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage, sms steps, and as the AI script of a linkedinVoiceNote step in `ai` record mode). Required for linkedinSend, whatsappMessage, and sms"
+                    "description": "Content of the email or message (used for email, linkedinInvite, linkedinSend, linkedinInMail, manual, phone, whatsappMessage, sms steps, and as the AI script of a linkedinVoiceNote step in `ai` record mode). Required for linkedinSend, linkedinInMail, whatsappMessage, and sms. On a linkedinInMail step it is sent as plain text (LinkedIn does not render HTML), and a blank one is saved but blocks the campaign launch"
                   },
                   "altMessage": {
                     "type": "string",
@@ -9995,6 +9996,14 @@
                     "videos": [
                       "https://example.com/assets/demo.mp4"
                     ],
+                    "delay": 2
+                  }
+                },
+                "LinkedIn InMail": {
+                  "value": {
+                    "type": "linkedinInMail",
+                    "subject": "Quick question, {{firstName}}",
+                    "message": "Hi {{firstName}}, I saw your invite is still pending, so I am reaching out here instead...",
                     "delay": 2
                   }
                 },
@@ -10200,6 +10209,7 @@
                       "linkedinVisit",
                       "linkedinInvite",
                       "linkedinSend",
+                      "linkedinInMail",
                       "linkedinVoiceNote",
                       "linkedinFollow",
                       "linkedinLikeLastPost",
@@ -10218,11 +10228,11 @@
                   },
                   "subject": {
                     "type": "string",
-                    "description": "Email subject line (for email steps). Pass an empty string to remove it: the email then replies in the thread of the previous email sent to the lead in this campaign."
+                    "description": "Email subject line (for email steps). Pass an empty string to remove it: the email then replies in the thread of the previous email sent to the lead in this campaign. On `linkedinInMail` steps it is the InMail subject: a blank one is saved but blocks the campaign launch"
                   },
                   "message": {
                     "type": "string",
-                    "description": "Content of the email or message (for email, linkedinInvite, linkedinSend, manual, phone, whatsappMessage, sms steps, and as the AI script of a linkedinVoiceNote step in `ai` record mode)"
+                    "description": "Content of the email or message (for email, linkedinInvite, linkedinSend, linkedinInMail, manual, phone, whatsappMessage, sms steps, and as the AI script of a linkedinVoiceNote step in `ai` record mode). Pass an empty string to clear it (ignored on manual and phone steps). On a linkedinInMail step it is sent as plain text (LinkedIn does not render HTML), and a blank one is saved but blocks the campaign launch"
                   },
                   "altMessage": {
                     "type": "string",
@@ -10372,6 +10382,13 @@
                       "https://example.com/assets/overview.png"
                     ],
                     "videos": []
+                  }
+                },
+                "Update LinkedIn InMail": {
+                  "value": {
+                    "type": "linkedinInMail",
+                    "subject": "Following up, {{firstName}}",
+                    "message": "Hi {{firstName}}, circling back on my previous InMail..."
                   }
                 },
                 "Update Manual Task": {
