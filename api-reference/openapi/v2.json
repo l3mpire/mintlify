@@ -66,7 +66,7 @@
       },
       "ApiErrorMessage": {
         "type": "object",
-        "description": "Error answered as a plain message by the contact and company endpoints.",
+        "description": "Error answered as a plain message.",
         "properties": {
           "error": {
             "type": "string",
@@ -5273,6 +5273,19 @@
             }
           }
         }
+      },
+      "CampaignNotFound": {
+        "description": "Campaign not found - the campaign does not exist, or the API key's user may not see it (custom role without View campaigns).",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiErrorMessage"
+            },
+            "example": {
+              "error": "Campaign not found"
+            }
+          }
+        }
       }
     }
   },
@@ -5998,6 +6011,7 @@
     "/team/senders": {
       "get": {
         "summary": "Get Team Senders",
+        "description": "When the API key's user has a custom role without View campaigns, only the campaigns they created or send from are listed.",
         "tags": [
           "Team"
         ],
@@ -6439,6 +6453,7 @@
     "/campaigns": {
       "get": {
         "summary": "Get Many Campaigns",
+        "description": "When the API key's user has a custom role without View campaigns, only the campaigns they created or send from are returned.",
         "tags": [
           "Campaigns"
         ],
@@ -6928,12 +6943,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Campaign not found",
-            "content": {
-              "text/plain": {
-                "example": "Campaign not found"
-              }
-            }
+            "$ref": "#/components/responses/CampaignNotFound"
           }
         }
       },
@@ -7141,12 +7151,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Campaign not found",
-            "content": {
-              "text/plain": {
-                "example": "Campaign not found"
-              }
-            }
+            "$ref": "#/components/responses/CampaignNotFound"
           }
         },
         "requestBody": {
@@ -7464,12 +7469,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Campaign not found",
-            "content": {
-              "text/plain": {
-                "example": "Campaign not found"
-              }
-            }
+            "$ref": "#/components/responses/CampaignNotFound"
           }
         }
       }
@@ -7544,7 +7544,7 @@
             }
           },
           "404": {
-            "description": "`STEP_SKIP_CAMPAIGN_NOT_FOUND` or `STEP_SKIP_STEP_NOT_FOUND` - the campaign or the step does not exist in this workspace.",
+            "description": "`STEP_SKIP_CAMPAIGN_NOT_FOUND` or `STEP_SKIP_STEP_NOT_FOUND` - the campaign or the step does not exist in this workspace. A campaign the API key's user may not see (custom role without View campaigns) answers `STEP_SKIP_CAMPAIGN_NOT_FOUND`.",
             "content": {
               "application/json": {
                 "example": {
@@ -7733,7 +7733,7 @@
             }
           },
           "404": {
-            "description": "`STEP_SKIP_CAMPAIGN_NOT_FOUND` or `STEP_SKIP_STEP_NOT_FOUND` - the campaign or the step does not exist in this workspace. A lead that is not in the campaign is a `not_found` item, never a 404.",
+            "description": "`STEP_SKIP_CAMPAIGN_NOT_FOUND` or `STEP_SKIP_STEP_NOT_FOUND` - the campaign or the step does not exist in this workspace. A lead that is not in the campaign is a `not_found` item, never a 404. A campaign the API key's user may not see (custom role without View campaigns) answers `STEP_SKIP_CAMPAIGN_NOT_FOUND`.",
             "content": {
               "application/json": {
                 "example": {
@@ -7935,7 +7935,7 @@
             }
           },
           "404": {
-            "description": "`WATCH_LIST_IMPORT_LEADS_CAMPAIGN_NOT_FOUND` or `WATCH_LIST_NOT_FOUND` - the campaign or the Signal Agent does not exist in this workspace.",
+            "description": "`WATCH_LIST_IMPORT_LEADS_CAMPAIGN_NOT_FOUND` or `WATCH_LIST_NOT_FOUND` - the campaign or the Signal Agent does not exist in this workspace. A campaign the API key's user may not see (custom role without View campaigns) answers `WATCH_LIST_IMPORT_LEADS_CAMPAIGN_NOT_FOUND`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8188,7 +8188,7 @@
             }
           },
           "404": {
-            "description": "`WATCH_LIST_IMPORT_LEADS_CAMPAIGN_NOT_FOUND` - the campaign does not exist in this workspace.",
+            "description": "`WATCH_LIST_IMPORT_LEADS_CAMPAIGN_NOT_FOUND` - the campaign does not exist in this workspace. A campaign the API key's user may not see (custom role without View campaigns) answers `WATCH_LIST_IMPORT_LEADS_CAMPAIGN_NOT_FOUND`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -8304,12 +8304,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Campaign not found",
-            "content": {
-              "text/plain": {
-                "example": "Campaign not found"
-              }
-            }
+            "$ref": "#/components/responses/CampaignNotFound"
           }
         }
       }
@@ -8432,12 +8427,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Campaign not found",
-            "content": {
-              "text/plain": {
-                "example": "Campaign not found"
-              }
-            }
+            "$ref": "#/components/responses/CampaignNotFound"
           }
         }
       }
@@ -8622,7 +8612,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Campaign or export not found",
+            "description": "Campaign or export not found. The campaign does not exist, or the API key's user may not see it (custom role without View campaigns).",
             "content": {
               "application/json": {
                 "schema": {
@@ -8639,7 +8629,7 @@
                       }
                     },
                     {
-                      "type": "string"
+                      "$ref": "#/components/schemas/ApiErrorMessage"
                     }
                   ]
                 },
@@ -8648,12 +8638,14 @@
                     "summary": "Export not found",
                     "value": {
                       "ok": false,
-                      "message": "Export with id axp_DIoSPp9YM5EwWdyP0 not found"
+                      "message": "Export with id axp_A1B2C3D4E5F6G7H8J not found"
                     }
                   },
                   "campaignNotFound": {
                     "summary": "Campaign not found",
-                    "value": "Campaign not found"
+                    "value": {
+                      "error": "Campaign not found"
+                    }
                   }
                 }
               }
@@ -8820,17 +8812,40 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Campaign or export not found",
+            "description": "Campaign or export not found. The campaign does not exist, or the API key's user may not see it (custom role without View campaigns).",
             "content": {
-              "text/plain": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "ok": {
+                          "type": "boolean"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/ApiErrorMessage"
+                    }
+                  ]
+                },
                 "examples": {
-                  "campaignNotFound": {
-                    "summary": "Campaign not found",
-                    "value": "Campaign not found"
-                  },
                   "exportNotFound": {
                     "summary": "Export not found",
-                    "value": "Export not found"
+                    "value": {
+                      "ok": false,
+                      "message": "Export with id axp_A1B2C3D4E5F6G7H8J not found"
+                    }
+                  },
+                  "campaignNotFound": {
+                    "summary": "Campaign not found",
+                    "value": {
+                      "error": "Campaign not found"
+                    }
                   }
                 }
               }
@@ -9015,12 +9030,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Campaign not found",
-            "content": {
-              "text/plain": {
-                "example": "Campaign not found"
-              }
-            }
+            "$ref": "#/components/responses/CampaignNotFound"
           }
         }
       }
@@ -9202,12 +9212,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Campaign not found",
-            "content": {
-              "text/plain": {
-                "example": "Campaign not found"
-              }
-            }
+            "$ref": "#/components/responses/CampaignNotFound"
           }
         }
       }
@@ -9215,7 +9220,7 @@
     "/campaigns/reports": {
       "get": {
         "summary": "Get Campaign Reports",
-        "description": "Retrieve reports for one or multiple campaigns. Returns aggregated statistics and export status for the specified campaigns.",
+        "description": "Retrieve reports for one or multiple campaigns. Returns aggregated statistics and export status for the specified campaigns.\n\nWhen the API key's user has a custom role without View campaigns, only the campaigns they created or send from are reported; other ids are left out.",
         "tags": [
           "Campaigns"
         ],
@@ -9694,12 +9699,7 @@
             }
           },
           "404": {
-            "description": "Campaign not found",
-            "content": {
-              "text/plain": {
-                "example": "Campaign not found"
-              }
-            }
+            "$ref": "#/components/responses/CampaignNotFound"
           },
           "405": {
             "description": "Method not allowed"
@@ -9795,6 +9795,19 @@
                 "example": {
                   "error": "A step is still being added for the leads of this campaign. Retry in a minute.",
                   "code": "campaign-reroute-in-progress"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sequence not found - the sequence does not exist, or the API key's user may not see its campaign (custom role without View campaigns).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Sequence not found"
                 }
               }
             }
@@ -10187,6 +10200,19 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Sequence not found - the sequence does not exist, or the API key's user may not see its campaign (custom role without View campaigns).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Sequence not found"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -10503,10 +10529,15 @@
             }
           },
           "404": {
-            "description": "Possible errors: Sequence not found / Step not found",
+            "description": "Possible errors: Sequence not found / Step not found. A sequence whose campaign the API key's user may not see (custom role without View campaigns) answers `Sequence not found`.",
             "content": {
-              "text/plain": {
-                "example": "Sequence not found"
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Sequence not found"
+                }
               }
             }
           },
@@ -10616,7 +10647,7 @@
             }
           },
           "404": {
-            "description": "`SEQUENCE_NOT_FOUND` or `SEQUENCE_STEP_NOT_FOUND` - no such sequence in this workspace, or no such step on it.",
+            "description": "`SEQUENCE_NOT_FOUND` or `SEQUENCE_STEP_NOT_FOUND` - no such sequence in this workspace, or no such step on it. A sequence whose campaign the API key's user may not see (custom role without View campaigns) answers `SEQUENCE_NOT_FOUND`.",
             "content": {
               "application/json": {
                 "example": {
@@ -10809,7 +10840,7 @@
             }
           },
           "404": {
-            "description": "`SEQUENCE_NOT_FOUND` or `SEQUENCE_STEP_NOT_FOUND` - no such sequence in this workspace, or no such step on it.",
+            "description": "`SEQUENCE_NOT_FOUND` or `SEQUENCE_STEP_NOT_FOUND` - no such sequence in this workspace, or no such step on it. A sequence whose campaign the API key's user may not see (custom role without View campaigns) answers `SEQUENCE_NOT_FOUND`.",
             "content": {
               "application/json": {
                 "example": {
@@ -10953,7 +10984,7 @@
             }
           },
           "404": {
-            "description": "`SEQUENCE_NOT_FOUND` or `SEQUENCE_STEP_NOT_FOUND` - no such sequence in this workspace, or no such step on it.",
+            "description": "`SEQUENCE_NOT_FOUND` or `SEQUENCE_STEP_NOT_FOUND` - no such sequence in this workspace, or no such step on it. A sequence whose campaign the API key's user may not see (custom role without View campaigns) answers `SEQUENCE_NOT_FOUND`.",
             "content": {
               "application/json": {
                 "example": {
@@ -11190,7 +11221,7 @@
             }
           },
           "404": {
-            "description": "`SEQUENCE_NOT_FOUND`, `SEQUENCE_STEP_NOT_FOUND` or `SEQUENCE_BRANCH_NOT_FOUND` - no such sequence, step, or branch on that step.",
+            "description": "`SEQUENCE_NOT_FOUND`, `SEQUENCE_STEP_NOT_FOUND` or `SEQUENCE_BRANCH_NOT_FOUND` - no such sequence, step, or branch on that step. A sequence whose campaign the API key's user may not see (custom role without View campaigns) answers `SEQUENCE_NOT_FOUND`.",
             "content": {
               "application/json": {
                 "example": {
@@ -11294,7 +11325,7 @@
             }
           },
           "404": {
-            "description": "`SEQUENCE_NOT_FOUND`, `SEQUENCE_STEP_NOT_FOUND` or `SEQUENCE_BRANCH_NOT_FOUND` - no such sequence, step, or branch on that step.",
+            "description": "`SEQUENCE_NOT_FOUND`, `SEQUENCE_STEP_NOT_FOUND` or `SEQUENCE_BRANCH_NOT_FOUND` - no such sequence, step, or branch on that step. A sequence whose campaign the API key's user may not see (custom role without View campaigns) answers `SEQUENCE_NOT_FOUND`.",
             "content": {
               "application/json": {
                 "example": {
@@ -12068,12 +12099,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Campaign not found",
-            "content": {
-              "text/plain": {
-                "example": "Campaign not found"
-              }
-            }
+            "$ref": "#/components/responses/CampaignNotFound"
           }
         },
         "parameters": []
@@ -12142,7 +12168,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Possible errors: Campaign not found / Schedule not found",
+            "description": "Possible errors: Campaign not found / Schedule not found. A campaign the API key's user may not see (custom role without View campaigns) answers `{\"error\": \"Campaign not found\"}`.",
             "content": {
               "text/plain": {
                 "example": "Campaign not found"
@@ -12281,10 +12307,19 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Lead not found",
+            "description": "Possible errors: Lead not found / Campaign not found. `Campaign not found` answers a `campaignId` that does not exist or that the API key's user may not see (custom role without View campaigns).",
             "content": {
               "text/plain": {
-                "example": "Lead not found"
+                "examples": {
+                  "leadNotFound": {
+                    "summary": "Lead not found",
+                    "value": "Lead not found"
+                  },
+                  "campaignNotFound": {
+                    "summary": "Campaign not found",
+                    "value": "Campaign not found"
+                  }
+                }
               }
             }
           }
@@ -12541,6 +12576,9 @@
                 ]
               }
             }
+          },
+          "404": {
+            "$ref": "#/components/responses/CampaignNotFound"
           }
         }
       },
@@ -12831,7 +12869,7 @@
             }
           },
           "404": {
-            "description": "Possible errors: No user found for this API key / Campaign not found",
+            "description": "Possible errors: No user found for this API key / Campaign not found. A campaign the API key's user may not see (custom role without View campaigns) answers `{\"error\": \"Campaign not found\"}`.",
             "content": {
               "text/plain": {
                 "example": "No user found for this API key"
@@ -12896,7 +12934,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Lead not found",
+            "description": "Lead not found. A campaign the API key's user may not see (custom role without View campaigns) answers `{\"error\": \"Campaign not found\"}`.",
             "content": {
               "text/plain": {
                 "example": "Lead not found"
@@ -13124,7 +13162,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Possible errors: Lead not found / Campaign not found / Campaign deleted / Contact owner not found: neither a valid email nor a valid user id.",
+            "description": "Possible errors: Lead not found / Campaign not found / Campaign deleted / Contact owner not found: neither a valid email nor a valid user id. A campaign the API key's user may not see (custom role without View campaigns) answers `{\"error\": \"Campaign not found\"}`.",
             "content": {
               "text/plain": {
                 "example": "Lead not found"
@@ -13263,7 +13301,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Lead not found",
+            "description": "Lead not found. A campaign the API key's user may not see (custom role without View campaigns) answers `{\"error\": \"Campaign not found\"}`.",
             "content": {
               "text/plain": {
                 "example": "Lead not found"
@@ -13349,7 +13387,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Lead not found",
+            "description": "Lead not found. A campaign the API key's user may not see (custom role without View campaigns) answers `{\"error\": \"Campaign not found\"}`.",
             "content": {
               "text/plain": {
                 "example": "Lead not found"
@@ -13461,7 +13499,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Lead not found",
+            "description": "Lead not found. A `campaignId` the API key's user may not see (custom role without View campaigns) answers `Lead not found` too.",
             "content": {
               "text/plain": {
                 "example": "Lead not found"
@@ -13589,7 +13627,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Lead not found",
+            "description": "Lead not found. A `campaignId` the API key's user may not see (custom role without View campaigns) answers `Lead not found` too.",
             "content": {
               "text/plain": {
                 "example": "Lead not found"
@@ -14034,7 +14072,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Possible errors: Campaign not found / Lead not found",
+            "description": "Possible errors: Campaign not found / Lead not found. A campaign the API key's user may not see (custom role without View campaigns) answers `{\"error\": \"Campaign not found\"}`.",
             "content": {
               "text/plain": {
                 "example": "Campaign not found"
@@ -14155,7 +14193,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Possible errors: Campaign not found / Lead not found",
+            "description": "Possible errors: Campaign not found / Lead not found. A campaign the API key's user may not see (custom role without View campaigns) answers `{\"error\": \"Campaign not found\"}`.",
             "content": {
               "text/plain": {
                 "example": "Campaign not found"
@@ -14250,7 +14288,7 @@
             }
           },
           "404": {
-            "description": "`STEP_SKIP_CAMPAIGN_NOT_FOUND`, `STEP_SKIP_LEAD_NOT_FOUND` or `STEP_SKIP_STEP_NOT_FOUND` - the campaign, the lead or the step does not exist in this workspace.",
+            "description": "`STEP_SKIP_CAMPAIGN_NOT_FOUND`, `STEP_SKIP_LEAD_NOT_FOUND` or `STEP_SKIP_STEP_NOT_FOUND` - the campaign, the lead or the step does not exist in this workspace. A campaign the API key's user may not see (custom role without View campaigns) answers `STEP_SKIP_CAMPAIGN_NOT_FOUND`.",
             "content": {
               "application/json": {
                 "example": {
@@ -14408,7 +14446,7 @@
             }
           },
           "404": {
-            "description": "`REVIEW_DRAFT_CAMPAIGN_NOT_FOUND`, `REVIEW_DRAFT_LEAD_NOT_FOUND`, `REVIEW_DRAFT_STEP_NOT_FOUND` or `REVIEW_DRAFT_TEMPLATE_NOT_FOUND` - the campaign, the lead or the step does not exist in this workspace, or the step has no message.",
+            "description": "`REVIEW_DRAFT_CAMPAIGN_NOT_FOUND`, `REVIEW_DRAFT_LEAD_NOT_FOUND`, `REVIEW_DRAFT_STEP_NOT_FOUND` or `REVIEW_DRAFT_TEMPLATE_NOT_FOUND` - the campaign, the lead or the step does not exist in this workspace, or the step has no message. A campaign the API key's user may not see (custom role without View campaigns) answers `REVIEW_DRAFT_CAMPAIGN_NOT_FOUND`.",
             "content": {
               "application/json": {
                 "example": {
@@ -14497,7 +14535,7 @@
             }
           },
           "404": {
-            "description": "`REVIEW_DRAFT_CAMPAIGN_NOT_FOUND`, `REVIEW_DRAFT_LEAD_NOT_FOUND`, `REVIEW_DRAFT_STEP_NOT_FOUND` or `REVIEW_DRAFT_TEMPLATE_NOT_FOUND` - the campaign, the lead or the step does not exist in this workspace, or the step has no message.",
+            "description": "`REVIEW_DRAFT_CAMPAIGN_NOT_FOUND`, `REVIEW_DRAFT_LEAD_NOT_FOUND`, `REVIEW_DRAFT_STEP_NOT_FOUND` or `REVIEW_DRAFT_TEMPLATE_NOT_FOUND` - the campaign, the lead or the step does not exist in this workspace, or the step has no message. A campaign the API key's user may not see (custom role without View campaigns) answers `REVIEW_DRAFT_CAMPAIGN_NOT_FOUND`.",
             "content": {
               "application/json": {
                 "example": {
@@ -15290,22 +15328,7 @@
             }
           },
           "404": {
-            "description": "Campaign not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "example": {
-                  "error": "Campaign not found"
-                }
-              }
-            }
+            "$ref": "#/components/responses/CampaignNotFound"
           }
         }
       }
@@ -24514,6 +24537,9 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/CampaignNotFound"
           }
         }
       }
@@ -24975,12 +25001,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Campaign not found",
-            "content": {
-              "text/plain": {
-                "example": "Campaign not found"
-              }
-            }
+            "$ref": "#/components/responses/CampaignNotFound"
           },
           "405": {
             "description": "Method not allowed",
@@ -24999,7 +25020,7 @@
         "tags": [
           "Campaigns"
         ],
-        "description": "Retrieve detailed statistics for multiple campaigns in a single request, with filtering options by date, user, A/B testing, and communication channels. Processes up to 100 campaigns per request.",
+        "description": "Retrieve detailed statistics for multiple campaigns in a single request, with filtering options by date, user, A/B testing, and communication channels. Processes up to 100 campaigns per request.\n\nWhen the API key's user has a custom role without View campaigns, a campaign they did not create nor send from is reported in `errors` as `Campaign not found`.",
         "requestBody": {
           "required": true,
           "content": {
@@ -26710,10 +26731,18 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Webhook not found",
+            "description": "Possible errors: Webhook not found / Campaign not found. A `campaignId` the API key's user may not see (custom role without View campaigns) answers `{\"error\": \"Campaign not found\"}`.",
             "content": {
               "text/plain": {
                 "example": "Webhook not found"
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Campaign not found"
+                }
               }
             }
           },
@@ -28824,22 +28853,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Campaign not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "example": {
-                  "error": "Campaign not found"
-                }
-              }
-            }
+            "$ref": "#/components/responses/CampaignNotFound"
           }
         }
       }
@@ -29209,7 +29223,7 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Campaign not found"
+            "$ref": "#/components/responses/CampaignNotFound"
           },
           "405": {
             "description": "Bad method"
@@ -29705,7 +29719,7 @@
             }
           },
           "404": {
-            "description": "`WATCH_LIST_IMPORT_LEADS_CAMPAIGN_NOT_FOUND` - the `campaignId` campaign does not exist in this workspace. No agent is created.",
+            "description": "`WATCH_LIST_IMPORT_LEADS_CAMPAIGN_NOT_FOUND` - the `campaignId` campaign does not exist in this workspace, or the API key's user may not see it (custom role without View campaigns). No agent is created.",
             "content": {
               "application/json": {
                 "example": {
@@ -30942,7 +30956,7 @@
             }
           },
           "404": {
-            "description": "Sequence or step not found",
+            "description": "Sequence or step not found. A sequence whose campaign the API key's user may not see (custom role without View campaigns) answers `SEQUENCE_NOT_FOUND`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -31067,7 +31081,7 @@
             }
           },
           "404": {
-            "description": "Sequence, step, or A/B test variant not found",
+            "description": "Sequence, step, or A/B test variant not found. A sequence whose campaign the API key's user may not see (custom role without View campaigns) answers `SEQUENCE_NOT_FOUND`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -31256,7 +31270,7 @@
             }
           },
           "404": {
-            "description": "Sequence, step, or A/B test variant not found",
+            "description": "Sequence, step, or A/B test variant not found. A sequence whose campaign the API key's user may not see (custom role without View campaigns) answers `SEQUENCE_NOT_FOUND`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -31373,7 +31387,7 @@
             }
           },
           "404": {
-            "description": "Sequence, step, or A/B test variant not found",
+            "description": "Sequence, step, or A/B test variant not found. A sequence whose campaign the API key's user may not see (custom role without View campaigns) answers `SEQUENCE_NOT_FOUND`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -31533,7 +31547,7 @@
             }
           },
           "404": {
-            "description": "Sequence, step, or A/B test variant not found",
+            "description": "Sequence, step, or A/B test variant not found. A sequence whose campaign the API key's user may not see (custom role without View campaigns) answers `SEQUENCE_NOT_FOUND`.",
             "content": {
               "application/json": {
                 "schema": {
