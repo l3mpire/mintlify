@@ -23733,7 +23733,7 @@
       },
       "delete": {
         "summary": "Delete Company",
-        "description": "Deletes a lemlist company. Refuses by default when contacts are still attached — pass `force=true` to detach them (the `companyId` field is unset on each contact) before deleting the company.\n\n**No CRM-side propagation:** only the lemlist record is removed. Designed for the contact-to-company remapping workflow: after reassigning the contacts of a duplicate company to the canonical one (via `POST /contacts/{idOrEmail}`), call this endpoint to drop the now-empty duplicate.",
+        "description": "Deletes a lemlist company. Refuses by default when contacts are still attached — pass `force=true` to detach them (the `companyId` field is unset on each contact) before deleting the company.\n\n**No CRM-side propagation:** only the lemlist record is removed. Designed for the contact-to-company remapping workflow: after reassigning the contacts of a duplicate company to the canonical one (via `POST /contacts/{idOrEmail}`), call this endpoint to drop the now-empty duplicate.\n\n**Permission:** the API key's user must have the \"Delete companies\" permission, otherwise the request fails with `403 COMPANY_DELETE_NOT_ALLOWED`.",
         "tags": [
           "Companies"
         ],
@@ -23847,6 +23847,39 @@
             "content": {
               "text/plain": {
                 "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "403": {
+            "description": "The API key's user does not have the \"Delete companies\" permission (`COMPANY_DELETE_NOT_ALLOWED`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "COMPANY_DELETE_NOT_ALLOWED",
+                    "message": "You do not have the permission to delete companies"
+                  }
+                }
               }
             }
           },
