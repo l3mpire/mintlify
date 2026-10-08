@@ -1,0 +1,20 @@
+---
+openapi: delete /sequences/{sequenceId}/steps/{stepId}/sender
+description: Removes the forced sender of a step.
+---
+
+<Note>
+A forced sender requires at least the **Email Pro** plan.
+</Note>
+
+Removes the forced sender of a step. The step uses the sender strategy of the
+campaign again.
+
+- The channel type of the step comes back into the sender pool, as in the
+  campaign editor. The response returns the pool after the change.
+- On a running campaign, the pending tasks of the step move to a sender of the
+  pool.
+- A LinkedIn or WhatsApp voice note step always has a forced sender: the
+  endpoint answers `409`. Use
+  [Set Step Sender](/api-reference/endpoints/sequences/set-step-sender) to
+  change it.
