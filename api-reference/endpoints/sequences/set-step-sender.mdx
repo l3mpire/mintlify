@@ -1,0 +1,40 @@
+---
+openapi: put /sequences/{sequenceId}/steps/{stepId}/sender
+description: Forces a team member, and one of their accounts, as the sender of a step.
+---
+
+<Note>
+A forced sender requires at least the **Email Pro** plan.
+</Note>
+
+Forces the sender of one step, with the rules of the campaign editor.
+
+## Which steps accept a forced sender
+
+| Step                                       | `channel`                                   |
+| ------------------------------------------ | ------------------------------------------- |
+| Email                                      | Required, `type: "email"`                   |
+| LinkedIn steps, LinkedIn voice notes       | Required, `type: "linkedin"`                |
+| WhatsApp message, WhatsApp voice note      | Required, `type: "whatsapp"`                |
+| SMS                                        | Required, `type: "phone"`                   |
+| Call, manual, API and phone tasks          | Forbidden: the step pins a user, not an account |
+
+Delay, condition and other utility steps have no sender: the endpoint answers
+`409`.
+
+## Rules
+
+- `userId` must be a team member who owns the account.
+- Without `channel.id`, the first healthy account of the type is used. An
+  unhealthy account is accepted when you name it: the response carries its
+  diagnostics.
+- `channel.alias` picks an alias of an email account. It needs `channel.id`.
+- An InMail step needs a sender with LinkedIn Premium.
+
+## Effects
+
+- The sender pool changes as in the campaign editor: a channel type that no
+  other step uses leaves the pool. The response returns the pool after the
+  change.
+- On a running campaign, the pending tasks of the step move to the forced
+  sender.

@@ -1,0 +1,15 @@
+---
+openapi: get /sequences/{sequenceId}/steps/{stepId}/sender
+description: Returns the forced sender of a step.
+---
+
+<Note>
+A forced sender requires at least the **Email Pro** plan.
+</Note>
+
+A step with a forced sender always sends from the same team member, whatever
+sender the lead got from the campaign sender pool.
+
+The response has no `sender` when the step uses the sender strategy of the
+campaign. The `sender` has the shape of the
+[Set Step Sender](/api-reference/endpoints/sequences/set-step-sender) body.
