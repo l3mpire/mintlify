@@ -1728,6 +1728,145 @@
           }
         }
       },
+      "StepSender": {
+        "type": "object",
+        "properties": {
+          "sequenceId": {
+            "type": "string"
+          },
+          "stepId": {
+            "type": "string"
+          },
+          "stepType": {
+            "type": "string",
+            "description": "The step type. Absent on a legacy email step."
+          },
+          "sender": {
+            "type": "object",
+            "description": "The forced sender of the step, in the shape of the request body. Absent when the step uses the sender strategy of the campaign.",
+            "properties": {
+              "userId": {
+                "type": "string",
+                "description": "The team member who sends the step"
+              },
+              "channel": {
+                "type": "object",
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "email",
+                      "linkedin",
+                      "whatsapp",
+                      "phone"
+                    ],
+                    "description": "The channel type of the step: `email` on an email step, `linkedin` on a LinkedIn step, `whatsapp` on a WhatsApp step, `phone` on an SMS step."
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "The account to send from: the mailbox id, the WhatsApp account id, or the phone number. On LinkedIn, the user id. Without `id`, the first healthy account of the type."
+                  },
+                  "alias": {
+                    "type": "string",
+                    "description": "Email only, with an `id`: the alias address of the mailbox to send from."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "The forced sender of a step."
+      },
+      "SenderPool": {
+        "type": "object",
+        "description": "The sender pool of the campaign after the change. A forced step can remove a channel type from the pool, and a step back on the strategy can add it again.",
+        "properties": {
+          "campaignId": {
+            "type": "string"
+          },
+          "senderStrategy": {
+            "type": "string"
+          },
+          "espMatching": {
+            "type": "boolean"
+          },
+          "readOnly": {
+            "type": "boolean",
+            "description": "`true` for a dynamic sender strategy: the leads select the senders."
+          },
+          "senders": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "channels": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "email",
+                          "linkedin",
+                          "whatsapp",
+                          "phone"
+                        ]
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "label": {
+                        "type": "string"
+                      },
+                      "alias": {
+                        "type": "string"
+                      },
+                      "esp": {
+                        "type": "string"
+                      },
+                      "diagnostics": {
+                        "type": "array",
+                        "description": "The problems that block or limit the sending, for example a disconnected account.",
+                        "items": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  }
+                },
+                "diagnostics": {
+                  "type": "array",
+                  "description": "The problems that block or limit the sending, for example a disconnected account.",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          },
+          "diagnostics": {
+            "type": "array",
+            "description": "The problems that block or limit the sending, for example a disconnected account.",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      },
       "Schedule": {
         "type": "object",
         "description": "Sending time windows defining when campaigns can send messages (days and hours).",
@@ -11320,6 +11459,537 @@
           },
           "429": {
             "description": "Rate limit exceeded - 20 requests per 2 seconds per API key"
+          }
+        }
+      }
+    },
+    "/sequences/{sequenceId}/steps/{stepId}/sender": {
+      "parameters": [
+        {
+          "name": "sequenceId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the sequence",
+          "example": "seq_A1b2C3d4E5f6G7h8J",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "stepId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the step",
+          "example": "stp_A1b2C3d4E5f6G7h8I",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Get Step Sender",
+        "tags": [
+          "Sequences"
+        ],
+        "description": "Returns the forced sender of a step. A step without a forced sender uses the sender strategy of the campaign. Requires the Email Pro plan.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/StepSender"
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "sequenceId": "seq_A1b2C3d4E5f6G7h8J",
+                    "stepId": "stp_A1b2C3d4E5f6G7h8I",
+                    "stepType": "email",
+                    "sender": {
+                      "userId": "usr_A1b2C3d4E5f6G7h8K",
+                      "channel": {
+                        "type": "email",
+                        "id": "usm_A1b2C3d4E5f6G7h8L",
+                        "alias": "john@example.com"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed sequence or step id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Wrong param id",
+                  "code": "WRONG_PARAM_ID"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "A forced sender requires at least the Email Pro plan",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "404": {
+            "description": "Sequence, step or campaign not found. A template sequence has no campaign.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Step not found",
+                  "code": "SEQUENCE_STEP_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Bad method"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Set Step Sender",
+        "tags": [
+          "Sequences"
+        ],
+        "description": "Forces a sender on a step, as the campaign editor does. The step then always sends from this team member, whatever sender the lead got. On a running campaign, the pending tasks of the step move to this sender. Requires the Email Pro plan.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "userId"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "userId": {
+                    "type": "string",
+                    "description": "The team member who sends the step"
+                  },
+                  "channel": {
+                    "type": "object",
+                    "required": [
+                      "type"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "email",
+                          "linkedin",
+                          "whatsapp",
+                          "phone"
+                        ],
+                        "description": "The channel type of the step: `email` on an email step, `linkedin` on a LinkedIn step, `whatsapp` on a WhatsApp step, `phone` on an SMS step."
+                      },
+                      "id": {
+                        "type": "string",
+                        "description": "The account to send from: the mailbox id, the WhatsApp account id, or the phone number. On LinkedIn, the user id. Without `id`, the first healthy account of the type."
+                      },
+                      "alias": {
+                        "type": "string",
+                        "description": "Email only, with an `id`: the alias address of the mailbox to send from."
+                      }
+                    },
+                    "description": "Required on an email, LinkedIn, WhatsApp or SMS step. Forbidden on a call, manual, API or phone step."
+                  }
+                }
+              },
+              "example": {
+                "userId": "usr_A1b2C3d4E5f6G7h8K",
+                "channel": {
+                  "type": "email",
+                  "id": "usm_A1b2C3d4E5f6G7h8L"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "step": {
+                          "$ref": "#/components/schemas/StepSender"
+                        },
+                        "pool": {
+                          "$ref": "#/components/schemas/SenderPool"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "step": {
+                      "sequenceId": "seq_A1b2C3d4E5f6G7h8J",
+                      "stepId": "stp_A1b2C3d4E5f6G7h8I",
+                      "stepType": "email",
+                      "sender": {
+                        "userId": "usr_A1b2C3d4E5f6G7h8K",
+                        "channel": {
+                          "type": "email",
+                          "id": "usm_A1b2C3d4E5f6G7h8L",
+                          "alias": "john@example.com"
+                        }
+                      }
+                    },
+                    "pool": {
+                      "campaignId": "cam_A1b2C3d4E5f6G7h8M",
+                      "senderStrategy": "random",
+                      "espMatching": false,
+                      "readOnly": false,
+                      "senders": [
+                        {
+                          "userId": "usr_A1b2C3d4E5f6G7h8K",
+                          "name": "John Doe",
+                          "email": "john@example.com",
+                          "channels": [
+                            {
+                              "type": "email",
+                              "id": "usm_A1b2C3d4E5f6G7h8L",
+                              "label": "john@example.com",
+                              "alias": "john@example.com",
+                              "esp": "google",
+                              "diagnostics": []
+                            }
+                          ],
+                          "diagnostics": []
+                        }
+                      ],
+                      "diagnostics": []
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request: the body does not match the schema, the channel does not match the step, the user is not a team member, the account does not belong to the user, or an InMail step gets a sender without LinkedIn Premium",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "The channel does not match the step: give a channel of the step type, or no channel on a call, manual, API or phone step",
+                  "code": "SENDER_STEP_CHANNEL_MISMATCH"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "A forced sender requires at least the Email Pro plan",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "404": {
+            "description": "Sequence, step or campaign not found. A template sequence has no campaign.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Step not found",
+                  "code": "SEQUENCE_STEP_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Bad method"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The step type has no sender",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "This step type has no sender",
+                  "code": "SENDER_STEP_NOT_FORCEABLE"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove Step Sender",
+        "tags": [
+          "Sequences"
+        ],
+        "description": "Removes the forced sender of a step. The step uses the sender strategy of the campaign again. On a running campaign, the pending tasks of the step move to a sender of the pool. Requires the Email Pro plan.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "step": {
+                          "$ref": "#/components/schemas/StepSender"
+                        },
+                        "pool": {
+                          "$ref": "#/components/schemas/SenderPool"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "step": {
+                      "sequenceId": "seq_A1b2C3d4E5f6G7h8J",
+                      "stepId": "stp_A1b2C3d4E5f6G7h8I",
+                      "stepType": "email"
+                    },
+                    "pool": {
+                      "campaignId": "cam_A1b2C3d4E5f6G7h8M",
+                      "senderStrategy": "random",
+                      "espMatching": false,
+                      "readOnly": false,
+                      "senders": [
+                        {
+                          "userId": "usr_A1b2C3d4E5f6G7h8K",
+                          "name": "John Doe",
+                          "email": "john@example.com",
+                          "channels": [
+                            {
+                              "type": "email",
+                              "id": "usm_A1b2C3d4E5f6G7h8L",
+                              "label": "john@example.com",
+                              "alias": "john@example.com",
+                              "esp": "google",
+                              "diagnostics": []
+                            }
+                          ],
+                          "diagnostics": []
+                        }
+                      ],
+                      "diagnostics": []
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed sequence or step id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Wrong param id",
+                  "code": "WRONG_PARAM_ID"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "A forced sender requires at least the Email Pro plan",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "404": {
+            "description": "Sequence, step or campaign not found. A template sequence has no campaign.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Step not found",
+                  "code": "SEQUENCE_STEP_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Bad method"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The step has no sender, or the step is a voice note, which always has a forced sender",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "A voice note step always has a forced sender. Force another sender instead",
+                  "code": "SENDER_STEP_FORCED_ONLY"
+                }
+              }
+            }
           }
         }
       }
