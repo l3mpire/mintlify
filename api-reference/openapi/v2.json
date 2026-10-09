@@ -29548,7 +29548,7 @@
                   },
                   "segmentType": {
                     "type": "string",
-                    "description": "Entity sourcing. Only `all` is supported via the API. Required together with signalProcessingType when activate is true.",
+                    "description": "Entity sourcing. Only `all` is accepted here; to monitor CRM lists or a CSV, create a draft (`activate: false`) and call `POST /watchlist/crm-lists`. Required together with signalProcessingType when activate is true.",
                     "enum": [
                       "all"
                     ]
@@ -29793,7 +29793,7 @@
                   },
                   "activate": {
                     "type": "boolean",
-                    "description": "Toggle the agent status. false deactivates (pauses) it immediately. true reactivates a paused agent (triggers billing and external watcher setup). A draft cannot be toggled this way. Omit to leave the status unchanged."
+                    "description": "Toggle the agent status. false deactivates (pauses) it immediately. true activates a draft or reactivates a paused agent (triggers billing and external watcher setup). A draft cannot be paused. Omit to leave the status unchanged."
                   }
                 }
               },
@@ -29915,6 +29915,125 @@
             "content": {
               "text/plain": {
                 "example": "Unauthorized"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "text/plain": {
+                "example": "Internal server error"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/watchlist/crm-lists": {
+      "post": {
+        "summary": "Monitor CRM Lists with a Signal Agent",
+        "description": "Switches a Signal Agent to the CRM list source and monitors every company (or contact) of the given CRM lists. The lists replace the ones it monitored: entities left out stop being monitored. Only companies with a domain and contacts with a LinkedIn URL are monitored.\n\nTo monitor a CSV: import it into a company or contact list, create a draft with `POST /watchlist` (`activate: false`), call this endpoint, then activate the draft with `PATCH /watchlist` (`activate: true`). An active agent monitors the new entities right away; a paused one stays paused.",
+        "tags": [
+          "Signal Agents"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "watchListId",
+                  "crmListIds"
+                ],
+                "properties": {
+                  "watchListId": {
+                    "type": "string",
+                    "description": "Signal Agent id (a draft, or an existing agent whose monitored lists are replaced)"
+                  },
+                  "crmListIds": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 500,
+                    "description": "CRM list ids (clt_xxx). Company lists for a company signal, contact lists for a contact signal.",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "example": {
+                "watchListId": "wl_Example000000001",
+                "crmListIds": [
+                  "clt_Example000000001"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WatchListApiWatchListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. `WATCH_INTENT_INVALID_SEGMENT_TYPE` when the signal type only monitors the whole market (`details.allowedTypes` lists the types that accept CRM lists); `WATCH_LIST_API_NO_MONITORABLE_ENTITIES` when no entity of the lists can be monitored.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "No entity of these CRM lists can be monitored: the lists must be your team's and hold the signal's entity, with a domain on each company or a LinkedIn URL on each contact",
+                  "code": "WATCH_LIST_API_NO_MONITORABLE_ENTITIES"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "text/plain": {
+                "example": "Unauthorized"
+              }
+            }
+          },
+          "404": {
+            "description": "Signal Agent not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Watch list not found",
+                  "code": "WATCH_LIST_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The Signal Agent already monitors exactly these CRM lists: changes to their content are picked up automatically",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This watch list already monitors exactly these CRM lists; changes to their content are picked up automatically",
+                  "code": "WATCH_LIST_API_CRM_LISTS_ALREADY_MONITORED"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "The lists hold more entities than the team can monitor; `details.monitorMax` is the cap",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This agent has reached its monitoring limit. Stop monitoring some entities before adding more.",
+                  "code": "WATCH_LIST_MONITOR_MAX_EXCEEDED",
+                  "details": {
+                    "monitorMax": 10000
+                  }
+                }
               }
             }
           },
