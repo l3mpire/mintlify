@@ -435,6 +435,7 @@
                   "api-reference/endpoints/watch-list/list-watch-lists",
                   "api-reference/endpoints/watch-list/create-watch-list",
                   "api-reference/endpoints/watch-list/update-watch-list",
+                  "api-reference/endpoints/watch-list/associate-crm-lists",
                   "api-reference/endpoints/watch-list/delete-watch-list",
                   "api-reference/endpoints/watch-list/get-history",
                   "api-reference/endpoints/watch-list/get-signals",
