@@ -28727,6 +28727,238 @@
         }
       }
     },
+    "/users/{userId}/signature": {
+      "get": {
+        "summary": "Get User Signature",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the team member (usr_xxx)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The team member's HTML and plain-text email signatures",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "description": "ID of the team member (usr_xxx)"
+                        },
+                        "signature": {
+                          "type": "string",
+                          "description": "HTML signature, inserted by {{signature}} in HTML emails. Empty string when unset"
+                        },
+                        "plainTextSignature": {
+                          "type": "string",
+                          "description": "Plain-text signature, inserted by {{plainTextSignature}} in plain-text emails and lemwarm. Empty string when unset"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "userId": "usr_A1b2C3d4E5f6G7h8I",
+                    "signature": "<p>Jane Doe<br>Head of Sales, Acme</p>",
+                    "plainTextSignature": "Jane Doe\nHead of Sales, Acme"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed userId"
+          },
+          "401": {
+            "description": "The API key does not resolve a user"
+          },
+          "403": {
+            "description": "Reading or editing a teammate's signatures without the permission to edit team sending settings",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "You cannot read or edit your teammates' signatures in this team",
+                  "code": "SIGNATURE_PERMISSION_DENIED"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The user is not a member of the team",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This user is not a member of your team",
+                  "code": "SIGNATURE_USER_NOT_IN_TEAM"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method other than GET or PATCH"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Internal error",
+                  "code": "INTERNAL_ERROR"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update User Signature",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the team member whose signatures to update (usr_xxx)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The signatures to change. Provide signature, plainTextSignature or both; an omitted one keeps its current value and an empty string clears it. The two are stored independently, like in Settings > Sending: send both to keep them in sync. HTML is sanitized on save; link images by URL rather than embedding them. Unknown fields are refused.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "properties": {
+                  "signature": {
+                    "type": "string",
+                    "maxLength": 100000,
+                    "description": "HTML signature, inserted by {{signature}} in HTML emails"
+                  },
+                  "plainTextSignature": {
+                    "type": "string",
+                    "maxLength": 100000,
+                    "description": "Plain-text signature, inserted by {{plainTextSignature}} in plain-text emails and lemwarm. Line breaks are kept; HTML is converted to text"
+                  }
+                }
+              },
+              "example": {
+                "signature": "<p>Jane Doe<br>Head of Sales, Acme</p>",
+                "plainTextSignature": "Jane Doe\nHead of Sales, Acme"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Both signatures of the team member after the update, as stored",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "description": "ID of the team member (usr_xxx)"
+                        },
+                        "signature": {
+                          "type": "string",
+                          "description": "HTML signature, inserted by {{signature}} in HTML emails. Empty string when unset"
+                        },
+                        "plainTextSignature": {
+                          "type": "string",
+                          "description": "Plain-text signature, inserted by {{plainTextSignature}} in plain-text emails and lemwarm. Empty string when unset"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "userId": "usr_A1b2C3d4E5f6G7h8I",
+                    "signature": "<p>Jane Doe<br>Head of Sales, Acme</p>",
+                    "plainTextSignature": "Jane Doe\nHead of Sales, Acme"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed userId, invalid body (unknown field, non-string or longer than 100,000 characters), or nothing to update (`SIGNATURE_NOTHING_TO_UPDATE`)",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Send only signature (HTML) and/or plainTextSignature, as strings of at most 100,000 characters",
+                  "code": "SIGNATURE_INVALID_INPUT"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The API key does not resolve a user"
+          },
+          "403": {
+            "description": "Reading or editing a teammate's signatures without the permission to edit team sending settings",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "You cannot read or edit your teammates' signatures in this team",
+                  "code": "SIGNATURE_PERMISSION_DENIED"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The user is not a member of the team",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This user is not a member of your team",
+                  "code": "SIGNATURE_USER_NOT_IN_TEAM"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method other than GET or PATCH"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Internal error",
+                  "code": "INTERNAL_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/campaigns/{campaignId}/duplicate": {
       "parameters": [
         {
