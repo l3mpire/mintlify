@@ -20398,6 +20398,32 @@
             }
           },
           {
+            "name": "crmSyncStatus",
+            "in": "query",
+            "required": false,
+            "description": "Filter contacts by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, or Pipedrive) to be connected — otherwise the request returns `400 NO_CRM_CONNECTED`. Values:\n- `synced` — the contact has a CRM record and no sync errors.\n- `not_synced` — the contact has no CRM record yet.\n- `error` — at least one sync error is currently raised, whatever its reason.\n- A specific error reason (lowercase form), to filter by root cause:\n  - `invalid_email` — the CRM refused the contact's email.\n  - `property_doesnt_exist` — a mapped property does not exist in the CRM.\n  - `required_field_missing` — a field the CRM requires is missing.\n  - `unique_index_error_contact` — the CRM record is already synced with another lemlist contact.\n  - `contact_already_exists_with_name`, `contact_already_exists_with_linkedin_url`, `contact_already_exists_with_email` — a CRM contact already exists with the same first and last name, LinkedIn URL or email.\n  - `contact_blocked_by_company` — contact not created: its company already exists in the CRM.\n  - `contact_blocked_by_company_search` — contact not created: the company search is incomplete, retried later.\n  - `contact_blocked_by_company_without_name` — contact not created: its company needs a name to be found in the CRM.\n  - `contact_blocked_by_company_without_key` — contact not created: its company needs a domain or LinkedIn URL to be found in the CRM.\n\nOnly applies to the paginated list — ignored when `idsOrEmails` or `crmIds` is provided.",
+            "example": "error",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "synced",
+                "not_synced",
+                "error",
+                "invalid_email",
+                "property_doesnt_exist",
+                "required_field_missing",
+                "unique_index_error_contact",
+                "contact_already_exists_with_name",
+                "contact_already_exists_with_linkedin_url",
+                "contact_already_exists_with_email",
+                "contact_blocked_by_company",
+                "contact_blocked_by_company_search",
+                "contact_blocked_by_company_without_name",
+                "contact_blocked_by_company_without_key"
+              ]
+            }
+          },
+          {
             "name": "limit",
             "in": "query",
             "required": false,
@@ -20575,7 +20601,7 @@
             }
           },
           "400": {
-            "description": "Either a plain `{ \"error\": \"...\" }` (`Bad team`, search query too short, invalid `listId` format, invalid `withPrimaryCompany`, `limit` below 1, more than 100 `idsOrEmails` values), or a validation envelope. Possible error codes: `INVALID_CRM_ID` (a `crmIds` list with no usable value, or a value longer than 25 characters), `TOO_MANY_CRM_IDS` (more than 100 `crmIds` values), `MULTIPLE_COMPANY_FILTERS`, `INVALID_COMPANY_ID`, `INVALID_FIELD_REJECTION_REASON`.",
+            "description": "Either a plain `{ \"error\": \"...\" }` (`Bad team`, search query too short, invalid `listId` format, invalid `withPrimaryCompany`, `limit` below 1, more than 100 `idsOrEmails` values), or a validation envelope. Possible error codes: `INVALID_CRM_ID` (a `crmIds` list with no usable value, or a value longer than 25 characters), `TOO_MANY_CRM_IDS` (more than 100 `crmIds` values), `MULTIPLE_COMPANY_FILTERS`, `INVALID_COMPANY_ID`, `INVALID_FIELD_REJECTION_REASON`, `INVALID_CRM_SYNC_STATUS`, `NO_CRM_CONNECTED` (`crmSyncStatus` without a connected CRM).",
             "content": {
               "application/json": {
                 "schema": {
