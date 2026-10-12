@@ -1,0 +1,15 @@
+---
+openapi: post /watchlist/crm-lists
+description: Monitors the companies or contacts of one or several CRM lists with a Signal Agent.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Watch List" objectPath="watch-list" />
+
+<Note>
+The lists you send replace the ones the agent monitored: send the full set every time. Only companies with a domain and contacts with a LinkedIn URL are monitored, and every list must hold the entity the signal monitors (company lists for a company signal, contact lists for a contact signal).
+
+To start from a CSV: import it into a company or contact list, create a draft with [Create Signal Agent](/api-reference/endpoints/watch-list/create-watch-list) (`activate: false`), call this endpoint, then activate the draft with [Update Signal Agent](/api-reference/endpoints/watch-list/update-watch-list) (`activate: true`).
+
+An active agent monitors the new entities right away; a paused one stays paused until you reactivate it. Sending exactly the lists it already monitors returns `409`: companies or contacts added to or removed from those lists are picked up automatically.
+</Note>
