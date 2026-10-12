@@ -4055,9 +4055,16 @@
           },
           "in": {
             "type": "array",
-            "description": "Values to include",
+            "description": "Values to include. For `externalSignalFieldMapping` and `externalSignalCustomFieldMapping`, an array of mapping objects (see `WatchListExternalSignalMapping`); the JSON-serialized form returned when reading an agent is also accepted.",
             "items": {
-              "type": "string"
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/components/schemas/WatchListExternalSignalMapping"
+                }
+              ]
             }
           },
           "out": {
@@ -4066,6 +4073,31 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "WatchListExternalSignalMapping": {
+        "type": "object",
+        "description": "Maps a key of the flat JSON body your tool pushes to an external-signal agent. In `externalSignalFieldMapping` it targets a lemlist field; in `externalSignalCustomFieldMapping` it names a custom field kept on each signal.",
+        "required": [
+          "sourceKey",
+          "targetKey"
+        ],
+        "properties": {
+          "sourceKey": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "description": "Key of the flat JSON body your tool pushes. Each key at most once.",
+            "example": "linkedin_profile"
+          },
+          "targetKey": {
+            "type": "string",
+            "description": "`externalSignalFieldMapping`: the lemlist field, one of `contact.linkedinUrl` (required for `externalSignalContact`), `contact.email`, `contact.firstName`, `contact.lastName`, `company.domain` and `company.name` (both required for `externalSignalCompany`), `company.linkedinUrl`. `externalSignalCustomFieldMapping`: the custom field name (letters, numbers, `_` and `-`).",
+            "example": "contact.linkedinUrl"
+          },
+          "displayInSignalPanel": {
+            "type": "boolean",
+            "description": "`externalSignalCustomFieldMapping` only: show the custom field in the signal panel."
           }
         }
       },
@@ -29295,6 +29327,7 @@
           }
         ],
         "requestBody": {
+          "description": "When the agent has a field mapping (`externalSignalFieldMapping`, always set for agents created in the app or through the API), send one flat JSON object keyed by the mapped source keys, e.g. `{ \"linkedin_profile\": \"https://www.linkedin.com/in/john-doe\", \"plan\": \"enterprise\" }`; the `contact` / `company` / `customFields` format below is then ignored. That format only applies to agents without a field mapping.",
           "required": true,
           "content": {
             "application/json": {
