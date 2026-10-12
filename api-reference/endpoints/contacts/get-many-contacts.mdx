@@ -38,3 +38,7 @@ You can combine `listId` with `search` or `email` to further narrow results with
 ### Filtering contacts not in any campaign
 
 Use `notInAnyCampaign=true` to find contacts that are not part of any campaign (orphan contacts). This can be used alone or combined with other filters like `search`, `email`, or `listId`.
+
+### Filtering by CRM sync state
+
+Use `crmSyncStatus` to list the contacts in a given sync state on your connected CRM: for example `GET /contacts?crmSyncStatus=error` for every contact the CRM sync refused, or `crmSyncStatus=contact_blocked_by_company_without_name` for one root cause. A CRM must be connected, otherwise the request answers `400 NO_CRM_CONNECTED`. It can be combined with the other filters.
