@@ -1,6 +1,6 @@
 ---
 title: 'MCP Server Setup'
-description: 'Connect lemlist to your AI assistant (Claude, Cursor, and more) using the Model Context Protocol'
+description: 'Connect lemlist to your AI assistant (Claude, ChatGPT, Grok, Cursor, and more) using the Model Context Protocol'
 ---
 
 The lemlist MCP server lets you interact with lemlist directly from your AI assistant. Manage campaigns, search leads, analyze performance — all through natural conversation.
@@ -40,9 +40,32 @@ With OAuth, you don't need to create an API key. Your AI client handles authenti
 
     No `--header` flag needed — OAuth handles authentication automatically.
   </Tab>
+  <Tab title="ChatGPT">
+    lemlist is available as an official plugin in ChatGPT:
+
+    1. In ChatGPT, open **Plugins** in the sidebar (or go to [chatgpt.com/plugins](https://chatgpt.com/plugins))
+    2. Search for **lemlist** and open the plugin published by lemlist
+    3. Click **Install plugin**, then sign in to lemlist when prompted
+
+    Whether you can install plugins depends on your ChatGPT plan, workspace and role.
+
+    You can also add the lemlist MCP server yourself: on the Plugins page, click the **+** button, then **Add custom MCP server**. Enter a name, set **Server URL** to `https://app.lemlist.com/mcp`, choose **OAuth** as the authentication, select **I understand and want to continue**, then click **Create as a plugin** and install the plugin it creates. This works on ChatGPT web, subject to your workspace permissions (see [OpenAI's guide](https://developers.openai.com/api/docs/guides/custom-mcp-server)).
+  </Tab>
+  <Tab title="Grok">
+    On [grok.com](https://grok.com), open [grok.com/connectors](https://grok.com/connectors), click **New Connector**, then choose **Custom**. Enter the MCP server URL `https://app.lemlist.com/mcp` and complete the authentication Grok asks for.
+
+    On Grok Business and Enterprise, a team admin must first add the connector in the [xAI console](https://console.x.ai) (select your team, then **Grok Business > Connectors > Add Connector > Other**) before members can use it. See [xAI's connector docs](https://docs.x.ai/grok/connectors).
+  </Tab>
+  <Tab title="Grok Build">
+    ```bash
+    grok mcp add --transport http lemlist https://app.lemlist.com/mcp
+    ```
+
+    The Grok Build CLI handles the OAuth flow itself: your browser opens on first use.
+  </Tab>
 </Tabs>
 
-The first time you use a lemlist tool, your **browser will open** a consent page where you select your team and authorize access.
+In Claude Desktop, Claude Code and Grok Build, the first time you use a lemlist tool, your **browser will open** a consent page where you select your team and authorize access.
 Tokens are managed automatically (access token: 1h, refresh token: 30 days).
 
 ## With API Key
@@ -76,6 +99,12 @@ Then configure your AI client:
   <Tab title="Claude Code">
     ```bash
     claude mcp add --transport http lemlist https://app.lemlist.com/mcp \
+      --header "X-API-Key: YOUR_API_KEY"
+    ```
+  </Tab>
+  <Tab title="Grok Build">
+    ```bash
+    grok mcp add --transport http lemlist https://app.lemlist.com/mcp \
       --header "X-API-Key: YOUR_API_KEY"
     ```
   </Tab>
