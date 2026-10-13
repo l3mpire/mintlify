@@ -2860,7 +2860,7 @@
                           "LIKELY",
                           "POTENTIAL"
                         ],
-                        "description": "Detection confidence of the technology at the company"
+                        "description": "Detection confidence of the technology at the company. Absent while the technology is not classified yet; unclassified technologies sort last"
                       }
                     }
                   }
@@ -15575,7 +15575,7 @@
                               "POTENTIAL"
                             ]
                           },
-                          "description": "Technology filters only (`currentCompanyTechnologies`, `recentlyDetectedTechnologies`, `upcomingAnniversaryTechnologies`): detection confidence levels the included technologies must have. Omitted, empty or all three levels matches every level. Excluded technologies (`out`) ignore it"
+                          "description": "Technology filters only (`currentCompanyTechnologies`, `recentlyDetectedTechnologies`, `upcomingAnniversaryTechnologies`): detection confidence levels the included technologies must have. Omitted, empty or all three levels matches every level, unclassified technologies included; any other selection leaves unclassified technologies out. Excluded technologies (`out`) ignore it"
                         }
                       }
                     }
@@ -15804,7 +15804,7 @@
                               "POTENTIAL"
                             ]
                           },
-                          "description": "Technology filters only (`currentCompanyTechnologies`, `recentlyDetectedTechnologies`, `upcomingAnniversaryTechnologies`): detection confidence levels the included technologies must have. Omitted, empty or all three levels matches every level. Excluded technologies (`out`) ignore it"
+                          "description": "Technology filters only (`currentCompanyTechnologies`, `recentlyDetectedTechnologies`, `upcomingAnniversaryTechnologies`): detection confidence levels the included technologies must have. Omitted, empty or all three levels matches every level, unclassified technologies included; any other selection leaves unclassified technologies out. Excluded technologies (`out`) ignore it"
                         }
                       }
                     }
