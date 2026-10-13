@@ -4092,7 +4092,7 @@
           },
           "targetKey": {
             "type": "string",
-            "description": "`externalSignalFieldMapping`: the lemlist field, one of `contact.linkedinUrl` (required for `externalSignalContact`), `contact.email`, `contact.firstName`, `contact.lastName`, `company.domain` and `company.name` (both required for `externalSignalCompany`), `company.linkedinUrl`. `externalSignalCustomFieldMapping`: the custom field name (letters, numbers, `_` and `-`).",
+            "description": "`externalSignalFieldMapping`: the lemlist field, one of `contact.linkedinUrl` (required for `externalSignalContact`), `contact.email`, `contact.firstName`, `contact.lastName`, `company.domain` and `company.name` (both required for `externalSignalCompany`), `company.linkedinUrl`, each field at most once. `externalSignalCustomFieldMapping`: the custom field name (letters, numbers, `_` and `-`), each name at most once.",
             "example": "contact.linkedinUrl"
           },
           "displayInSignalPanel": {
@@ -4484,6 +4484,8 @@
               "promotion",
               "linkedinKeywords",
               "republishedJobOffers",
+              "externalSignalContact",
+              "externalSignalCompany",
               "buyingIntent",
               "newProductLaunch",
               "companyAward",
@@ -29615,6 +29617,8 @@
                       "promotion",
                       "linkedinKeywords",
                       "republishedJobOffers",
+                      "externalSignalContact",
+                      "externalSignalCompany",
                       "buyingIntent",
                       "newProductLaunch",
                       "companyAward",
@@ -30294,6 +30298,8 @@
                 "promotion",
                 "linkedinKeywords",
                 "republishedJobOffers",
+                "externalSignalContact",
+                "externalSignalCompany",
                 "buyingIntent",
                 "newProductLaunch",
                 "companyAward",
