@@ -2816,6 +2816,59 @@
                 },
                 "main_in_profile": {
                   "type": "boolean"
+                },
+                "technologies": {
+                  "type": "array",
+                  "description": "Technologies used by the company, on current experiences only (no `date_to`). Capped at the 100 most recently detected; `technologies_total` gives the full count",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "first_seen_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the technology was first detected at the company"
+                      },
+                      "first_seen_at_anniversary": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Next anniversary of `first_seen_at`"
+                      }
+                    }
+                  }
+                },
+                "technologies_total": {
+                  "type": "integer",
+                  "description": "Number of technologies the company uses, before the cap on `technologies`. Current experiences only"
+                },
+                "active_job_post": {
+                  "type": "object",
+                  "description": "Job postings the company currently publishes, on current experiences only. Counts are integers sent as strings",
+                  "properties": {
+                    "total": {
+                      "type": "string",
+                      "example": "3"
+                    },
+                    "count_by_department": {
+                      "type": "object",
+                      "description": "Count per department (`customer_service`, `engineering`, `finance_legal_admin`, `human_resources`, `marketing`, `operations`, `other`, `sales`)",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "example": {
+                        "customer_service": "0",
+                        "engineering": "2",
+                        "finance_legal_admin": "0",
+                        "human_resources": "0",
+                        "marketing": "0",
+                        "operations": "0",
+                        "other": "0",
+                        "sales": "1"
+                      }
+                    }
+                  }
                 }
               }
             }
