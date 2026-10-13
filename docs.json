@@ -470,7 +470,10 @@
               {
                 "group": "Fields",
                 "expanded": false,
-                "pages": ["api-reference/endpoints/fields/list-fields"]
+                "pages": [
+                  "api-reference/endpoints/fields/list-fields",
+                  "api-reference/endpoints/fields/create-field"
+                ]
               }
             ]
           },

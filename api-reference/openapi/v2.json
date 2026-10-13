@@ -29248,11 +29248,13 @@
                                 "type": "string",
                                 "enum": [
                                   "text",
+                                  "multilineText",
                                   "number",
                                   "boolean",
                                   "datetime",
                                   "date",
-                                  "phone"
+                                  "phone",
+                                  "url"
                                 ],
                                 "description": "Field data type"
                               },
@@ -29295,11 +29297,13 @@
                                 "type": "string",
                                 "enum": [
                                   "text",
+                                  "multilineText",
                                   "number",
                                   "boolean",
                                   "datetime",
                                   "date",
-                                  "phone"
+                                  "phone",
+                                  "url"
                                 ],
                                 "description": "Field data type"
                               },
@@ -29379,7 +29383,7 @@
             }
           },
           "400": {
-            "description": "Bad request",
+            "description": "Bad request: an `entity` or `source` value outside its list. `error.code` names the case, `error.message` explains it.",
             "content": {
               "application/json": {
                 "schema": {
@@ -29389,13 +29393,40 @@
                       "type": "boolean"
                     },
                     "error": {
-                      "type": "string"
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Error code: `INVALID_ENTITY_PARAM` or `INVALID_SOURCE_PARAM`."
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
                     }
                   }
                 },
-                "example": {
-                  "success": false,
-                  "error": "Invalid entity parameter. Must be one of: contact, company"
+                "examples": {
+                  "invalid-entity-param": {
+                    "summary": "`entity` not contact / company",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "INVALID_ENTITY_PARAM",
+                        "message": "Invalid entity parameter. Must be \"contact\" or \"company\""
+                      }
+                    }
+                  },
+                  "invalid-source-param": {
+                    "summary": "`source` not default / custom / crm_synced",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "INVALID_SOURCE_PARAM",
+                        "message": "Invalid source parameter. Must be \"default\", \"custom\", or \"crm_synced\""
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -29434,8 +29465,284 @@
                   }
                 },
                 "example": {
+                  "error": "Method not allowed"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Field",
+        "description": "Creates a custom field on contacts or companies, as the **New field** button does in the lemlist app: the same duplicate and reserved-name rules apply. The field is created on behalf of the user of the API key and logged in the team activity feed. Once created, write it through `POST /contacts` or `POST /companies` with its `name` as the key.\n\n**Name.** Without `name`, the key is derived from `label` the way the app does: its words joined in camelCase (`Annual revenue` becomes `annualRevenue`). An explicit `name` must start with a lowercase letter, followed by letters and digits only.\n\n**Types.** `select` and `user` fields cannot be created through the API.\n\n**Filled in the background.** A new contact field is then filled from data lemlist already holds: the LinkedIn data of enriched contacts, and the lead variable of the same name in your campaigns.\n\n**Read it back.** The response carries the created field. A `GET /fields` sent right after may take a moment to list it.\n\nFields cannot be renamed or deleted through the API.",
+        "tags": [
+          "Fields"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "entity",
+                  "label",
+                  "type"
+                ],
+                "properties": {
+                  "entity": {
+                    "type": "string",
+                    "enum": [
+                      "contact",
+                      "company"
+                    ],
+                    "description": "Entity the field belongs to."
+                  },
+                  "label": {
+                    "type": "string",
+                    "maxLength": 400,
+                    "description": "Display name of the field, as shown in lemlist. Cannot contain an HTML tag (`<...>`)."
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "text",
+                      "multilineText",
+                      "number",
+                      "date",
+                      "url",
+                      "boolean",
+                      "phone"
+                    ],
+                    "description": "Field data type. `select` and `user` fields cannot be created through the API."
+                  },
+                  "name": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-zA-Z0-9]*$",
+                    "maxLength": 400,
+                    "description": "Key to write the field with on `POST /contacts` or `POST /companies`. Optional: when omitted, it is derived from `label` (`Annual revenue` becomes `annualRevenue`). When provided, it must start with a lowercase letter, followed by letters and digits only."
+                  }
+                }
+              },
+              "example": {
+                "entity": "contact",
+                "label": "Annual revenue",
+                "type": "number"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Field created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "entity": {
+                          "type": "string",
+                          "enum": [
+                            "contact",
+                            "company"
+                          ],
+                          "description": "Entity the field belongs to"
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "Key to write the field with on `POST /contacts` or `POST /companies`"
+                        },
+                        "label": {
+                          "type": "string",
+                          "description": "Human-readable display name"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "text",
+                            "multilineText",
+                            "number",
+                            "date",
+                            "url",
+                            "boolean",
+                            "phone"
+                          ],
+                          "description": "Field data type"
+                        },
+                        "source": {
+                          "type": "string",
+                          "enum": [
+                            "custom"
+                          ],
+                          "description": "Always `custom`"
+                        }
+                      },
+                      "required": [
+                        "entity",
+                        "name",
+                        "label",
+                        "type",
+                        "source"
+                      ]
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "entity": "contact",
+                    "name": "annualRevenue",
+                    "label": "Annual revenue",
+                    "type": "number",
+                    "source": "custom"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The body is refused. `error.code` names the case, `error.message` explains it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Error code: `INVALID_ENTITY_PARAM`, `INVALID_TYPE_PARAM`, `INVALID_LABEL`, `INVALID_NAME`, `FIELD_NAME_RESERVED`, `CONTACT_FIELD_COMPANY_PREFIXED`."
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "invalid-entity-param": {
+                    "summary": "`entity` missing or not contact / company",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "INVALID_ENTITY_PARAM",
+                        "message": "Invalid entity parameter. Must be \"contact\" or \"company\""
+                      }
+                    }
+                  },
+                  "invalid-type-param": {
+                    "summary": "`type` missing or not creatable (select, user)",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "INVALID_TYPE_PARAM",
+                        "message": "Invalid type parameter. Must be one of: text, multilineText, number, date, url, boolean, phone"
+                      }
+                    }
+                  },
+                  "invalid-label": {
+                    "summary": "`label` missing, empty, too long or holding a tag",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "INVALID_LABEL",
+                        "message": "Invalid label. Must be a non-empty string of at most 400 characters, without a \"<...>\" tag"
+                      }
+                    }
+                  },
+                  "invalid-name": {
+                    "summary": "`name` off the pattern, or not derivable from `label`",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "INVALID_NAME",
+                        "message": "Invalid name. Must start with a lowercase letter followed by letters and digits only, at most 400 characters. A label holding a dot, or no letter or digit, needs an explicit name"
+                      }
+                    }
+                  },
+                  "field-name-reserved": {
+                    "summary": "name of a default or system field",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "FIELD_NAME_RESERVED",
+                        "message": "This name is reserved for a default or system field"
+                      }
+                    }
+                  },
+                  "contact-field-company-prefixed": {
+                    "summary": "contact field name starting with company",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CONTACT_FIELD_COMPANY_PREFIXED",
+                        "message": "A contact field name cannot start with \"company\": that prefix is reserved for company data on import"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Unauthorized"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A custom field with this name already exists on this entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Error code: `CUSTOM_FIELD_ALREADY_EXISTS`."
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
                   "success": false,
-                  "error": "Method not allowed. Use GET."
+                  "error": {
+                    "code": "CUSTOM_FIELD_ALREADY_EXISTS",
+                    "message": "A custom field with this name already exists for this entity"
+                  }
                 }
               }
             }
