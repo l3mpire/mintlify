@@ -456,7 +456,8 @@
                   "api-reference/endpoints/deliverability-alerts/create-alert",
                   "api-reference/endpoints/deliverability-alerts/get-alert",
                   "api-reference/endpoints/deliverability-alerts/update-alert",
-                  "api-reference/endpoints/deliverability-alerts/delete-alert"
+                  "api-reference/endpoints/deliverability-alerts/delete-alert",
+                  "api-reference/endpoints/deliverability-alerts/list-incidents"
                 ]
               },
               {
@@ -519,6 +520,7 @@
               "api-reference/objects-definitions/signal",
               "api-reference/objects-definitions/watch-list",
               "api-reference/objects-definitions/deliverability-alert",
+              "api-reference/objects-definitions/deliverability-incident",
               "api-reference/objects-definitions/sender-picture"
             ]
           }

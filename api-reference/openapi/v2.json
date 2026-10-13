@@ -4905,6 +4905,85 @@
           }
         }
       },
+      "DeliverabilityIncident": {
+        "type": "object",
+        "description": "One deliverability problem on one of your mailboxes. It opens when the problem is detected and resolves when the mailbox recovers.",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Unique identifier of the incident"
+          },
+          "teamIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Teams the mailbox belongs to"
+          },
+          "userId": {
+            "type": "string",
+            "description": "Owner of the mailbox"
+          },
+          "userMailboxId": {
+            "type": "string",
+            "description": "Mailbox the incident is about"
+          },
+          "mailboxEmail": {
+            "type": "string",
+            "description": "Sending address of the mailbox"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "dnsIssue",
+              "mailboxDisconnected",
+              "lemwarmDisconnected",
+              "lemwarmPaused"
+            ],
+            "description": "`dnsIssue`: an SPF, DMARC, MX or custom tracking domain check failed, so sending is locked. `mailboxDisconnected`: lemlist lost access to the mailbox. `lemwarmDisconnected`: the mailbox was disconnected while warming up, so warm-up stopped. `lemwarmPaused`: lemwarm paused the warm-up after a bounce or a sending failure."
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "active",
+              "resolved"
+            ],
+            "description": "`active` while the problem lasts, `resolved` once it cleared"
+          },
+          "code": {
+            "type": "string",
+            "description": "Error code reported by the provider or by lemwarm, when known"
+          },
+          "message": {
+            "type": "string",
+            "description": "Plain-text explanation of the problem, when known"
+          },
+          "openedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the problem was detected"
+          },
+          "resolvedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the problem cleared. Absent while `active`"
+          }
+        }
+      },
+      "DeliverabilityIncidentError": {
+        "type": "object",
+        "description": "Error envelope returned by the deliverability incidents endpoint.",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Human-readable explanation of the failure"
+          },
+          "code": {
+            "type": "string",
+            "description": "Machine-readable error code, stable across releases"
+          }
+        }
+      },
       "SenderPictureMailbox": {
         "type": "object",
         "description": "The sender picture sync state of one mailbox bought through lemlist.",
@@ -31350,6 +31429,220 @@
           },
           "404": {
             "description": "Alert not found"
+          }
+        }
+      }
+    },
+    "/deliverability/incidents": {
+      "get": {
+        "summary": "List Deliverability Incidents",
+        "description": "Lists your team's deliverability incidents, newest first: DNS issues that lock sending, mailboxes disconnected from lemlist, mailboxes disconnected while warming up, and warm-ups paused by lemwarm.\n\nAn incident stays `active` until the issue clears, then becomes `resolved` with a `resolvedAt` date. Alert types turned off in your team's Notifications settings (Deliverability > Alerts) are never returned. Resolved incidents are kept 90 days.\n\nThis endpoint is in closed beta and answers `403` unless the beta is enabled for your team.",
+        "operationId": "listDeliverabilityIncidents",
+        "tags": [
+          "Deliverability alerts"
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Only incidents of this type.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "dnsIssue",
+                "mailboxDisconnected",
+                "lemwarmDisconnected",
+                "lemwarmPaused"
+              ]
+            },
+            "example": "dnsIssue"
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "description": "`active`: the issue is still there. `resolved`: it cleared. Omit for both.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "resolved"
+              ]
+            },
+            "example": "active"
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "description": "Only incidents on mailboxes owned by this teammate.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "usr_Example3Hd8Pv5Rt1"
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "description": "Only incidents detected at or after this date or instant (ISO 8601; a date-time needs its offset).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2026-10-01"
+          },
+          {
+            "name": "until",
+            "in": "query",
+            "required": false,
+            "description": "Only incidents detected at or before this date or instant (ISO 8601; a date-time needs its offset).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "2026-10-31T23:59:59Z"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of incidents to return.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "description": "Number of incidents to skip, for pagination.",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "incidents": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/DeliverabilityIncident"
+                          }
+                        },
+                        "total": {
+                          "type": "integer",
+                          "description": "Number of incidents matching the filters, across all pages"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "incidents": [
+                      {
+                        "_id": "dli_A1B2C3D4E5F6G7H8J",
+                        "teamIds": [
+                          "tea_Example7Kq2Wm9Zx4"
+                        ],
+                        "userId": "usr_Example3Hd8Pv5Rt1",
+                        "userMailboxId": "usm_FakeQ4Lz7Nb2Xc9Vj",
+                        "mailboxEmail": "john@example.com",
+                        "type": "dnsIssue",
+                        "state": "active",
+                        "message": "SPF record missing for example.com\nDMARC record missing for example.com",
+                        "openedAt": "2026-10-07T16:23:00.000Z"
+                      }
+                    ],
+                    "total": 1
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error - a query parameter has an invalid value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliverabilityIncidentError"
+                },
+                "example": {
+                  "error": "Invalid query parameters: check type, state, userId, since, until, limit and skip.",
+                  "code": "DELIVERABILITY_INCIDENT_INVALID_INPUT"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliverabilityIncidentError"
+                },
+                "example": {
+                  "error": "Route unauthorized",
+                  "code": "ROUTE_UNAUTHORIZED"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The beta is not enabled for your team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliverabilityIncidentError"
+                },
+                "example": {
+                  "error": "Beta is not enabled",
+                  "code": "BETA_NOT_ENABLED"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed - only GET is supported",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliverabilityIncidentError"
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliverabilityIncidentError"
+                },
+                "example": {
+                  "error": "Internal error",
+                  "code": "INTERNAL_ERROR"
+                }
+              }
+            }
           }
         }
       }
