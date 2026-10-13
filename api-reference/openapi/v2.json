@@ -31436,7 +31436,7 @@
     "/deliverability/incidents": {
       "get": {
         "summary": "List Deliverability Incidents",
-        "description": "Lists your team's deliverability incidents, newest first: DNS issues that lock sending, mailboxes disconnected from lemlist, mailboxes disconnected while warming up, and warm-ups paused by lemwarm.\n\nAn incident stays `active` until the issue clears, then becomes `resolved` with a `resolvedAt` date. Alert types turned off in your team's Notifications settings (Deliverability > Alerts) are never returned. Resolved incidents are kept 90 days.\n\nThis endpoint is in closed beta and answers `403` unless the beta is enabled for your team.",
+        "description": "Lists your team's deliverability incidents, newest first: DNS issues that lock sending, mailboxes disconnected from lemlist, mailboxes disconnected while warming up, and warm-ups paused by lemwarm.\n\nAn incident stays `active` until the issue clears, then becomes `resolved` with a `resolvedAt` date. Alert types turned off in your team's Notifications settings (Deliverability > Alerts) are never returned. Resolved incidents are kept 90 days.",
         "operationId": "listDeliverabilityIncidents",
         "tags": [
           "Deliverability alerts"
@@ -31598,20 +31598,6 @@
                 "example": {
                   "error": "Route unauthorized",
                   "code": "ROUTE_UNAUTHORIZED"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "The beta is not enabled for your team",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeliverabilityIncidentError"
-                },
-                "example": {
-                  "error": "Beta is not enabled",
-                  "code": "BETA_NOT_ENABLED"
                 }
               }
             }
