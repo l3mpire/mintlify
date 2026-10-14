@@ -13,6 +13,10 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 </Note>
 
 <Note>
+  The lead is imported as the API key's user. When its company is not in lemlist yet, that user needs the "Create companies" permission, otherwise the request fails with `403` (`{"error": "You do not have the permission to create companies"}`) and nothing is written. A company already in lemlist is linked as usual.
+</Note>
+
+<Note>
   The lead is always new, but the contact and the company it matches are updated with the fields you send; `updateStrategy` decides what they keep. `overwrite` (default): sent values replace stored ones, an empty value clears. `overwriteIgnoreEmpty`: same, empty values ignored. `fillEmptyOnly`: only empty fields are filled, identifiers, company link, owner and status kept, and the lead takes the values the contact kept. Kept values are listed in `warnings` (`FIELDS_KEPT`, `params.fields`, company fields prefixed with `company`).
 </Note>
 
