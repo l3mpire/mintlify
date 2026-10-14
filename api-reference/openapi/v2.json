@@ -786,6 +786,26 @@
           "isUnsubscribed": {
             "type": "boolean",
             "description": "Whether the lead is unsubscribed"
+          },
+          "hubspotLeadId": {
+            "type": "string",
+            "description": "HubSpot contact id of the lead. Present only when the lead was imported from HubSpot."
+          },
+          "salesforceLeadId": {
+            "type": "string",
+            "description": "Salesforce Lead id of the lead. Present only when the lead was imported from a Salesforce Lead."
+          },
+          "salesforceContactId": {
+            "type": "string",
+            "description": "Salesforce Contact id of the lead. Present only when the lead was imported from a Salesforce Contact."
+          },
+          "pipedriveLeadId": {
+            "type": "string",
+            "description": "Pipedrive person id of the lead. Present only when the lead was imported from Pipedrive."
+          },
+          "attioLeadId": {
+            "type": "string",
+            "description": "Attio People record id of the lead. Present only when the lead was imported from an Attio view."
           }
         }
       },
@@ -1182,14 +1202,15 @@
           },
           "crmSync": {
             "type": "object",
-            "description": "CRM sync status for the contact, resolved against the team's active CRM provider (Hubspot, Salesforce, or Pipedrive). Only present when a CRM is connected and the contact has a record in it. `crmRecordId` maps a `crmIds` lookup back to the ids sent.",
+            "description": "CRM sync status for the contact, resolved against the team's active CRM provider (Hubspot, Salesforce, Pipedrive, or Attio). Only present when a CRM is connected and the contact has a record in it. `crmRecordId` maps a `crmIds` lookup back to the ids sent.",
             "properties": {
               "provider": {
                 "type": "string",
                 "enum": [
                   "hubspot",
                   "salesforce",
-                  "pipedrive"
+                  "pipedrive",
+                  "attio"
                 ],
                 "description": "Active CRM provider for the team."
               },
@@ -1375,14 +1396,15 @@
           "crmSync": {
             "type": "object",
             "nullable": true,
-            "description": "CRM sync status for the company, resolved against the team's active CRM provider (Hubspot, Salesforce, or Pipedrive). Only present when a CRM is connected. Use this block to monitor sync state and resolve duplicates (e.g. via `GET /companies?crmSyncStatus=unique_index_error_company`).",
+            "description": "CRM sync status for the company, resolved against the team's active CRM provider (Hubspot, Salesforce, Pipedrive, or Attio). Only present when a CRM is connected. Use this block to monitor sync state and resolve duplicates (e.g. via `GET /companies?crmSyncStatus=unique_index_error_company`).",
             "properties": {
               "provider": {
                 "type": "string",
                 "enum": [
                   "hubspot",
                   "salesforce",
-                  "pipedrive"
+                  "pipedrive",
+                  "attio"
                 ],
                 "description": "Active CRM provider for the team."
               },
@@ -6661,7 +6683,7 @@
                       },
                       "crm": {
                         "type": "string",
-                        "description": "The CRM integrated with lemlist (hubspot, salesforce or pipedrive)"
+                        "description": "The CRM integrated with lemlist (hubspot, salesforce, pipedrive or attio)"
                       }
                     }
                   }
@@ -15424,7 +15446,7 @@
     "/crm/filters": {
       "get": {
         "summary": "Get CRM Filters",
-        "description": "Lists the filters leads can be imported from, in the CRM your team is connected to: HubSpot contact lists, Salesforce list views or reports, Pipedrive filters. Pass the returned `id` to [Import Leads from CRM](/api-reference/endpoints/leads/import-leads-from-crm).",
+        "description": "Lists the filters leads can be imported from, in the CRM your team is connected to: HubSpot contact lists, Salesforce list views or reports, Pipedrive filters, Attio People views. Pass the returned `id` to [Import Leads from CRM](/api-reference/endpoints/leads/import-leads-from-crm).",
         "tags": [
           "Leads"
         ],
@@ -15433,7 +15455,7 @@
             "name": "type",
             "in": "query",
             "required": false,
-            "description": "Salesforce only: `lead` or `contact` list views, or `report`. Ignored by HubSpot and Pipedrive. Defaults to `lead` when your Salesforce connection allows Leads, `contact` otherwise.",
+            "description": "Salesforce only: `lead` or `contact` list views, or `report`. Ignored by HubSpot, Pipedrive and Attio. Defaults to `lead` when your Salesforce connection allows Leads, `contact` otherwise.",
             "example": "lead",
             "schema": {
               "type": "string",
@@ -15558,11 +15580,11 @@
                       "contact",
                       "report"
                     ],
-                    "description": "Salesforce only: `lead` or `contact` list views, or `report`. Ignored by HubSpot and Pipedrive. Defaults to `lead` when your Salesforce connection allows Leads, `contact` otherwise."
+                    "description": "Salesforce only: `lead` or `contact` list views, or `report`. Ignored by HubSpot, Pipedrive and Attio. Defaults to `lead` when your Salesforce connection allows Leads, `contact` otherwise."
                   },
                   "userId": {
                     "type": "string",
-                    "description": "Salesforce only, for a list view scoped to its owner (\"My leads\", \"My contacts\"…): the team member the view is read as. They must have their own Salesforce account connected in lemlist. Leave it out in every other case (reports, views not scoped to an owner); it is ignored for HubSpot and Pipedrive, where your team's CRM connection is used."
+                    "description": "Salesforce only, for a list view scoped to its owner (\"My leads\", \"My contacts\"…): the team member the view is read as. They must have their own Salesforce account connected in lemlist. Leave it out in every other case (reports, views not scoped to an owner); it is ignored for HubSpot, Pipedrive and Attio, where your team's CRM connection is used."
                   },
                   "deduplicate": {
                     "oneOf": [
