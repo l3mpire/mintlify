@@ -2608,6 +2608,23 @@
               "Engineering"
             ]
           },
+          "confidenceLevel": {
+            "type": "array",
+            "description": "Confidence levels accepted in the filter's `confidenceLevel` property. Technology filters only",
+            "items": {
+              "type": "string",
+              "enum": [
+                "CONFIRMED",
+                "LIKELY",
+                "POTENTIAL"
+              ]
+            },
+            "example": [
+              "CONFIRMED",
+              "LIKELY",
+              "POTENTIAL"
+            ]
+          },
           "range": {
             "type": "object",
             "description": "Slider configuration, for the `slider` filters",
@@ -2819,7 +2836,7 @@
                 },
                 "technologies": {
                   "type": "array",
-                  "description": "Technologies used by the company, on current experiences only (no `date_to`). Capped at the 100 most recently detected; `technologies_total` gives the full count",
+                  "description": "Technologies used by the company, on current experiences only (no `date_to`). Sorted by `scoring` (CONFIRMED, LIKELY, POTENTIAL), then most recently detected first, and capped at 100; `technologies_total` gives the full count",
                   "items": {
                     "type": "object",
                     "properties": {
@@ -2835,6 +2852,15 @@
                         "type": "string",
                         "format": "date-time",
                         "description": "Next anniversary of `first_seen_at`"
+                      },
+                      "scoring": {
+                        "type": "string",
+                        "enum": [
+                          "CONFIRMED",
+                          "LIKELY",
+                          "POTENTIAL"
+                        ],
+                        "description": "Detection confidence of the technology at the company. Absent while the technology is not classified yet; unclassified technologies sort last"
                       }
                     }
                   }
@@ -3182,6 +3208,15 @@
           "exactMatch": {
             "type": "boolean",
             "description": "Exact-match toggle, for the text filters that support it"
+          },
+          "confidenceLevel": {
+            "type": "array",
+            "description": "Technology filters only: detection confidence levels to match. Omitted, empty or all three levels matches every level",
+            "items": {
+              "type": "string",
+              "enum": ["CONFIRMED", "LIKELY", "POTENTIAL"]
+            },
+            "example": ["CONFIRMED", "LIKELY"]
           }
         }
       },
@@ -15529,6 +15564,18 @@
                             "type": "string"
                           },
                           "description": "List of the values you want to exclude"
+                        },
+                        "confidenceLevel": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "enum": [
+                              "CONFIRMED",
+                              "LIKELY",
+                              "POTENTIAL"
+                            ]
+                          },
+                          "description": "Technology filters only (`currentCompanyTechnologies`, `recentlyDetectedTechnologies`, `upcomingAnniversaryTechnologies`): detection confidence levels the included technologies must have. Omitted, empty or all three levels matches every level, unclassified technologies included; any other selection leaves unclassified technologies out. Excluded technologies (`out`) ignore it"
                         }
                       }
                     }
@@ -15746,6 +15793,18 @@
                           "items": {
                             "type": "string"
                           }
+                        },
+                        "confidenceLevel": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "enum": [
+                              "CONFIRMED",
+                              "LIKELY",
+                              "POTENTIAL"
+                            ]
+                          },
+                          "description": "Technology filters only (`currentCompanyTechnologies`, `recentlyDetectedTechnologies`, `upcomingAnniversaryTechnologies`): detection confidence levels the included technologies must have. Omitted, empty or all three levels matches every level, unclassified technologies included; any other selection leaves unclassified technologies out. Excluded technologies (`out`) ignore it"
                         }
                       }
                     }
