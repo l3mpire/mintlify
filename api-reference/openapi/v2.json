@@ -21100,7 +21100,7 @@
             }
           },
           "400": {
-            "description": "Either a plain `{ \"error\": \"...\" }` (`Bad team`, search query too short, invalid `listId` format, invalid `withPrimaryCompany`, `limit` below 1, more than 100 `idsOrEmails` values), or a validation envelope. Possible error codes: `INVALID_CRM_ID` (a `crmIds` list with no usable value, or a value longer than 25 characters), `TOO_MANY_CRM_IDS` (more than 100 `crmIds` values), `MULTIPLE_COMPANY_FILTERS`, `INVALID_COMPANY_ID`, `INVALID_FIELD_REJECTION_REASON`, `INVALID_CRM_SYNC_STATUS`, `NO_CRM_CONNECTED` (`crmSyncStatus` without a connected CRM).",
+            "description": "Either a plain `{ \"error\": \"...\" }` (`Bad team`, search query too short, invalid `listId` format, invalid `withPrimaryCompany`, `limit` below 1, more than 100 `idsOrEmails` values), or a validation envelope. Possible error codes: `INVALID_CRM_ID` (a `crmIds` list with no usable value, or a value longer than 36 characters), `TOO_MANY_CRM_IDS` (more than 100 `crmIds` values), `MULTIPLE_COMPANY_FILTERS`, `INVALID_COMPANY_ID`, `INVALID_FIELD_REJECTION_REASON`, `INVALID_CRM_SYNC_STATUS`, `NO_CRM_CONNECTED` (`crmSyncStatus` without a connected CRM).",
             "content": {
               "application/json": {
                 "schema": {
@@ -23285,7 +23285,7 @@
             }
           },
           "400": {
-            "description": "Either a plain `{ \"error\": \"...\" }` (`Bad team`, `limit` below 1), or a validation envelope. Possible error codes: `INVALID_CRM_ID` (a `crmIds` list with no usable value, or a value longer than 25 characters), `TOO_MANY_CRM_IDS` (more than 100 `crmIds` values), `INVALID_IDS_OR_DOMAINS` (no valid id or domain in `idsOrDomains`), `TOO_MANY_IDS_OR_DOMAINS` (more than 100 `idsOrDomains` values), `CRM_LIST_ENTITY_MISMATCH` (the `listId` points at a contact list), `CRM_LIST_DYNAMIC` (the list is filter-driven, so it has no stored membership to filter on), `INVALID_CRM_SYNC_STATUS`, `NO_CRM_CONNECTED` (`crmSyncStatus` without a connected CRM), `INVALID_FIELD_REJECTION_REASON`.",
+            "description": "Either a plain `{ \"error\": \"...\" }` (`Bad team`, `limit` below 1), or a validation envelope. Possible error codes: `INVALID_CRM_ID` (a `crmIds` list with no usable value, or a value longer than 36 characters), `TOO_MANY_CRM_IDS` (more than 100 `crmIds` values), `INVALID_IDS_OR_DOMAINS` (no valid id or domain in `idsOrDomains`), `TOO_MANY_IDS_OR_DOMAINS` (more than 100 `idsOrDomains` values), `CRM_LIST_ENTITY_MISMATCH` (the `listId` points at a contact list), `CRM_LIST_DYNAMIC` (the list is filter-driven, so it has no stored membership to filter on), `INVALID_CRM_SYNC_STATUS`, `NO_CRM_CONNECTED` (`crmSyncStatus` without a connected CRM), `INVALID_FIELD_REJECTION_REASON`.",
             "content": {
               "application/json": {
                 "schema": {
