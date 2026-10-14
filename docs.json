@@ -472,7 +472,8 @@
                 "expanded": false,
                 "pages": [
                   "api-reference/endpoints/fields/list-fields",
-                  "api-reference/endpoints/fields/create-field"
+                  "api-reference/endpoints/fields/create-field",
+                  "api-reference/endpoints/fields/delete-field"
                 ]
               }
             ]
