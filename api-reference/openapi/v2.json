@@ -28772,6 +28772,7 @@
     "/user/email-accounts/{emailAccountId}": {
       "delete": {
         "summary": "Disconnect Email Account",
+        "description": "Disconnects an SMTP/IMAP email account of the team.\n\n**Permission:** only the owner of the email account, or an admin of the team when the owner is a member of it, can disconnect it. Otherwise the request fails with `403` and nothing is disconnected.",
         "tags": [
           "Email Accounts"
         ],
@@ -28822,10 +28823,23 @@
             }
           },
           "403": {
-            "description": "You are not allowed to modify this mailbox",
+            "description": "The email account was not disconnected. Two cases, told apart by the `error` message: the API key's user is neither the owner of the email account nor an admin of the team the owner belongs to, or the owner is not a member of any of the API key user's teams.",
             "content": {
-              "text/plain": {
-                "example": "You are not allowed to modify this mailbox"
+              "application/json": {
+                "examples": {
+                  "notOwnerOrTeamAdmin": {
+                    "summary": "Only the owner of the email account, or an admin of the team when the owner is a member of it, can disconnect it",
+                    "value": {
+                      "error": "Only the owner of this account or an admin of this team can disconnect it"
+                    }
+                  },
+                  "ownerOutsideTeams": {
+                    "summary": "The owner of the email account is not a member of any of the API key user's teams",
+                    "value": {
+                      "error": "You are not allowed to modify this mailbox"
+                    }
+                  }
+                }
               }
             }
           },

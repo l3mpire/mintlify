@@ -9,6 +9,8 @@ Permanently disconnects the specified SMTP/IMAP email account. This will:
 - Pause any active lemwarm warming
 - Unlink the account from campaigns if owned by the API caller
 
+Only the owner of the email account, or an admin of the team when the owner is a member of it, can disconnect it. Otherwise the request fails with `403` and nothing is disconnected.
+
 <Warning>
 This action cannot be undone. The email account will need to be reconnected from scratch.
 </Warning>
