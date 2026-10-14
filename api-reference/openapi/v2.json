@@ -789,23 +789,23 @@
           },
           "hubspotLeadId": {
             "type": "string",
-            "description": "HubSpot contact id of the lead. Present only when the lead was imported from HubSpot."
+            "description": "HubSpot contact id of the lead. Present only when the lead is linked to a HubSpot contact (imported from HubSpot, or created from a contact synced with HubSpot)."
           },
           "salesforceLeadId": {
             "type": "string",
-            "description": "Salesforce Lead id of the lead. Present only when the lead was imported from a Salesforce Lead."
+            "description": "Salesforce Lead id of the lead. Present only when the lead is linked to a Salesforce Lead (imported from Salesforce, or created from a contact synced with Salesforce)."
           },
           "salesforceContactId": {
             "type": "string",
-            "description": "Salesforce Contact id of the lead. Present only when the lead was imported from a Salesforce Contact."
+            "description": "Salesforce Contact id of the lead. Present only when the lead is linked to a Salesforce Contact (imported from Salesforce, or created from a contact synced with Salesforce)."
           },
           "pipedriveLeadId": {
             "type": "string",
-            "description": "Pipedrive person id of the lead. Present only when the lead was imported from Pipedrive."
+            "description": "Pipedrive person id of the lead. Present only when the lead is linked to a Pipedrive person (imported from Pipedrive, or created from a contact synced with Pipedrive)."
           },
           "attioLeadId": {
             "type": "string",
-            "description": "Attio People record id of the lead. Present only when the lead was imported from an Attio view."
+            "description": "Attio People record id of the lead. Present only when the lead is linked to an Attio person (imported from an Attio view, or created from a contact synced with Attio)."
           }
         }
       },
@@ -1091,7 +1091,7 @@
           },
           "source": {
             "type": "string",
-            "description": "Where the rejection came from — an enrichment source (`lemrich`) or a CRM provider (`hubspot`, `salesforce`, `pipedrive`)."
+            "description": "Where the rejection came from — an enrichment source (`lemrich`) or a CRM provider (`hubspot`, `salesforce`, `pipedrive`, `attio`)."
           },
           "conflictingRecordId": {
             "type": "string",
@@ -20900,7 +20900,7 @@
             "name": "crmSyncStatus",
             "in": "query",
             "required": false,
-            "description": "Filter contacts by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, or Pipedrive) to be connected — otherwise the request returns `400 NO_CRM_CONNECTED`. Values:\n- `synced` — the contact has a CRM record and no sync errors.\n- `not_synced` — the contact has no CRM record yet.\n- `error` — at least one sync error is currently raised, whatever its reason.\n- A specific error reason (lowercase form), to filter by root cause:\n  - `invalid_email` — the CRM refused the contact's email.\n  - `property_doesnt_exist` — a mapped property does not exist in the CRM.\n  - `required_field_missing` — a field the CRM requires is missing.\n  - `unique_index_error_contact` — the CRM record is already synced with another lemlist contact.\n  - `contact_already_exists_with_name`, `contact_already_exists_with_linkedin_url`, `contact_already_exists_with_email` — a CRM contact already exists with the same first and last name, LinkedIn URL or email.\n  - `contact_blocked_by_company` — contact not created: its company already exists in the CRM.\n  - `contact_blocked_by_company_search` — contact not created: the company search is incomplete, retried later.\n  - `contact_blocked_by_company_without_name` — contact not created: its company needs a name to be found in the CRM.\n  - `contact_blocked_by_company_without_key` — contact not created: its company needs a domain or LinkedIn URL to be found in the CRM.\n\nOnly applies to the paginated list — ignored when `idsOrEmails` or `crmIds` is provided.",
+            "description": "Filter contacts by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, Pipedrive, or Attio) to be connected — otherwise the request returns `400 NO_CRM_CONNECTED`. Values:\n- `synced` — the contact has a CRM record and no sync errors.\n- `not_synced` — the contact has no CRM record yet.\n- `error` — at least one sync error is currently raised, whatever its reason.\n- A specific error reason (lowercase form), to filter by root cause:\n  - `invalid_email` — the CRM refused the contact's email.\n  - `property_doesnt_exist` — a mapped property does not exist in the CRM.\n  - `required_field_missing` — a field the CRM requires is missing.\n  - `unique_index_error_contact` — the CRM record is already synced with another lemlist contact.\n  - `contact_already_exists_with_name`, `contact_already_exists_with_linkedin_url`, `contact_already_exists_with_email` — a CRM contact already exists with the same first and last name, LinkedIn URL or email.\n  - `contact_blocked_by_company` — contact not created: its company already exists in the CRM.\n  - `contact_blocked_by_company_search` — contact not created: the company search is incomplete, retried later.\n  - `contact_blocked_by_company_without_name` — contact not created: its company needs a name to be found in the CRM.\n  - `contact_blocked_by_company_without_key` — contact not created: its company needs a domain or LinkedIn URL to be found in the CRM.\n\nOnly applies to the paginated list — ignored when `idsOrEmails` or `crmIds` is provided.",
             "example": "error",
             "schema": {
               "type": "string",
@@ -22166,7 +22166,7 @@
       },
       "post": {
         "summary": "Create Contact Note",
-        "description": "Writes a note on a contact resolved by its id (`ctc_xxx`) or email, exactly as a note written in the lemlist app: it is stored as a note of the contact, **pushed to your connected CRM** (HubSpot, Salesforce, Pipedrive) like an in-app note, and logged in the team activity feed. The author is the user of the API key. The note is plain text, stored as sent, at most 10000 characters, and cannot contain a `<` followed by a `>` (the app's guard against markup). A lone `<` is stored HTML-escaped as `&lt;`, as in the app. A missing, empty or non-text `note` creates an empty note, as on `POST /companies/{companyId}/notes`.",
+        "description": "Writes a note on a contact resolved by its id (`ctc_xxx`) or email, exactly as a note written in the lemlist app: it is stored as a note of the contact, **pushed to your connected CRM** (HubSpot, Salesforce, Pipedrive, Attio) like an in-app note, and logged in the team activity feed. The author is the user of the API key. The note is plain text, stored as sent, at most 10000 characters, and cannot contain a `<` followed by a `>` (the app's guard against markup). A lone `<` is stored HTML-escaped as `&lt;`, as in the app. A missing, empty or non-text `note` creates an empty note, as on `POST /companies/{companyId}/notes`.",
         "tags": [
           "Contacts"
         ],
@@ -23125,7 +23125,7 @@
             "name": "crmSyncStatus",
             "in": "query",
             "required": false,
-            "description": "Filter companies by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, or Pipedrive) to be connected — otherwise the request returns `400 NO_CRM_CONNECTED`. Common values:\n- `synced` — the company has a CRM record and no sync errors.\n- `not_synced` — the company has no CRM record yet.\n- `error` — at least one sync error is currently raised.\n- A specific error reason (lowercase form), to filter by root cause: `unique_index_error_company`, `property_doesnt_exist`, `required_field_missing`, `company_already_exists_with_name`, `company_already_exists_with_linkedin_url`.\n\nFor each returned company, see `crmSync.errors[].metadata.alreadyExistingCompanyId` to identify the lemlist company that already occupies the conflicting CRM record (useful to remap contacts before deleting the duplicate).",
+            "description": "Filter companies by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, Pipedrive, or Attio) to be connected — otherwise the request returns `400 NO_CRM_CONNECTED`. Common values:\n- `synced` — the company has a CRM record and no sync errors.\n- `not_synced` — the company has no CRM record yet.\n- `error` — at least one sync error is currently raised.\n- A specific error reason (lowercase form), to filter by root cause: `unique_index_error_company`, `property_doesnt_exist`, `required_field_missing`, `company_already_exists_with_name`, `company_already_exists_with_linkedin_url`.\n\nFor each returned company, see `crmSync.errors[].metadata.alreadyExistingCompanyId` to identify the lemlist company that already occupies the conflicting CRM record (useful to remap contacts before deleting the duplicate).",
             "example": "unique_index_error_company",
             "schema": {
               "type": "string",
