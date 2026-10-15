@@ -4177,7 +4177,9 @@
               "inactive",
               "draft",
               "insufficient_credits",
+              "github_token_required",
               "empty_crm_lists",
+              "excluded_crm_lists_too_large",
               "error",
               "delete"
             ]
