@@ -12711,6 +12711,11 @@
                         "type": "string",
                         "description": "Unique lead identifier"
                       },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the lead was added to the campaign"
+                      },
                       "updatedAt": {
                         "type": "string",
                         "format": "date-time",
@@ -12784,6 +12789,7 @@
                 "example": [
                   {
                     "_id": "lea_fiDpiGV585wy3Oii2",
+                    "createdAt": "2025-10-27T09:12:45.000Z",
                     "updatedAt": "2025-10-28T00:40:39.230Z",
                     "isPaused": false,
                     "state": "scanned",
@@ -12876,6 +12882,18 @@
               "maximum": 500,
               "default": 100
             }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of leads to skip, for paging past the first page. Default: 0",
+            "example": 0,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
           }
         ],
         "responses": {
@@ -12899,6 +12917,11 @@
                       "state": {
                         "type": "string",
                         "description": "Current lead state"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the lead was added to the campaign (the sort key, newest first)"
                       }
                     }
                   }
@@ -12907,7 +12930,8 @@
                   {
                     "_id": "lea_A1B2C3D4E5F6G7H8I9",
                     "contactId": "con_Z9Y8X7W6V5U4T3S2R1",
-                    "state": "scanned"
+                    "state": "scanned",
+                    "createdAt": "2026-03-02T08:15:00.000Z"
                   }
                 ]
               }
