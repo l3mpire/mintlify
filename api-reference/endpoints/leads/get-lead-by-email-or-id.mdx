@@ -9,3 +9,7 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <Note>
 You should use at least one query parameter: `email` or `id`. If both are provided, the email will take precedence.
 </Note>
+
+<Note>
+Set `version=v2` to get the v2 lead object, as an array: `createdAt` (when the lead was added to the campaign), `updatedAt`, and the variables nested under `variables`. Without `version`, the legacy flat body is returned and carries no `createdAt`.
+</Note>
