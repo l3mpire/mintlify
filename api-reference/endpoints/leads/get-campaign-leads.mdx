@@ -4,5 +4,5 @@ description: Retrieves leads from a specific campaign, optionally filtered by st
 ---
 
 <Note>
-Leads are sorted by creation date (newest first). Use the `state` query parameter to filter leads by their current state (e.g., `scanned`, `contacted`, `interested`).
+Leads are sorted by creation date (newest first), returned as `createdAt`: the date the lead was added to the campaign. Page through them with `limit` and `offset`. Use the `state` query parameter to filter leads by their current state (e.g., `scanned`, `contacted`, `interested`).
 </Note>
