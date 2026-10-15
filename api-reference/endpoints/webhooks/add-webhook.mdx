@@ -6,6 +6,8 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Webhook" objectPath="webhook" />
 
+The API key's user must have the "Edit integrations" permission, otherwise the request fails with `403` and no webhook is created.
+
 ## Limits and conflicts
 
 A workspace holds at most **200 webhooks**, and a `targetUrl` can only be registered once. Both limits answer `409`, with a JSON body whose `error` field tells them apart:

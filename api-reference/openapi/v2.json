@@ -27310,6 +27310,24 @@
           "401": {
             "description": "Unauthorized"
           },
+          "403": {
+            "description": "The API key's user does not have the \"Edit integrations\" permission. Nothing is created or deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "You do not have permission to edit webhooks"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Webhook not found",
             "content": {
@@ -27411,6 +27429,24 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "The API key's user does not have the \"Edit integrations\" permission. Nothing is created or deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "You do not have permission to edit webhooks"
+                }
+              }
+            }
           },
           "404": {
             "description": "Webhook not found",
