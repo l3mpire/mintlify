@@ -30397,15 +30397,35 @@
             }
           },
           "400": {
-            "description": "Validation error - invalid body, filters, or activate prerequisites. `WATCH_LIST_API_INVALID_CAMPAIGN_ID` when `campaignId` is malformed or sent without signalProcessingType = push_to_campaign.",
+            "description": "Validation error - invalid body, filters, or activate prerequisites. `WATCH_LIST_API_INVALID_CAMPAIGN_ID` when `campaignId` is malformed or sent without signalProcessingType = push_to_campaign. `WATCH_LIST_API_INVALID_FILTERS` when a filter is rejected: `details.invalidFilters` lists each one, and a refused external-signal mapping (`externalSignalFieldMapping`, `externalSignalCustomFieldMapping`) carries a `message` saying what to fix.",
             "content": {
               "text/plain": {
                 "example": "activate requires both segmentType and signalProcessingType"
               },
               "application/json": {
-                "example": {
-                  "error": "campaignId must be a campaign id (cam_xxx) and requires signalProcessingType = \"push_to_campaign\"",
-                  "code": "WATCH_LIST_API_INVALID_CAMPAIGN_ID"
+                "examples": {
+                  "invalidCampaignId": {
+                    "value": {
+                      "error": "campaignId must be a campaign id (cam_xxx) and requires signalProcessingType = \"push_to_campaign\"",
+                      "code": "WATCH_LIST_API_INVALID_CAMPAIGN_ID"
+                    }
+                  },
+                  "invalidExternalSignalMapping": {
+                    "value": {
+                      "error": "Invalid filters — see details for which filterIds or required properties were rejected",
+                      "code": "WATCH_LIST_API_INVALID_FILTERS",
+                      "details": {
+                        "invalidFilters": [
+                          {
+                            "reason": "INVALID_FILTER_VALUE",
+                            "filterId": "externalSignalFieldMapping",
+                            "value": "[{\"sourceKey\":\"domain\",\"targetKey\":\"company.domain\"}]",
+                            "message": "company.name must be mapped for externalSignalCompany"
+                          }
+                        ]
+                      }
+                    }
+                  }
                 }
               }
             }
