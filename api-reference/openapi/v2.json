@@ -868,6 +868,26 @@
           "isUnsubscribed": {
             "type": "boolean",
             "description": "Whether the lead is unsubscribed"
+          },
+          "hubspotLeadId": {
+            "type": "string",
+            "description": "HubSpot contact id of the lead. Present only when the lead is linked to a HubSpot contact (imported from HubSpot, or created from a contact synced with HubSpot)."
+          },
+          "salesforceLeadId": {
+            "type": "string",
+            "description": "Salesforce Lead id of the lead. Present only when the lead is linked to a Salesforce Lead (imported from Salesforce, or created from a contact synced with Salesforce)."
+          },
+          "salesforceContactId": {
+            "type": "string",
+            "description": "Salesforce Contact id of the lead. Present only when the lead is linked to a Salesforce Contact (imported from Salesforce, or created from a contact synced with Salesforce)."
+          },
+          "pipedriveLeadId": {
+            "type": "string",
+            "description": "Pipedrive person id of the lead. Present only when the lead is linked to a Pipedrive person (imported from Pipedrive, or created from a contact synced with Pipedrive)."
+          },
+          "attioLeadId": {
+            "type": "string",
+            "description": "Attio People record id of the lead. Present only when the lead is linked to an Attio person (imported from an Attio view, or created from a contact synced with Attio)."
           }
         }
       },
@@ -1153,7 +1173,7 @@
           },
           "source": {
             "type": "string",
-            "description": "Where the rejection came from — an enrichment source (`lemrich`) or a CRM provider (`hubspot`, `salesforce`, `pipedrive`)."
+            "description": "Where the rejection came from — an enrichment source (`lemrich`) or a CRM provider (`hubspot`, `salesforce`, `pipedrive`, `attio`)."
           },
           "conflictingRecordId": {
             "type": "string",
@@ -1264,14 +1284,15 @@
           },
           "crmSync": {
             "type": "object",
-            "description": "CRM sync status for the contact, resolved against the team's active CRM provider (Hubspot, Salesforce, or Pipedrive). Only present when a CRM is connected and the contact has a record in it. `crmRecordId` maps a `crmIds` lookup back to the ids sent.",
+            "description": "CRM sync status for the contact, resolved against the team's active CRM provider (Hubspot, Salesforce, Pipedrive, or Attio). Only present when a CRM is connected and the contact has a record in it. `crmRecordId` maps a `crmIds` lookup back to the ids sent.",
             "properties": {
               "provider": {
                 "type": "string",
                 "enum": [
                   "hubspot",
                   "salesforce",
-                  "pipedrive"
+                  "pipedrive",
+                  "attio"
                 ],
                 "description": "Active CRM provider for the team."
               },
@@ -1457,14 +1478,15 @@
           "crmSync": {
             "type": "object",
             "nullable": true,
-            "description": "CRM sync status for the company, resolved against the team's active CRM provider (Hubspot, Salesforce, or Pipedrive). Only present when a CRM is connected. Use this block to monitor sync state and resolve duplicates (e.g. via `GET /companies?crmSyncStatus=unique_index_error_company`).",
+            "description": "CRM sync status for the company, resolved against the team's active CRM provider (Hubspot, Salesforce, Pipedrive, or Attio). Only present when a CRM is connected. Use this block to monitor sync state and resolve duplicates (e.g. via `GET /companies?crmSyncStatus=unique_index_error_company`).",
             "properties": {
               "provider": {
                 "type": "string",
                 "enum": [
                   "hubspot",
                   "salesforce",
-                  "pipedrive"
+                  "pipedrive",
+                  "attio"
                 ],
                 "description": "Active CRM provider for the team."
               },
@@ -6743,7 +6765,7 @@
                       },
                       "crm": {
                         "type": "string",
-                        "description": "The CRM integrated with lemlist (hubspot, salesforce or pipedrive)"
+                        "description": "The CRM integrated with lemlist (hubspot, salesforce, pipedrive or attio)"
                       }
                     }
                   }
@@ -15450,7 +15472,7 @@
     "/crm/filters": {
       "get": {
         "summary": "Get CRM Filters",
-        "description": "Lists the filters leads can be imported from, in the CRM your team is connected to: HubSpot contact lists, Salesforce list views or reports, Pipedrive filters. Pass the returned `id` to [Import Leads from CRM](/api-reference/endpoints/leads/import-leads-from-crm).",
+        "description": "Lists the filters leads can be imported from, in the CRM your team is connected to: HubSpot contact lists, Salesforce list views or reports, Pipedrive filters, Attio People views. Pass the returned `id` to [Import Leads from CRM](/api-reference/endpoints/leads/import-leads-from-crm).",
         "tags": [
           "Leads"
         ],
@@ -15459,7 +15481,7 @@
             "name": "type",
             "in": "query",
             "required": false,
-            "description": "Salesforce only: `lead` or `contact` list views, or `report`. Ignored by HubSpot and Pipedrive. Defaults to `lead` when your Salesforce connection allows Leads, `contact` otherwise.",
+            "description": "Salesforce only: `lead` or `contact` list views, or `report`. Ignored by HubSpot, Pipedrive and Attio. Defaults to `lead` when your Salesforce connection allows Leads, `contact` otherwise.",
             "example": "lead",
             "schema": {
               "type": "string",
@@ -15584,11 +15606,11 @@
                       "contact",
                       "report"
                     ],
-                    "description": "Salesforce only: `lead` or `contact` list views, or `report`. Ignored by HubSpot and Pipedrive. Defaults to `lead` when your Salesforce connection allows Leads, `contact` otherwise."
+                    "description": "Salesforce only: `lead` or `contact` list views, or `report`. Ignored by HubSpot, Pipedrive and Attio. Defaults to `lead` when your Salesforce connection allows Leads, `contact` otherwise."
                   },
                   "userId": {
                     "type": "string",
-                    "description": "Salesforce only, for a list view scoped to its owner (\"My leads\", \"My contacts\"…): the team member the view is read as. They must have their own Salesforce account connected in lemlist. Leave it out in every other case (reports, views not scoped to an owner); it is ignored for HubSpot and Pipedrive, where your team's CRM connection is used."
+                    "description": "Salesforce only, for a list view scoped to its owner (\"My leads\", \"My contacts\"…): the team member the view is read as. They must have their own Salesforce account connected in lemlist. Leave it out in every other case (reports, views not scoped to an owner); it is ignored for HubSpot, Pipedrive and Attio, where your team's CRM connection is used."
                   },
                   "deduplicate": {
                     "oneOf": [
@@ -20750,7 +20772,7 @@
     "/contacts": {
       "get": {
         "summary": "Get Many Contacts",
-        "description": "Retrieves contacts by IDs/emails or by CRM record ids, or searches/lists contacts by name, email, contact list, campaign membership, or company link.\n\nWhen using `idsOrEmails`, returns an array of matching contacts directly.\n\nWhen using `crmIds`, looks the contacts up by their record id in the connected CRM (HubSpot, Salesforce, or Pipedrive) and returns an array of the contacts found, each with the matched id under `crmSync.crmRecordId`. `idsOrEmails` takes precedence over `crmIds`; a lookup ignores the search filters and the pagination.\n\nWhen using `search`, `email`, `listId`, `notInAnyCampaign`, any of the `company*` filters, or no filter at all, returns a paginated response with `data`, `total`, `limit`, and `offset` fields. You can combine filters together to narrow results (e.g. `listId` with `search`, or `notInAnyCampaign` with `companyId`). Calling the endpoint without any filter returns all contacts of the team, paginated.\n\nA lookup returns full contacts (`Contact`); the list returns `ContactListItem` objects.\n\nThe `company*` filters (`companyId`, `companyDomain`, `companyLinkedinUrl`, `companySalesnavUrl`) are mutually exclusive: use only one at a time. `companyDomain` / `companyLinkedinUrl` / `companySalesnavUrl` are resolved to a `companyId` through the Companies collection; if no matching company exists, the endpoint returns an empty list with `total: 0` (not an error), which keeps automation flows simple.",
+        "description": "Retrieves contacts by IDs/emails or by CRM record ids, or searches/lists contacts by name, email, contact list, campaign membership, or company link.\n\nWhen using `idsOrEmails`, returns an array of matching contacts directly.\n\nWhen using `crmIds`, looks the contacts up by their record id in the connected CRM (HubSpot, Salesforce, Pipedrive, or Attio) and returns an array of the contacts found, each with the matched id under `crmSync.crmRecordId`. `idsOrEmails` takes precedence over `crmIds`; a lookup ignores the search filters and the pagination.\n\nWhen using `search`, `email`, `listId`, `notInAnyCampaign`, any of the `company*` filters, or no filter at all, returns a paginated response with `data`, `total`, `limit`, and `offset` fields. You can combine filters together to narrow results (e.g. `listId` with `search`, or `notInAnyCampaign` with `companyId`). Calling the endpoint without any filter returns all contacts of the team, paginated.\n\nA lookup returns full contacts (`Contact`); the list returns `ContactListItem` objects.\n\nThe `company*` filters (`companyId`, `companyDomain`, `companyLinkedinUrl`, `companySalesnavUrl`) are mutually exclusive: use only one at a time. `companyDomain` / `companyLinkedinUrl` / `companySalesnavUrl` are resolved to a `companyId` through the Companies collection; if no matching company exists, the endpoint returns an empty list with `total: 0` (not an error), which keeps automation flows simple.",
         "tags": [
           "Contacts"
         ],
@@ -20771,7 +20793,7 @@
             "name": "crmIds",
             "in": "query",
             "required": false,
-            "description": "Comma-separated record ids of contacts in the CRM connected to the team (HubSpot, Salesforce, or Pipedrive); for Salesforce, the 18-character Contact or Lead id. Returns an array of the contacts found, each with the matched id under `crmSync.crmRecordId`; ids that match nothing are skipped, and the array is empty when no CRM is connected. Duplicates are removed; an empty value is ignored. Maximum 100 values (`TOO_MANY_CRM_IDS`); a value over 25 characters answers `INVALID_CRM_ID`. Ignored when `idsOrEmails` is provided.",
+            "description": "Comma-separated record ids of contacts in the CRM connected to the team (HubSpot, Salesforce, Pipedrive, or Attio); for Salesforce, the 18-character Contact or Lead id. Returns an array of the contacts found, each with the matched id under `crmSync.crmRecordId`; ids that match nothing are skipped, and the array is empty when no CRM is connected. Duplicates are removed; an empty value is ignored. Maximum 100 values (`TOO_MANY_CRM_IDS`); a value over 36 characters answers `INVALID_CRM_ID`. Ignored when `idsOrEmails` is provided.",
             "example": "123456789,987654321",
             "schema": {
               "type": "string"
@@ -20904,7 +20926,7 @@
             "name": "crmSyncStatus",
             "in": "query",
             "required": false,
-            "description": "Filter contacts by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, or Pipedrive) to be connected — otherwise the request returns `400 NO_CRM_CONNECTED`. Values:\n- `synced` — the contact has a CRM record and no sync errors.\n- `not_synced` — the contact has no CRM record yet.\n- `error` — at least one sync error is currently raised, whatever its reason.\n- A specific error reason (lowercase form), to filter by root cause:\n  - `invalid_email` — the CRM refused the contact's email.\n  - `property_doesnt_exist` — a mapped property does not exist in the CRM.\n  - `required_field_missing` — a field the CRM requires is missing.\n  - `unique_index_error_contact` — the CRM record is already synced with another lemlist contact.\n  - `contact_already_exists_with_name`, `contact_already_exists_with_linkedin_url`, `contact_already_exists_with_email` — a CRM contact already exists with the same first and last name, LinkedIn URL or email.\n  - `contact_blocked_by_company` — contact not created: its company already exists in the CRM.\n  - `contact_blocked_by_company_search` — contact not created: the company search is incomplete, retried later.\n  - `contact_blocked_by_company_without_name` — contact not created: its company needs a name to be found in the CRM.\n  - `contact_blocked_by_company_without_key` — contact not created: its company needs a domain or LinkedIn URL to be found in the CRM.\n\nOnly applies to the paginated list — ignored when `idsOrEmails` or `crmIds` is provided.",
+            "description": "Filter contacts by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, Pipedrive, or Attio) to be connected — otherwise the request returns `400 NO_CRM_CONNECTED`. Values:\n- `synced` — the contact has a CRM record and no sync errors.\n- `not_synced` — the contact has no CRM record yet.\n- `error` — at least one sync error is currently raised, whatever its reason.\n- A specific error reason (lowercase form), to filter by root cause:\n  - `invalid_email` — the CRM refused the contact's email.\n  - `property_doesnt_exist` — a mapped property does not exist in the CRM.\n  - `required_field_missing` — a field the CRM requires is missing.\n  - `unique_index_error_contact` — the CRM record is already synced with another lemlist contact.\n  - `contact_already_exists_with_name`, `contact_already_exists_with_linkedin_url`, `contact_already_exists_with_email` — a CRM contact already exists with the same first and last name, LinkedIn URL or email.\n  - `contact_blocked_by_company` — contact not created: its company already exists in the CRM.\n  - `contact_blocked_by_company_search` — contact not created: the company search is incomplete, retried later.\n  - `contact_blocked_by_company_without_name` — contact not created: its company needs a name to be found in the CRM.\n  - `contact_blocked_by_company_without_key` — contact not created: its company needs a domain or LinkedIn URL to be found in the CRM.\n\nOnly applies to the paginated list — ignored when `idsOrEmails` or `crmIds` is provided.",
             "example": "error",
             "schema": {
               "type": "string",
@@ -21104,7 +21126,7 @@
             }
           },
           "400": {
-            "description": "Either a plain `{ \"error\": \"...\" }` (`Bad team`, search query too short, invalid `listId` format, invalid `withPrimaryCompany`, `limit` below 1, more than 100 `idsOrEmails` values), or a validation envelope. Possible error codes: `INVALID_CRM_ID` (a `crmIds` list with no usable value, or a value longer than 25 characters), `TOO_MANY_CRM_IDS` (more than 100 `crmIds` values), `MULTIPLE_COMPANY_FILTERS`, `INVALID_COMPANY_ID`, `INVALID_FIELD_REJECTION_REASON`, `INVALID_CRM_SYNC_STATUS`, `NO_CRM_CONNECTED` (`crmSyncStatus` without a connected CRM).",
+            "description": "Either a plain `{ \"error\": \"...\" }` (`Bad team`, search query too short, invalid `listId` format, invalid `withPrimaryCompany`, `limit` below 1, more than 100 `idsOrEmails` values), or a validation envelope. Possible error codes: `INVALID_CRM_ID` (a `crmIds` list with no usable value, or a value longer than 36 characters), `TOO_MANY_CRM_IDS` (more than 100 `crmIds` values), `MULTIPLE_COMPANY_FILTERS`, `INVALID_COMPANY_ID`, `INVALID_FIELD_REJECTION_REASON`, `INVALID_CRM_SYNC_STATUS`, `NO_CRM_CONNECTED` (`crmSyncStatus` without a connected CRM).",
             "content": {
               "application/json": {
                 "schema": {
@@ -22170,7 +22192,7 @@
       },
       "post": {
         "summary": "Create Contact Note",
-        "description": "Writes a note on a contact resolved by its id (`ctc_xxx`) or email, exactly as a note written in the lemlist app: it is stored as a note of the contact, **pushed to your connected CRM** (HubSpot, Salesforce, Pipedrive) like an in-app note, and logged in the team activity feed. The author is the user of the API key. The note is plain text, stored as sent, at most 10000 characters, and cannot contain a `<` followed by a `>` (the app's guard against markup). A lone `<` is stored HTML-escaped as `&lt;`, as in the app. A missing, empty or non-text `note` creates an empty note, as on `POST /companies/{companyId}/notes`.",
+        "description": "Writes a note on a contact resolved by its id (`ctc_xxx`) or email, exactly as a note written in the lemlist app: it is stored as a note of the contact, **pushed to your connected CRM** (HubSpot, Salesforce, Pipedrive, Attio) like an in-app note, and logged in the team activity feed. The author is the user of the API key. The note is plain text, stored as sent, at most 10000 characters, and cannot contain a `<` followed by a `>` (the app's guard against markup). A lone `<` is stored HTML-escaped as `&lt;`, as in the app. A missing, empty or non-text `note` creates an empty note, as on `POST /companies/{companyId}/notes`.",
         "tags": [
           "Contacts"
         ],
@@ -23016,7 +23038,7 @@
     "/companies": {
       "get": {
         "summary": "Get Many Companies",
-        "description": "Retrieves companies by IDs/domains or by CRM record ids, or lists them with filters.\n\nWhen using `idsOrDomains`, returns the matching companies in `data`, with `total` and no pagination.\n\nWhen using `crmIds`, looks the companies up by their record id in the connected CRM (HubSpot, Salesforce, or Pipedrive) and returns them like `idsOrDomains` does, each with the matched id under `crmSync.crmRecordId`.\n\nOtherwise, returns a paginated response with `data`, `total`, `limit`, and `offset`.\n\n`idsOrDomains` takes precedence over `crmIds`; a lookup ignores the list filters and the pagination.",
+        "description": "Retrieves companies by IDs/domains or by CRM record ids, or lists them with filters.\n\nWhen using `idsOrDomains`, returns the matching companies in `data`, with `total` and no pagination.\n\nWhen using `crmIds`, looks the companies up by their record id in the connected CRM (HubSpot, Salesforce, Pipedrive, or Attio) and returns them like `idsOrDomains` does, each with the matched id under `crmSync.crmRecordId`.\n\nOtherwise, returns a paginated response with `data`, `total`, `limit`, and `offset`.\n\n`idsOrDomains` takes precedence over `crmIds`; a lookup ignores the list filters and the pagination.",
         "tags": [
           "Companies"
         ],
@@ -23035,7 +23057,7 @@
             "name": "crmIds",
             "in": "query",
             "required": false,
-            "description": "Comma-separated record ids of companies in the CRM connected to the team (HubSpot, Salesforce, or Pipedrive); for Salesforce, the 18-character Account id. Returns the companies found in `data`, with `total` and no pagination, each with the matched id under `crmSync.crmRecordId`; ids that match nothing are skipped, and `data` is empty when no CRM is connected. Duplicates are removed; an empty value is ignored. Maximum 100 values (`TOO_MANY_CRM_IDS`); a value over 25 characters answers `INVALID_CRM_ID`. Ignored when `idsOrDomains` is provided.",
+            "description": "Comma-separated record ids of companies in the CRM connected to the team (HubSpot, Salesforce, Pipedrive, or Attio); for Salesforce, the 18-character Account id. Returns the companies found in `data`, with `total` and no pagination, each with the matched id under `crmSync.crmRecordId`; ids that match nothing are skipped, and `data` is empty when no CRM is connected. Duplicates are removed; an empty value is ignored. Maximum 100 values (`TOO_MANY_CRM_IDS`); a value over 36 characters answers `INVALID_CRM_ID`. Ignored when `idsOrDomains` is provided.",
             "example": "123456789,987654321",
             "schema": {
               "type": "string"
@@ -23129,7 +23151,7 @@
             "name": "crmSyncStatus",
             "in": "query",
             "required": false,
-            "description": "Filter companies by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, or Pipedrive) to be connected — otherwise the request returns `400 NO_CRM_CONNECTED`. Common values:\n- `synced` — the company has a CRM record and no sync errors.\n- `not_synced` — the company has no CRM record yet.\n- `error` — at least one sync error is currently raised.\n- A specific error reason (lowercase form), to filter by root cause: `unique_index_error_company`, `property_doesnt_exist`, `required_field_missing`, `company_already_exists_with_name`, `company_already_exists_with_linkedin_url`.\n\nFor each returned company, see `crmSync.errors[].metadata.alreadyExistingCompanyId` to identify the lemlist company that already occupies the conflicting CRM record (useful to remap contacts before deleting the duplicate).",
+            "description": "Filter companies by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, Pipedrive, or Attio) to be connected — otherwise the request returns `400 NO_CRM_CONNECTED`. Common values:\n- `synced` — the company has a CRM record and no sync errors.\n- `not_synced` — the company has no CRM record yet.\n- `error` — at least one sync error is currently raised.\n- A specific error reason (lowercase form), to filter by root cause: `unique_index_error_company`, `property_doesnt_exist`, `required_field_missing`, `company_already_exists_with_name`, `company_already_exists_with_linkedin_url`.\n\nFor each returned company, see `crmSync.errors[].metadata.alreadyExistingCompanyId` to identify the lemlist company that already occupies the conflicting CRM record (useful to remap contacts before deleting the duplicate).",
             "example": "unique_index_error_company",
             "schema": {
               "type": "string",
@@ -23289,7 +23311,7 @@
             }
           },
           "400": {
-            "description": "Either a plain `{ \"error\": \"...\" }` (`Bad team`, `limit` below 1), or a validation envelope. Possible error codes: `INVALID_CRM_ID` (a `crmIds` list with no usable value, or a value longer than 25 characters), `TOO_MANY_CRM_IDS` (more than 100 `crmIds` values), `INVALID_IDS_OR_DOMAINS` (no valid id or domain in `idsOrDomains`), `TOO_MANY_IDS_OR_DOMAINS` (more than 100 `idsOrDomains` values), `CRM_LIST_ENTITY_MISMATCH` (the `listId` points at a contact list), `CRM_LIST_DYNAMIC` (the list is filter-driven, so it has no stored membership to filter on), `INVALID_CRM_SYNC_STATUS`, `NO_CRM_CONNECTED` (`crmSyncStatus` without a connected CRM), `INVALID_FIELD_REJECTION_REASON`.",
+            "description": "Either a plain `{ \"error\": \"...\" }` (`Bad team`, `limit` below 1), or a validation envelope. Possible error codes: `INVALID_CRM_ID` (a `crmIds` list with no usable value, or a value longer than 36 characters), `TOO_MANY_CRM_IDS` (more than 100 `crmIds` values), `INVALID_IDS_OR_DOMAINS` (no valid id or domain in `idsOrDomains`), `TOO_MANY_IDS_OR_DOMAINS` (more than 100 `idsOrDomains` values), `CRM_LIST_ENTITY_MISMATCH` (the `listId` points at a contact list), `CRM_LIST_DYNAMIC` (the list is filter-driven, so it has no stored membership to filter on), `INVALID_CRM_SYNC_STATUS`, `NO_CRM_CONNECTED` (`crmSyncStatus` without a connected CRM), `INVALID_FIELD_REJECTION_REASON`.",
             "content": {
               "application/json": {
                 "schema": {
