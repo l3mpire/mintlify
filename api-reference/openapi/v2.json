@@ -1783,16 +1783,18 @@
       },
       "SenderPool": {
         "type": "object",
-        "description": "The sender pool of the campaign after the change. A forced step can remove a channel type from the pool, and a step back on the strategy can add it again.",
+        "description": "The sender pool of a campaign, as the campaign editor shows it.",
         "properties": {
           "campaignId": {
             "type": "string"
           },
           "senderStrategy": {
-            "type": "string"
+            "type": "string",
+            "description": "`random`, or a dynamic strategy: `contactOwner`, `leadImporter` or `customField:<field>`."
           },
           "espMatching": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "`true` when a lead gets a mailbox of the same provider as its address, when the pool has one."
           },
           "readOnly": {
             "type": "boolean",
@@ -1814,6 +1816,7 @@
                 },
                 "channels": {
                   "type": "array",
+                  "description": "The enabled channels. Remove `label`, `esp` and `diagnostics` to get a valid `channels` entry of the request bodies.",
                   "items": {
                     "type": "object",
                     "properties": {
@@ -1827,22 +1830,30 @@
                         ]
                       },
                       "id": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "The mailbox id, the WhatsApp account id, the phone number, or the user id for LinkedIn."
                       },
                       "label": {
                         "type": "string"
                       },
                       "alias": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "Email only: the address the mailbox sends as."
                       },
                       "esp": {
-                        "type": "string"
+                        "type": "string",
+                        "enum": [
+                          "google",
+                          "microsoft",
+                          "smtp"
+                        ],
+                        "description": "Email only: the provider of the mailbox."
                       },
                       "diagnostics": {
                         "type": "array",
-                        "description": "The problems that block or limit the sending, for example a disconnected account.",
+                        "description": "The problems that block or limit the sending. See [Get Campaign Senders](/api-reference/endpoints/senders/get-campaign-senders#diagnostics).",
                         "items": {
-                          "type": "object"
+                          "$ref": "#/components/schemas/SenderDiagnostic"
                         }
                       }
                     }
@@ -1850,9 +1861,9 @@
                 },
                 "diagnostics": {
                   "type": "array",
-                  "description": "The problems that block or limit the sending, for example a disconnected account.",
+                  "description": "The problems that block or limit the sending. See [Get Campaign Senders](/api-reference/endpoints/senders/get-campaign-senders#diagnostics).",
                   "items": {
-                    "type": "object"
+                    "$ref": "#/components/schemas/SenderDiagnostic"
                   }
                 }
               }
@@ -1860,9 +1871,219 @@
           },
           "diagnostics": {
             "type": "array",
-            "description": "The problems that block or limit the sending, for example a disconnected account.",
+            "description": "The problems of the whole pool, for example no account of a required channel type in the team.",
             "items": {
-              "type": "object"
+              "$ref": "#/components/schemas/SenderDiagnostic"
+            }
+          }
+        }
+      },
+      "SenderDiagnostic": {
+        "type": "object",
+        "description": "One health problem of a sender, a channel or the whole pool.",
+        "properties": {
+          "scope": {
+            "type": "string",
+            "enum": [
+              "channel",
+              "user",
+              "step",
+              "global"
+            ],
+            "description": "What the problem is about: one channel, one sender, one step or the whole pool."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "error",
+              "warning",
+              "info"
+            ],
+            "description": "`error` blocks the sending. `warning` and `info` do not."
+          },
+          "code": {
+            "type": "string",
+            "enum": [
+              "channel_missing",
+              "channel_disconnected",
+              "channel_linked_elsewhere",
+              "channel_issue",
+              "channel_not_required",
+              "license_missing",
+              "no_required_channel_active",
+              "no_account_connected",
+              "no_sender_enabled",
+              "sender_paused"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "More details, for example the error of a mailbox."
+          },
+          "channelType": {
+            "type": "string",
+            "enum": [
+              "email",
+              "linkedin",
+              "whatsapp",
+              "phone"
+            ],
+            "description": "The channel type of the problem. Absent when the problem is not about one channel type."
+          }
+        }
+      },
+      "SenderChannelInput": {
+        "type": "object",
+        "description": "One channel to enable on a sender.",
+        "required": [
+          "type"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "email",
+              "linkedin",
+              "whatsapp",
+              "phone"
+            ],
+            "description": "The channel type. At least one step of the campaign must use it."
+          },
+          "id": {
+            "type": "string",
+            "description": "The account to enable: the mailbox id, the WhatsApp account id or the phone number. Omit it for `linkedin`. Without `id`, every healthy account of the type, or every account of the type when none is healthy."
+          },
+          "alias": {
+            "type": "string",
+            "description": "Email only, with an `id`: the alias address of the mailbox to send as."
+          }
+        }
+      },
+      "SenderInput": {
+        "type": "object",
+        "description": "One sender of the pool.",
+        "required": [
+          "userId"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "The team member who sends"
+          },
+          "channels": {
+            "type": "array",
+            "minItems": 1,
+            "description": "The channels to enable. Without `channels`, the sender gets the channel types that the campaign steps use, healthy accounts first, as the campaign editor does.",
+            "items": {
+              "$ref": "#/components/schemas/SenderChannelInput"
+            }
+          }
+        }
+      },
+      "SenderList": {
+        "type": "object",
+        "description": "The team members who can send, with their channels.",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "With `campaignId` only."
+          },
+          "senderStrategy": {
+            "type": "string",
+            "description": "With `campaignId` only. The sender strategy of the campaign."
+          },
+          "requiredChannelTypes": {
+            "type": "array",
+            "description": "With `campaignId` only. The channel types that the campaign steps use. Only these types can be enabled in the pool.",
+            "items": {
+              "type": "string",
+              "enum": [
+                "email",
+                "linkedin",
+                "whatsapp",
+                "phone"
+              ]
+            }
+          },
+          "senders": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "inPool": {
+                  "type": "boolean",
+                  "description": "With `campaignId` only. `true` when the sender is in the pool of the campaign."
+                },
+                "channels": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "email",
+                          "linkedin",
+                          "whatsapp",
+                          "phone"
+                        ]
+                      },
+                      "id": {
+                        "type": "string",
+                        "description": "The mailbox id, the WhatsApp account id, the phone number, or the user id for LinkedIn."
+                      },
+                      "label": {
+                        "type": "string"
+                      },
+                      "aliases": {
+                        "type": "array",
+                        "description": "Email only: the alias addresses of the mailbox.",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "esp": {
+                        "type": "string",
+                        "enum": [
+                          "google",
+                          "microsoft",
+                          "smtp"
+                        ],
+                        "description": "Email only: the provider of the mailbox."
+                      },
+                      "inPool": {
+                        "type": "boolean",
+                        "description": "With `campaignId` only. `true` when the pool enables the channel."
+                      },
+                      "diagnostics": {
+                        "type": "array",
+                        "description": "The problems that block or limit the sending. See [Get Campaign Senders](/api-reference/endpoints/senders/get-campaign-senders#diagnostics).",
+                        "items": {
+                          "$ref": "#/components/schemas/SenderDiagnostic"
+                        }
+                      }
+                    }
+                  }
+                },
+                "diagnostics": {
+                  "type": "array",
+                  "description": "The problems that block or limit the sending. See [Get Campaign Senders](/api-reference/endpoints/senders/get-campaign-senders#diagnostics).",
+                  "items": {
+                    "$ref": "#/components/schemas/SenderDiagnostic"
+                  }
+                }
+              }
             }
           }
         }
@@ -7726,7 +7947,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "Array of user IDs (usr_xxx format) to assign as campaign senders. Cannot be used on campaigns with a dynamic sender strategy (contactOwner, leadImporter, customField). Each sender is validated against the campaign's sending channels (email, LinkedIn, SMS, WhatsApp): senders without capabilities for at least one channel are excluded, and all channels must be covered by at least one sender."
+                    "description": "Array of user IDs (usr_xxx format) to assign as campaign senders. Cannot be used on campaigns with a dynamic sender strategy (contactOwner, leadImporter, customField). Each sender is validated against the campaign's sending channels (email, LinkedIn, SMS, WhatsApp): senders without capabilities for at least one channel are excluded, and every channel that a lead can reach in the sequence must be covered by at least one sender. Replaces the sender pool, with the first account of each channel type for each sender. To add a sender without a replacement, pick an account or an alias, use the [Senders](/api-reference/endpoints/senders/add-campaign-senders) endpoints."
                   },
                   "autoReview": {
                     "type": "boolean",
@@ -11782,6 +12003,1240 @@
         }
       }
     },
+    "/senders": {
+      "get": {
+        "summary": "List Senders",
+        "tags": [
+          "Senders"
+        ],
+        "description": "Lists the team members who can send, with their channels and the health of each channel. With `campaignId`, each sender and each channel tells whether the campaign pool enables it.",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "in": "query",
+            "required": false,
+            "description": "Adds `inPool`, the sender strategy and the channel types that the campaign steps use",
+            "example": "cam_A1b2C3d4E5f6G7h8M",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SenderList"
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "campaignId": "cam_A1b2C3d4E5f6G7h8M",
+                    "senderStrategy": "random",
+                    "requiredChannelTypes": [
+                      "email",
+                      "whatsapp"
+                    ],
+                    "senders": [
+                      {
+                        "userId": "usr_A1b2C3d4E5f6G7h8K",
+                        "name": "John Doe",
+                        "email": "john@example.com",
+                        "inPool": true,
+                        "channels": [
+                          {
+                            "type": "email",
+                            "id": "usm_A1b2C3d4E5f6G7h8L",
+                            "label": "john@example.com",
+                            "aliases": [
+                              "hello@example.com"
+                            ],
+                            "esp": "google",
+                            "inPool": true,
+                            "diagnostics": []
+                          }
+                        ],
+                        "diagnostics": [
+                          {
+                            "scope": "user",
+                            "type": "error",
+                            "code": "no_required_channel_active",
+                            "channelType": "whatsapp"
+                          }
+                        ]
+                      },
+                      {
+                        "userId": "usr_A1b2C3d4E5f6G7h8N",
+                        "name": "Jane Smith",
+                        "email": "jane@example.com",
+                        "inPool": false,
+                        "channels": [
+                          {
+                            "type": "email",
+                            "id": "usm_A1b2C3d4E5f6G7h8P",
+                            "label": "jane@example.com",
+                            "esp": "microsoft",
+                            "inPool": false,
+                            "diagnostics": []
+                          },
+                          {
+                            "type": "whatsapp",
+                            "id": "uwa_A1b2C3d4E5f6G7h8Q",
+                            "label": "+15550100199",
+                            "inPool": false,
+                            "diagnostics": []
+                          }
+                        ],
+                        "diagnostics": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed campaign id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Wrong param campaign id",
+                  "code": "WRONG_PARAM_CAMPAIGN_ID"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "Campaign not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Campaign not found",
+                  "code": "SENDER_CAMPAIGN_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/campaigns/{campaignId}/senders": {
+      "parameters": [
+        {
+          "name": "campaignId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the campaign",
+          "example": "cam_A1b2C3d4E5f6G7h8M",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Get Campaign Senders",
+        "tags": [
+          "Senders"
+        ],
+        "description": "Returns the sender pool of a campaign, as the campaign editor shows it: each sender with its enabled channels and their diagnostics. Requires the Email Pro plan.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SenderPool"
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "campaignId": "cam_A1b2C3d4E5f6G7h8M",
+                    "senderStrategy": "random",
+                    "espMatching": false,
+                    "readOnly": false,
+                    "senders": [
+                      {
+                        "userId": "usr_A1b2C3d4E5f6G7h8K",
+                        "name": "John Doe",
+                        "email": "john@example.com",
+                        "channels": [
+                          {
+                            "type": "email",
+                            "id": "usm_A1b2C3d4E5f6G7h8L",
+                            "label": "john@example.com",
+                            "alias": "john@example.com",
+                            "esp": "google",
+                            "diagnostics": []
+                          }
+                        ],
+                        "diagnostics": [
+                          {
+                            "scope": "user",
+                            "type": "warning",
+                            "code": "license_missing"
+                          }
+                        ]
+                      }
+                    ],
+                    "diagnostics": []
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed campaign id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Wrong param campaign id",
+                  "code": "WRONG_PARAM_CAMPAIGN_ID"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "The sender pool requires at least the Email Pro plan",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "404": {
+            "description": "Campaign not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Campaign not found",
+                  "code": "SENDER_CAMPAIGN_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Add Campaign Senders",
+        "tags": [
+          "Senders"
+        ],
+        "description": "Adds senders, or channels of senders, to the pool of a campaign. It never removes a sender or a channel. Requires the Email Pro plan.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "senders"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "senders": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "$ref": "#/components/schemas/SenderInput"
+                    }
+                  }
+                }
+              },
+              "example": {
+                "senders": [
+                  {
+                    "userId": "usr_A1b2C3d4E5f6G7h8N"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SenderPool"
+                    },
+                    "impact": {
+                      "type": "object",
+                      "description": "Present when the change removes a sender or a channel.",
+                      "properties": {
+                        "contactedLeads": {
+                          "type": "integer",
+                          "description": "The contacted leads that keep a removed sender or a removed channel. Their next steps stop with a \"Send user is missing\" error until the sender is back in the pool."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "campaignId": "cam_A1b2C3d4E5f6G7h8M",
+                    "senderStrategy": "random",
+                    "espMatching": false,
+                    "readOnly": false,
+                    "senders": [
+                      {
+                        "userId": "usr_A1b2C3d4E5f6G7h8K",
+                        "name": "John Doe",
+                        "email": "john@example.com",
+                        "channels": [
+                          {
+                            "type": "email",
+                            "id": "usm_A1b2C3d4E5f6G7h8L",
+                            "label": "john@example.com",
+                            "alias": "john@example.com",
+                            "esp": "google",
+                            "diagnostics": []
+                          }
+                        ],
+                        "diagnostics": []
+                      },
+                      {
+                        "userId": "usr_A1b2C3d4E5f6G7h8N",
+                        "name": "Jane Smith",
+                        "email": "jane@example.com",
+                        "channels": [
+                          {
+                            "type": "email",
+                            "id": "usm_A1b2C3d4E5f6G7h8P",
+                            "label": "jane@example.com",
+                            "alias": "jane@example.com",
+                            "esp": "microsoft",
+                            "diagnostics": []
+                          }
+                        ],
+                        "diagnostics": []
+                      }
+                    ],
+                    "diagnostics": []
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request: the body does not match the schema, a user is not a team member, an account or an alias does not belong to the user, the user has no account of the type, or no step of the campaign uses the channel type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "No step of the campaign uses this channel type. Add a step of this type first",
+                  "code": "SENDER_CAMPAIGN_CHANNEL_TYPE_NOT_REQUIRED"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "The sender pool requires at least the Email Pro plan",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "404": {
+            "description": "Campaign not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Campaign not found",
+                  "code": "SENDER_CAMPAIGN_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The campaign uses a dynamic sender strategy: the leads select the senders, and the pool is read-only",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "The campaign uses a dynamic sender strategy: the leads select the senders",
+                  "code": "SENDER_CAMPAIGN_DYNAMIC_STRATEGY"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Replace Campaign Senders",
+        "tags": [
+          "Senders"
+        ],
+        "description": "Replaces the pool of a campaign with the senders of the body. A sender or a channel outside the body leaves the pool. An empty list clears the pool. Requires the Email Pro plan.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "senders"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "senders": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/SenderInput"
+                    }
+                  }
+                }
+              },
+              "example": {
+                "senders": [
+                  {
+                    "userId": "usr_A1b2C3d4E5f6G7h8N",
+                    "channels": [
+                      {
+                        "type": "email",
+                        "id": "usm_A1b2C3d4E5f6G7h8P"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SenderPool"
+                    },
+                    "impact": {
+                      "type": "object",
+                      "description": "Present when the change removes a sender or a channel.",
+                      "properties": {
+                        "contactedLeads": {
+                          "type": "integer",
+                          "description": "The contacted leads that keep a removed sender or a removed channel. Their next steps stop with a \"Send user is missing\" error until the sender is back in the pool."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "campaignId": "cam_A1b2C3d4E5f6G7h8M",
+                    "senderStrategy": "random",
+                    "espMatching": false,
+                    "readOnly": false,
+                    "senders": [
+                      {
+                        "userId": "usr_A1b2C3d4E5f6G7h8N",
+                        "name": "Jane Smith",
+                        "email": "jane@example.com",
+                        "channels": [
+                          {
+                            "type": "email",
+                            "id": "usm_A1b2C3d4E5f6G7h8P",
+                            "label": "jane@example.com",
+                            "alias": "jane@example.com",
+                            "esp": "microsoft",
+                            "diagnostics": []
+                          }
+                        ],
+                        "diagnostics": []
+                      }
+                    ],
+                    "diagnostics": []
+                  },
+                  "impact": {
+                    "contactedLeads": 12
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request: the body does not match the schema, a user is not a team member, an account or an alias does not belong to the user, the user has no account of the type, or no step of the campaign uses the channel type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "No step of the campaign uses this channel type. Add a step of this type first",
+                  "code": "SENDER_CAMPAIGN_CHANNEL_TYPE_NOT_REQUIRED"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "The sender pool requires at least the Email Pro plan",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "404": {
+            "description": "Campaign not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Campaign not found",
+                  "code": "SENDER_CAMPAIGN_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The campaign uses a dynamic sender strategy: the leads select the senders, and the pool is read-only",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "The campaign uses a dynamic sender strategy: the leads select the senders",
+                  "code": "SENDER_CAMPAIGN_DYNAMIC_STRATEGY"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/campaigns/{campaignId}/senders/{userId}": {
+      "parameters": [
+        {
+          "name": "campaignId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the campaign",
+          "example": "cam_A1b2C3d4E5f6G7h8M",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "userId",
+          "in": "path",
+          "required": true,
+          "description": "The team member to change",
+          "example": "usr_A1b2C3d4E5f6G7h8N",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "patch": {
+        "summary": "Update Campaign Sender Channels",
+        "tags": [
+          "Senders"
+        ],
+        "description": "Enables or disables channels of one sender in the pool of a campaign, or changes the alias of a mailbox. The changes apply in order. The other channels of the sender do not change. Requires the Email Pro plan.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "channels"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "channels": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "type"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "email",
+                            "linkedin",
+                            "whatsapp",
+                            "phone"
+                          ]
+                        },
+                        "id": {
+                          "type": "string",
+                          "description": "The account: the mailbox id, the WhatsApp account id or the phone number. Omit it for `linkedin`. Without `id`, the change applies to every account of the type."
+                        },
+                        "alias": {
+                          "type": "string",
+                          "description": "Email only, with an `id`: the alias address of the mailbox to send as. Forbidden with `enabled: false`."
+                        },
+                        "enabled": {
+                          "type": "boolean",
+                          "description": "`true` enables the channel, `false` disables it. Without `enabled`, only the alias changes: `id` and `alias` are then required."
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "channels": [
+                  {
+                    "type": "whatsapp",
+                    "id": "uwa_A1b2C3d4E5f6G7h8Q",
+                    "enabled": true
+                  },
+                  {
+                    "type": "email",
+                    "id": "usm_A1b2C3d4E5f6G7h8P",
+                    "alias": "hello@example.com"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SenderPool"
+                    },
+                    "impact": {
+                      "type": "object",
+                      "description": "Present when the change removes a sender or a channel.",
+                      "properties": {
+                        "contactedLeads": {
+                          "type": "integer",
+                          "description": "The contacted leads that keep a removed sender or a removed channel. Their next steps stop with a \"Send user is missing\" error until the sender is back in the pool."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "campaignId": "cam_A1b2C3d4E5f6G7h8M",
+                    "senderStrategy": "random",
+                    "espMatching": false,
+                    "readOnly": false,
+                    "senders": [
+                      {
+                        "userId": "usr_A1b2C3d4E5f6G7h8K",
+                        "name": "John Doe",
+                        "email": "john@example.com",
+                        "channels": [
+                          {
+                            "type": "email",
+                            "id": "usm_A1b2C3d4E5f6G7h8L",
+                            "label": "john@example.com",
+                            "alias": "john@example.com",
+                            "esp": "google",
+                            "diagnostics": []
+                          }
+                        ],
+                        "diagnostics": []
+                      },
+                      {
+                        "userId": "usr_A1b2C3d4E5f6G7h8N",
+                        "name": "Jane Smith",
+                        "email": "jane@example.com",
+                        "channels": [
+                          {
+                            "type": "email",
+                            "id": "usm_A1b2C3d4E5f6G7h8P",
+                            "label": "jane@example.com",
+                            "alias": "hello@example.com",
+                            "esp": "microsoft",
+                            "diagnostics": []
+                          },
+                          {
+                            "type": "whatsapp",
+                            "id": "uwa_A1b2C3d4E5f6G7h8Q",
+                            "label": "+15550100199",
+                            "diagnostics": []
+                          }
+                        ],
+                        "diagnostics": []
+                      }
+                    ],
+                    "diagnostics": []
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request: malformed user id, the body does not match the schema, the user is not a team member, an account or an alias does not belong to the user, the user has no account of the type, no step of the campaign uses the channel type, or a change disables LinkedIn",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "LinkedIn cannot be disabled alone. Remove the sender from the campaign instead",
+                  "code": "SENDER_CAMPAIGN_LINKEDIN_IMPLICIT"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "The sender pool requires at least the Email Pro plan",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "404": {
+            "description": "Campaign not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Campaign not found",
+                  "code": "SENDER_CAMPAIGN_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The campaign uses a dynamic sender strategy: the leads select the senders, and the pool is read-only",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "The campaign uses a dynamic sender strategy: the leads select the senders",
+                  "code": "SENDER_CAMPAIGN_DYNAMIC_STRATEGY"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove Campaign Sender",
+        "tags": [
+          "Senders"
+        ],
+        "description": "Removes one sender, with every channel, from the pool of a campaign. The leads not contacted yet go to the other senders of the pool. Requires the Email Pro plan.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SenderPool"
+                    },
+                    "impact": {
+                      "type": "object",
+                      "description": "Present when the change removes a sender or a channel.",
+                      "properties": {
+                        "contactedLeads": {
+                          "type": "integer",
+                          "description": "The contacted leads that keep a removed sender or a removed channel. Their next steps stop with a \"Send user is missing\" error until the sender is back in the pool."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "campaignId": "cam_A1b2C3d4E5f6G7h8M",
+                    "senderStrategy": "random",
+                    "espMatching": false,
+                    "readOnly": false,
+                    "senders": [
+                      {
+                        "userId": "usr_A1b2C3d4E5f6G7h8K",
+                        "name": "John Doe",
+                        "email": "john@example.com",
+                        "channels": [
+                          {
+                            "type": "email",
+                            "id": "usm_A1b2C3d4E5f6G7h8L",
+                            "label": "john@example.com",
+                            "alias": "john@example.com",
+                            "esp": "google",
+                            "diagnostics": []
+                          }
+                        ],
+                        "diagnostics": []
+                      }
+                    ],
+                    "diagnostics": []
+                  },
+                  "impact": {
+                    "contactedLeads": 0
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed campaign or user id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Wrong param user id",
+                  "code": "WRONG_PARAM_USER_ID"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "The sender pool requires at least the Email Pro plan",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "404": {
+            "description": "Campaign not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Campaign not found",
+                  "code": "SENDER_CAMPAIGN_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The campaign uses a dynamic sender strategy: the leads select the senders, and the pool is read-only",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable error message"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Machine-readable error code"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "The campaign uses a dynamic sender strategy: the leads select the senders",
+                  "code": "SENDER_CAMPAIGN_DYNAMIC_STRATEGY"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/sequences/{sequenceId}/steps/{stepId}/sender": {
       "parameters": [
         {
@@ -11912,7 +13367,8 @@
             "content": {
               "application/json": {
                 "example": {
-                  "error": "Bad method"
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
                 }
               }
             }
@@ -12116,7 +13572,8 @@
             "content": {
               "application/json": {
                 "example": {
-                  "error": "Bad method"
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
                 }
               }
             }
@@ -12281,7 +13738,8 @@
             "content": {
               "application/json": {
                 "example": {
-                  "error": "Bad method"
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
                 }
               }
             }

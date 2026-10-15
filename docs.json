@@ -158,6 +158,18 @@
                 ]
               },
               {
+                "group": "Senders",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/senders/list-senders",
+                  "api-reference/endpoints/senders/get-campaign-senders",
+                  "api-reference/endpoints/senders/add-campaign-senders",
+                  "api-reference/endpoints/senders/replace-campaign-senders",
+                  "api-reference/endpoints/senders/update-campaign-sender-channels",
+                  "api-reference/endpoints/senders/remove-campaign-sender"
+                ]
+              },
+              {
                 "group": "Sequences",
                 "expanded": false,
                 "pages": [
