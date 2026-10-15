@@ -14,4 +14,6 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
   `companyName` alone renames the company the lead is linked to. When the lead has no company yet, it gets linked to a company with that name, created when needed.
 
   Either way the response reports it: `warnings` carries a `company-fields-write-company-record` entry naming the `company`-prefixed keys you sent in `params.fields`. It is informational, the update went through. To edit a company on purpose, use [Upsert Company](/api-reference/endpoints/companies/upsert-company).
+
+  An update that would create a company requires the "Create companies" permission on the API key's user, otherwise the request fails with `403` (`You do not have the permission to create companies`, plain text) and nothing is written.
 </Note>
