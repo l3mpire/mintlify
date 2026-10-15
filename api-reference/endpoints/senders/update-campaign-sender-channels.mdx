@@ -1,0 +1,35 @@
+---
+openapi: patch /campaigns/{campaignId}/senders/{userId}
+description: Enables or disables channels of one sender, or changes the alias of a mailbox.
+---
+
+<Note>
+The sender pool requires at least the **Email Pro** plan.
+</Note>
+
+<Tip>
+To pin the sender of one step, outside the pool, see
+[Set Step Sender](/api-reference/endpoints/sequences/set-step-sender) in the
+Sequences group.
+</Tip>
+
+Changes the channels of one sender in the pool. The changes apply in the order
+of the body. The channels that the body does not list do not change.
+
+| Change                           | Body entry                                                       |
+| -------------------------------- | ---------------------------------------------------------------- |
+| Enable one account               | `{ "type": "whatsapp", "id": "<account id>", "enabled": true }`   |
+| Enable every account of a type   | `{ "type": "email", "enabled": true }`                           |
+| Disable one account              | `{ "type": "email", "id": "<mailbox id>", "enabled": false }`     |
+| Change the alias of a mailbox    | `{ "type": "email", "id": "<mailbox id>", "alias": "<address>" }` |
+
+- A sender outside the pool joins the pool with the enabled channels.
+- When the last channel of a sender is disabled, the sender leaves the pool.
+- LinkedIn cannot be disabled alone: a sender in the pool always sends on
+  LinkedIn. To stop it, use
+  [Remove Campaign Sender](/api-reference/endpoints/senders/remove-campaign-sender).
+- An enabled channel type must be used by at least one step of the campaign.
+
+When the change disables a channel, `impact.contactedLeads` gives the
+contacted leads that keep this channel. Their next steps stop with a "Send user
+is missing" error, until the channel comes back in the pool.
