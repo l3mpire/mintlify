@@ -12641,7 +12641,7 @@
             "name": "version",
             "in": "query",
             "required": false,
-            "description": "Set to `v2` to get the v2 lead object as an array: `createdAt` (when the lead was added to the campaign), `updatedAt`, the variables nested under `variables`. Without it the legacy flat body is returned, without `createdAt`.",
+            "description": "API version. v2 is the only option",
             "example": "v2",
             "schema": {
               "type": "string",
@@ -12659,114 +12659,114 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "title": "version=v2", "type": "array",
-                      "description": "With `version=v2`: the v2 lead objects matching the query, the shape of GET /leads/{email}.",
-                      "items": {
-                        "$ref": "#/components/schemas/LeadV2"
+                      "title": "Legacy (no version)",
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "type": "string",
+                        "format": "email",
+                        "description": "Email address of the lead"
+                      },
+                      "firstName": {
+                        "type": "string",
+                        "description": "First name of the lead"
+                      },
+                      "lastName": {
+                        "type": "string",
+                        "description": "Last name of the lead"
+                      },
+                      "companyName": {
+                        "type": "string",
+                        "description": "Company name"
+                      },
+                      "jobTitle": {
+                        "type": "string",
+                        "description": "Job title"
+                      },
+                      "companyDomain": {
+                        "type": "string",
+                        "description": "Company domain"
+                      },
+                      "_id": {
+                        "type": "string",
+                        "description": "Unique identifier for the lead"
+                      },
+                      "isPaused": {
+                        "type": "boolean",
+                        "description": "Indicates if the lead is paused"
+                      },
+                      "campaignId": {
+                        "type": "string",
+                        "description": "ID of the campaign the lead is associated with"
+                      },
+                      "contactId": {
+                        "type": "string",
+                        "description": "Associated contact ID (if any)"
+                      },
+                      "emailStatus": {
+                        "type": "string",
+                        "description": "Email status of the lead"
                       }
+                    }
                     },
                     {
-                      "title": "Legacy (no version)", "type": "object",
-                      "description": "Without `version`: the legacy flat body, variables at the root, no `createdAt`.",
-                      "properties": {
-                        "email": {
-                          "type": "string",
-                          "format": "email",
-                          "description": "Email address of the lead"
-                        },
-                        "firstName": {
-                          "type": "string",
-                          "description": "First name of the lead"
-                        },
-                        "lastName": {
-                          "type": "string",
-                          "description": "Last name of the lead"
-                        },
-                        "companyName": {
-                          "type": "string",
-                          "description": "Company name"
-                        },
-                        "jobTitle": {
-                          "type": "string",
-                          "description": "Job title"
-                        },
-                        "companyDomain": {
-                          "type": "string",
-                          "description": "Company domain"
-                        },
-                        "_id": {
-                          "type": "string",
-                          "description": "Unique identifier for the lead"
-                        },
-                        "isPaused": {
-                          "type": "boolean",
-                          "description": "Indicates if the lead is paused"
-                        },
-                        "campaignId": {
-                          "type": "string",
-                          "description": "ID of the campaign the lead is associated with"
-                        },
-                        "contactId": {
-                          "type": "string",
-                          "description": "Associated contact ID (if any)"
-                        },
-                        "emailStatus": {
-                          "type": "string",
-                          "description": "Email status of the lead"
-                        }
+                      "title": "version=v2",
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/LeadV2"
                       }
                     }
                   ]
                 },
                 "examples": {
-                  "v2": {
-                    "summary": "version=v2",
-                    "value": [
-                    {
-                      "_id": "lea_fiDpiGV585wy3Oii2",
-                      "createdAt": "2025-10-27T09:12:45.000Z",
-                      "updatedAt": "2025-10-28T00:40:39.230Z",
-                      "isPaused": false,
-                      "state": "scanned",
-                      "status": "review",
-                      "personalized": false,
-                      "source": "api",
-                      "variables": {
-                        "firstName": "John",
-                        "lastName": "Doe",
-                        "companyName": "lemlist",
-                        "jobTitle": "GTM Engineer",
-                        "companyDomain": "example.com",
-                        "email": "support@lemlist.com"
-                      },
-                      "contactId": "ctc_xW8Ou6C03Csv8vatp",
-                      "enrichment": {
-                        "emailStatus": "deliverable"
-                      },
-                      "campaign": {
-                        "id": "cam_bSn8EORHQxbWPjHvu",
-                        "name": "NEW TO DELETE",
-                        "status": "draft"
-                      },
-                      "sendingUser": {}
-                    }
-                    ]
-                  },
                   "legacy": {
                     "summary": "No version (legacy flat body)",
                     "value": {
-                    "firstName": "John",
-                    "lastName": "Doe",
-                    "companyName": "lemlist",
-                    "jobTitle": "GTM Engineer",
-                    "companyDomain": "example.com",
-                    "email": "support@lemlist.com",
-                    "_id": "lea_fiDpiGV585wy3Oii2",
-                    "isPaused": false,
-                    "campaignId": "cam_bSn8EORHQxbWPjHvu",
-                    "contactId": "ctc_xW8Ou6C03Csv8vatp",
-                    "emailStatus": "deliverable"
+                      "firstName": "John",
+                      "lastName": "Doe",
+                      "companyName": "lemlist",
+                      "jobTitle": "GTM Engineer",
+                      "companyDomain": "example.com",
+                      "email": "support@lemlist.com",
+                      "_id": "lea_fiDpiGV585wy3Oii2",
+                      "isPaused": false,
+                      "campaignId": "cam_bSn8EORHQxbWPjHvu",
+                      "contactId": "ctc_xW8Ou6C03Csv8vatp",
+                      "emailStatus": "deliverable"
                     }
+                  },
+                  "v2": {
+                    "summary": "version=v2",
+                    "value": [
+                      {
+                        "_id": "lea_fiDpiGV585wy3Oii2",
+                        "createdAt": "2025-10-27T09:12:45.000Z",
+                        "updatedAt": "2025-10-28T00:40:39.230Z",
+                        "isPaused": false,
+                        "state": "scanned",
+                        "status": "review",
+                        "personalized": false,
+                        "source": "api",
+                        "variables": {
+                          "firstName": "John",
+                          "lastName": "Doe",
+                          "companyName": "lemlist",
+                          "jobTitle": "GTM Engineer",
+                          "companyDomain": "example.com",
+                          "email": "support@lemlist.com"
+                        },
+                        "contactId": "ctc_xW8Ou6C03Csv8vatp",
+                        "enrichment": {
+                          "emailStatus": "deliverable"
+                        },
+                        "campaign": {
+                          "id": "cam_bSn8EORHQxbWPjHvu",
+                          "name": "NEW TO DELETE",
+                          "status": "draft"
+                        },
+                        "sendingUser": {}
+                      }
+                    ]
                   }
                 }
               }
@@ -12818,10 +12818,11 @@
             "name": "version",
             "in": "query",
             "required": false,
-            "description": "Set to `v2` to get the v2 lead object as an array: `createdAt` (when the lead was added to the campaign), `updatedAt`, the variables nested under `variables`. Without it the legacy flat body is returned, without `createdAt`.",
+            "description": "API version. v2 is the only option",
             "example": "v2",
             "schema": {
               "type": "string",
+              "default": "v2",
               "enum": [
                 "v2"
               ]
