@@ -66,6 +66,53 @@ Kept values are reported: `warnings` carries a `FIELDS_KEPT` entry with the fiel
 }
 ```
 
+## Linking to a CRM record
+
+Send `crmId` with the id of a record in your connected CRM to link the company to that record. lemlist links it without searching the CRM, then runs a first sync that follows your field mapping (the CRM wins conflicts by default).
+
+<Note>
+`crmId` requires an **admin** API key, and is being rolled out team by team: while it is not enabled for your team, it is refused like any unknown field (`400 INVALID_FIELD`).
+</Note>
+
+| CRM | Accepted id |
+|-----|-------------|
+| HubSpot, Pipedrive | Numeric record id |
+| Attio | Record id (UUID) |
+| Salesforce | Account (`001…`) id, 15 or 18 characters. A 15-character id is stored as 18. |
+
+What happens depends on the company and on who already holds the id:
+
+| Situation | Result |
+|-----------|--------|
+| New company, the id is linked to no lemlist company | The company is created already linked to that record (`201`). |
+| Existing company, named by `companyId` or found by its domain or LinkedIn URL | Its link moves to that record (`200`), and each of its contacts is associated with the new CRM company, following your association settings. Updates queued for the previous record are cancelled. |
+| Existing company found by its name alone, linked to another CRM record | Refused: `409 COMPANY_LINKED_TO_OTHER_CRM_RECORD`. A name does not identify a company well enough to move its link; send its `companyId` with `crmId`. |
+| The id is linked to another lemlist company, and the body carries that company's `domain` | That company is updated; its link stays as it is (`200`). Sending the same payload twice is safe. |
+| The id is linked to another lemlist company, otherwise | Refused, nothing written: `409 CRM_ID_ALREADY_LINKED`, `error.conflictingRecord` names that company. |
+
+The `crmSync` block of the response shows the link the company ends up with.
+
+```bash
+curl -X POST "https://api.lemlist.com/api/companies" \
+  -u ":YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Acme Inc", "domain": "acme.com", "crmId": "123456789"}'
+```
+
+Every check runs before anything is written, so a refused call leaves the company as it was:
+
+| Status | Code | When |
+|--------|------|------|
+| `400` | `INVALID_CRM_ID` | The id does not have the format of your CRM, or points to another kind of record (a Salesforce Contact id for a company). |
+| `400` | `NO_CRM_CONNECTED` | Your team has no CRM connected. |
+| `403` | `CRM_ID_UPDATE_NOT_ALLOWED` | The API key does not belong to a team admin. |
+| `409` | `CRM_ID_ALREADY_LINKED` | Another lemlist company holds the id (see above); `error.conflictingRecord` names it. |
+| `409` | `COMPANY_LINKED_TO_OTHER_CRM_RECORD` | The company was found by its name alone and is linked to another CRM record. |
+| `422` | `CRM_RECORD_NOT_FOUND` | No record with this id exists in the CRM, or it was deleted. |
+| `422` | `CRM_RECORD_MERGED` | The record was merged into another one; `error.survivorId` is the id to send. |
+| `422` | `CRM_ID_UPDATE_NOT_AVAILABLE` | Your connected CRM does not support linking by id yet. |
+| `503` | `CRM_RECORD_UNREACHABLE` | The CRM could not be reached to check the record. Retry. |
+
 ## Owner assignment
 
 You can assign an owner to the company using the `companyOwner` field. Accepted formats:
