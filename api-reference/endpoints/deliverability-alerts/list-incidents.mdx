@@ -1,0 +1,15 @@
+---
+openapi: get /deliverability/incidents
+description: Lists your team's deliverability incidents, newest first, active and resolved.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Deliverability incident" objectPath="deliverability-incident" />
+
+<Note>
+Alert types turned off in your team's Notifications settings (Deliverability > Alerts) are never returned. Resolved incidents are kept 90 days.
+</Note>
+
+<Warning>
+This endpoint is in closed beta. It answers `403` with the code `BETA_NOT_ENABLED` unless the deliverability incidents beta is enabled for your team.
+</Warning>
