@@ -81,7 +81,7 @@ Only include the fields you want to update. Required fields are not enforced her
 | `delay` | integer | all except `sendToAnotherCampaign` | Delay before this step, in days. Must be between 0 and 1500 |
 | `delayType` | string | `conditional` | One of `within`, `waitUntil` |
 | `conditionKey` | string | `conditional` | See supported condition keys below |
-| `customField` | string | `conditional` keyed `customLeadInfo` | The field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` for a contact field |
+| `customField` | string | `conditional` keyed `customLeadInfo` | The field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` for a contact field; a company field is written `company.<field>` (`companyName` is stored as `company.name`) |
 | `customOperator` | string | `conditional` keyed `customLeadInfo` | One of `equal`, `contains`, `empty`, `notEmpty` |
 | `customValue` | string | `conditional` keyed `customLeadInfo` | The value the field is compared to. Required for `equal` and `contains`, refused for `empty` and `notEmpty` |
 | `campaignId` | string | `sendToAnotherCampaign` | ID of destination campaign |
