@@ -115,6 +115,76 @@
           }
         }
       },
+      "CrmIdLinkErrorEnvelope": {
+        "type": "object",
+        "description": "Error envelope of a refused `crmId` on the contact and company upserts. The extra fields name what to send instead.",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Machine-readable error code, stable across releases."
+              },
+              "message": {
+                "type": "string",
+                "description": "Human-readable explanation."
+              },
+              "conflictingRecord": {
+                "type": "object",
+                "description": "With `CRM_ID_ALREADY_LINKED`: the lemlist record already linked to this CRM id.",
+                "properties": {
+                  "contactId": {
+                    "type": "string",
+                    "description": "The contact holding the id (contact upsert)."
+                  },
+                  "companyId": {
+                    "type": "string",
+                    "description": "The company holding the id (company upsert)."
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "Primary email of the contact."
+                  },
+                  "linkedinUrl": {
+                    "type": "string"
+                  },
+                  "linkedinUrlSalesNav": {
+                    "type": "string"
+                  },
+                  "domain": {
+                    "type": "string",
+                    "description": "Domain of the company."
+                  }
+                }
+              },
+              "survivorId": {
+                "type": "string",
+                "description": "With `CRM_RECORD_MERGED`: the CRM record the sent one was merged into. Send this id instead."
+              },
+              "convertedContactId": {
+                "type": "string",
+                "description": "With `CRM_RECORD_CONVERTED`: the Salesforce Contact the Lead was converted into. Send this id instead."
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "success",
+          "error"
+        ]
+      },
       "ApiErrorEnvelope": {
         "type": "object",
         "description": "Error envelope of the contact and company endpoints.",
@@ -21284,6 +21354,11 @@
                   "companyLinkedinUrl": {
                     "type": "string",
                     "description": "LinkedIn URL of a company already existing in lemlist to link to this contact. Used if `companyId` and `companyDomain` are not provided."
+                  },
+                  "crmId": {
+                    "type": "string",
+                    "description": "Id of the record of the connected CRM to link the contact to: a HubSpot or Pipedrive numeric id, an Attio record id, or a Salesforce Contact (`003…`) or Lead (`00Q…`) id of 15 or 18 characters. Requires an admin API key. A new contact is created already linked; an existing one has its link moved to this record. An id another contact holds updates that contact when the body carries its email or LinkedIn URL, and is refused otherwise. See the endpoint page for the refusals.",
+                    "example": "123456789"
                   }
                 },
                 "additionalProperties": {
@@ -21324,7 +21399,7 @@
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked); `FIELDS_KEPT` (values the update strategy kept)."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked); `FIELDS_KEPT` (values the update strategy kept); `CRM_ID_NOT_APPLIED` (`crmId` not applied: the contact stays linked to another CRM record of the same person, typically a Salesforce Contact facing a Lead id; send its `contactId` to move the link)."
                           },
                           "message": {
                             "type": "string"
@@ -21472,7 +21547,7 @@
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked); `FIELDS_KEPT` (values the update strategy kept)."
+                            "description": "`OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` (`contactOwner` matches no team member); `COMPANY_NOT_FOUND_BY_ID`, `COMPANY_NOT_FOUND_BY_DOMAIN` or `COMPANY_NOT_FOUND_BY_LINKEDIN_URL` (company not linked); `FIELDS_KEPT` (values the update strategy kept); `CRM_ID_NOT_APPLIED` (`crmId` not applied: the contact stays linked to another CRM record of the same person, typically a Salesforce Contact facing a Lead id; send its `contactId` to move the link)."
                           },
                           "message": {
                             "type": "string"
@@ -21543,7 +21618,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `MISSING_IDENTIFIER`, `INVALID_CONTACT_ID`, `INVALID_EMAIL`, `INVALID_ADDITIONAL_EMAILS`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, `CONTACT_VALIDATION_FAILED`, or `INVALID_UPDATE_STRATEGY`."
+                          "description": "Error code: `MISSING_IDENTIFIER`, `INVALID_CONTACT_ID`, `INVALID_EMAIL`, `INVALID_ADDITIONAL_EMAILS`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, `CONTACT_VALIDATION_FAILED`, `INVALID_UPDATE_STRATEGY`, `INVALID_CRM_ID` (`crmId` does not have the format of the connected CRM, or points to another kind of record), or `NO_CRM_CONNECTED` (`crmId` sent while no CRM is connected)."
                         },
                         "message": {
                           "type": "string"
@@ -21570,8 +21645,29 @@
               }
             }
           },
+          "403": {
+            "description": "The API key does not belong to a team admin, and the body carries `crmId` (`CRM_ID_UPDATE_NOT_ALLOWED`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CrmIdLinkErrorEnvelope"
+                },
+                "examples": {
+                  "not-admin": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_ID_UPDATE_NOT_ALLOWED",
+                        "message": "Only a team admin can define or change the CRM id of a record"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
           "404": {
-            "description": "No contact of the team matches `contactId` (`CONTACT_NOT_FOUND_BY_ID`).",
+            "description": "No contact of the team matches `contactId` (`CONTACT_NOT_FOUND_BY_ID`), or the contact whose link `crmId` moves was deleted meanwhile (`CRM_ID_RECORD_NOT_FOUND`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -21592,11 +21688,11 @@
             }
           },
           "409": {
-            "description": "An email, LinkedIn or Sales Navigator URL already belongs to another contact (`CONTACT_IDENTIFIER_CONFLICT`); retrying as is fails again.",
+            "description": "An email, LinkedIn or Sales Navigator URL already belongs to another contact (`CONTACT_IDENTIFIER_CONFLICT`); retrying as is fails again. With `crmId`: another contact holds that CRM id and the body carries none of its identifiers (`CRM_ID_ALREADY_LINKED`, `error.conflictingRecord` names it). Nothing is written.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                  "$ref": "#/components/schemas/CrmIdLinkErrorEnvelope"
                 },
                 "examples": {
                   "conflict": {
@@ -21605,6 +21701,82 @@
                       "error": {
                         "code": "CONTACT_IDENTIFIER_CONFLICT",
                         "message": "An identifier (email, linkedinUrl or salesnavUrl) already belongs to another contact"
+                      }
+                    }
+                  },
+                  "crm-id-already-linked": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_ID_ALREADY_LINKED",
+                        "message": "This CRM id is already used by another lemlist record",
+                        "conflictingRecord": {
+                          "contactId": "ctc_A1B2C3D4E5F6G7H8i",
+                          "email": "jane@example.com",
+                          "name": "Jane Smith"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "`crmId` names no live record the contact can be linked to: none in the CRM (`CRM_RECORD_NOT_FOUND`), a record merged into another one (`CRM_RECORD_MERGED`, `error.survivorId`), a converted Salesforce Lead (`CRM_RECORD_CONVERTED`, `error.convertedContactId`), a Salesforce Lead while the team does not sync Leads (`CRM_ID_LEADS_NOT_SYNCED`), or a CRM that does not support it yet (`CRM_ID_UPDATE_NOT_AVAILABLE`). Nothing is written.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CrmIdLinkErrorEnvelope"
+                },
+                "examples": {
+                  "merged": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_RECORD_MERGED",
+                        "message": "This CRM record was merged into another one: use the id of the surviving record (survivorId)",
+                        "survivorId": "987654321"
+                      }
+                    }
+                  },
+                  "converted": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_RECORD_CONVERTED",
+                        "message": "This Salesforce Lead was converted: use the id of the Contact it became (convertedContactId)",
+                        "convertedContactId": "003000000000000AAA"
+                      }
+                    }
+                  },
+                  "not-found": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_RECORD_NOT_FOUND",
+                        "message": "No record with this id exists in the CRM"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The CRM could not be reached to check the record sent as `crmId` (`CRM_RECORD_UNREACHABLE`). Nothing is written; retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CrmIdLinkErrorEnvelope"
+                },
+                "examples": {
+                  "unreachable": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_RECORD_UNREACHABLE",
+                        "message": "The CRM could not be reached to check this record, please retry"
                       }
                     }
                   }
@@ -23473,6 +23645,11 @@
                     "type": "string",
                     "description": "Origin of the company record. Set on creation only and cannot be updated afterwards. Defaults to `api`.",
                     "default": "api"
+                  },
+                  "crmId": {
+                    "type": "string",
+                    "description": "Id of the record of the connected CRM to link the company to: a HubSpot or Pipedrive numeric id, an Attio record id, or a Salesforce Account (`001…`) id of 15 or 18 characters. Requires an admin API key. A new company is created already linked; an existing one has its link moved to this record, and its contacts’ associations follow. An id another company holds updates that company when the body carries its domain, and is refused otherwise. See the endpoint page for the refusals.",
+                    "example": "123456789"
                   }
                 },
                 "additionalProperties": {
@@ -23694,7 +23871,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `MISSING_REQUIRED_FIELD`, `INVALID_COMPANY_ID`, `INVALID_DOMAIN`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, `COMPANY_VALIDATION_FAILED`, or `INVALID_UPDATE_STRATEGY`."
+                          "description": "Error code: `MISSING_REQUIRED_FIELD`, `INVALID_COMPANY_ID`, `INVALID_DOMAIN`, `INVALID_LINKEDIN_URL`, `INVALID_FIELD`, `INVALID_USER_FIELD_FORMAT`, `USER_FIELD_NOT_FOUND`, `COMPANY_VALIDATION_FAILED`, `INVALID_UPDATE_STRATEGY`, `INVALID_CRM_ID` (`crmId` does not have the format of the connected CRM, or points to another kind of record), or `NO_CRM_CONNECTED` (`crmId` sent while no CRM is connected)."
                         },
                         "message": {
                           "type": "string"
@@ -23721,8 +23898,29 @@
               }
             }
           },
+          "403": {
+            "description": "The API key does not belong to a team admin, and the body carries `crmId` (`CRM_ID_UPDATE_NOT_ALLOWED`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CrmIdLinkErrorEnvelope"
+                },
+                "examples": {
+                  "not-admin": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_ID_UPDATE_NOT_ALLOWED",
+                        "message": "Only a team admin can define or change the CRM id of a record"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
           "404": {
-            "description": "No company of the team matches `companyId` (`COMPANY_NOT_FOUND_BY_ID`).",
+            "description": "No company of the team matches `companyId` (`COMPANY_NOT_FOUND_BY_ID`), or the company whose link `crmId` moves was deleted meanwhile (`CRM_ID_RECORD_NOT_FOUND`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -23743,11 +23941,11 @@
             }
           },
           "409": {
-            "description": "A domain, LinkedIn or Sales Navigator URL already belongs to another company (`COMPANY_IDENTIFIER_CONFLICT`); retrying as is fails again.",
+            "description": "A domain, LinkedIn or Sales Navigator URL already belongs to another company (`COMPANY_IDENTIFIER_CONFLICT`); retrying as is fails again. With `crmId`: another company holds that CRM id and the body does not carry its domain (`CRM_ID_ALREADY_LINKED`, `error.conflictingRecord` names it), or the company found by its name alone is linked to another CRM record (`COMPANY_LINKED_TO_OTHER_CRM_RECORD`: send its `companyId` with `crmId` to move the link). Nothing is written.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                  "$ref": "#/components/schemas/CrmIdLinkErrorEnvelope"
                 },
                 "examples": {
                   "conflict": {
@@ -23756,6 +23954,72 @@
                       "error": {
                         "code": "COMPANY_IDENTIFIER_CONFLICT",
                         "message": "An identifier (domain, linkedinUrl or salesnavUrl) already belongs to another company"
+                      }
+                    }
+                  },
+                  "crm-id-already-linked": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_ID_ALREADY_LINKED",
+                        "message": "This CRM id is already used by another lemlist record",
+                        "conflictingRecord": {
+                          "companyId": "cpn_A1B2C3D4E5F6G7H8j",
+                          "name": "Acme Inc",
+                          "domain": "acme.com"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "`crmId` names no live record the company can be linked to: none in the CRM (`CRM_RECORD_NOT_FOUND`), a record merged into another one (`CRM_RECORD_MERGED`, `error.survivorId`), or a CRM that does not support it yet (`CRM_ID_UPDATE_NOT_AVAILABLE`). Nothing is written.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CrmIdLinkErrorEnvelope"
+                },
+                "examples": {
+                  "merged": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_RECORD_MERGED",
+                        "message": "This CRM record was merged into another one: use the id of the surviving record (survivorId)",
+                        "survivorId": "987654321"
+                      }
+                    }
+                  },
+                  "not-found": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_RECORD_NOT_FOUND",
+                        "message": "No record with this id exists in the CRM"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The CRM could not be reached to check the record sent as `crmId` (`CRM_RECORD_UNREACHABLE`). Nothing is written; retry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CrmIdLinkErrorEnvelope"
+                },
+                "examples": {
+                  "unreachable": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_RECORD_UNREACHABLE",
+                        "message": "The CRM could not be reached to check this record, please retry"
                       }
                     }
                   }
