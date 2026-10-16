@@ -23691,6 +23691,9 @@
                           "type": "boolean",
                           "description": "Whether the contact is unsubscribed"
                         },
+                        "crmSync": {
+                          "$ref": "#/components/schemas/Contact/properties/crmSync"
+                        },
                         "created": {
                           "type": "boolean",
                           "description": "`true` when a new contact was created, `false` when an existing contact was updated."
@@ -25954,6 +25957,9 @@
                         "createdBy": {
                           "type": "string",
                           "description": "User ID who created the record"
+                        },
+                        "crmSync": {
+                          "$ref": "#/components/schemas/Company/properties/crmSync"
                         },
                         "created": {
                           "type": "boolean",
