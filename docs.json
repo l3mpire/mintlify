@@ -248,7 +248,8 @@
                   "api-reference/endpoints/companies/create-company-list",
                   "api-reference/endpoints/companies/manage-company-list-entities",
                   "api-reference/endpoints/companies/create-company-note",
-                  "api-reference/endpoints/companies/get-company-notes"
+                  "api-reference/endpoints/companies/get-company-notes",
+                  "api-reference/endpoints/companies/get-company-crm-logs"
                 ]
               },
               {
@@ -265,7 +266,8 @@
                   "api-reference/endpoints/contacts/manage-contact-list-entities",
                   "api-reference/endpoints/contacts/export-contact-list",
                   "api-reference/endpoints/contacts/create-contact-note",
-                  "api-reference/endpoints/contacts/get-contact-notes"
+                  "api-reference/endpoints/contacts/get-contact-notes",
+                  "api-reference/endpoints/contacts/get-contact-crm-logs"
                 ]
               },
               {
@@ -518,6 +520,7 @@
               "api-reference/objects-definitions/mailbox",
               "api-reference/objects-definitions/company-note",
               "api-reference/objects-definitions/contact-note",
+              "api-reference/objects-definitions/crm-log",
               "api-reference/objects-definitions/signal",
               "api-reference/objects-definitions/watch-list",
               "api-reference/objects-definitions/deliverability-alert",
