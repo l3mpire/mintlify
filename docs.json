@@ -315,7 +315,8 @@
                 "expanded": false,
                 "pages": [
                   "api-reference/endpoints/crm/get-team-crm-users",
-                  "api-reference/endpoints/crm/get-crm-filters"
+                  "api-reference/endpoints/crm/get-crm-filters",
+                  "api-reference/endpoints/crm/get-crm-logs"
                 ]
               },
               {
@@ -518,6 +519,7 @@
               "api-reference/objects-definitions/mailbox",
               "api-reference/objects-definitions/company-note",
               "api-reference/objects-definitions/contact-note",
+              "api-reference/objects-definitions/crm-log",
               "api-reference/objects-definitions/signal",
               "api-reference/objects-definitions/watch-list",
               "api-reference/objects-definitions/deliverability-alert",
