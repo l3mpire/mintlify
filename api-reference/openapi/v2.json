@@ -29492,7 +29492,7 @@
       },
       "post": {
         "summary": "Create or Update Field",
-        "description": "Creates a custom field on contacts or companies, or updates the one the entity already has under that `name`, under the rules of the lemlist app: the same reserved names, the same type conversions, the same permission.\n\n**Create.** No field of that `name` on the entity: it is created, as the **New field** button does in the app. Any API key may create a field. The field is created on behalf of the user of the API key and logged in the team activity feed. Once created, write it through `POST /contacts` or `POST /companies` with its `name` as the key. A new contact field is then filled in the background from data lemlist already holds (the LinkedIn data of enriched contacts, the lead variable of the same name in your campaigns).\n\n**Update.** A field of that `name` exists: the call updates it, and the API key user needs the **Update contact & companies fields** permission, as in the app (`403` otherwise, even when nothing would change). What can change:\n\n- `label`, when sent and different;\n- `type`, only to `text` or `multilineText`, from any type but `phone` and `user`: the conversions the app offers. The stored values are converted, as in the app. Any other `type` than the stored one answers `400 TYPE_CHANGE_NOT_ALLOWED`;\n- the options of a `select`, through `options` (added when missing, never removed), `renameOptions` (the contacts or companies holding the old value are rewritten to the new one) and `removeOptions` (the contacts or companies holding the option are cleared). Applied in that order: renames, removals, additions. A select keeps at least one option. An operation already applied reads as done (a rename whose source is gone while its target exists, a removal of an absent option).\n\nSending the same body again changes nothing and answers `200` with empty `changes`.\n\n**Name.** `name` is the key your integrations write to, and never changes afterwards: it must start with a lowercase letter, followed by letters and digits only. `label` is optional and defaults to `name` on creation.\n\n**Types.** `select` needs its `options` on creation. A `user` field takes a team member on `POST /contacts` or `POST /companies` (email or `usr_` id), as in the app.\n\n**Read it back.** The response carries the field. A `GET /fields` sent right after may take a moment to list it. Renaming or removing an option, and converting a type, rewrite every contact or company of the team holding a value, within the call.",
+        "description": "Creates a custom field on contacts or companies, or updates the one the entity already has under that `name`, under the rules of the lemlist app: the same reserved names, the same type conversions, the same permission.\n\n**Create.** No field of that `name` on the entity: it is created, as the **New field** button does in the app. Any API key may create a field. The field is created on behalf of the user of the API key and logged in the team activity feed. Once created, write it through `POST /contacts` or `POST /companies` with its `name` as the key. A new contact field is then filled in the background from data lemlist already holds (the LinkedIn data of enriched contacts, the lead variable of the same name in your campaigns).\n\n**Update.** A field of that `name` exists: the call updates it, and the API key user needs the **Update contact & companies fields** permission, as in the app (`403` otherwise, even when nothing would change). What can change:\n\n- `label`, when sent and different;\n- `type`, only to `text` or `multilineText`, from any type but `phone` and `user`: the conversions the app offers. The stored values are converted, as in the app. Any other `type` than the stored one answers `400 TYPE_CHANGE_NOT_ALLOWED`;\n- the options of a `select`, through `upsertOptions` (added when missing, never removed), `renameOptions` (the contacts or companies holding the old value are rewritten to the new one) and `removeOptions` (the contacts or companies holding the option are cleared). Applied in that order: renames, removals, additions. A select keeps at least one option. An operation already applied reads as done (a rename whose source is gone while its target exists, a removal of an absent option).\n\nSending the same body again changes nothing and answers `200` with empty `changes`.\n\n**Name.** `name` is the key your integrations write to, and never changes afterwards: it must start with a lowercase letter, followed by letters and digits only. `label` is optional and defaults to `name` on creation.\n\n**Types.** `select` is created with its `upsertOptions` (at least one). A `user` field takes a team member on `POST /contacts` or `POST /companies` (email or `usr_` id), as in the app.\n\n**Read it back.** The response carries the field. A `GET /fields` sent right after may take a moment to list it. Renaming or removing an option, and converting a type, rewrite every contact or company of the team holding a value, within the call.",
         "tags": [
           "Fields"
         ],
@@ -29542,12 +29542,12 @@
                     "maxLength": 400,
                     "description": "Display name of the field, as shown in lemlist. Cannot contain an HTML tag (`<...>`). Optional: defaults to `name` on creation, unchanged when omitted on an update."
                   },
-                  "options": {
+                  "upsertOptions": {
                     "type": "array",
                     "items": {
                       "type": "string"
                     },
-                    "description": "Select fields only. On creation, the options (at least one). On an update, options to add when missing; the existing ones are kept. Distinct, non-empty, trimmed."
+                    "description": "Select fields only. On creation, the options (at least one). On an update, options to add when missing; the present ones and the others are kept, so the same list replays. Distinct, non-empty, trimmed."
                   },
                   "renameOptions": {
                     "type": "object",
@@ -29582,7 +29582,7 @@
                     "name": "tier",
                     "label": "Tier",
                     "type": "select",
-                    "options": [
+                    "upsertOptions": [
                       "Gold",
                       "Silver",
                       "Bronze"
@@ -29595,7 +29595,7 @@
                     "entity": "contact",
                     "name": "tier",
                     "type": "select",
-                    "options": [
+                    "upsertOptions": [
                       "Iron"
                     ],
                     "renameOptions": {
@@ -29857,7 +29857,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `INVALID_ENTITY_PARAM`, `INVALID_TYPE_PARAM`, `INVALID_LABEL`, `INVALID_NAME`, `INVALID_OPTIONS`, `OPTION_NOT_FOUND`, `OPTION_ALREADY_EXISTS`, `FIELD_NAME_RESERVED`, `CONTACT_FIELD_COMPANY_PREFIXED`, `TYPE_CHANGE_NOT_ALLOWED`."
+                          "description": "Error code: `INVALID_ENTITY_PARAM`, `INVALID_TYPE_PARAM`, `INVALID_LABEL`, `INVALID_NAME`, `OPTIONS_NOT_ALLOWED`, `INVALID_OPTIONS`, `OPTION_NOT_FOUND`, `OPTION_ALREADY_EXISTS`, `FIELD_NAME_RESERVED`, `CONTACT_FIELD_COMPANY_PREFIXED`, `TYPE_CHANGE_NOT_ALLOWED`."
                         },
                         "message": {
                           "type": "string"
@@ -29907,13 +29907,23 @@
                       }
                     }
                   },
+                  "options-not-allowed": {
+                    "summary": "option operations sent for another type than select",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "OPTIONS_NOT_ALLOWED",
+                        "message": "Option operations (upsertOptions, renameOptions, removeOptions) apply to a select field only"
+                      }
+                    }
+                  },
                   "invalid-options": {
-                    "summary": "option operations malformed, or on a non-select field",
+                    "summary": "option operations malformed, or no option left",
                     "value": {
                       "success": false,
                       "error": {
                         "code": "INVALID_OPTIONS",
-                        "message": "Invalid options. They apply to a select field only, as distinct non-empty strings; a select keeps at least one option"
+                        "message": "Invalid options. Expected distinct non-empty strings of at most 400 characters, without a \"<...>\" tag; a select keeps at least one option"
                       }
                     }
                   },
