@@ -29374,6 +29374,17 @@
                         "source": "custom"
                       },
                       {
+                        "name": "tier",
+                        "label": "Tier",
+                        "type": "select",
+                        "source": "custom",
+                        "options": [
+                          "Gold",
+                          "Silver",
+                          "Bronze"
+                        ]
+                      },
+                      {
                         "name": "leadStatus",
                         "label": "leadStatus",
                         "type": "text",
