@@ -117,7 +117,7 @@
       },
       "CrmIdLinkErrorEnvelope": {
         "type": "object",
-        "description": "Error envelope of a refused `crmId` on the contact and company upserts. The extra fields name what to send instead.",
+        "description": "Error envelope of a refused `crmId` (closed beta) on the contact and company upserts. The extra fields name what to send instead.",
         "properties": {
           "success": {
             "type": "boolean",
@@ -21357,7 +21357,7 @@
                   },
                   "crmId": {
                     "type": "string",
-                    "description": "Id of the record of the connected CRM to link the contact to: a HubSpot or Pipedrive numeric id, an Attio record id, or a Salesforce Contact (`003…`) or Lead (`00Q…`) id of 15 or 18 characters. Requires an admin API key. A new contact is created already linked; an existing one has its link moved to this record. An id another contact holds updates that contact when the body carries its email or LinkedIn URL, and is refused otherwise. See the endpoint page for the refusals.",
+                    "description": "Closed beta: refused as an unknown field (`400 INVALID_FIELD`) unless the CRM ID remap beta is enabled for your team. Id of the record of the connected CRM to link the contact to: a HubSpot or Pipedrive numeric id, an Attio record id, or a Salesforce Contact (`003…`) or Lead (`00Q…`) id of 15 or 18 characters. Requires an admin API key. A new contact is created already linked; an existing one has its link moved to this record. An id another contact holds updates that contact when the body carries its email or LinkedIn URL, and is refused otherwise. See the endpoint page for the refusals.",
                     "example": "123456789"
                   }
                 },
@@ -23648,7 +23648,7 @@
                   },
                   "crmId": {
                     "type": "string",
-                    "description": "Id of the record of the connected CRM to link the company to: a HubSpot or Pipedrive numeric id, an Attio record id, or a Salesforce Account (`001…`) id of 15 or 18 characters. Requires an admin API key. A new company is created already linked; an existing one has its link moved to this record, and its contacts’ associations follow. An id another company holds updates that company when the body carries its domain, and is refused otherwise. See the endpoint page for the refusals.",
+                    "description": "Closed beta: refused as an unknown field (`400 INVALID_FIELD`) unless the CRM ID remap beta is enabled for your team. Id of the record of the connected CRM to link the company to: a HubSpot or Pipedrive numeric id, an Attio record id, or a Salesforce Account (`001…`) id of 15 or 18 characters. Requires an admin API key. A new company is created already linked; an existing one has its link moved to this record, and its contacts’ associations follow. An id another company holds updates that company when the body carries its domain, and is refused otherwise. See the endpoint page for the refusals.",
                     "example": "123456789"
                   }
                 },

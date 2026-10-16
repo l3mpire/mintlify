@@ -68,9 +68,9 @@ Kept values are reported: `warnings` carries a `FIELDS_KEPT` entry with the fiel
 
 Send `crmId` with the id of a record in your connected CRM to link the company to that record. lemlist links it without searching the CRM, then runs a first sync that follows your field mapping (the CRM wins conflicts by default).
 
-<Note>
-`crmId` requires an **admin** API key, and is being rolled out team by team: while it is not enabled for your team, it is refused like any unknown field (`400 INVALID_FIELD`).
-</Note>
+<Warning>
+`crmId` is in closed beta. Unless the CRM ID remap beta is enabled for your team, it is refused like any unknown field, with `400 INVALID_FIELD`. It also requires an **admin** API key.
+</Warning>
 
 | CRM | Accepted id |
 |-----|-------------|
