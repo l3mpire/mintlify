@@ -17,3 +17,7 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
   An update that would create a company requires the "Create companies" permission on the API key's user, otherwise the request fails with `403` (`You do not have the permission to create companies`, plain text) and nothing is written.
 </Note>
+
+<Note>
+  When the lead has no linked contact, an update that would create one requires the "Create contacts" permission on the API key's user, otherwise the request fails with `403` (`You do not have the permission to create contacts`, plain text) and nothing is written.
+</Note>
