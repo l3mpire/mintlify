@@ -13,3 +13,9 @@ by the campaign must be valid for the lead, and a sender must be available.
 No need to enable autolaunch in the campaign.
 
 This endpoint requires an `emailPro` plan or higher.
+
+## Retries
+
+Retrying is safe once a call has completed: a lead that is already launched is
+refused with `CAMPAIGN_LEAD_REVIEW_LEAD_ALREADY_REVIEWED`, so it is never
+launched twice. Do not send concurrent calls for the same lead.
