@@ -14,6 +14,8 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <Note>
   The lead is imported as the API key's user. When its company is not in lemlist yet, that user needs the "Create companies" permission, otherwise the request fails with `403` (`{"error": "You do not have the permission to create companies"}`) and nothing is written. A company already in lemlist is linked as usual.
+
+  Likewise, when its contact is not in lemlist yet, that user needs the "Create contacts" permission, otherwise the request fails with `403` (`{"error": "You do not have the permission to create contacts"}`) and nothing is written, company included. A contact already in lemlist is updated as usual.
 </Note>
 
 <Note>
