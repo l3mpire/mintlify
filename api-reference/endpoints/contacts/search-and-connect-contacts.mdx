@@ -1,0 +1,23 @@
+---
+openapi: post /contacts/crm/search-and-connect
+description: Searches your connected CRM for contacts and links each one to the CRM record found, without creating anything there.
+---
+
+Searches your connected CRM for each contact and links it to the CRM record found — the **Search & connect** action of the Contacts page. Nothing is ever created in the CRM: use `POST /contacts/crm/create` for that.
+
+Target the contacts with `idsOrEmails` (lemlist ids or email addresses), 1,000 at most, **or** with `listId` for a whole contact list, static or dynamic, of up to 10,000 contacts.
+
+## Asynchronous: read the outcome later
+
+The call queues the work and answers at once with what was **queued**, not with what the CRM returned. Each contact's outcome lands on its `crmSync` block shortly after:
+
+- `GET /contacts?idsOrEmails=...` returns each contact with its `crmSync` block (`searching`, `crmRecordId`, `notFoundAt`, `errors`).
+- `GET /contacts?crmSyncStatus=` lists them by state: `searching` while the search runs, then `synced` (linked), or `not_found` (no CRM record matched).
+
+## What the counts mean
+
+- `alreadyLinked`: already linked to a CRM record, synced with it again instead of searched.
+- `toSearch`: searched in the CRM, then linked or flagged `not_found`.
+- `notSearchable`: nothing the CRM can be searched with (no email address or LinkedIn URL), left untouched.
+- `alreadyInProgress`: a CRM search was already queued for them, not queued twice.
+- `notFound`: the references sent that match no contact of your team.

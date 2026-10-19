@@ -1,0 +1,27 @@
+---
+openapi: post /companies/crm/create
+description: Pushes companies to your connected CRM, linking each one to the CRM record found and creating it there when none matches.
+---
+
+Pushes companies to your connected CRM — the **Create in CRM** action of the Companies page. Each company is searched in the CRM first: linked to the record found, created in the CRM otherwise.
+
+Target the companies with `idsOrDomains` (lemlist ids or domains), 1,000 at most, **or** with `listId` for a whole company list, static or dynamic, of up to 10,000 companies.
+
+## Asynchronous: read the outcome later
+
+The call queues the work and answers at once with what was **queued**, not with what the CRM returned. Each company's outcome lands on its `crmSync` block shortly after:
+
+- `GET /companies?idsOrDomains=...` returns each company with its `crmSync` block (`searching`, `crmRecordId`, `notFoundAt`, `errors`).
+- `GET /companies?crmSyncStatus=` lists them by state: `searching` while the search runs, then `synced` (linked or created), or `error` (refused by the CRM, with its reason).
+
+## What the counts mean
+
+- `alreadyLinked`: already linked to a CRM record, synced with it again instead of searched.
+- `toCreate`: searched in the CRM first, then linked or created.
+- `notSearchable`: nothing the CRM can be searched with (no domain or LinkedIn URL), left untouched.
+- `alreadyInProgress`: a CRM search was already queued for them, not queued twice.
+- `notFound`: the references sent that match no company of your team.
+
+## Who can call it
+
+The API key must belong to a team **admin**, like the action in the app. On Salesforce, the connection must grant the object created (Account).
