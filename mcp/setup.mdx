@@ -12,7 +12,7 @@ With OAuth, you don't need to create an API key. Your AI client handles authenti
 <Tabs>
   <Tab title="Claude Desktop">
     In Claude Desktop, open the sidebar, click the **+** icon next to **Connectors**, then choose **Add custom connector**. Set:
-    - **Name**: `lemlist`
+    - **Name**: `lm`
     - **URL**: `https://app.lemlist.com/mcp`
 
     Or add this directly to your `claude_desktop_config.json`:
@@ -20,7 +20,7 @@ With OAuth, you don't need to create an API key. Your AI client handles authenti
     ```json
     {
       "mcpServers": {
-        "lemlist": {
+        "lm": {
           "command": "npx",
           "args": [
             "mcp-remote",
@@ -35,7 +35,7 @@ With OAuth, you don't need to create an API key. Your AI client handles authenti
   </Tab>
   <Tab title="Claude Code">
     ```bash
-    claude mcp add --transport http lemlist https://app.lemlist.com/mcp
+    claude mcp add --transport http lm https://app.lemlist.com/mcp
     ```
 
     No `--header` flag needed — OAuth handles authentication automatically.
@@ -58,7 +58,7 @@ With OAuth, you don't need to create an API key. Your AI client handles authenti
   </Tab>
   <Tab title="Grok Build">
     ```bash
-    grok mcp add --transport http lemlist https://app.lemlist.com/mcp
+    grok mcp add --transport http lm https://app.lemlist.com/mcp
     ```
 
     The Grok Build CLI handles the OAuth flow itself: your browser opens on first use.
@@ -67,6 +67,10 @@ With OAuth, you don't need to create an API key. Your AI client handles authenti
 
 In Claude Desktop, Claude Code and Grok Build, the first time you use a lemlist tool, your **browser will open** a consent page where you select your team and authorize access.
 Tokens are managed automatically (access token: 1h, refresh token: 30 days).
+
+<Warning>
+  With OAuth, don't put "lemlist" (or another lemlist brand) in the name you give the server. Many clients build their app name from it, "Claude Code (lemlist)" for instance, and lemlist refuses to register an app whose name claims its brand, so the connection fails with `client_name must not contain the reserved name "lemlist"`. Pick any other name, like `lm` above. API key setups are not affected.
+</Warning>
 
 ## With API Key
 
