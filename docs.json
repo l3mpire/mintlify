@@ -110,6 +110,8 @@
                 "pages": [
                   "api-reference/endpoints/team/get-team",
                   "api-reference/endpoints/team/get-team-senders",
+                  "api-reference/endpoints/team/get-team-members",
+                  "api-reference/endpoints/team/get-team-voices",
                   "api-reference/endpoints/team/get-team-credits"
                 ]
               },
@@ -119,6 +121,8 @@
                 "pages": [
                   "api-reference/endpoints/users/get-user",
                   "api-reference/endpoints/users/get-user-channels",
+                  "api-reference/endpoints/users/get-sending-settings",
+                  "api-reference/endpoints/users/update-sending-settings",
                   "api-reference/endpoints/users/update-user-linkedin-limits"
                 ]
               },
@@ -137,6 +141,7 @@
                 "pages": [
                   "api-reference/endpoints/campaigns/create-campaign",
                   "api-reference/endpoints/campaigns/get-campaign",
+                  "api-reference/endpoints/campaigns/get-campaign-settings",
                   "api-reference/endpoints/campaigns/get-many-campaigns",
                   "api-reference/endpoints/campaigns/update-campaign",
                   "api-reference/endpoints/campaigns/get-campaign-statutes",
