@@ -1863,6 +1863,38 @@
         },
         "description": "The forced sender of a step."
       },
+      "SenderPoolChange": {
+        "type": "object",
+        "description": "The channel types that a step change enables or disables in the sender pool. A type can be in both lists when one account of the type enters the pool and another leaves it. It does not tell whether each sender has an account of the type: read the diagnostics with Get Campaign Senders.",
+        "properties": {
+          "enabledChannelTypes": {
+            "type": "array",
+            "description": "The channel types with an account that enters the pool, in alphabetical order",
+            "items": {
+              "type": "string",
+              "enum": [
+                "email",
+                "linkedin",
+                "whatsapp",
+                "phone"
+              ]
+            }
+          },
+          "disabledChannelTypes": {
+            "type": "array",
+            "description": "The channel types with an account that leaves the pool, in alphabetical order",
+            "items": {
+              "type": "string",
+              "enum": [
+                "email",
+                "linkedin",
+                "whatsapp",
+                "phone"
+              ]
+            }
+          }
+        }
+      },
       "SenderPool": {
         "type": "object",
         "description": "The sender pool of a campaign, as the campaign editor shows it.",
@@ -13533,8 +13565,8 @@
                         "step": {
                           "$ref": "#/components/schemas/StepSender"
                         },
-                        "pool": {
-                          "$ref": "#/components/schemas/SenderPool"
+                        "senderPoolChange": {
+                          "$ref": "#/components/schemas/SenderPoolChange"
                         }
                       }
                     }
@@ -13555,30 +13587,11 @@
                         }
                       }
                     },
-                    "pool": {
-                      "campaignId": "cam_A1b2C3d4E5f6G7h8M",
-                      "senderStrategy": "random",
-                      "espMatching": false,
-                      "readOnly": false,
-                      "senders": [
-                        {
-                          "userId": "usr_A1b2C3d4E5f6G7h8K",
-                          "name": "John Doe",
-                          "email": "john@example.com",
-                          "channels": [
-                            {
-                              "type": "email",
-                              "id": "usm_A1b2C3d4E5f6G7h8L",
-                              "label": "john@example.com",
-                              "alias": "john@example.com",
-                              "esp": "google",
-                              "diagnostics": []
-                            }
-                          ],
-                          "diagnostics": []
-                        }
-                      ],
-                      "diagnostics": []
+                    "senderPoolChange": {
+                      "enabledChannelTypes": [],
+                      "disabledChannelTypes": [
+                        "email"
+                      ]
                     }
                   }
                 }
@@ -13707,8 +13720,8 @@
                         "step": {
                           "$ref": "#/components/schemas/StepSender"
                         },
-                        "pool": {
-                          "$ref": "#/components/schemas/SenderPool"
+                        "senderPoolChange": {
+                          "$ref": "#/components/schemas/SenderPoolChange"
                         }
                       }
                     }
@@ -13721,30 +13734,11 @@
                       "stepId": "stp_A1b2C3d4E5f6G7h8I",
                       "stepType": "email"
                     },
-                    "pool": {
-                      "campaignId": "cam_A1b2C3d4E5f6G7h8M",
-                      "senderStrategy": "random",
-                      "espMatching": false,
-                      "readOnly": false,
-                      "senders": [
-                        {
-                          "userId": "usr_A1b2C3d4E5f6G7h8K",
-                          "name": "John Doe",
-                          "email": "john@example.com",
-                          "channels": [
-                            {
-                              "type": "email",
-                              "id": "usm_A1b2C3d4E5f6G7h8L",
-                              "label": "john@example.com",
-                              "alias": "john@example.com",
-                              "esp": "google",
-                              "diagnostics": []
-                            }
-                          ],
-                          "diagnostics": []
-                        }
+                    "senderPoolChange": {
+                      "enabledChannelTypes": [
+                        "email"
                       ],
-                      "diagnostics": []
+                      "disabledChannelTypes": []
                     }
                   }
                 }
