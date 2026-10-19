@@ -158,6 +158,18 @@
                 ]
               },
               {
+                "group": "Senders",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/senders/list-senders",
+                  "api-reference/endpoints/senders/get-campaign-senders",
+                  "api-reference/endpoints/senders/add-campaign-senders",
+                  "api-reference/endpoints/senders/replace-campaign-senders",
+                  "api-reference/endpoints/senders/update-campaign-sender-channels",
+                  "api-reference/endpoints/senders/remove-campaign-sender"
+                ]
+              },
+              {
                 "group": "Sequences",
                 "expanded": false,
                 "pages": [
@@ -165,6 +177,9 @@
                   "api-reference/endpoints/sequences/add-step-to-sequence",
                   "api-reference/endpoints/sequences/update-sequence-step",
                   "api-reference/endpoints/sequences/delete-sequence-step",
+                  "api-reference/endpoints/sequences/get-step-sender",
+                  "api-reference/endpoints/sequences/set-step-sender",
+                  "api-reference/endpoints/sequences/remove-step-sender",
                   "api-reference/endpoints/sequences/list-condition-branches",
                   "api-reference/endpoints/sequences/add-condition-branch",
                   "api-reference/endpoints/sequences/reorder-condition-branches",
