@@ -4913,13 +4913,6 @@
             "type": "string",
             "description": "Unique identifier of the incident"
           },
-          "teamIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Teams the mailbox belongs to"
-          },
           "userId": {
             "type": "string",
             "description": "Owner of the mailbox"
@@ -31556,9 +31549,6 @@
                     "incidents": [
                       {
                         "_id": "dli_A1B2C3D4E5F6G7H8J",
-                        "teamIds": [
-                          "tea_Example7Kq2Wm9Zx4"
-                        ],
                         "userId": "usr_Example3Hd8Pv5Rt1",
                         "userMailboxId": "usm_FakeQ4Lz7Nb2Xc9Vj",
                         "mailboxEmail": "john@example.com",
