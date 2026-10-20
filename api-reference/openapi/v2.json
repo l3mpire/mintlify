@@ -16149,7 +16149,7 @@
       ],
       "post": {
         "summary": "Launch Lead",
-        "description": "Use this endpoint to launch a lead that is waiting for review, without having to enable campaign-wide auto-review.\n\nYou're auto launching this specific lead, while still enforcing every other launch guard: the campaign must have no step errors, any AI variables required by the campaign must be valid for the lead, and a sender must be available.\n\nNo need to enable autolaunch in the campaign.\n\nThis endpoint requires an `emailPro` plan or higher.",
+        "description": "Use this endpoint to launch a lead that is waiting for review, without having to enable campaign-wide auto-review.\n\nYou're auto launching this specific lead, while still enforcing every other launch guard: the campaign must have no step errors, any AI variables required by the campaign must be valid for the lead, and a sender must be available.\n\nNo need to enable autolaunch in the campaign.\n\nThis endpoint requires an `emailPro` plan or higher.\n\nRetrying is safe once a call has completed: a lead that is already launched is refused with `CAMPAIGN_LEAD_REVIEW_LEAD_ALREADY_REVIEWED`, so it is never launched twice. Do not send concurrent calls for the same lead.",
         "tags": [
           "Leads"
         ],
@@ -16163,17 +16163,22 @@
                   "properties": {
                     "ok": {
                       "type": "boolean"
+                    },
+                    "launched": {
+                      "type": "integer",
+                      "description": "Number of leads launched: 1, or 0 when the lead left review between the checks and the launch"
                     }
                   }
                 },
                 "example": {
-                  "ok": true
+                  "ok": true,
+                  "launched": 1
                 }
               }
             }
           },
           "400": {
-            "description": "The lead cannot be launched. Possible `error` codes: `CAMPAIGN_LEAD_REVIEW_LEAD_PAUSED` (lead is paused), `CAMPAIGN_LEAD_REVIEW_LEAD_ALREADY_LAUNCHED` (lead is already launched), `CAMPAIGN_LEAD_REVIEW_LEAD_AI_VARIABLE_INVALID` (missing or invalid AI variables required by the campaign), `CAMPAIGN_LEAD_REVIEW_LEAD_NO_SENDER_AVAILABLE` (no sender available), `CAMPAIGN_LEAD_REVIEW_CAMPAIGN_STEP_ERRORS` (campaign has step errors).",
+            "description": "The lead cannot be launched. Possible `error` codes: `CAMPAIGN_LEAD_REVIEW_LEAD_PAUSED` (lead is paused), `CAMPAIGN_LEAD_REVIEW_LEAD_NOT_SCANNED` (lead is still being imported), `CAMPAIGN_LEAD_REVIEW_LEAD_ALREADY_REVIEWED` (lead is not waiting for review, for example already launched), `CAMPAIGN_LEAD_REVIEW_LEAD_AI_VARIABLE_INVALID` (missing or invalid AI variables required by the campaign), `CAMPAIGN_LEAD_REVIEW_LEAD_NO_SENDER_AVAILABLE` (no sender available), `CAMPAIGN_LEAD_REVIEW_CAMPAIGN_NOT_RUNNING` (campaign is archived), `CAMPAIGN_LEAD_REVIEW_CAMPAIGN_STEP_ERRORS` (campaign has step errors).",
             "content": {
               "application/json": {
                 "schema": {
@@ -16188,8 +16193,8 @@
                   }
                 },
                 "example": {
-                  "error": "CAMPAIGN_LEAD_REVIEW_LEAD_ALREADY_LAUNCHED",
-                  "message": "Lead is already launched"
+                  "error": "CAMPAIGN_LEAD_REVIEW_LEAD_ALREADY_REVIEWED",
+                  "message": "Lead has already been reviewed"
                 }
               }
             }
@@ -16221,6 +16226,16 @@
           },
           "405": {
             "description": "Method not allowed"
+          },
+          "500": {
+            "description": "Unexpected error. The lead may not have been launched: read it back before retrying",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Internal error"
+                }
+              }
+            }
           }
         }
       }
