@@ -25817,7 +25817,7 @@
                   },
                   "crmId": {
                     "type": "string",
-                    "description": "Closed beta: refused as an unknown field (`400 INVALID_FIELD`) unless the CRM ID remap beta is enabled for your team. Id of the record of the connected CRM to link the company to: a HubSpot, Pipedrive or Zoho numeric id (send a Zoho id as a string: its 19 digits are too long for a JSON number), an Attio record id, or a Salesforce Account (`001…`) id of 15 or 18 characters. Requires an admin API key. A new company is created already linked; an existing one has its link moved to this record, and its contacts’ associations follow. An id another company holds updates that company when the body carries its domain, and is refused otherwise. See the endpoint page for the refusals.",
+                    "description": "Closed beta: refused as an unknown field (`400 INVALID_FIELD`) unless the CRM ID remap beta is enabled for your team. Id of the record of the connected CRM to link the company to: a HubSpot, Pipedrive or Zoho numeric id (send a Zoho id as a string: its 19 digits are too long for a JSON number), an Attio record id, or a Salesforce Account (`001…`) id of 15 or 18 characters. Requires an admin API key. A new company is created already linked; an existing one has its link moved to this record, and its contacts’ associations follow. An id another company holds updates that company when the body carries its domain, LinkedIn URL or Sales Navigator URL, and is refused otherwise. See the endpoint page for the refusals.",
                     "example": "123456789"
                   }
                 },
@@ -26122,7 +26122,7 @@
             }
           },
           "409": {
-            "description": "A domain, LinkedIn or Sales Navigator URL already belongs to another company (`COMPANY_IDENTIFIER_CONFLICT`); retrying as is fails again. With `crmId`: another company holds that CRM id and the body does not carry its domain (`CRM_ID_ALREADY_LINKED`, `error.conflictingRecord` names it), or the company found by its name alone is linked to another CRM record (`COMPANY_LINKED_TO_OTHER_CRM_RECORD`: send its `companyId` with `crmId` to move the link). Nothing is written.",
+            "description": "A domain, LinkedIn or Sales Navigator URL already belongs to another company (`COMPANY_IDENTIFIER_CONFLICT`); retrying as is fails again. With `crmId`: another company holds that CRM id and the body carries none of its domain, LinkedIn URL or Sales Navigator URL (`CRM_ID_ALREADY_LINKED`, `error.conflictingRecord` names it), or the company found by its name alone is linked to another CRM record (`COMPANY_LINKED_TO_OTHER_CRM_RECORD`: send its `companyId` with `crmId` to move the link). Nothing is written.",
             "content": {
               "application/json": {
                 "schema": {
