@@ -16,3 +16,5 @@ To add custom fields, you can add as many as you want in the body of your reques
 <Note>
   Company fields — `companyName`, `companyDomain`, `companyIndustry`, any `company`-prefixed key — are written on the **company record** the lead is linked to, the same record every other lead linked to it reads, not on that lead alone. The response says so: `warnings` carries a `company-fields-write-company-record` entry naming those keys in `params.fields`. It is informational, your request went through. To edit a company on purpose, use [Upsert Company](/api-reference/endpoints/companies/upsert-company).
 </Note>
+
+A write that would create a company not yet in lemlist requires the "Create companies" permission on the API key's user, otherwise it fails with `403 COMPANY_CREATE_NOT_ALLOWED` and nothing is written.

@@ -23,6 +23,8 @@ The endpoint matches existing companies by:
 
 If a company with the same `domain`, `linkedinUrl`, or `linkedinUrlSalesNav` already exists, the endpoint updates it instead of creating a duplicate.
 
+Creating a company requires the "Create companies" permission on the API key's user, otherwise the request fails with `403 COMPANY_CREATE_NOT_ALLOWED` and nothing is written. Updating an existing company does not require it.
+
 Without `companyId`, `name` is required together with at least one identifier: `domain`, `linkedinUrl` or `linkedinUrlSalesNav`. A company known only by its LinkedIn page can be created with `name` and `linkedinUrl`; a name alone is refused with `400 MISSING_REQUIRED_FIELD`.
 
 A `domain` that designates no single company is not stored: a personal email provider (`gmail.com`) or a platform host (`facebook.com`, `linkedin.com`, a bare `wordpress.com`). The company is still written, without it, and `warnings` carries a `COMPANY_DOMAIN_IGNORED` entry naming the domain in `params.companyDomain`. A site hosted on a site builder keeps its own address (`acme.wordpress.com`).
