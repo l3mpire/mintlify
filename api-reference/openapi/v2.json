@@ -27634,7 +27634,7 @@
                     },
                     "minItems": 1,
                     "maxItems": 1000,
-                    "description": "lemlist company ids (`cpn_xxx`) or domains, 1,000 at most. Send either `idsOrDomains` or `listId`.",
+                    "description": "lemlist company ids (`cpn_xxx`) or domains, 1,000 at most. A domain designates every company carrying it: 10,000 companies at most in total. Send either `idsOrDomains` or `listId`.",
                     "example": [
                       "cpn_xW8Ou6C03Csv8vatp",
                       "acme.com"
@@ -27718,7 +27718,7 @@
             }
           },
           "400": {
-            "description": "Invalid request. Possible error codes: `INVALID_SELECTION` (neither or both of `idsOrDomains` and `listId`, or an empty `idsOrDomains`), `TOO_MANY_RECORDS` (more than 1,000 references), `INVALID_LIST_ID` (not a `clt_xxx` id), `LIST_ENTITY_MISMATCH` (the list does not hold companies), `LIST_TOO_LARGE` (the list holds more than 10,000 companies), `NO_CRM_CONNECTED` (no CRM connected to the team), `VALIDATION_ERROR` (a field of the wrong type).",
+            "description": "Invalid request. Possible error codes: `INVALID_SELECTION` (neither or both of `idsOrDomains` and `listId`, or an empty `idsOrDomains`), `TOO_MANY_RECORDS` (more than 1,000 references), `TOO_MANY_MATCHES` (the domains match more than 10,000 companies in total), `INVALID_LIST_ID` (not a `clt_xxx` id), `LIST_ENTITY_MISMATCH` (the list does not hold companies), `LIST_TOO_LARGE` (the list holds more than 10,000 companies), `NO_CRM_CONNECTED` (no CRM connected to the team), `VALIDATION_ERROR` (a field of the wrong type).",
             "content": {
               "application/json": {
                 "example": {
@@ -27777,7 +27777,7 @@
                     },
                     "minItems": 1,
                     "maxItems": 1000,
-                    "description": "lemlist company ids (`cpn_xxx`) or domains, 1,000 at most. Send either `idsOrDomains` or `listId`.",
+                    "description": "lemlist company ids (`cpn_xxx`) or domains, 1,000 at most. A domain designates every company carrying it: 10,000 companies at most in total. Send either `idsOrDomains` or `listId`.",
                     "example": [
                       "cpn_xW8Ou6C03Csv8vatp",
                       "acme.com"
@@ -27861,7 +27861,7 @@
             }
           },
           "400": {
-            "description": "Invalid request. Possible error codes: `INVALID_SELECTION` (neither or both of `idsOrDomains` and `listId`, or an empty `idsOrDomains`), `TOO_MANY_RECORDS` (more than 1,000 references), `INVALID_LIST_ID` (not a `clt_xxx` id), `LIST_ENTITY_MISMATCH` (the list does not hold companies), `LIST_TOO_LARGE` (the list holds more than 10,000 companies), `NO_CRM_CONNECTED` (no CRM connected to the team), `VALIDATION_ERROR` (a field of the wrong type), `AS_LEAD_NOT_SUPPORTED` (`asLead` sent: Leads are contacts only), `CRM_OBJECT_NOT_ALLOWED` (the Salesforce connection does not grant the object to create).",
+            "description": "Invalid request. Possible error codes: `INVALID_SELECTION` (neither or both of `idsOrDomains` and `listId`, or an empty `idsOrDomains`), `TOO_MANY_RECORDS` (more than 1,000 references), `TOO_MANY_MATCHES` (the domains match more than 10,000 companies in total), `INVALID_LIST_ID` (not a `clt_xxx` id), `LIST_ENTITY_MISMATCH` (the list does not hold companies), `LIST_TOO_LARGE` (the list holds more than 10,000 companies), `NO_CRM_CONNECTED` (no CRM connected to the team), `VALIDATION_ERROR` (a field of the wrong type), `AS_LEAD_NOT_SUPPORTED` (`asLead` sent: Leads are contacts only), `CRM_OBJECT_NOT_ALLOWED` (the Salesforce connection does not grant the object to create).",
             "content": {
               "application/json": {
                 "example": {
