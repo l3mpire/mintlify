@@ -82,7 +82,7 @@ Send `crmId` with the id of a record in your connected CRM to link the contact t
 
 | CRM | Accepted id |
 |-----|-------------|
-| HubSpot, Pipedrive | Numeric record id |
+| HubSpot, Pipedrive, Zoho | Numeric record id. Send a Zoho id as a string: its 19 digits are too long for a JSON number. |
 | Attio | Record id (UUID) |
 | Salesforce | Contact (`003…`) or Lead (`00Q…`) id, 15 or 18 characters. A 15-character id is stored as 18. |
 
@@ -116,7 +116,6 @@ Every check runs before anything is written, so a refused call leaves the contac
 | `422` | `CRM_RECORD_MERGED` | The record was merged into another one; `error.survivorId` is the id to send. |
 | `422` | `CRM_RECORD_CONVERTED` | The Salesforce Lead was converted; `error.convertedContactId` is the Contact id to send. |
 | `422` | `CRM_ID_LEADS_NOT_SYNCED` | A Salesforce Lead id, while your team does not sync Leads. |
-| `422` | `CRM_ID_UPDATE_NOT_AVAILABLE` | Your connected CRM does not support linking by id yet. |
 | `503` | `CRM_RECORD_UNREACHABLE` | The CRM could not be reached to check the record. Retry. |
 
 ```json

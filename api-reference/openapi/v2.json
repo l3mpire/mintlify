@@ -23523,7 +23523,7 @@
                   },
                   "crmId": {
                     "type": "string",
-                    "description": "Closed beta: refused as an unknown field (`400 INVALID_FIELD`) unless the CRM ID remap beta is enabled for your team. Id of the record of the connected CRM to link the contact to: a HubSpot or Pipedrive numeric id, an Attio record id, or a Salesforce Contact (`003…`) or Lead (`00Q…`) id of 15 or 18 characters. Requires an admin API key. A new contact is created already linked; an existing one has its link moved to this record. An id another contact holds updates that contact when the body carries its email or LinkedIn URL, and is refused otherwise. See the endpoint page for the refusals.",
+                    "description": "Closed beta: refused as an unknown field (`400 INVALID_FIELD`) unless the CRM ID remap beta is enabled for your team. Id of the record of the connected CRM to link the contact to: a HubSpot, Pipedrive or Zoho numeric id (send a Zoho id as a string: its 19 digits are too long for a JSON number), an Attio record id, or a Salesforce Contact (`003…`) or Lead (`00Q…`) id of 15 or 18 characters. Requires an admin API key. A new contact is created already linked; an existing one has its link moved to this record. An id another contact holds updates that contact when the body carries its email or LinkedIn URL, and is refused otherwise. See the endpoint page for the refusals.",
                     "example": "123456789"
                   }
                 },
@@ -23892,7 +23892,7 @@
             }
           },
           "422": {
-            "description": "`crmId` names no live record the contact can be linked to: none in the CRM (`CRM_RECORD_NOT_FOUND`), a record merged into another one (`CRM_RECORD_MERGED`, `error.survivorId`), a converted Salesforce Lead (`CRM_RECORD_CONVERTED`, `error.convertedContactId`), a Salesforce Lead while the team does not sync Leads (`CRM_ID_LEADS_NOT_SYNCED`), or a CRM that does not support it yet (`CRM_ID_UPDATE_NOT_AVAILABLE`). Nothing is written.",
+            "description": "`crmId` names no live record the contact can be linked to: none in the CRM (`CRM_RECORD_NOT_FOUND`), a record merged into another one (`CRM_RECORD_MERGED`, `error.survivorId`), a converted Salesforce Lead (`CRM_RECORD_CONVERTED`, `error.convertedContactId`), or a Salesforce Lead while the team does not sync Leads (`CRM_ID_LEADS_NOT_SYNCED`). Nothing is written.",
             "content": {
               "application/json": {
                 "schema": {
@@ -25817,7 +25817,7 @@
                   },
                   "crmId": {
                     "type": "string",
-                    "description": "Closed beta: refused as an unknown field (`400 INVALID_FIELD`) unless the CRM ID remap beta is enabled for your team. Id of the record of the connected CRM to link the company to: a HubSpot or Pipedrive numeric id, an Attio record id, or a Salesforce Account (`001…`) id of 15 or 18 characters. Requires an admin API key. A new company is created already linked; an existing one has its link moved to this record, and its contacts’ associations follow. An id another company holds updates that company when the body carries its domain, and is refused otherwise. See the endpoint page for the refusals.",
+                    "description": "Closed beta: refused as an unknown field (`400 INVALID_FIELD`) unless the CRM ID remap beta is enabled for your team. Id of the record of the connected CRM to link the company to: a HubSpot, Pipedrive or Zoho numeric id (send a Zoho id as a string: its 19 digits are too long for a JSON number), an Attio record id, or a Salesforce Account (`001…`) id of 15 or 18 characters. Requires an admin API key. A new company is created already linked; an existing one has its link moved to this record, and its contacts’ associations follow. An id another company holds updates that company when the body carries its domain, and is refused otherwise. See the endpoint page for the refusals.",
                     "example": "123456789"
                   }
                 },
@@ -26157,7 +26157,7 @@
             }
           },
           "422": {
-            "description": "`crmId` names no live record the company can be linked to: none in the CRM (`CRM_RECORD_NOT_FOUND`), a record merged into another one (`CRM_RECORD_MERGED`, `error.survivorId`), or a CRM that does not support it yet (`CRM_ID_UPDATE_NOT_AVAILABLE`). Nothing is written.",
+            "description": "`crmId` names no live record the company can be linked to: none in the CRM (`CRM_RECORD_NOT_FOUND`), or a record merged into another one (`CRM_RECORD_MERGED`, `error.survivorId`). Nothing is written.",
             "content": {
               "application/json": {
                 "schema": {
