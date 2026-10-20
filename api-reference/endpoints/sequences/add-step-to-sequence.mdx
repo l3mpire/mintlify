@@ -86,6 +86,9 @@ action. It takes three extra fields:
 `customField` reads a bare name as a lead variable — `jobTitle` becomes `variables.jobTitle`. Prefix
 it with `fields.` to test a contact field instead.
 
+A company field is written `company.<field>` — `company.name`, or `company.sector` for a company
+custom field named `Sector`. `companyName` and `variables.companyName` are stored as `company.name`.
+
 `customOperator` is one of `equal`, `contains`, `empty`, `notEmpty`. The first two need a
 `customValue`; the last two refuse one.
 
@@ -153,7 +156,7 @@ does not render HTML. The step takes no `altMessage`, `images` or `videos`.
 | `url` (String, Conditional) | The URL of the API endpoint to call. Must be a valid URL (starting with `http://` or `https://`) |
 | `conditionKey` (String, Conditional) | For conditional steps only. Defines the condition key. Allowed values: `hasEmailAddress`, `hasLinkedinUrl`, `hasPhoneNumber`, `customLeadInfo`, `hasScore`, `emailsOpened`, `emailsClicked`, `emailsUnsubscribed`, `meetingBooked`, `linkedinInviteAccepted`, `linkedinOpened`, `aircallDone`, `linkedinNetworkCheck`, `hasWhatsappAccount` |
 | `delayType` (String, Conditional) | For conditional steps only. Specifies the delay type. Allowed values: `within`, `waitUntil` |
-| `customField` (String, Conditional) | For `customLeadInfo` conditions only. The field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` to test a contact field. `$` and the reserved keys `_id`, `teamId`, `campaignId`, `leadId`, `__proto__`, `constructor`, `prototype` are refused |
+| `customField` (String, Conditional) | For `customLeadInfo` conditions only. The field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` to test a contact field; a company field is written `company.<field>` (`companyName` is stored as `company.name`). `$` and the reserved keys `_id`, `teamId`, `campaignId`, `leadId`, `__proto__`, `constructor`, `prototype` are refused |
 | `customOperator` (String, Conditional) | For `customLeadInfo` conditions only. How the field is compared. Allowed values: `equal`, `contains`, `empty`, `notEmpty` |
 | `customValue` (String, Conditional) | For `customLeadInfo` conditions only. The value the field is compared to. Required for `equal` and `contains`, and refused for `empty` and `notEmpty` |
 | `campaignId` (String, Conditional) | For steps of type `sendToAnotherCampaign` only. The target campaign ID to which a lead should be sent. The specified campaign must exist in the team and not be archived |

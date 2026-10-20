@@ -1785,7 +1785,7 @@
           },
           "customField": {
             "type": "string",
-            "description": "`customLeadInfo` only - the tested field, normalized: a lead variable reads back as `variables.<name>`, a contact field as `fields.<name>`. Every branch of the step tests the same field."
+            "description": "`customLeadInfo` only - the tested field, normalized: a lead variable reads back as `variables.<name>`, a contact field as `fields.<name>`, a company field as `company.<field>` (e.g. `company.name`), or as `variables.company<Field>` (e.g. `variables.companyName`) on a step that already tested it that way, which tests the same value. Every branch of the step tests the same field."
           },
           "customOperator": {
             "type": "string",
@@ -10696,7 +10696,7 @@
                   },
                   "customField": {
                     "type": "string",
-                    "description": "For conditional steps keyed `customLeadInfo` only. The field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` to test a contact field. `$` and the reserved keys `_id`, `teamId`, `campaignId`, `leadId`, `__proto__`, `constructor` and `prototype` are refused."
+                    "description": "For conditional steps keyed `customLeadInfo` only. The field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` to test a contact field. A company field is written `company.<field>` - `company.name`, or `company.sector` for a company custom field named `Sector` - and `companyName` or `variables.companyName` is stored as `company.name`. `$` and the reserved keys `_id`, `teamId`, `campaignId`, `leadId`, `__proto__`, `constructor` and `prototype` are refused."
                   },
                   "customOperator": {
                     "type": "string",
@@ -11084,7 +11084,7 @@
                   },
                   "customField": {
                     "type": "string",
-                    "description": "For conditional steps keyed `customLeadInfo` only. The field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` to test a contact field. `$` and the reserved keys `_id`, `teamId`, `campaignId`, `leadId`, `__proto__`, `constructor` and `prototype` are refused."
+                    "description": "For conditional steps keyed `customLeadInfo` only. The field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` to test a contact field. A company field is written `company.<field>` - `company.name`, or `company.sector` for a company custom field named `Sector` - and `companyName` or `variables.companyName` is stored as `company.name`. `$` and the reserved keys `_id`, `teamId`, `campaignId`, `leadId`, `__proto__`, `constructor` and `prototype` are refused."
                   },
                   "customOperator": {
                     "type": "string",
@@ -11494,7 +11494,7 @@
                   },
                   "customField": {
                     "type": "string",
-                    "description": "`customLeadInfo` only - the field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` to test a contact field. Every branch of a step tests the same field, so changing it here changes it on all of them."
+                    "description": "`customLeadInfo` only - the field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` to test a contact field. A company field is written `company.<field>` - `company.name`, or `company.sector` for a company custom field named `Sector` - and `companyName` or `variables.companyName` is stored as `company.name`. On a step that already tests `variables.companyName`, the new branch keeps that form. Every branch of a step tests the same field, so changing it here changes it on all of them."
                   },
                   "customOperator": {
                     "type": "string",
@@ -11876,7 +11876,7 @@
                   },
                   "customField": {
                     "type": "string",
-                    "description": "`customLeadInfo` only - the field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` to test a contact field. Every branch of a step tests the same field, so changing it here changes it on all of them."
+                    "description": "`customLeadInfo` only - the field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` to test a contact field. A company field is written `company.<field>` - `company.name`, or `company.sector` for a company custom field named `Sector` - and `companyName` or `variables.companyName` is stored as `company.name`. Every branch of a step tests the same field, so changing it here changes it on all of them."
                   },
                   "customOperator": {
                     "type": "string",
