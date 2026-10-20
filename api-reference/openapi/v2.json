@@ -21196,7 +21196,7 @@
                   },
                   "peopleDbConnectionCount": {
                     "type": "string",
-                    "description": "LinkedIn connections count of the person, from the People Database. `500+` from 500 upwards, since LinkedIn shows no exact count above 500."
+                    "description": "LinkedIn connections count of the person, from the People Database. 500 usually means 500 or more."
                   },
                   "contactOwner": {
                     "type": "string",
