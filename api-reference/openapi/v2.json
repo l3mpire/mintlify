@@ -1086,50 +1086,113 @@
       },
       "Enrich": {
         "type": "object",
-        "description": "Contact information discovered through data enrichment (emails, phone numbers, LinkedIn URLs).",
+        "description": "An enrichment: one request to find an email or a phone number, verify an email or enrich a LinkedIn profile for one person. This is the shape `GET /enrich/{enrichId}` answers with; webhooks carry the same results under other key names (see the Webhooks section).",
         "properties": {
-          "_id": {
+          "enrichmentId": {
             "type": "string",
-            "description": "Unique enrichment request identifier"
+            "description": "Identifier of the enrichment"
           },
-          "status": {
+          "enrichmentStatus": {
             "type": "string",
-            "description": "Enrichment status",
+            "description": "Lifecycle state of the enrichment, not to be confused with `data.email.status`. Each state comes with its own HTTP status: `done` 200, `in-progress` 202, `failed` 400, `not-found` 404. A cancelled enrichment answers `done`.",
             "enum": [
-              "pending",
-              "completed",
-              "failed"
+              "done",
+              "in-progress",
+              "failed",
+              "not-found"
             ]
           },
-          "email": {
-            "type": "string",
-            "format": "email",
-            "description": "Found email address"
+          "input": {
+            "type": "object",
+            "description": "The inputs the enrichment was started with, echoed back. Absent on `not-found`.",
+            "additionalProperties": true
           },
-          "phone": {
-            "type": "string",
-            "description": "Found phone number"
+          "data": {
+            "type": "object",
+            "description": "What the enrichment found, keyed by result. Empty unless `enrichmentStatus` is `done`. A key is present only for a requested workflow that produced a result: a workflow that failed is absent and listed in `failedWorkflows`.",
+            "properties": {
+              "email": {
+                "type": "object",
+                "description": "Result of `find_email` and/or `verify`. Present only when one of them was requested and produced a result.",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "The address found by `find_email`. Absent when `notFound` is true or when only `verify` ran."
+                  },
+                  "notFound": {
+                    "type": "boolean",
+                    "description": "Set when `find_email` ran. True whenever no address is returned, including when the person opted out of enrichment: their address is never returned."
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "Deliverability of the address: the `verify` verdict, or the check `find_email` runs on the address it finds. Absent when no check resolved.",
+                    "enum": [
+                      "deliverable",
+                      "risky",
+                      "undeliverable"
+                    ]
+                  }
+                }
+              },
+              "phone": {
+                "type": "object",
+                "description": "Result of `find_phone`. Present only when it was requested and produced a result.",
+                "properties": {
+                  "phone": {
+                    "type": "string",
+                    "description": "The phone number found. Absent when `notFound` is true."
+                  },
+                  "additionalPhones": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Other numbers returned by the provider, when it returned more than one."
+                  },
+                  "notFound": {
+                    "type": "boolean",
+                    "description": "True whenever no number is returned, including when the person opted out of enrichment: their number is never returned."
+                  }
+                }
+              },
+              "linkedin": {
+                "type": "object",
+                "description": "Result of `linkedin_enrichment`: the LinkedIn profile as returned by the data source (identity, current company, `positionGroups`, …). Present only when it was requested and produced a result.",
+                "additionalProperties": true
+              }
+            }
           },
-          "firstName": {
-            "type": "string",
-            "description": "Found first name"
+          "failedWorkflows": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "find_email",
+                "find_phone",
+                "verify",
+                "linkedin_enrichment"
+              ]
+            },
+            "description": "On `done`, the requested workflows that failed. Only present when at least one failed."
           },
-          "lastName": {
+          "code": {
             "type": "string",
-            "description": "Found last name"
+            "description": "On `failed`, why the enrichment failed. An unknown or missing cause reads as `FAILED_TO_PROCESS`.",
+            "enum": [
+              "FAILED_TO_PROCESS",
+              "INVALID_INPUT",
+              "PROVIDER_TIMEOUT",
+              "PROVIDER_REJECTED"
+            ]
           },
-          "companyName": {
+          "reason": {
             "type": "string",
-            "description": "Found company name"
+            "description": "On `failed`, a readable explanation of `code`."
           },
-          "linkedinUrl": {
+          "error": {
             "type": "string",
-            "format": "uri",
-            "description": "Found LinkedIn URL"
-          },
-          "credits": {
-            "type": "integer",
-            "description": "Credits consumed"
+            "description": "On `failed`, the raw cause stored on the enrichment, absent when none was stored; prefer `code`. On `not-found`, `Enrichment not found`."
           }
         }
       },

@@ -2,3 +2,161 @@
 title: Enrichment
 openapi-schema: Enrich
 ---
+
+An enrichment is one request to find data about one person: find their email
+(`find_email`), find their phone number (`find_phone`), verify an email
+(`verify`) or enrich their LinkedIn profile (`linkedin_enrichment`). Start one
+with [Enrich Data](/api-reference/endpoints/enrich/enrich-data),
+[Enrich Lead](/api-reference/endpoints/enrich/enrich-lead) or many at once with
+[Bulk Enrich Data](/api-reference/endpoints/enrich/bulk-enrich-data). Each call
+answers with an enrichment `id` (`enr_…`) right away and the work runs in the
+background.
+
+There are two ways to get the result:
+
+1. **Webhooks (recommended)**: lemlist calls your endpoint once the enrichment
+   is over. See [Webhooks](#webhooks) below.
+2. **Polling**: call [Get Enrichment Result](/api-reference/endpoints/enrich/get-enrichment-result)
+   with the `id` until `enrichmentStatus` is no longer `in-progress`.
+
+## Result keys
+
+Polling and webhooks carry the same per-workflow results, under different key names:
+
+| Workflow | Key in `GET /enrich/{enrichId}` `data` | Key in webhook `data` |
+|---|---|---|
+| `find_email` | `email` | `find_email` |
+| `verify` | `email.status` | `verify.status` |
+| `find_phone` | `phone` | `find_phone` |
+| `linkedin_enrichment` | `linkedin` | `linkedin_enrichment` |
+
+A key is present only for a requested workflow that produced a result. A
+workflow that failed is absent from `data` and listed in `failedWorkflows`,
+which is only present when at least one workflow failed.
+
+When the person opted out of enrichment, the value is never returned:
+`notFound` is `true`, as when nothing was found.
+
+## Request errors
+
+When an enrichment cannot be started, the start call answers with a
+`code` naming why and a readable `message`. Bulk rows carry them as
+`error` and `message`.
+
+| Code | Meaning |
+|---|---|
+| `BAD_EMAIL` | Invalid email format |
+| `BAD_LINKEDIN_URL` | Invalid LinkedIn URL format: `linkedin_enrichment` needs a person profile URL |
+| `MISSING_EMAIL` | Email address is required for verification |
+| `MISSING_INPUTS` | Not enough inputs for the requested workflow (see the required inputs in [Bulk Enrich Data](/api-reference/endpoints/enrich/bulk-enrich-data#required-inputs)) |
+| `MISSING_FUNDS` | Not enough credits to complete this enrichment |
+| `CREDITS_USAGE_FORBIDDEN` | User LinkedIn account needs to be connected in “Settings” to enrich |
+| `NOT_ALLOWED_EMAIL` | You don't have permission to find emails |
+| `NOT_ALLOWED_PHONE` | You don't have permission to find phone numbers |
+| `NOT_ALLOWED_LINKEDIN` | You don't have permission to enrich LinkedIn profiles |
+| `NOT_ALLOWED_VERIFY` | You don't have permission to verify emails |
+| `LINKEDIN_UNSUBSCRIBED` | This LinkedIn profile is on the privacy list and cannot be enriched |
+| `TEAM_BLOCKED` | The enrichment process is blocked on your team. Please contact support for assistance. |
+| `TEAM_IN_ERROR` | The enrichment process is blocked on your team. Please contact support for assistance. Temporary: retry later. |
+| `TEAM_MIGRATION_IN_PROGRESS` | Enrichment is briefly paused on your team while we upgrade its data, please retry in a few minutes |
+| `SYSTEM_DISABLED` | Enrichment service is temporarily unavailable, please retry later |
+| `NO_AVAILABLE_PROVIDER` | No enrichment provider is available for this request |
+
+On [Enrich Data](/api-reference/endpoints/enrich/enrich-data) and
+[Enrich Lead](/api-reference/endpoints/enrich/enrich-lead), the HTTP status
+depends on the code: `403` for `CREDITS_USAGE_FORBIDDEN`, `503` for
+`TEAM_IN_ERROR` and `SYSTEM_DISABLED` (retry later), `400` for the others.
+
+## Failure codes
+
+An enrichment that started but failed as a whole answers `failed` on
+[Get Enrichment Result](/api-reference/endpoints/enrich/get-enrichment-result)
+and sends an `enrichmentError` webhook, with a `code` and a readable `reason`:
+
+| Code | Meaning |
+|---|---|
+| `FAILED_TO_PROCESS` | Enrichment service is having issues, please retry later |
+| `INVALID_INPUT` | The provided data is invalid |
+| `PROVIDER_TIMEOUT` | The enrichment provider did not respond in time |
+| `PROVIDER_REJECTED` | The enrichment provider could not process this request |
+
+## Webhooks
+
+Enrichments send two webhook events:
+
+| Event | When |
+|---|---|
+| `enrichmentDone` | The enrichment is over. Some workflows may have failed: check `failedWorkflows`. |
+| `enrichmentError` | The enrichment failed as a whole. |
+
+They are delivered to every webhook your team registered for the event with
+[Add Webhook](/api-reference/endpoints/webhooks/add-webhook), and to the
+`webhookUrl` passed when the enrichment was started. A `POST` is sent with a
+JSON body holding the event `type` and a `data` array. The array can hold
+several enrichments of the same event: lemlist may group them in one call.
+
+Each `enrichmentDone` item:
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string | Enrichment ID |
+| `data.find_email` | object | `email` (absent when not found), `notFound`, `status` (`deliverable`, `risky` or `undeliverable`, when a check resolved) |
+| `data.verify` | object | `status`: `deliverable`, `risky` or `undeliverable` |
+| `data.find_phone` | object | `phone` (absent when not found), `additionalPhones` (only when the provider returned more numbers), `notFound` |
+| `data.linkedin_enrichment` | object | The LinkedIn profile |
+| `failedWorkflows` | string[] | Requested workflows that failed. Only present when at least one failed |
+| `metadata` | string or object | The `metadata` sent with the bulk request, `{}` when none was sent |
+
+Each `enrichmentError` item:
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string | Enrichment ID |
+| `code` | string | One of the [failure codes](#failure-codes) |
+| `reason` | string | Readable explanation of `code` |
+| `error` | string | Raw cause stored on the enrichment, absent when none was stored. Prefer `code` |
+| `metadata` | string or object | The `metadata` sent with the bulk request, `{}` when none was sent |
+
+<CodeGroup>
+```json enrichmentDone
+{
+  "type": "enrichmentDone",
+  "data": [
+    {
+      "id": "enr_ExampleA1b2C3d4E5",
+      "data": {
+        "find_email": {
+          "email": "john@example.com",
+          "notFound": false,
+          "status": "deliverable"
+        },
+        "find_phone": {
+          "phone": "+15555550100",
+          "additionalPhones": ["+15555550101"],
+          "notFound": false
+        }
+      },
+      "failedWorkflows": ["linkedin_enrichment"],
+      "metadata": {
+        "crmId": "12345"
+      }
+    }
+  ]
+}
+```
+
+```json enrichmentError
+{
+  "type": "enrichmentError",
+  "data": [
+    {
+      "id": "enr_ExampleF6g7H8i9J0",
+      "code": "PROVIDER_TIMEOUT",
+      "reason": "The enrichment provider did not respond in time",
+      "error": "PROVIDER_TIMEOUT",
+      "metadata": {}
+    }
+  ]
+}
+```
+</CodeGroup>
