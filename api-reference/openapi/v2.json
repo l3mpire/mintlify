@@ -23445,6 +23445,18 @@
                     "type": "string",
                     "description": "Contact tagline."
                   },
+                  "peopleDbSeniority": {
+                    "type": "string",
+                    "description": "Seniority of the person, from the People Database."
+                  },
+                  "peopleDbDepartment": {
+                    "type": "string",
+                    "description": "Department of the person, from the People Database."
+                  },
+                  "peopleDbConnectionCount": {
+                    "type": "string",
+                    "description": "LinkedIn connections count of the person, from the People Database. 500 usually means 500 or more."
+                  },
                   "contactOwner": {
                     "type": "string",
                     "description": "Owner of the contact. Can be a user ID (e.g. `usr_...`) or a team member's email address. If the provided value does not match a team member, the contact is still written with an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`: the owner defaults to the API key owner on creation and is unchanged on update. On update it replaces the current owner, except under `fillEmptyOnly` where it is only set when the contact has none."
