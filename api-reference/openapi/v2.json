@@ -32253,13 +32253,14 @@
         "tags": [
           "Enrich"
         ],
+        "description": "Start an enrichment of a lead of your team, from the data of its contact. Enable at least one of `findEmail`, `findPhone`, `verifyEmail` and `linkedinEnrichment`. Answers with the enrichment `id` right away; the result comes later through webhooks or [Get Enrichment Result](/api-reference/endpoints/enrich/get-enrichment-result).",
         "parameters": [
           {
             "name": "leadId",
             "in": "path",
             "required": true,
             "description": "Unique lead ID",
-            "example": "lea_123",
+            "example": "lea_ExampleA1b2C3d4E5",
             "schema": {
               "type": "string"
             }
@@ -32268,7 +32269,7 @@
             "name": "findEmail",
             "in": "query",
             "required": false,
-            "description": "Search email address in another campaign",
+            "description": "Find the lead's email. On when set to `true`.",
             "example": "true",
             "schema": {
               "type": "boolean"
@@ -32278,7 +32279,7 @@
             "name": "verifyEmail",
             "in": "query",
             "required": false,
-            "description": "Find verified email",
+            "description": "Verify the deliverability of the lead's email. On when set to `true`.",
             "example": "true",
             "schema": {
               "type": "boolean"
@@ -32288,7 +32289,7 @@
             "name": "linkedinEnrichment",
             "in": "query",
             "required": false,
-            "description": "Run LinkedIn enrichment",
+            "description": "Enrich the lead's LinkedIn profile. On when set to `true`.",
             "example": "true",
             "schema": {
               "type": "boolean"
@@ -32298,7 +32299,7 @@
             "name": "findPhone",
             "in": "query",
             "required": false,
-            "description": "Find phone number",
+            "description": "Find the lead's phone number. On when set to `true`.",
             "example": "true",
             "schema": {
               "type": "boolean"
@@ -32308,8 +32309,8 @@
             "name": "webhookUrl",
             "in": "query",
             "required": false,
-            "description": "Webhook URL for enrichment events",
-            "example": "https://n8n.example.com/webhook/lemlist-webhook-surprise",
+            "description": "URL that receives the `enrichmentDone` or `enrichmentError` event of this enrichment, on top of your team's webhooks. See the webhooks of the Enrichment object.",
+            "example": "https://example.com/webhooks/lemlist",
             "schema": {
               "type": "string"
             }
@@ -32340,21 +32341,148 @@
                   }
                 },
                 "example": {
-                  "id": "enr_Ohbs0mEsWmDjTnxTi"
+                  "id": "enr_ExampleK1l2M3n4O5"
                 }
               }
             }
           },
           "400": {
-            "description": "Bad team",
+            "description": "Bad request, or enrichment not started. For a rejected enrichment, `code` names why and `message` explains it; `error` is a short legacy text: `Missing credits` (`MISSING_FUNDS`), `Email is missing` (`MISSING_EMAIL`), `Missing inputs` (`MISSING_INPUTS`), `Failed to enrich lead` for the other codes.",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Short legacy text, or what is wrong with the request"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Why the enrichment was not started. See the request errors of the Enrichment object.",
+                      "enum": [
+                        "BAD_EMAIL",
+                        "BAD_LINKEDIN_URL",
+                        "MISSING_EMAIL",
+                        "MISSING_INPUTS",
+                        "MISSING_FUNDS",
+                        "NOT_ALLOWED_EMAIL",
+                        "NOT_ALLOWED_PHONE",
+                        "NOT_ALLOWED_LINKEDIN",
+                        "NOT_ALLOWED_VERIFY",
+                        "LINKEDIN_UNSUBSCRIBED",
+                        "TEAM_BLOCKED",
+                        "TEAM_MIGRATION_IN_PROGRESS",
+                        "NO_AVAILABLE_PROVIDER"
+                      ]
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Readable explanation of `code`"
+                    }
+                  }
+                },
+                "examples": {
+                  "badParams": {
+                    "summary": "No lead ID",
+                    "value": {
+                      "error": "Bad params"
+                    }
+                  },
+                  "invalidLeadId": {
+                    "summary": "Malformed lead ID",
+                    "value": {
+                      "error": "Invalid leadId"
+                    }
+                  },
+                  "leadNotEnrichable": {
+                    "summary": "The lead state is neither `scanned` nor `imported`",
+                    "value": {
+                      "error": "lemrich is not available for lead reviewed"
+                    }
+                  },
+                  "noEnrichment": {
+                    "summary": "No workflow enabled",
+                    "value": {
+                      "error": "invalid feature param"
+                    }
+                  },
+                  "invalidWebhookUrl": {
+                    "summary": "Invalid webhookUrl",
+                    "value": {
+                      "error": "invalid webhookUrl"
+                    }
+                  },
+                  "missingInputs": {
+                    "summary": "Not enough inputs",
+                    "value": {
+                      "error": "Missing inputs",
+                      "code": "MISSING_INPUTS",
+                      "message": "Missing LinkedIn url OR the combination of first name, last name, company name, company domain"
+                    }
+                  },
+                  "missingFunds": {
+                    "summary": "Not enough credits",
+                    "value": {
+                      "error": "Missing credits",
+                      "code": "MISSING_FUNDS",
+                      "message": "Not enough credits to complete this enrichment"
+                    }
+                  },
+                  "missingEmail": {
+                    "summary": "No email to verify",
+                    "value": {
+                      "error": "Email is missing",
+                      "code": "MISSING_EMAIL",
+                      "message": "Email address is required for verification"
+                    }
+                  },
+                  "notAllowed": {
+                    "summary": "Missing permission",
+                    "value": {
+                      "error": "Failed to enrich lead",
+                      "code": "NOT_ALLOWED_PHONE",
+                      "message": "You don't have permission to find phone numbers"
+                    }
+                  }
+                }
               }
             }
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "403": {
+            "description": "The user's LinkedIn account must be connected in Settings to enrich",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Always `linkedin-not-linked`"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Why the enrichment was not started. See the request errors of the Enrichment object.",
+                      "enum": [
+                        "CREDITS_USAGE_FORBIDDEN"
+                      ]
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Readable explanation of `code`"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "linkedin-not-linked",
+                  "code": "CREDITS_USAGE_FORBIDDEN",
+                  "message": "User LinkedIn account needs to be connected in “Settings” to enrich"
+                }
+              }
+            }
           },
           "404": {
             "description": "Lead or contact not found",
@@ -32362,7 +32490,7 @@
               "application/json": {
                 "examples": {
                   "leadNotFound": {
-                    "summary": "Lead does not exist",
+                    "summary": "No lead with this ID in your team",
                     "value": {
                       "error": "Lead not found",
                       "code": "LEAD_NOT_FOUND"
@@ -32405,11 +32533,57 @@
             }
           },
           "500": {
-            "description": "Enrichment failed",
+            "description": "Unexpected error",
             "content": {
               "application/json": {
                 "example": {
                   "error": "Failed to enrich lead"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Enrichment is temporarily paused for your team or for lemlist: retry later",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Same text as `message`"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Why the enrichment was not started. See the request errors of the Enrichment object.",
+                      "enum": [
+                        "TEAM_IN_ERROR",
+                        "SYSTEM_DISABLED"
+                      ]
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Readable explanation of `code`"
+                    }
+                  }
+                },
+                "examples": {
+                  "systemDisabled": {
+                    "summary": "Enrichment service paused",
+                    "value": {
+                      "error": "Enrichment service is temporarily unavailable, please retry later",
+                      "code": "SYSTEM_DISABLED",
+                      "message": "Enrichment service is temporarily unavailable, please retry later"
+                    }
+                  },
+                  "teamInError": {
+                    "summary": "Team paused",
+                    "value": {
+                      "error": "The enrichment process is blocked on your team. Please contact support for assistance.",
+                      "code": "TEAM_IN_ERROR",
+                      "message": "The enrichment process is blocked on your team. Please contact support for assistance."
+                    }
+                  }
                 }
               }
             }

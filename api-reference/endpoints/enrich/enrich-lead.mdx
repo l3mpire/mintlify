@@ -3,7 +3,11 @@ openapi: post /leads/{leadId}/enrich
 description: Enriches an existing lead in lemlist with additional data.
 ---
 
-You can [enrich a lead](/api-reference/objects-definitions/enrich)with additional data.
+You can [enrich a lead](/api-reference/objects-definitions/enrich) with additional data. The enrichment uses the data of the lead's contact.
+
+An enrichment that would only return data the contact already has is skipped with a `409` `ALREADY_ENRICHED`: pass `force=true` to run it anyway. A lead already being enriched answers `409` until that enrichment is over.
+
+When the enrichment cannot be started, the answer carries a `code` and a `message`: see [Request errors](/api-reference/objects-definitions/enrich#request-errors).
 
 <Note>
     Check [enrich data](/api-reference/endpoints/enrich/enrich-data) for details on the enrichment result structure.
