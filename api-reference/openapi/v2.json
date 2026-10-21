@@ -1472,6 +1472,67 @@
             "type": "integer",
             "description": "Number of campaigns the contact is in"
           },
+          "crmSync": {
+            "type": "object",
+            "description": "CRM sync status for the contact, resolved against the team's active CRM provider. Only present when a CRM is connected and the contact is linked to a record in it or was searched for in it. Read `searching` and `notFoundAt` to follow a Search & connect or Create in CRM.",
+            "properties": {
+              "provider": {
+                "type": "string",
+                "enum": [
+                  "hubspot",
+                  "salesforce",
+                  "pipedrive"
+                ],
+                "description": "Active CRM provider for the team."
+              },
+              "crmRecordId": {
+                "type": "string",
+                "nullable": true,
+                "description": "Identifier of the contact record on the CRM side. `null` when the lemlist contact has not been synced yet."
+              },
+              "syncDisabled": {
+                "type": "boolean",
+                "description": "When `true`, automatic sync is paused for this contact."
+              },
+              "searching": {
+                "type": "boolean",
+                "description": "`true` while a CRM search (Search & connect, Create in CRM) is queued or running for this contact. A search started more than 15 minutes ago no longer counts: it stalled."
+              },
+              "notFoundAt": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true,
+                "description": "When the last CRM search found no matching record. `null` otherwise."
+              },
+              "errors": {
+                "type": "array",
+                "description": "List of recent sync errors. Empty when the contact is synced cleanly.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Coarse error category (e.g. `CONNECT_FAILED`, `CREATE_FAILED`, `UPDATE_FAILED`)."
+                    },
+                    "reason": {
+                      "type": "string",
+                      "description": "Specific error reason (e.g. `UNIQUE_INDEX_ERROR_CONTACT`, `INVALID_EMAIL`, `PROPERTY_DOESNT_EXIST`)."
+                    },
+                    "raisedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp when the error was last raised."
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "additionalProperties": true,
+                      "description": "Extra context. For `UNIQUE_INDEX_ERROR_COMPANY`, contains `alreadyExistingCompanyId` — the lemlist company that already occupies the conflicting CRM record. Use it to remap contacts onto the right lemlist company before deleting the duplicate."
+                    }
+                  }
+                }
+              }
+            }
+          },
           "fieldRejections": {
             "type": "array",
             "description": "Values lemlist refused to write on this contact, each with its reason. Empty when none. Filter the list endpoint to only flagged contacts via `GET /contacts?fieldRejectionReason=...`.",
@@ -23882,6 +23943,14 @@
                           "createdBy": "usr_ahfFktBBHUIxbVG5P",
                           "unsubscribed": false,
                           "campaignCount": 1,
+                          "crmSync": {
+                            "provider": "hubspot",
+                            "crmRecordId": "123456789",
+                            "syncDisabled": false,
+                            "searching": false,
+                            "notFoundAt": null,
+                            "errors": []
+                          },
                           "fieldRejections": []
                         }
                       ],
