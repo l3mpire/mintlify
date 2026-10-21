@@ -24726,7 +24726,7 @@
     "/contacts/crm/search-and-connect": {
       "post": {
         "summary": "Search & Connect Contacts in the CRM",
-        "description": "Searches your connected CRM for each contact and links it to the CRM record found — the **Search & connect** action of the Contacts page. Nothing is ever created in the CRM: use `POST /contacts/crm/create` for that.\n\nTarget the contacts with `idsOrEmails` (lemlist ids or email addresses, 1,000 at most) **or** with `listId` for a whole contact list of up to 10,000 contacts.\n\n**Asynchronous:** the call queues the work and answers at once with what was queued, not with what the CRM returned. Each contact's outcome lands on its `crmSync` block shortly after: read it with `GET /contacts?idsOrEmails=...`, or list the contacts by state with `crmSyncStatus`: `searching` while the search runs, then `synced` once linked, or `not_found` when no CRM record matched.\n\n- A contact already linked to a CRM record is synced with it again (`alreadyLinked`).\n- A contact with nothing to search the CRM with is left untouched (`notSearchable`).\n- A contact whose CRM search is already queued is not queued twice (`alreadyInProgress`).\n\nRequires a connected CRM (HubSpot, Salesforce, Pipedrive or Attio).",
+        "description": "Searches your connected CRM for each contact and links it to the CRM record found — the **Search & connect** action of the Contacts page. Nothing is ever created in the CRM: use `POST /contacts/crm/create` for that.\n\nTarget the contacts with `idsOrEmails` (lemlist ids or email addresses) **or** with `listId` for a whole contact list: 10,000 contacts at most either way.\n\n**Asynchronous:** the call queues the work and answers at once with what was queued, not with what the CRM returned. Each contact's outcome lands on its `crmSync` block shortly after: read it with `GET /contacts?idsOrEmails=...`, or list the contacts by state with `crmSyncStatus`: `searching` while the search runs, then `synced` once linked, or `not_found` when no CRM record matched.\n\n- A contact already linked to a CRM record is synced with it again (`alreadyLinked`).\n- A contact with nothing to search the CRM with is left untouched (`notSearchable`).\n- A contact whose CRM search is already queued is not queued twice (`alreadyInProgress`).\n\nRequires a connected CRM (HubSpot, Salesforce, Pipedrive or Attio).",
         "tags": [
           "Contacts"
         ],
@@ -24743,8 +24743,8 @@
                       "type": "string"
                     },
                     "minItems": 1,
-                    "maxItems": 1000,
-                    "description": "lemlist contact ids (`ctc_xxx`) or email addresses, 1,000 at most. Send either `idsOrEmails` or `listId`.",
+                    "maxItems": 10000,
+                    "description": "lemlist contact ids (`ctc_xxx`) or email addresses, 10,000 at most. Send either `idsOrEmails` or `listId`.",
                     "example": [
                       "ctc_xW8Ou6C03Csv8vatp",
                       "john.doe@acme.com"
@@ -24752,7 +24752,7 @@
                   },
                   "listId": {
                     "type": "string",
-                    "description": "A contact list id (`clt_xxx`): acts on every contact of the list, static or dynamic, 10,000 at most. Use it instead of `idsOrEmails`, for instance beyond 1,000 contacts.",
+                    "description": "A contact list id (`clt_xxx`): acts on every contact of the list, static or dynamic, 10,000 at most. Use it instead of `idsOrEmails`.",
                     "example": "clt_Ab12Cd34Ef56Gh78I"
                   }
                 }
@@ -24828,7 +24828,7 @@
             }
           },
           "400": {
-            "description": "Invalid request. Possible error codes: `INVALID_SELECTION` (neither or both of `idsOrEmails` and `listId`, or an empty `idsOrEmails`), `TOO_MANY_RECORDS` (more than 1,000 references), `INVALID_LIST_ID` (not a `clt_xxx` id), `LIST_ENTITY_MISMATCH` (the list does not hold contacts), `LIST_TOO_LARGE` (the list holds more than 10,000 contacts), `NO_CRM_CONNECTED` (no CRM connected to the team), `VALIDATION_ERROR` (a field of the wrong type).",
+            "description": "Invalid request. Possible error codes: `INVALID_SELECTION` (neither or both of `idsOrEmails` and `listId`, or an empty `idsOrEmails`), `TOO_MANY_RECORDS` (more than 10,000 references), `INVALID_LIST_ID` (not a `clt_xxx` id), `LIST_ENTITY_MISMATCH` (the list does not hold contacts), `LIST_TOO_LARGE` (the list holds more than 10,000 contacts), `NO_CRM_CONNECTED` (no CRM connected to the team), `VALIDATION_ERROR` (a field of the wrong type).",
             "content": {
               "application/json": {
                 "example": {
@@ -24869,7 +24869,7 @@
     "/contacts/crm/create": {
       "post": {
         "summary": "Create Contacts in the CRM",
-        "description": "Pushes contacts to your connected CRM — the **Create in CRM** action of the Contacts page. Each contact is searched in the CRM first: linked to the record found, created in the CRM otherwise. On Salesforce, `asLead: true` creates the missing contacts as Leads.\n\nTarget the contacts with `idsOrEmails` (lemlist ids or email addresses, 1,000 at most) **or** with `listId` for a whole contact list of up to 10,000 contacts.\n\n**Asynchronous:** the call queues the work and answers at once with what was queued, not with what the CRM returned. Each contact's outcome lands on its `crmSync` block shortly after: read it with `GET /contacts?idsOrEmails=...`, or list the contacts by state with `crmSyncStatus`: `searching` while the search runs, then `synced` once linked or created, or `error` with its reason when the CRM refused it.\n\n- A contact already linked to a CRM record is synced with it again (`alreadyLinked`).\n- A contact with nothing to search the CRM with is left untouched (`notSearchable`).\n- A contact whose CRM search is already queued is not queued twice (`alreadyInProgress`).\n\nRequires a connected CRM (HubSpot, Salesforce, Pipedrive or Attio) and an API key of a team **admin**. On Salesforce, the connection must grant the object created (Contact, or Lead with `asLead`).",
+        "description": "Pushes contacts to your connected CRM — the **Create in CRM** action of the Contacts page. Each contact is searched in the CRM first: linked to the record found, created in the CRM otherwise. On Salesforce, `asLead: true` creates the missing contacts as Leads.\n\nTarget the contacts with `idsOrEmails` (lemlist ids or email addresses) **or** with `listId` for a whole contact list: 10,000 contacts at most either way.\n\n**Asynchronous:** the call queues the work and answers at once with what was queued, not with what the CRM returned. Each contact's outcome lands on its `crmSync` block shortly after: read it with `GET /contacts?idsOrEmails=...`, or list the contacts by state with `crmSyncStatus`: `searching` while the search runs, then `synced` once linked or created, or `error` with its reason when the CRM refused it.\n\n- A contact already linked to a CRM record is synced with it again (`alreadyLinked`).\n- A contact with nothing to search the CRM with is left untouched (`notSearchable`).\n- A contact whose CRM search is already queued is not queued twice (`alreadyInProgress`).\n\nRequires a connected CRM (HubSpot, Salesforce, Pipedrive or Attio) and an API key of a team **admin**. On Salesforce, the connection must grant the object created (Contact, or Lead with `asLead`).",
         "tags": [
           "Contacts"
         ],
@@ -24886,8 +24886,8 @@
                       "type": "string"
                     },
                     "minItems": 1,
-                    "maxItems": 1000,
-                    "description": "lemlist contact ids (`ctc_xxx`) or email addresses, 1,000 at most. Send either `idsOrEmails` or `listId`.",
+                    "maxItems": 10000,
+                    "description": "lemlist contact ids (`ctc_xxx`) or email addresses, 10,000 at most. Send either `idsOrEmails` or `listId`.",
                     "example": [
                       "ctc_xW8Ou6C03Csv8vatp",
                       "john.doe@acme.com"
@@ -24895,7 +24895,7 @@
                   },
                   "listId": {
                     "type": "string",
-                    "description": "A contact list id (`clt_xxx`): acts on every contact of the list, static or dynamic, 10,000 at most. Use it instead of `idsOrEmails`, for instance beyond 1,000 contacts.",
+                    "description": "A contact list id (`clt_xxx`): acts on every contact of the list, static or dynamic, 10,000 at most. Use it instead of `idsOrEmails`.",
                     "example": "clt_Ab12Cd34Ef56Gh78I"
                   },
                   "asLead": {
@@ -24976,7 +24976,7 @@
             }
           },
           "400": {
-            "description": "Invalid request. Possible error codes: `INVALID_SELECTION` (neither or both of `idsOrEmails` and `listId`, or an empty `idsOrEmails`), `TOO_MANY_RECORDS` (more than 1,000 references), `INVALID_LIST_ID` (not a `clt_xxx` id), `LIST_ENTITY_MISMATCH` (the list does not hold contacts), `LIST_TOO_LARGE` (the list holds more than 10,000 contacts), `NO_CRM_CONNECTED` (no CRM connected to the team), `VALIDATION_ERROR` (a field of the wrong type), `AS_LEAD_NOT_SUPPORTED` (`asLead` outside Salesforce), `CRM_OBJECT_NOT_ALLOWED` (the Salesforce connection does not grant the object to create).",
+            "description": "Invalid request. Possible error codes: `INVALID_SELECTION` (neither or both of `idsOrEmails` and `listId`, or an empty `idsOrEmails`), `TOO_MANY_RECORDS` (more than 10,000 references), `INVALID_LIST_ID` (not a `clt_xxx` id), `LIST_ENTITY_MISMATCH` (the list does not hold contacts), `LIST_TOO_LARGE` (the list holds more than 10,000 contacts), `NO_CRM_CONNECTED` (no CRM connected to the team), `VALIDATION_ERROR` (a field of the wrong type), `AS_LEAD_NOT_SUPPORTED` (`asLead` outside Salesforce), `CRM_OBJECT_NOT_ALLOWED` (the Salesforce connection does not grant the object to create).",
             "content": {
               "application/json": {
                 "example": {
@@ -27616,7 +27616,7 @@
     "/companies/crm/search-and-connect": {
       "post": {
         "summary": "Search & Connect Companies in the CRM",
-        "description": "Searches your connected CRM for each company and links it to the CRM record found — the **Search & connect** action of the Companies page. Nothing is ever created in the CRM: use `POST /companies/crm/create` for that.\n\nTarget the companies with `idsOrDomains` (lemlist ids or domains, 1,000 at most) **or** with `listId` for a whole company list of up to 10,000 companies.\n\n**Asynchronous:** the call queues the work and answers at once with what was queued, not with what the CRM returned. Each company's outcome lands on its `crmSync` block shortly after: read it with `GET /companies?idsOrDomains=...`, or list the companies by state with `crmSyncStatus`: `searching` while the search runs, then `synced` once linked, or `not_found` when no CRM record matched.\n\n- A company already linked to a CRM record is synced with it again (`alreadyLinked`).\n- A company with nothing to search the CRM with is left untouched (`notSearchable`).\n- A company whose CRM search is already queued is not queued twice (`alreadyInProgress`).\n\nRequires a connected CRM (HubSpot, Salesforce, Pipedrive or Attio).",
+        "description": "Searches your connected CRM for each company and links it to the CRM record found — the **Search & connect** action of the Companies page. Nothing is ever created in the CRM: use `POST /companies/crm/create` for that.\n\nTarget the companies with `idsOrDomains` (lemlist ids or domains) **or** with `listId` for a whole company list: 10,000 companies at most either way, a domain counting every company that carries it.\n\n**Asynchronous:** the call queues the work and answers at once with what was queued, not with what the CRM returned. Each company's outcome lands on its `crmSync` block shortly after: read it with `GET /companies?idsOrDomains=...`, or list the companies by state with `crmSyncStatus`: `searching` while the search runs, then `synced` once linked, or `not_found` when no CRM record matched.\n\n- A company already linked to a CRM record is synced with it again (`alreadyLinked`).\n- A company with nothing to search the CRM with is left untouched (`notSearchable`).\n- A company whose CRM search is already queued is not queued twice (`alreadyInProgress`).\n\nRequires a connected CRM (HubSpot, Salesforce, Pipedrive or Attio).",
         "tags": [
           "Companies"
         ],
@@ -27633,8 +27633,8 @@
                       "type": "string"
                     },
                     "minItems": 1,
-                    "maxItems": 1000,
-                    "description": "lemlist company ids (`cpn_xxx`) or domains, 1,000 at most. A domain designates every company carrying it: 10,000 companies at most in total. Send either `idsOrDomains` or `listId`.",
+                    "maxItems": 10000,
+                    "description": "lemlist company ids (`cpn_xxx`) or domains, 10,000 at most. A domain designates every company carrying it: 10,000 companies at most in total. Send either `idsOrDomains` or `listId`.",
                     "example": [
                       "cpn_xW8Ou6C03Csv8vatp",
                       "acme.com"
@@ -27642,7 +27642,7 @@
                   },
                   "listId": {
                     "type": "string",
-                    "description": "A company list id (`clt_xxx`): acts on every company of the list, static or dynamic, 10,000 at most. Use it instead of `idsOrDomains`, for instance beyond 1,000 companies.",
+                    "description": "A company list id (`clt_xxx`): acts on every company of the list, static or dynamic, 10,000 at most. Use it instead of `idsOrDomains`.",
                     "example": "clt_Ab12Cd34Ef56Gh78I"
                   }
                 }
@@ -27718,7 +27718,7 @@
             }
           },
           "400": {
-            "description": "Invalid request. Possible error codes: `INVALID_SELECTION` (neither or both of `idsOrDomains` and `listId`, or an empty `idsOrDomains`), `TOO_MANY_RECORDS` (more than 1,000 references), `TOO_MANY_MATCHES` (the domains match more than 10,000 companies in total), `INVALID_LIST_ID` (not a `clt_xxx` id), `LIST_ENTITY_MISMATCH` (the list does not hold companies), `LIST_TOO_LARGE` (the list holds more than 10,000 companies), `NO_CRM_CONNECTED` (no CRM connected to the team), `VALIDATION_ERROR` (a field of the wrong type).",
+            "description": "Invalid request. Possible error codes: `INVALID_SELECTION` (neither or both of `idsOrDomains` and `listId`, or an empty `idsOrDomains`), `TOO_MANY_RECORDS` (more than 10,000 references), `TOO_MANY_MATCHES` (the domains match more than 10,000 companies in total), `INVALID_LIST_ID` (not a `clt_xxx` id), `LIST_ENTITY_MISMATCH` (the list does not hold companies), `LIST_TOO_LARGE` (the list holds more than 10,000 companies), `NO_CRM_CONNECTED` (no CRM connected to the team), `VALIDATION_ERROR` (a field of the wrong type).",
             "content": {
               "application/json": {
                 "example": {
@@ -27759,7 +27759,7 @@
     "/companies/crm/create": {
       "post": {
         "summary": "Create Companies in the CRM",
-        "description": "Pushes companies to your connected CRM — the **Create in CRM** action of the Companies page. Each company is searched in the CRM first: linked to the record found, created in the CRM otherwise.\n\nTarget the companies with `idsOrDomains` (lemlist ids or domains, 1,000 at most) **or** with `listId` for a whole company list of up to 10,000 companies.\n\n**Asynchronous:** the call queues the work and answers at once with what was queued, not with what the CRM returned. Each company's outcome lands on its `crmSync` block shortly after: read it with `GET /companies?idsOrDomains=...`, or list the companies by state with `crmSyncStatus`: `searching` while the search runs, then `synced` once linked or created, or `error` with its reason when the CRM refused it.\n\n- A company already linked to a CRM record is synced with it again (`alreadyLinked`).\n- A company with nothing to search the CRM with is left untouched (`notSearchable`).\n- A company whose CRM search is already queued is not queued twice (`alreadyInProgress`).\n\nRequires a connected CRM (HubSpot, Salesforce, Pipedrive or Attio) and an API key of a team **admin**. On Salesforce, the connection must grant the object created (Account).",
+        "description": "Pushes companies to your connected CRM — the **Create in CRM** action of the Companies page. Each company is searched in the CRM first: linked to the record found, created in the CRM otherwise.\n\nTarget the companies with `idsOrDomains` (lemlist ids or domains) **or** with `listId` for a whole company list: 10,000 companies at most either way, a domain counting every company that carries it.\n\n**Asynchronous:** the call queues the work and answers at once with what was queued, not with what the CRM returned. Each company's outcome lands on its `crmSync` block shortly after: read it with `GET /companies?idsOrDomains=...`, or list the companies by state with `crmSyncStatus`: `searching` while the search runs, then `synced` once linked or created, or `error` with its reason when the CRM refused it.\n\n- A company already linked to a CRM record is synced with it again (`alreadyLinked`).\n- A company with nothing to search the CRM with is left untouched (`notSearchable`).\n- A company whose CRM search is already queued is not queued twice (`alreadyInProgress`).\n\nRequires a connected CRM (HubSpot, Salesforce, Pipedrive or Attio) and an API key of a team **admin**. On Salesforce, the connection must grant the object created (Account).",
         "tags": [
           "Companies"
         ],
@@ -27776,8 +27776,8 @@
                       "type": "string"
                     },
                     "minItems": 1,
-                    "maxItems": 1000,
-                    "description": "lemlist company ids (`cpn_xxx`) or domains, 1,000 at most. A domain designates every company carrying it: 10,000 companies at most in total. Send either `idsOrDomains` or `listId`.",
+                    "maxItems": 10000,
+                    "description": "lemlist company ids (`cpn_xxx`) or domains, 10,000 at most. A domain designates every company carrying it: 10,000 companies at most in total. Send either `idsOrDomains` or `listId`.",
                     "example": [
                       "cpn_xW8Ou6C03Csv8vatp",
                       "acme.com"
@@ -27785,7 +27785,7 @@
                   },
                   "listId": {
                     "type": "string",
-                    "description": "A company list id (`clt_xxx`): acts on every company of the list, static or dynamic, 10,000 at most. Use it instead of `idsOrDomains`, for instance beyond 1,000 companies.",
+                    "description": "A company list id (`clt_xxx`): acts on every company of the list, static or dynamic, 10,000 at most. Use it instead of `idsOrDomains`.",
                     "example": "clt_Ab12Cd34Ef56Gh78I"
                   }
                 }
@@ -27861,7 +27861,7 @@
             }
           },
           "400": {
-            "description": "Invalid request. Possible error codes: `INVALID_SELECTION` (neither or both of `idsOrDomains` and `listId`, or an empty `idsOrDomains`), `TOO_MANY_RECORDS` (more than 1,000 references), `TOO_MANY_MATCHES` (the domains match more than 10,000 companies in total), `INVALID_LIST_ID` (not a `clt_xxx` id), `LIST_ENTITY_MISMATCH` (the list does not hold companies), `LIST_TOO_LARGE` (the list holds more than 10,000 companies), `NO_CRM_CONNECTED` (no CRM connected to the team), `VALIDATION_ERROR` (a field of the wrong type), `AS_LEAD_NOT_SUPPORTED` (`asLead` sent: Leads are contacts only), `CRM_OBJECT_NOT_ALLOWED` (the Salesforce connection does not grant the object to create).",
+            "description": "Invalid request. Possible error codes: `INVALID_SELECTION` (neither or both of `idsOrDomains` and `listId`, or an empty `idsOrDomains`), `TOO_MANY_RECORDS` (more than 10,000 references), `TOO_MANY_MATCHES` (the domains match more than 10,000 companies in total), `INVALID_LIST_ID` (not a `clt_xxx` id), `LIST_ENTITY_MISMATCH` (the list does not hold companies), `LIST_TOO_LARGE` (the list holds more than 10,000 companies), `NO_CRM_CONNECTED` (no CRM connected to the team), `VALIDATION_ERROR` (a field of the wrong type), `AS_LEAD_NOT_SUPPORTED` (`asLead` sent: Leads are contacts only), `CRM_OBJECT_NOT_ALLOWED` (the Salesforce connection does not grant the object to create).",
             "content": {
               "application/json": {
                 "example": {
