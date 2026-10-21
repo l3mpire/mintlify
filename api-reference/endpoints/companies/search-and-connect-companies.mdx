@@ -1,9 +1,9 @@
 ---
 openapi: post /companies/crm/search-and-connect
-description: Searches your connected CRM for companies and links each one to the CRM record found, without creating anything there.
+description: Searches your connected CRM for companies and links each one to the CRM record found, without creating any CRM record.
 ---
 
-Searches your connected CRM for each company and links it to the CRM record found — the **Search & connect** action of the Companies page. Nothing is ever created in the CRM: use `POST /companies/crm/create` for that.
+Searches your connected CRM for each company and links it to the CRM record found — the **Search & connect** action of the Companies page. No CRM record is ever created: use `POST /companies/crm/create` for that. Each company it links then syncs its mapped fields with that CRM record, which can update it.
 
 Target the companies with `idsOrDomains` (lemlist ids or domains) **or** with `listId` for a whole company list, static or dynamic: 10,000 companies at most either way, a domain counting every company that carries it.
 
