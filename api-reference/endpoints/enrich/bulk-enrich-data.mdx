@@ -29,6 +29,8 @@ The bulk enrichment API is ideal for:
 
 `input.location` is an optional free-text location of the person, such as `Paris, France`. lemlist maps it to a country to pick the [enrichment waterfall](/api-reference/endpoints/enrichment-waterfalls/list-enrichment-waterfalls) of `find_email` and `find_phone`: a custom waterfall listing that country, or the default one when there is no location or no recognizable country. It is not sent to the data providers.
 
+For `find_phone`, the country also orders the numbers found: when a provider returns several, the ones from that country come first, so `phone` holds the local number. A person based in Dubai with a `+91` and a `+971` number gets the `+971` one.
+
 ### Metadata
 
 The `metadata` field can be a string or an object. This data will be returned in both the API response and webhook notifications, allowing you to track and correlate enrichment requests.

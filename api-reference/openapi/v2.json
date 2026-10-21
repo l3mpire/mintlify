@@ -11516,7 +11516,7 @@
             "name": "findPhone",
             "in": "query",
             "required": false,
-            "description": "Find phone number. Default: false",
+            "description": "Find phone number. When several numbers are found, the ones from the country of the lead's location come first. Default: false",
             "example": "true",
             "schema": {
               "type": "boolean"
@@ -24597,7 +24597,7 @@
             "name": "location",
             "in": "query",
             "required": false,
-            "description": "Free-text location of the person, e.g. `Paris, France`. Its country picks the enrichment waterfall of `findEmail` and `findPhone`: a custom waterfall listing that country, or the default one. Not sent to providers.",
+            "description": "Free-text location of the person, e.g. `Paris, France`. Its country picks the enrichment waterfall of `findEmail` and `findPhone`: a custom waterfall listing that country, or the default one. When several phone numbers are found, the ones from that country come first, so `phone` holds the local number. Not sent to providers.",
             "example": "Paris, France",
             "schema": {
               "type": "string"
@@ -24733,7 +24733,7 @@
                         },
                         "location": {
                           "type": "string",
-                          "description": "Free-text location of the person, e.g. `Paris, France`. Its country picks the enrichment waterfall: a custom waterfall listing that country, or the default one. Not sent to providers.",
+                          "description": "Free-text location of the person, e.g. `Paris, France`. Its country picks the enrichment waterfall: a custom waterfall listing that country, or the default one. When several phone numbers are found, the ones from that country come first, so `phone` holds the local number. Not sent to providers.",
                           "example": "Paris, France"
                         }
                       }
@@ -25150,7 +25150,7 @@
             "name": "findPhone",
             "in": "query",
             "required": false,
-            "description": "Find phone number",
+            "description": "Find phone number. When several numbers are found, the ones from the country of the lead's location come first.",
             "example": "true",
             "schema": {
               "type": "boolean"
