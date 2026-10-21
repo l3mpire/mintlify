@@ -11,8 +11,8 @@ Target the contacts with `idsOrEmails` (lemlist ids or email addresses) **or** w
 
 The call queues the work and answers at once with what was **queued**, not with what the CRM returned. Each contact's outcome lands on its `crmSync` block shortly after:
 
-- `GET /contacts?idsOrEmails=...` returns each contact with its `crmSync` block (`searching`, `crmRecordId`, `notFoundAt`, `errors`).
-- `GET /contacts?crmSyncStatus=` lists them by state: `searching` while the search runs, then `synced` (linked), or `not_found` (no CRM record matched).
+- `GET /contacts?idsOrEmails=...` returns each contact with its `crmSync` block (`searching`, `crmRecordId`, `notFoundAt`, `errors`), 100 contacts per call.
+- `GET /contacts?listId=...&crmSyncStatus=` lists the contacts of a list by state: `searching` while the search runs, then `synced` (linked), or `not_found` (no CRM record matched). Without `listId`, the filter reads every contact of the team: do not poll it.
 
 ## What the counts mean
 
