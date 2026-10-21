@@ -16,29 +16,36 @@ The bulk enrichment API is ideal for:
 - Automating data enrichment workflows at scale
 
 
-### Enrichment Types
+### Required inputs
 
-| Type | Required Input | Description |
+| Type | Required input | Description |
 |------|---------------|-------------|
-| `find_email` | `linkedinUrl` OR (`firstName` + `lastName` + `companyName` + `companyDomain`) | Find and verify email addresses |
-| `find_phone` | `linkedinUrl` | Find phone numbers |
-| `verify` | `email` | Verify email deliverability |
+| `find_email` | `linkedinUrl` OR (`firstName` + `lastName` + (`companyName` OR `companyDomain`)) OR `email` | Find the person's email and check its deliverability |
+| `find_phone` | `linkedinUrl` OR (`firstName` + `lastName` + (`companyName` OR `companyDomain`)) OR `email` | Find phone numbers |
+| `verify` | a valid `email` | Verify email deliverability |
 | `linkedin_enrichment` | `linkedinUrl` OR `email` OR (`firstName` + `lastName` + (`companyName` OR `companyDomain`)) | Enrich with LinkedIn profile data |
+
+- `linkedinUrl` must be a person profile URL (`linkedin.com/in/…` or a Sales Navigator lead URL). For `find_email` and `find_phone`, any other LinkedIn URL is ignored and the other inputs must be enough on their own; for `linkedin_enrichment` it fails the row with `BAD_LINKEDIN_URL`.
+- For `linkedin_enrichment`, `email` and the name combination are only used when no `linkedinUrl` is given.
+- A row missing these inputs fails with `MISSING_INPUTS`; for `verify`, with `MISSING_EMAIL` when `email` is absent and `BAD_EMAIL` when it is not a valid email.
+- Requesting `find_email` and `verify` in the same row runs only one of them: `verify` when `email` is a valid email, `find_email` otherwise.
+
+Every input value must be a string, and `input` may only hold the input fields: anything else rejects the whole call with `WRONG_INPUT_FORMAT`.
 
 ### Metadata
 
-The `metadata` field can be a string or an object. This data will be returned in both the API response and webhook notifications, allowing you to track and correlate enrichment requests.
+The `metadata` field can be a string or an object whose values are strings. It is returned in the API response and in the webhooks, allowing you to track and correlate enrichment requests. Any other value rejects the whole call with `WRONG_METADATA_FORMAT`.
 
 ## Response
 
-The API returns an array where each element corresponds to a request in the input array. Successful requests return an enrichment ID, while failed requests return an error code.
+The API returns an array where each element corresponds to a request in the input array, in the same order. A started request returns an enrichment `id`; a request that could not be started returns an `error` code and a readable `message`.
 
 <CodeGroup>
   ```json success
   {
-    "id": "enr_cawQhM9N3pWkqw2Yt",
+    "id": "enr_ExampleA1b2C3d4E5",
     "metadata": {
-      "some_id": "some_id"
+      "crmId": "12345"
     }
   }
   ```
@@ -46,10 +53,13 @@ The API returns an array where each element corresponds to a request in the inpu
   ```json error
   {
     "error": "MISSING_INPUTS",
-    "metadata": "some_id"
+    "message": "Missing LinkedIn url OR the combination of first name, last name, company name, company domain",
+    "metadata": "12345"
   }
   ```
 </CodeGroup>
+
+The row `error` codes are listed in [Request errors](/api-reference/objects-definitions/enrich#request-errors).
 
 ## Getting Results
 
@@ -59,26 +69,27 @@ Check [Enrich Data](/api-reference/endpoints/enrich/enrich-data) for details on 
 
 Since enrichment is asynchronous, you can retrieve results in two ways:
 
-1. **Polling**: Use the [Get Enrichment Result](/api-reference/endpoints/enrich/get-enrichment-result) endpoint with the returned enrichment ID
-2. **Webhooks**: Provide a `webhookUrl` query parameter to receive notifications when enrichments complete
+1. **Webhooks (recommended)**: your team's enrichment webhooks, and the `webhookUrl` query parameter when given, receive an event for each enrichment as soon as it is over
+2. **Polling**: Use the [Get Enrichment Result](/api-reference/endpoints/enrich/get-enrichment-result) endpoint with the returned enrichment ID
 
 Learn more about webhooks in the [Enrich object definition](/api-reference/objects-definitions/enrich#webhooks).
 
-## Error Codes
+## Request error codes
+
+These reject the whole call with a 400 (405 for `METHOD_NOT_ALLOWED`) and a `{"error": "<CODE>"}` body. No enrichment is started.
 
 | Error Code | Description |
 |-----------|-------------|
-| `WRONG_INPUT_FORMAT` | The input must be an object containing at least one valid field |
-| `WRONG_METADATA_FORMAT` | The metadata field must be a string or an object |
-| `NO_WORKFLOW_REQUESTED` | At least one enrichment type must be specified |
-| `WRONG_ENRICHMENT_REQUEST_FORMAT` | The enrichmentRequests field must be an array |
-| `UNAUTHORIZED_WORKFLOW_REQUESTED` | Invalid enrichment type specified |
-| `TOO_MANY_ENRICHMENTS_REQUESTED` | Maximum 500 enrichments per request |
+| `WRONG_BODY_FORMAT` | The body must be a JSON array |
 | `NO_ENRICHMENTS_REQUESTED` | The body must contain at least one enrichment |
-| `WRONG_BODY_FORMAT` | The body must be a valid JSON array |
-| `MISSING_INPUTS` | Required input fields are missing for the requested enrichment type |
-| `MISSING_EMAIL` | Email is required for verify enrichment |
-| `MISSING_LINKEDIN_URL` | LinkedIn URL is required for this enrichment type |
+| `TOO_MANY_ENRICHMENTS_REQUESTED` | Maximum 500 enrichments per request |
+| `WRONG_INPUT_FORMAT` | An `input` is not an object, has a key that is not an input field, or a value that is not a string |
+| `WRONG_METADATA_FORMAT` | A `metadata` is neither a string nor an object whose values are strings |
+| `WRONG_ENRICHMENT_REQUEST_FORMAT` | An `enrichmentRequests` is not an array |
+| `NO_WORKFLOW_REQUESTED` | An `enrichmentRequests` is empty |
+| `UNAUTHORIZED_WORKFLOW_REQUESTED` | An `enrichmentRequests` holds an unknown enrichment type |
+| `WRONG_WEBHOOK_URL` | The `webhookUrl` query parameter is not a valid URL |
+| `METHOD_NOT_ALLOWED` | The endpoint only accepts `POST` |
 
 ## Limits
 

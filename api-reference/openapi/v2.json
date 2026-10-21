@@ -31820,14 +31820,14 @@
         "tags": [
           "Enrich"
         ],
-        "description": "Send a batch of enrichment requests for multiple entities. Maximum 500 enrichment requests per call.",
+        "description": "Send a batch of enrichment requests for multiple entities. Maximum 500 enrichment requests per call. Each row answers with its own enrichment `id`, or with an `error` code and a `message` when that row could not be started. A malformed row rejects the whole call with a 400.",
         "parameters": [
           {
             "name": "webhookUrl",
             "in": "query",
             "required": false,
-            "description": "Webhook URL for enrichment events",
-            "example": "https://n8n.example.com/webhook/lemlist-webhook-surprise",
+            "description": "URL that receives the `enrichmentDone` or `enrichmentError` event of each enrichment of the call, on top of your team's webhooks. See the webhooks of the Enrichment object.",
+            "example": "https://example.com/webhooks/lemlist",
             "schema": {
               "type": "string"
             }
@@ -31843,12 +31843,13 @@
                 "items": {
                   "type": "object",
                   "required": [
+                    "input",
                     "enrichmentRequests"
                   ],
                   "properties": {
                     "input": {
                       "type": "object",
-                      "description": "Input data for enrichment. Required fields depend on enrichmentRequests.",
+                      "description": "Input data for enrichment. Required fields depend on enrichmentRequests (see Required inputs). Values must be strings; an unknown key rejects the whole call with `WRONG_INPUT_FORMAT`.",
                       "properties": {
                         "linkedinUrl": {
                           "type": "string",
@@ -31889,7 +31890,7 @@
                     },
                     "enrichmentRequests": {
                       "type": "array",
-                      "description": "Array of enrichment types to perform. Must contain at least one of: find_email, find_phone, verify, linkedin_enrichment",
+                      "description": "Enrichment types to perform, at least one of: find_email, find_phone, verify, linkedin_enrichment. Requesting find_email and verify together runs only one of them: verify when `input.email` is a valid email, find_email otherwise.",
                       "items": {
                         "type": "string",
                         "enum": [
@@ -31905,13 +31906,16 @@
                       ]
                     },
                     "metadata": {
-                      "description": "Custom data to be returned in the response and webhook. Can be a string or an object",
+                      "description": "Custom data returned in the response and in the webhooks. A string, or an object whose values are strings; anything else rejects the whole call with `WRONG_METADATA_FORMAT`.",
                       "oneOf": [
                         {
                           "type": "string"
                         },
                         {
-                          "type": "object"
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          }
                         }
                       ],
                       "example": {
@@ -32029,56 +32033,60 @@
         },
         "responses": {
           "200": {
-            "description": "Success - Returns enrichment IDs and metadata for each request",
+            "description": "One item per row, in the order of the request: an enrichment `id`, or an `error` code with its `message` when the row could not be started",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "oneOf": [
-                      {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "description": "Enrichment ID",
-                            "example": "enr_KzCb0f9dbIjtRqyEO"
-                          },
-                          "metadata": {
-                            "description": "The metadata provided in the request",
-                            "oneOf": [
-                              {
-                                "type": "string"
-                              },
-                              {
-                                "type": "object"
-                              }
-                            ]
-                          }
-                        }
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Enrichment ID, when the row was started",
+                        "example": "enr_ExampleA1b2C3d4E5"
                       },
-                      {
-                        "type": "object",
-                        "properties": {
-                          "error": {
-                            "type": "string",
-                            "description": "Error code for failed enrichment",
-                            "example": "MISSING_INPUTS"
+                      "error": {
+                        "type": "string",
+                        "description": "Why the row was not started. See the request errors of the Enrichment object.",
+                        "enum": [
+                          "BAD_EMAIL",
+                          "BAD_LINKEDIN_URL",
+                          "MISSING_EMAIL",
+                          "MISSING_INPUTS",
+                          "MISSING_FUNDS",
+                          "CREDITS_USAGE_FORBIDDEN",
+                          "NOT_ALLOWED_EMAIL",
+                          "NOT_ALLOWED_PHONE",
+                          "NOT_ALLOWED_LINKEDIN",
+                          "NOT_ALLOWED_VERIFY",
+                          "LINKEDIN_UNSUBSCRIBED",
+                          "TEAM_BLOCKED",
+                          "TEAM_IN_ERROR",
+                          "TEAM_MIGRATION_IN_PROGRESS",
+                          "SYSTEM_DISABLED",
+                          "NO_AVAILABLE_PROVIDER"
+                        ]
+                      },
+                      "message": {
+                        "type": "string",
+                        "description": "Readable explanation of `error`, present with it"
+                      },
+                      "metadata": {
+                        "description": "The metadata sent with the row, when any",
+                        "oneOf": [
+                          {
+                            "type": "string"
                           },
-                          "metadata": {
-                            "description": "The metadata provided in the request",
-                            "oneOf": [
-                              {
-                                "type": "string"
-                              },
-                              {
-                                "type": "object"
-                              }
-                            ]
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "string"
+                            }
                           }
-                        }
+                        ]
                       }
-                    ]
+                    }
                   }
                 },
                 "examples": {
@@ -32086,17 +32094,18 @@
                     "summary": "Find email response",
                     "value": [
                       {
-                        "id": "enr_rt3yG1uvSOAmNgsOm",
+                        "id": "enr_ExampleA1b2C3d4E5",
                         "metadata": {
                           "id": "some_id"
                         }
                       },
                       {
-                        "id": "enr_KdG7p3VNyiCgmcYTv",
+                        "id": "enr_ExampleF6g7H8i9J0",
                         "metadata": "some_id"
                       },
                       {
                         "error": "MISSING_INPUTS",
+                        "message": "Missing LinkedIn url OR the combination of first name, last name, company name, company domain",
                         "metadata": "some_id"
                       }
                     ]
@@ -32105,13 +32114,14 @@
                     "summary": "Find phone response",
                     "value": [
                       {
-                        "id": "enr_bPawymIrM37F6yHBe",
+                        "id": "enr_ExampleK1l2M3n4O5",
                         "metadata": {
                           "id": "some_id"
                         }
                       },
                       {
                         "error": "MISSING_INPUTS",
+                        "message": "Missing LinkedIn url OR the combination of first name, last name, company name, company domain",
                         "metadata": "some_id"
                       }
                     ]
@@ -32120,13 +32130,14 @@
                     "summary": "Verify email response",
                     "value": [
                       {
-                        "id": "enr_N84uOiUB0RYx5LIEb",
+                        "id": "enr_ExampleP6q7R8s9T0",
                         "metadata": {
                           "id": "some_id"
                         }
                       },
                       {
                         "error": "MISSING_EMAIL",
+                        "message": "Email address is required for verification",
                         "metadata": "some_id"
                       }
                     ]
@@ -32135,13 +32146,14 @@
                     "summary": "LinkedIn enrichment response",
                     "value": [
                       {
-                        "id": "enr_zsHo0j5j6HNC0MXgQ",
+                        "id": "enr_ExampleU1v2W3x4Y5",
                         "metadata": {
                           "id": "some_id"
                         }
                       },
                       {
-                        "error": "MISSING_LINKEDIN_URL",
+                        "error": "MISSING_INPUTS",
+                        "message": "Missing LinkedIn url OR the combination of first name, last name, company name, company domain",
                         "metadata": "some_id"
                       }
                     ]
@@ -32151,7 +32163,7 @@
             }
           },
           "400": {
-            "description": "Bad Request - Invalid input format or parameters",
+            "description": "The whole call is rejected: the body is `{\"error\": \"<CODE>\"}`",
             "content": {
               "application/json": {
                 "schema": {
@@ -32167,7 +32179,8 @@
                         "UNAUTHORIZED_WORKFLOW_REQUESTED",
                         "TOO_MANY_ENRICHMENTS_REQUESTED",
                         "NO_ENRICHMENTS_REQUESTED",
-                        "WRONG_BODY_FORMAT"
+                        "WRONG_BODY_FORMAT",
+                        "WRONG_WEBHOOK_URL"
                       ]
                     }
                   }
@@ -32175,14 +32188,14 @@
                 "examples": {
                   "wrong_input_format": {
                     "summary": "Wrong input format",
-                    "description": "The input of each enrichment must be an object containing at least one of the required fields",
+                    "description": "An input is not an object, has a key that is not an input field or a value that is not a string",
                     "value": {
                       "error": "WRONG_INPUT_FORMAT"
                     }
                   },
                   "wrong_metadata_format": {
                     "summary": "Wrong metadata format",
-                    "description": "The metadata field must be a string or an object",
+                    "description": "A metadata is neither a string nor an object whose values are strings",
                     "value": {
                       "error": "WRONG_METADATA_FORMAT"
                     }
@@ -32228,6 +32241,13 @@
                     "value": {
                       "error": "WRONG_BODY_FORMAT"
                     }
+                  },
+                  "wrong_webhook_url": {
+                    "summary": "Wrong webhook URL",
+                    "description": "The webhookUrl query parameter is not a valid URL",
+                    "value": {
+                      "error": "WRONG_WEBHOOK_URL"
+                    }
                   }
                 }
               }
@@ -32242,7 +32262,24 @@
             }
           },
           "405": {
-            "description": "Method not allowed"
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "METHOD_NOT_ALLOWED"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "An error occurred"
+                }
+              }
+            }
           }
         }
       }
