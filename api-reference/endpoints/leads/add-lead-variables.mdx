@@ -18,3 +18,5 @@ To add custom fields, you can add as many as you want in the body of your reques
 </Note>
 
 A write that would create a company not yet in lemlist requires the "Create companies" permission on the API key's user, otherwise it fails with `403 COMPANY_CREATE_NOT_ALLOWED` and nothing is written.
+
+On a lead with no linked contact, a write that would create one requires the "Create contacts" permission on the API key's user, otherwise it fails with `403 CONTACT_CREATE_NOT_ALLOWED` and nothing is written.

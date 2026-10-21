@@ -15486,14 +15486,23 @@
             }
           },
           "403": {
-            "description": "Possible errors: User linked to this API key is blocked (plain text) / The lead brings a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission (JSON body); nothing is written.",
+            "description": "Possible errors: User linked to this API key is blocked (plain text) / The lead brings a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission (JSON body) / The lead brings a contact not yet in lemlist and the API key's user does not have the \"Create contacts\" permission (JSON body); nothing is written.",
             "content": {
               "text/plain": {
                 "example": "User linked to this API key is blocked"
               },
               "application/json": {
-                "example": {
-                  "error": "You do not have the permission to create companies"
+                "examples": {
+                  "company-create-not-allowed": {
+                    "value": {
+                      "error": "You do not have the permission to create companies"
+                    }
+                  },
+                  "contact-create-not-allowed": {
+                    "value": {
+                      "error": "You do not have the permission to create contacts"
+                    }
+                  }
                 }
               }
             }
@@ -15792,10 +15801,17 @@
             "description": "Unauthorized"
           },
           "403": {
-            "description": "The update brings a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission; nothing is written.",
+            "description": "Possible errors: The update brings a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission / The lead has no linked contact, the update would create one and the API key's user does not have the \"Create contacts\" permission; nothing is written.",
             "content": {
               "text/plain": {
-                "example": "You do not have the permission to create companies"
+                "examples": {
+                  "company-create-not-allowed": {
+                    "value": "You do not have the permission to create companies"
+                  },
+                  "contact-create-not-allowed": {
+                    "value": "You do not have the permission to create contacts"
+                  }
+                }
               }
             }
           },
@@ -17348,11 +17364,20 @@
             "description": "Unauthorized"
           },
           "403": {
-            "description": "The write would create a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`); nothing is written.",
+            "description": "Possible errors: The write would create a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`) / The lead has no linked contact, the write would create one and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); nothing is written.",
             "content": {
               "application/json": {
-                "example": {
-                  "error": "You do not have the permission to create companies [COMPANY_CREATE_NOT_ALLOWED]"
+                "examples": {
+                  "company-create-not-allowed": {
+                    "value": {
+                      "error": "You do not have the permission to create companies [COMPANY_CREATE_NOT_ALLOWED]"
+                    }
+                  },
+                  "contact-create-not-allowed": {
+                    "value": {
+                      "error": "You do not have the permission to create contacts [CONTACT_CREATE_NOT_ALLOWED]"
+                    }
+                  }
                 }
               }
             }
@@ -17505,11 +17530,20 @@
             "description": "Unauthorized"
           },
           "403": {
-            "description": "The write would create a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`); nothing is written.",
+            "description": "Possible errors: The write would create a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`) / The lead has no linked contact, the write would create one and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); nothing is written.",
             "content": {
               "application/json": {
-                "example": {
-                  "error": "You do not have the permission to create companies [COMPANY_CREATE_NOT_ALLOWED]"
+                "examples": {
+                  "company-create-not-allowed": {
+                    "value": {
+                      "error": "You do not have the permission to create companies [COMPANY_CREATE_NOT_ALLOWED]"
+                    }
+                  },
+                  "contact-create-not-allowed": {
+                    "value": {
+                      "error": "You do not have the permission to create contacts [CONTACT_CREATE_NOT_ALLOWED]"
+                    }
+                  }
                 }
               }
             }
@@ -17637,11 +17671,20 @@
             "description": "Unauthorized"
           },
           "403": {
-            "description": "The lead has no linked contact, its stored company is not yet in lemlist and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`); nothing is written.",
+            "description": "Possible errors: The lead has no linked contact, its stored company is not yet in lemlist and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`) / The lead has no linked contact, the write would create one and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); nothing is written.",
             "content": {
               "application/json": {
-                "example": {
-                  "error": "You do not have the permission to create companies [COMPANY_CREATE_NOT_ALLOWED]"
+                "examples": {
+                  "company-create-not-allowed": {
+                    "value": {
+                      "error": "You do not have the permission to create companies [COMPANY_CREATE_NOT_ALLOWED]"
+                    }
+                  },
+                  "contact-create-not-allowed": {
+                    "value": {
+                      "error": "You do not have the permission to create contacts [CONTACT_CREATE_NOT_ALLOWED]"
+                    }
+                  }
                 }
               }
             }
@@ -23503,7 +23546,7 @@
       },
       "post": {
         "summary": "Add and update contact",
-        "description": "Creates a new contact or updates an existing one (upsert). If a contact with the same email, LinkedIn URL, or Sales Navigator URL already exists, it is updated as the `updateStrategy` query parameter says (by default, sent values replace stored ones and empty values are ignored). You can target an existing contact directly by providing `contactId`, bypassing email/LinkedIn matching. You can optionally link the contact to a company by providing `companyId`, `companyDomain`, or `companyLinkedinUrl`.",
+        "description": "Creates a new contact or updates an existing one (upsert). If a contact with the same email, LinkedIn URL, or Sales Navigator URL already exists, it is updated as the `updateStrategy` query parameter says (by default, sent values replace stored ones and empty values are ignored). You can target an existing contact directly by providing `contactId`, bypassing email/LinkedIn matching. You can optionally link the contact to a company by providing `companyId`, `companyDomain`, or `companyLinkedinUrl`.\n\n**Permission:** creating a contact requires the \"Create contacts\" permission on the API key's user, otherwise the request fails with `403 CONTACT_CREATE_NOT_ALLOWED`. Updating an existing contact does not.",
         "tags": [
           "Contacts"
         ],
@@ -23916,13 +23959,22 @@
             }
           },
           "403": {
-            "description": "The API key does not belong to a team admin, and the body carries `crmId` (`CRM_ID_UPDATE_NOT_ALLOWED`).",
+            "description": "The request would create a contact and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); updating an existing contact is not affected. Or the API key does not belong to a team admin, and the body carries `crmId` (`CRM_ID_UPDATE_NOT_ALLOWED`).",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CrmIdLinkErrorEnvelope"
                 },
                 "examples": {
+                  "create-not-allowed": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CONTACT_CREATE_NOT_ALLOWED",
+                        "message": "You do not have the permission to create contacts"
+                      }
+                    }
+                  },
                   "not-admin": {
                     "value": {
                       "success": false,
@@ -36598,6 +36650,17 @@
           },
           "402": {
             "description": "`findEmail` was asked for without the credits for it."
+          },
+          "403": {
+            "description": "The API key's user does not have the \"Create contacts\" permission (`ABS_CONTACT_SOURCING_CONTACT_CREATE_NOT_ALLOWED`). Every Add creates a contact, so the check runs on every call, before the `402`, `404` and `409` checks; nothing is written.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "ABS_CONTACT_SOURCING_CONTACT_CREATE_NOT_ALLOWED",
+                  "message": "You do not have the permission to create contacts"
+                }
+              }
+            }
           },
           "404": {
             "description": "The person is already one of your contacts, or no longer in the People Database. Re-run the sourcing to refresh the recommendations."
