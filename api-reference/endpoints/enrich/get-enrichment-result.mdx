@@ -1,6 +1,17 @@
 ---
 openapi: get /enrich/{enrichId}
-description: Retrieves the results of a completed enrichment request.
+description: Retrieves the state and results of an enrichment.
 ---
 
-[This endpoint retrieves the results of an enrichment](/api-reference/objects-definitions/enrich) request by its ID.
+This endpoint retrieves the state and results of an [enrichment](/api-reference/objects-definitions/enrich) by its ID. The HTTP status follows `enrichmentStatus`:
+
+| Status | `enrichmentStatus` | Body |
+|---|---|---|
+| `200` | `done` | `data` holds the results; `failedWorkflows` lists the requested workflows that failed. A cancelled enrichment also answers `done`. |
+| `202` | `in-progress` | `data` is empty: poll again later. |
+| `400` | `failed` | `code` and `reason` say why. |
+| `404` | `not-found` | No enrichment with this ID in your team. |
+
+<Tip>
+Prefer [webhooks](/api-reference/objects-definitions/enrich#webhooks) to polling: lemlist calls your endpoint as soon as the enrichment is over.
+</Tip>

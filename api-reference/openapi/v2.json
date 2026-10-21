@@ -31308,13 +31308,14 @@
         "tags": [
           "Enrich"
         ],
+        "description": "Read the state and result of an enrichment started with Enrich Data, Enrich Lead or Bulk Enrich Data. The HTTP status follows `enrichmentStatus`: 200 `done`, 202 `in-progress`, 400 `failed`, 404 `not-found`. Prefer webhooks to polling: see the Enrichment object.",
         "parameters": [
           {
             "name": "enrichId",
             "in": "path",
             "required": true,
-            "description": "Unique enrichment ID",
-            "example": "enr_123",
+            "description": "Enrichment ID returned when the enrichment was started",
+            "example": "enr_ExampleA1b2C3d4E5",
             "schema": {
               "type": "string"
             }
@@ -31322,26 +31323,74 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "Done. `data` holds a key per requested workflow that produced a result; failed workflows are listed in `failedWorkflows`. A cancelled enrichment also answers `done`.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/Enrich"
                 },
-                "example": {
-                  "enrichmentId": "enr_FPgMU8ZUVBnOZBuZ6",
-                  "enrichmentStatus": "done",
-                  "input": {
-                    "firstName": "John",
-                    "lastName": "lemlist",
-                    "linkedinUrl": "https://www.linkedin.com/in/lemlist",
-                    "companyName": "lemlist",
-                    "companyDomain": "lemlist.com"
+                "examples": {
+                  "done": {
+                    "summary": "Email and phone found",
+                    "value": {
+                      "enrichmentId": "enr_ExampleA1b2C3d4E5",
+                      "enrichmentStatus": "done",
+                      "input": {
+                        "firstName": "John",
+                        "lastName": "Doe",
+                        "companyName": "Acme Inc",
+                        "companyDomain": "example.com"
+                      },
+                      "data": {
+                        "email": {
+                          "email": "john@example.com",
+                          "notFound": false,
+                          "status": "deliverable"
+                        },
+                        "phone": {
+                          "phone": "+15555550100",
+                          "additionalPhones": [
+                            "+15555550101"
+                          ],
+                          "notFound": false
+                        }
+                      }
+                    }
                   },
-                  "data": {
-                    "email": {
-                      "email": "john@lemlist.co",
-                      "notFound": false
+                  "notFound": {
+                    "summary": "Nothing found, one workflow failed",
+                    "value": {
+                      "enrichmentId": "enr_ExampleA1b2C3d4E5",
+                      "enrichmentStatus": "done",
+                      "input": {
+                        "firstName": "John",
+                        "lastName": "Doe",
+                        "companyName": "Acme Inc",
+                        "companyDomain": "example.com"
+                      },
+                      "data": {
+                        "email": {
+                          "notFound": true
+                        }
+                      },
+                      "failedWorkflows": [
+                        "find_phone"
+                      ]
+                    }
+                  },
+                  "verify": {
+                    "summary": "Email verified",
+                    "value": {
+                      "enrichmentId": "enr_ExampleA1b2C3d4E5",
+                      "enrichmentStatus": "done",
+                      "input": {
+                        "email": "john@example.com"
+                      },
+                      "data": {
+                        "email": {
+                          "status": "risky"
+                        }
+                      }
                     }
                   }
                 }
@@ -31349,13 +31398,58 @@
             }
           },
           "202": {
-            "description": "In progress"
+            "description": "In progress: poll again later",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enrich"
+                },
+                "example": {
+                  "enrichmentId": "enr_ExampleA1b2C3d4E5",
+                  "enrichmentStatus": "in-progress",
+                  "input": {
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "companyName": "Acme Inc",
+                    "companyDomain": "example.com"
+                  },
+                  "data": {}
+                }
+              }
+            }
           },
           "400": {
-            "description": "Bad team",
+            "description": "Failed as a whole: `code` names why and `reason` explains it. Also `{\"error\": \"Bad params\"}` when no ID is given.",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enrich"
+                },
+                "examples": {
+                  "failed": {
+                    "summary": "Enrichment failed",
+                    "value": {
+                      "enrichmentId": "enr_ExampleA1b2C3d4E5",
+                      "enrichmentStatus": "failed",
+                      "error": "PROVIDER_TIMEOUT",
+                      "code": "PROVIDER_TIMEOUT",
+                      "reason": "The enrichment provider did not respond in time",
+                      "input": {
+                        "firstName": "John",
+                        "lastName": "Doe",
+                        "companyName": "Acme Inc",
+                        "companyDomain": "example.com"
+                      },
+                      "data": {}
+                    }
+                  },
+                  "badParams": {
+                    "summary": "No enrichment ID",
+                    "value": {
+                      "error": "Bad params"
+                    }
+                  }
+                }
               }
             }
           },
@@ -31363,10 +31457,18 @@
             "description": "Unauthorized"
           },
           "404": {
-            "description": "Enrichment not found",
+            "description": "No enrichment with this ID in your team",
             "content": {
-              "text/plain": {
-                "example": "Enrichment not found"
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enrich"
+                },
+                "example": {
+                  "enrichmentId": "enr_ExampleA1b2C3d4E5",
+                  "enrichmentStatus": "not-found",
+                  "error": "Enrichment not found",
+                  "data": {}
+                }
               }
             }
           },
