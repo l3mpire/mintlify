@@ -1604,6 +1604,163 @@
           }
         }
       },
+      "Call": {
+        "type": "object",
+        "description": "A call logged through `POST /calls`, as the calls API returns it.",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The call's activity id, which `PATCH /calls/{id}` and `DELETE /activities/{activityId}/recording-transcript` take.",
+            "example": "act_Z8gP3xYq2bKd9mLn7"
+          },
+          "externalId": {
+            "type": "string",
+            "nullable": true,
+            "description": "Your own id of the call, as sent; `null` on a call another dialer made.",
+            "example": "trellus-8f2c1"
+          },
+          "contactId": {
+            "type": "string",
+            "nullable": true,
+            "example": "ctc_7Ks2PqW9mXb4Lc1Td"
+          },
+          "leadId": {
+            "type": "string",
+            "nullable": true,
+            "description": "The lead the call attached to, when it belongs to a campaign.",
+            "example": "lea_2Hn8VbQ4wRz6Ym3Jk"
+          },
+          "campaignId": {
+            "type": "string",
+            "nullable": true,
+            "example": "cam_5Fd9LpX2cVt7Nq8Wb"
+          },
+          "taskId": {
+            "type": "string",
+            "nullable": true,
+            "description": "The call task the call completed.",
+            "example": "opp_9Xw4RtY7kLm2Pq6Zc"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true,
+            "description": "The rep the call is attributed to.",
+            "example": "usr_3Bv7GhT5nJk8Lm2Qx"
+          },
+          "direction": {
+            "type": "string",
+            "nullable": true,
+            "enum": ["inbound", "outbound"],
+            "example": "outbound"
+          },
+          "from": {
+            "type": "string",
+            "nullable": true,
+            "description": "The caller's number: the rep's line on an outbound call, the contact's on an inbound one.",
+            "example": "+33100000000"
+          },
+          "to": {
+            "type": "string",
+            "nullable": true,
+            "description": "The number called.",
+            "example": "+33612345678"
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2026-10-21T09:30:00.000Z"
+          },
+          "endedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "`startedAt` plus `duration`; absent without a duration.",
+            "example": "2026-10-21T09:31:30.000Z"
+          },
+          "duration": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Seconds.",
+            "example": 90
+          },
+          "callStatus": {
+            "type": "string",
+            "nullable": true,
+            "description": "The key of the call status set on the call.",
+            "example": "connected-positive"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true,
+            "example": "Asked for a demo next week."
+          },
+          "phoneProvider": {
+            "type": "string",
+            "nullable": true,
+            "description": "`api` for a call logged through this API; the dialer that made it otherwise (`twilio` for the lemlist dialer, `aircall`, `ringover`) on a call read back by `_id`.",
+            "example": "api"
+          },
+          "provider": {
+            "type": "string",
+            "nullable": true,
+            "description": "The dialer's name a call was logged with through this API (`provider`), lowercase; `null` when none was sent and on any other call.",
+            "example": "trellus"
+          },
+          "hasRecording": {
+            "type": "boolean",
+            "description": "True once the call has a recording in lemlist: a `recordingUrl` just sent is still on its way.",
+            "example": false
+          },
+          "hasTranscript": {
+            "type": "boolean",
+            "example": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "The call's time in lemlist: `startedAt`.",
+            "example": "2026-10-21T09:30:00.000Z"
+          }
+        }
+      },
+      "CallStatus": {
+        "type": "object",
+        "description": "A call status (disposition) of the team, with the automations the team configured on it.",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "What `callStatus` takes on `POST /calls` and `PATCH /calls/{id}`.",
+            "example": "connected-positive"
+          },
+          "label": {
+            "type": "string",
+            "nullable": true,
+            "example": "Connected positive"
+          },
+          "callAnswered": {
+            "type": "boolean",
+            "description": "The status counts the call as answered in the reports.",
+            "example": true
+          },
+          "callPositive": {
+            "type": "boolean",
+            "description": "The status marks the lead as interested and stops its campaign.",
+            "example": true
+          },
+          "callNegative": {
+            "type": "boolean",
+            "description": "The status marks the lead as not interested.",
+            "example": false
+          },
+          "pausesCampaigns": {
+            "type": "boolean",
+            "description": "The status pauses campaigns for the lead or its company.",
+            "example": true
+          }
+        }
+      },
       "CompanyNote": {
         "type": "object",
         "description": "A text note attached to a company record to store information.",
@@ -27847,6 +28004,1001 @@
           },
           "500": {
             "description": "Error while deleting recording or transcript"
+          }
+        }
+      }
+    },
+    "/calls": {
+      "post": {
+        "summary": "Log a Call",
+        "description": "Logs a call made outside lemlist, as an external dialer reports it. The call lands in the contact's timeline, the Calls table, the call stats and the connected CRM exactly like a call made with the lemlist dialer: a Call in HubSpot, a completed Task with its Call Result in Salesforce, a call activity in Pipedrive, following the **Calls** row of your activities mapping. Your outgoing webhooks fire as for any call.\n\n**Who the call was with.** Send one of `taskId`, `leadId`, `contactId`, `email` or `phone`. A `taskId` (a call task of a campaign, from `GET /tasks`) completes that task with the call, so the campaign moves on as when a rep marks it done; the task's contact and lead are the call's, and a `contactId` or `leadId` sent alongside must agree with them. A `leadId` attaches the call to that lead and its campaign. The other three attach it to the contact alone: the call is logged, but the campaign automations of a call status (mark as interested, stop the campaign, pauses) need a lead, so pass `taskId` or `leadId` when the call belongs to a campaign.\n\n**The numbers.** `from` is the caller's number and `to` the number called, international format: on an outbound call the rep's line and the contact's number, the reverse on an inbound one. They are written on the CRM call and shown in lemlist; the contact's side also finds the contact when none of the references above is sent.\n\n**The rep.** `userId` is the lemlist user who made or took the call, a member of the team (`GET /team`): the call is attributed to them in the stats and owned by them in the CRM.\n\n**The call status.** `callStatus` is a key of the team's statuses (`GET /call-statuses`). It runs the automations the team configured on that status, as when a rep picks it in the dialer. An unknown key is refused: lemlist never creates a status on the fly.\n\n**Retries.** `externalId` is your own id of the call. Sending the same `externalId` again answers `200` with the stored call, unchanged, instead of logging it twice: retry freely on a network error. Two requests racing on one `externalId` answer `409 CALLS_API_LOG_IN_PROGRESS` to the second while the first writes the call, then `200` with the stored call; retry a `409` a moment later.\n\n**Recording and transcript.** `recordingUrl` is fetched in the background and copied to lemlist's storage, so the call plays in lemlist after your link expires: send an `https` URL reachable from the public internet; `hasRecording` turns `true` once stored, and the CRM call note is refreshed with the recording link then. A plain-text `transcript` is stored with the call, feeds the AI call summary and the CRM call note. Both usually arrive after the call: send them later through `PATCH /calls/{id}`.\n\n**Empty fields.** An optional field may be omitted or sent as `null`: both mean it is absent.\n\n**Plan.** Email Pro and above, as `GET /activities`.",
+        "tags": ["Calls"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["externalId", "userId", "direction", "startedAt"],
+                "properties": {
+                  "externalId": {
+                    "type": "string",
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+                    "description": "Your own id of the call, unique in your dialer. Letters, digits, `.`, `_`, `:` and `-`, 128 characters at most. The idempotency key: the same id never logs twice, and `PATCH /calls/{id}` accepts it.",
+                    "example": "trellus-8f2c1"
+                  },
+                  "userId": {
+                    "type": "string",
+                    "description": "The lemlist user who made or took the call (`usr_…`), a member of the team.",
+                    "example": "usr_3Bv7GhT5nJk8Lm2Qx"
+                  },
+                  "direction": {
+                    "type": "string",
+                    "enum": ["inbound", "outbound"],
+                    "example": "outbound"
+                  },
+                  "from": {
+                    "type": "string",
+                    "description": "The caller's number: the rep's line on an outbound call, the contact's number on an inbound one. Standardized to E.164 as the contact panel does (its own country code, else the team's billing country for a national number) and kept as sent otherwise: an anonymous caller, an extension or a test number that is no real number (`+15555555555`) never refuses the call. At most 32 characters.",
+                    "example": "+33100000000"
+                  },
+                  "to": {
+                    "type": "string",
+                    "description": "The number called: the contact's number on an outbound call, the rep's line on an inbound one, standardized like `from`. On an outbound call its E.164 also finds the contact when no other reference is sent.",
+                    "example": "+33612345678"
+                  },
+                  "startedAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "When the call started, ISO 8601. May be in the past; at most 5 minutes in the future.",
+                    "example": "2026-10-21T09:30:00Z"
+                  },
+                  "duration": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 86400,
+                    "description": "Seconds.",
+                    "example": 90
+                  },
+                  "callStatus": {
+                    "type": "string",
+                    "description": "A key of the team's call statuses (`GET /call-statuses`). Runs the automations that status carries, as the team configured them: lemlist's default statuses, `connected-positive` included, only count the call as answered; marking the lead interested or pausing its campaigns comes with a status the team set up so, read its `callPositive` and `pausesCampaigns` flags.",
+                    "example": "connected-positive"
+                  },
+                  "note": {
+                    "type": "string",
+                    "maxLength": 10000,
+                    "description": "The rep's note on the call: shown with the call in lemlist and written in the CRM call note.",
+                    "example": "Asked for a demo next week."
+                  },
+                  "recordingUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 2048,
+                    "description": "An `https` URL of the recording, reachable from the public internet. Fetched in the background. An empty string means no recording.",
+                    "example": "https://recordings.dialer.example/8f2c1.mp3"
+                  },
+                  "transcript": {
+                    "type": "string",
+                    "maxLength": 200000,
+                    "description": "The transcript as plain text.",
+                    "example": "Hi Jane, this is Alex from lemlist…"
+                  },
+                  "provider": {
+                    "type": "string",
+                    "maxLength": 64,
+                    "description": "Your dialer's name, the same on every call you log. lemlist stores it lowercase, apart from `phoneProvider` (which stays `api`), to count calls by dialer. An empty string means none.",
+                    "example": "trellus"
+                  },
+                  "taskId": {
+                    "type": "string",
+                    "description": "A call task of a campaign (`opp_…`, from `GET /tasks`): the call completes it and the sequence moves on. The task's contact and lead are the call's. To log a call on a lead without completing a task, send `leadId` or `contactId` instead.",
+                    "example": "opp_9Xw4RtY7kLm2Pq6Zc"
+                  },
+                  "leadId": {
+                    "type": "string",
+                    "description": "The lead the call was with (`lea_…`), with its campaign.",
+                    "example": "lea_2Hn8VbQ4wRz6Ym3Jk"
+                  },
+                  "contactId": {
+                    "type": "string",
+                    "description": "The contact the call was with (`ctc_…`).",
+                    "example": "ctc_7Ks2PqW9mXb4Lc1Td"
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "An email address of the contact the call was with.",
+                    "example": "jane@acme.io"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "description": "A phone number the call was with: the contact holding it in its phone field. Read as the contact panel reads a number: its own country code, else the team's billing country for a national number. A value that is no number names nobody (`CALLS_API_CONTACT_NOT_FOUND`).",
+                    "example": "+33612345678"
+                  }
+                }
+              },
+              "example": {
+                "externalId": "trellus-8f2c1",
+                "provider": "trellus",
+                "userId": "usr_3Bv7GhT5nJk8Lm2Qx",
+                "direction": "outbound",
+                "from": "+33100000000",
+                "to": "+33612345678",
+                "startedAt": "2026-10-21T09:30:00Z",
+                "duration": 90,
+                "callStatus": "demo-booked",
+                "note": "Asked for a demo next week.",
+                "taskId": "opp_9Xw4RtY7kLm2Pq6Zc",
+                "transcript": "Hi Jane, this is Alex from lemlist…"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The call is logged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Call"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "_id": "act_Z8gP3xYq2bKd9mLn7",
+                    "externalId": "trellus-8f2c1",
+                    "contactId": "ctc_7Ks2PqW9mXb4Lc1Td",
+                    "leadId": "lea_2Hn8VbQ4wRz6Ym3Jk",
+                    "campaignId": "cam_5Fd9LpX2cVt7Nq8Wb",
+                    "taskId": "opp_9Xw4RtY7kLm2Pq6Zc",
+                    "userId": "usr_3Bv7GhT5nJk8Lm2Qx",
+                    "direction": "outbound",
+                    "from": "+33100000000",
+                    "to": "+33612345678",
+                    "startedAt": "2026-10-21T09:30:00.000Z",
+                    "endedAt": "2026-10-21T09:31:30.000Z",
+                    "duration": 90,
+                    "callStatus": "demo-booked",
+                    "note": "Asked for a demo next week.",
+                    "phoneProvider": "api",
+                    "provider": "trellus",
+                    "hasRecording": false,
+                    "hasTranscript": true,
+                    "createdAt": "2026-10-21T09:30:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A call with this `externalId` was already logged: here it is, unchanged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Call"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The body is refused. `error.code` names the case, `error.message` explains it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Error code: `VALIDATION_ERROR`, `CALLS_API_USER_NOT_IN_TEAM`, `CALLS_UNKNOWN_CALL_STATUS`, `CALLS_API_NO_CONTACT_REFERENCE`, `CALLS_API_TASK_NOT_A_CALL`, `CALLS_API_PARTIES_MISMATCH`, `CALLS_API_UNSAFE_RECORDING_URL`."
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "validation-error": {
+                    "summary": "A field is missing or malformed: the message names the field and the shape expected",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "VALIDATION_ERROR",
+                        "message": "Match error: Expected 1 to 128 characters among letters, digits, \".\", \"_\", \":\" and \"-\", starting with a letter or digit in field externalId"
+                      }
+                    }
+                  },
+                  "calls-api-user-not-in-team": {
+                    "summary": "`userId` is not a member of the team",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CALLS_API_USER_NOT_IN_TEAM",
+                        "message": "userId is not a member of this team."
+                      }
+                    }
+                  },
+                  "calls-unknown-call-status": {
+                    "summary": "`callStatus` is not one of the team's keys",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CALLS_UNKNOWN_CALL_STATUS",
+                        "message": "Unknown call status for this team. Valid keys: no-answer, left-voicemail, wrong-number, connected, connected-positive, connected-negative, connected-neutral, busy, gatekeeper, not-in-service"
+                      }
+                    }
+                  },
+                  "calls-api-no-contact-reference": {
+                    "summary": "No `taskId`, `leadId`, `contactId`, `email` or `phone`",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CALLS_API_NO_CONTACT_REFERENCE",
+                        "message": "Send one of taskId, leadId, contactId, email or phone to say who the call was with."
+                      }
+                    }
+                  },
+                  "calls-api-task-not-a-call": {
+                    "summary": "`taskId` is not a call task",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CALLS_API_TASK_NOT_A_CALL",
+                        "message": "taskId is not a call task: only a call task can be completed by a call."
+                      }
+                    }
+                  },
+                  "calls-api-parties-mismatch": {
+                    "summary": "`taskId`, `leadId` and `contactId` disagree",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CALLS_API_PARTIES_MISMATCH",
+                        "message": "contactId, leadId and taskId must designate the same contact: the task and the lead decide."
+                      }
+                    }
+                  },
+                  "calls-api-unsafe-recording-url": {
+                    "summary": "`recordingUrl` is not a public https URL",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CALLS_API_UNSAFE_RECORDING_URL",
+                        "message": "recordingUrl must be an https URL that resolves to a public address."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Unauthorized"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "The team's plan does not include the calls API (Email Pro and above)."
+          },
+          "404": {
+            "description": "The reference names nothing in the team.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Error code: `CALLS_API_CONTACT_NOT_FOUND`, `CALLS_API_LEAD_NOT_FOUND`, `CALLS_API_TASK_NOT_FOUND`."
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "calls-api-contact-not-found": {
+                    "summary": "No contact behind `contactId`, `email` or `phone`",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CALLS_API_CONTACT_NOT_FOUND",
+                        "message": "No contact matches the given reference in this team."
+                      }
+                    }
+                  },
+                  "calls-api-lead-not-found": {
+                    "summary": "No lead behind `leadId`",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CALLS_API_LEAD_NOT_FOUND",
+                        "message": "No lead matches leadId in this team."
+                      }
+                    }
+                  },
+                  "calls-api-task-not-found": {
+                    "summary": "No task behind `taskId`",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CALLS_API_TASK_NOT_FOUND",
+                        "message": "No task matches taskId in this team."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The call cannot be logged right now.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Error code: `CALLS_API_TASK_ALREADY_CLOSED`, `CALLS_API_LOG_IN_PROGRESS`."
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "calls-api-task-already-closed": {
+                    "summary": "`taskId` is already done or ignored",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CALLS_API_TASK_ALREADY_CLOSED",
+                        "message": "taskId is already done or ignored."
+                      }
+                    }
+                  },
+                  "calls-api-log-in-progress": {
+                    "summary": "The same `externalId` is being logged right now",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CALLS_API_LOG_IN_PROGRESS",
+                        "message": "A call with this externalId is being logged, retry in a moment."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed: this endpoint only accepts POST. The body is the plain `{ \"error\": \"Route bad method\" }`.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Route bad method"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected failure, alerted to lemlist. For a `POST`, read the call back with `GET /calls/{externalId}` before retrying: once stored, a retry answers it as a replay (200).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "INTERNAL_ERROR",
+                    "message": "Internal error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/calls/{id}": {
+      "get": {
+        "tags": [
+          "Calls"
+        ],
+        "summary": "Get a Call",
+        "description": "Reads a call of the team back: any call by its `_id`, whatever dialer made it (the lemlist dialer, Aircall, Ringover or this API), or a call logged through `POST /calls` by the `externalId` you sent. What a dialer reads to know whether the recording landed (`hasRecording`), the status and note as stored, or to recover the answer of a log it lost.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The call's `_id` (`act_…`) or its `externalId`.",
+            "example": "trellus-8f2c1",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The call as stored. `hasRecording` turns `true` once the recording sent with `PATCH` is stored, a moment later.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Call"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "_id": "act_Z8gP3xYq2bKd9mLn7",
+                    "externalId": "trellus-8f2c1",
+                    "contactId": "ctc_7Ks2PqW9mXb4Lc1Td",
+                    "leadId": "lea_2Hn8VbQ4wRz6Ym3Jk",
+                    "campaignId": "cam_5Fd9LpX2cVt7Nq8Wb",
+                    "taskId": "opp_9Xw4RtY7kLm2Pq6Zc",
+                    "userId": "usr_3Bv7GhT5nJk8Lm2Qx",
+                    "direction": "outbound",
+                    "from": "+33100000000",
+                    "to": "+33612345678",
+                    "startedAt": "2026-10-21T09:30:00.000Z",
+                    "endedAt": "2026-10-21T09:30:45.000Z",
+                    "duration": 45,
+                    "callStatus": "left-voicemail",
+                    "note": "Left a voicemail, call back Thursday.",
+                    "phoneProvider": "api",
+                    "provider": "trellus",
+                    "hasRecording": true,
+                    "hasTranscript": true,
+                    "createdAt": "2026-10-21T09:30:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The `{id}` is refused: malformed, or neither a call id (`act_…`) nor an `externalId`.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "VALIDATION_ERROR",
+                    "message": "Match error: Expected a valid id"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Unauthorized"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "The team's plan does not include the calls API (Email Pro and above)."
+          },
+          "404": {
+            "description": "No call of the team matches `{id}`: by `_id` any call, by `externalId` a call logged through the API.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Error code: `CALLS_CALL_NOT_FOUND`."
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "calls-call-not-found": {
+                    "summary": "No call of the team matches",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CALLS_CALL_NOT_FOUND",
+                        "message": "Call not found."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed: this path accepts GET and PATCH. The body is the plain `{ \"error\": \"Route bad method\" }`.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Route bad method"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected failure, alerted to lemlist. Read again.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "INTERNAL_ERROR",
+                    "message": "Internal error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a Call",
+        "description": "Completes a call logged through `POST /calls` with what your dialer learns afterwards: the call status, a note, the duration, the recording, the transcript. Send at least one field; the others stay as they are. A field sent as `null` counts as absent.\n\n`{id}` is the `_id` the log answered, or the `externalId` you sent. Only calls logged through the API are reachable: a call made with the lemlist dialer keeps its own media.\n\n`callStatus` runs the status's automations as `POST /calls` does. `note` rewrites the call's note when one exists and creates it otherwise. `recordingUrl` and `transcript` behave as on `POST /calls`: the recording is fetched in the background, the transcript is stored and feeds the AI summary and the CRM call note.\n\n**Plan.** Email Pro and above.",
+        "tags": ["Calls"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The call's `_id` (`act_…`) or its `externalId`.",
+            "example": "trellus-8f2c1",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "callStatus": {
+                    "type": "string",
+                    "description": "A key of the team's call statuses (`GET /call-statuses`). Runs the automations that status carries, as the team configured them, and reaches the CRM call.",
+                    "example": "left-voicemail"
+                  },
+                  "note": {
+                    "type": "string",
+                    "maxLength": 10000,
+                    "example": "Left a voicemail, call back Thursday."
+                  },
+                  "duration": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 86400,
+                    "description": "Seconds. Moves the end of the call accordingly, and reaches the CRM call (HubSpot, Salesforce, Pipedrive).",
+                    "example": 45
+                  },
+                  "recordingUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 2048,
+                    "description": "An `https` URL of the recording, reachable from the public internet. An empty string means no recording, so it does not count as a field to update.",
+                    "example": "https://recordings.dialer.example/8f2c1.mp3"
+                  },
+                  "transcript": {
+                    "type": "string",
+                    "maxLength": 200000,
+                    "description": "The transcript as plain text.",
+                    "example": "Hi Jane, this is Alex from lemlist…"
+                  }
+                }
+              },
+              "example": {
+                "callStatus": "left-voicemail",
+                "duration": 45,
+                "recordingUrl": "https://recordings.dialer.example/8f2c1.mp3"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The call, re-read after the update. `hasRecording` turns `true` once the recording is stored, a moment later.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Call"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "_id": "act_Z8gP3xYq2bKd9mLn7",
+                    "externalId": "trellus-8f2c1",
+                    "contactId": "ctc_7Ks2PqW9mXb4Lc1Td",
+                    "leadId": "lea_2Hn8VbQ4wRz6Ym3Jk",
+                    "campaignId": "cam_5Fd9LpX2cVt7Nq8Wb",
+                    "taskId": "opp_9Xw4RtY7kLm2Pq6Zc",
+                    "userId": "usr_3Bv7GhT5nJk8Lm2Qx",
+                    "direction": "outbound",
+                    "from": "+33100000000",
+                    "to": "+33612345678",
+                    "startedAt": "2026-10-21T09:30:00.000Z",
+                    "endedAt": "2026-10-21T09:30:45.000Z",
+                    "duration": 45,
+                    "callStatus": "left-voicemail",
+                    "note": "Left a voicemail, call back Thursday.",
+                    "phoneProvider": "api",
+                    "provider": "trellus",
+                    "hasRecording": false,
+                    "hasTranscript": true,
+                    "createdAt": "2026-10-21T09:30:00.000Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The body or `{id}` is refused: a malformed id, an unknown status, an unsafe recording URL. `error.code` names the case, `error.message` explains it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Error code: `VALIDATION_ERROR`, `CALLS_API_NO_FIELD_TO_UPDATE`, `CALLS_UNKNOWN_CALL_STATUS`, `CALLS_API_UNSAFE_RECORDING_URL`, `CALLS_API_USER_NOT_IN_TEAM` (neither the call nor the API key names a rep)."
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "validation-error": {
+                    "summary": "A field is missing or malformed: the message names the field and the shape expected",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "VALIDATION_ERROR",
+                        "message": "Match error: Expected an integer number of seconds between 0 and 86400 in field duration"
+                      }
+                    }
+                  },
+                  "calls-api-no-field-to-update": {
+                    "summary": "The body carries no field",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CALLS_API_NO_FIELD_TO_UPDATE",
+                        "message": "Send at least one of callStatus, note, duration, recordingUrl or transcript."
+                      }
+                    }
+                  },
+                  "calls-unknown-call-status": {
+                    "summary": "`callStatus` is not one of the team's keys",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CALLS_UNKNOWN_CALL_STATUS",
+                        "message": "Unknown call status for this team. Valid keys: no-answer, left-voicemail, wrong-number, connected, connected-positive, connected-negative, connected-neutral, busy, gatekeeper, not-in-service"
+                      }
+                    }
+                  },
+                  "calls-api-unsafe-recording-url": {
+                    "summary": "`recordingUrl` is not a public https URL",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CALLS_API_UNSAFE_RECORDING_URL",
+                        "message": "recordingUrl must be an https URL that resolves to a public address."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Unauthorized"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "The team's plan does not include the calls API (Email Pro and above)."
+          },
+          "404": {
+            "description": "No call logged through the API matches `{id}` in the team.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Error code: `CALLS_CALL_NOT_FOUND`, or `CALLS_API_CALL_NOT_UPDATABLE` on a call made with the lemlist dialer, Aircall or Ringover: only calls logged through this API can be updated."
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "calls-api-call-not-updatable": {
+                    "summary": "A dialer call: only API-logged calls can be updated",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CALLS_API_CALL_NOT_UPDATABLE",
+                        "message": "This call was not logged through the API: a call made with the lemlist dialer, Aircall or Ringover cannot be updated here."
+                      }
+                    }
+                  },
+                  "calls-call-not-found": {
+                    "summary": "No call logged through the API matches",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CALLS_CALL_NOT_FOUND",
+                        "message": "Call not found."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed: this path accepts GET and PATCH. The body is the plain `{ \"error\": \"Route bad method\" }`.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Route bad method"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected failure, alerted to lemlist. The same `PATCH` can be sent again: every field it sets is idempotent.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "INTERNAL_ERROR",
+                    "message": "Internal error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/call-statuses": {
+      "get": {
+        "summary": "Get Call Statuses",
+        "description": "Lists the team's active call statuses (dispositions): lemlist's defaults and the team's own, as the dialer shows them. `key` is what `POST /calls` and `PATCH /calls/{id}` take as `callStatus`; the flags say what the team configured the status to do. Map your dialer's outcomes to these keys.\n\n**Plan.** Email Pro and above.",
+        "tags": ["Calls"],
+        "responses": {
+          "200": {
+            "description": "The statuses, in the team's order.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CallStatus"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "data": [
+                    {
+                      "key": "no-answer",
+                      "label": "No answer",
+                      "callAnswered": false,
+                      "callPositive": false,
+                      "callNegative": false,
+                      "pausesCampaigns": false
+                    },
+                    {
+                      "key": "connected-positive",
+                      "label": "Connected positive",
+                      "callAnswered": true,
+                      "callPositive": false,
+                      "callNegative": false,
+                      "pausesCampaigns": false
+                    },
+                    {
+                      "key": "demo-booked",
+                      "label": "Demo booked",
+                      "callAnswered": true,
+                      "callPositive": true,
+                      "callNegative": false,
+                      "pausesCampaigns": true
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Unauthorized"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "The team's plan does not include the calls API (Email Pro and above)."
+          },
+          "405": {
+            "description": "Method not allowed: this endpoint only accepts GET. The body is the plain `{ \"error\": \"Route bad method\" }`.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Route bad method"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected failure, alerted to lemlist.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "INTERNAL_ERROR",
+                    "message": "Internal error"
+                  }
+                }
+              }
+            }
           }
         }
       }
