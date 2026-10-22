@@ -1679,6 +1679,122 @@
           }
         }
       },
+      "CrmLog": {
+        "type": "object",
+        "description": "One operation lemlist ran with the team's connected CRM for a contact or a company, as returned by `GET /v2/crm/logs`.",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Unique log identifier (`csa_xxx`)"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When lemlist queued the operation"
+          },
+          "doneAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When lemlist finished the operation. Present on `done` logs and on logs aborted by a user or by a campaign move; absent on `pending` and `error` logs, and on other aborts."
+          },
+          "crm": {
+            "type": "string",
+            "description": "The CRM the operation ran against, e.g. `hubspot`, `salesforce`, `pipedrive`. A contact's or a company's history keeps the logs of a CRM the team has since left; the team history lists the connected CRM only."
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "lemlist_to_crm",
+              "crm_to_lemlist"
+            ],
+            "description": "`lemlist_to_crm` for a write lemlist sent to the CRM, `crm_to_lemlist` for a change received from the CRM"
+          },
+          "method": {
+            "type": "string",
+            "description": "Name of the operation, e.g. `contact_update`. `direction` tells a lemlist write from the CRM change it mirrors. Known values: `activity_create`, `activity_import`, `association_from_company`, `association_from_contact`, `association_remove`, `association_update`, `call_create`, `call_update`, `company_create`, `company_delete`, `company_merge`, `company_owner_update`, `company_restore`, `company_update`, `contact_create`, `contact_delete`, `contact_merge`, `contact_owner_update`, `contact_restore`, `contact_update`, `custom_activity_create`, `deal_create`, `email_message_create`, `event_create`, `experience_update`, `lead_status_update`, `linkedin_message_create`, `note_create`, `note_import`, `note_update`, `sms_message_create`, `task_complete`, `task_create`, `task_delete`, `task_import`, `task_update`, `whatsapp_message_create`. An operation lemlist has not named yet keeps its own identifier: filter with `category` rather than on this value."
+          },
+          "label": {
+            "type": "string",
+            "description": "Human-readable name of the operation, in English, e.g. `Contact update`. Equals `method` when the operation has no label."
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "company",
+              "association",
+              "activity",
+              "email",
+              "linkedin",
+              "sms",
+              "whatsapp",
+              "call",
+              "note",
+              "task",
+              "deal",
+              "event"
+            ],
+            "description": "Kind of record the operation acted on. Absent when the operation has no category."
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "done",
+              "error",
+              "aborted"
+            ],
+            "description": "`pending`: queued, not run yet. `done`: the CRM accepted it. `error`: the CRM refused it, see `error`. `aborted`: lemlist skipped it, `error.code` gives the reason."
+          },
+          "contactId": {
+            "type": "string",
+            "description": "The contact the operation is about (`ctc_xxx`). Present on contact rows and on the rows of a contact-company association."
+          },
+          "companyId": {
+            "type": "string",
+            "description": "The company the operation is about (`cpn_xxx`). Present on company rows and on the rows of a contact-company association."
+          },
+          "crmObjectId": {
+            "type": "string",
+            "description": "ID of the record in the CRM"
+          },
+          "updatedFields": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Fields sent to or received from the CRM, with their values"
+          },
+          "error": {
+            "type": "object",
+            "description": "Present on `error` rows, and on `aborted` rows where it carries the reason.",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Stable error or abort code, e.g. `INVALID_EMAIL`"
+              },
+              "statusCode": {
+                "type": "integer",
+                "description": "HTTP status the CRM answered, when known"
+              },
+              "message": {
+                "type": "string",
+                "description": "The CRM's own message, in English, untranslated. Its wording can change: rely on `code`."
+              },
+              "label": {
+                "type": "string",
+                "description": "lemlist's explanation of `code`, in English"
+              }
+            }
+          }
+        },
+        "required": [
+          "_id",
+          "crm",
+          "direction",
+          "method",
+          "label",
+          "state"
+        ]
+      },
       "Sequence": {
         "type": "object",
         "description": "An ordered series of steps within a campaign.",
@@ -17902,6 +18018,289 @@
             "content": {
               "text/plain": {
                 "example": "The authentication you supplied is incorrect"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/crm/logs": {
+      "get": {
+        "summary": "Get CRM Logs",
+        "description": "Retrieves CRM sync history: every operation lemlist ran with your CRM (creation, update, activity, association…), newest first, with its outcome and the CRM's error message when it failed. Internal steps of the sync engine are not listed. Available from the Email Pro plan.\n\n**For one record**, pass `contactId` or `companyId`, not both: you get its whole history, with every CRM it was synced with, as the CRM logs filter of its Activities tab shows it. A company's history does not include the operations about its contacts: read them with `contactId`. A record without logs, or an id your team does not have (unknown, deleted or merged into another record), answers `200` with an empty `data`.\n\n**For your whole team**, pass neither: you get the operations with your connected CRM over a period of 31 days at most, the last 31 days by default, as Settings → Integrations → CRM → Logs shows them. A team without a connected CRM answers `200` with an empty `data`. Operations logged at the same instant have no fixed order in this list, so across pages one of them can be repeated or skipped.",
+        "tags": [
+          "CRMs"
+        ],
+        "parameters": [
+          {
+            "name": "contactId",
+            "in": "query",
+            "required": false,
+            "description": "The contact whose history to read (`ctc_xxx`). Pass `contactId` or `companyId`, not both; without either, the team's history is listed. An empty value answers `INVALID_PARAMETER`.",
+            "example": "ctc_FVFd4GJGdYis6ht8D",
+            "schema": {
+              "type": "string",
+              "pattern": "^ctc_[a-zA-Z0-9]+$"
+            }
+          },
+          {
+            "name": "companyId",
+            "in": "query",
+            "required": false,
+            "description": "The company whose history to read (`cpn_xxx`). Pass `contactId` or `companyId`, not both; without either, the team's history is listed. An empty value answers `INVALID_PARAMETER`.",
+            "example": "cpn_3TiwSo3LiiOqjH5EH",
+            "schema": {
+              "type": "string",
+              "pattern": "^cpn_[a-zA-Z0-9]+$"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number, starting at 1. Default: 1. `page × limit` must not exceed 5,000 (`PAGE_OUT_OF_RANGE`): beyond the 5,000 most recent rows, call again with `to` set to the `createdAt` of the last log you received. `to` is inclusive, so the logs of that instant come back: skip the `_id`s you already have.",
+            "example": "1",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Number of logs per page, from 1 to 100. Default: 100.",
+            "example": "100",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "description": "Only the logs in these states, comma-separated: `pending`, `done`, `error`, `aborted`. When the parameter is repeated, the last value is used.",
+            "example": "error,aborted",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "description": "Only the logs of these categories, comma-separated: `contact`, `company`, `association`, `activity`, `email`, `linkedin`, `sms`, `whatsapp`, `call`, `note`, `task`, `deal`, `event`.",
+            "example": "contact,association",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "method",
+            "in": "query",
+            "required": false,
+            "description": "Only the logs of these operations, comma-separated, by their `method` name (see `CrmLog.method`). A name covers both directions: `contact_update` is a lemlist write and a change received from the CRM. With `category`, both filters apply. When the parameter is repeated, the last value is used.",
+            "example": "contact_update,task_complete",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "Only the logs created at or after this date (ISO 8601, read in UTC: a time without offset is UTC, a date without time starts at 00:00). For a record, no default: its whole history. For the team, 31 days before `to` by default, and `from` and `to` may span 31 days at most (`INVALID_DATE_RANGE`): with dates without time, `from=2026-08-01&to=2026-08-31` is the widest window.",
+            "example": "2026-09-01T00:00:00.000Z",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "Only the logs created at or before this date (ISO 8601, read in UTC: a time without offset is UTC, a date without time covers that whole day, up to 23:59:59.999). Default: now.",
+            "example": "2026-09-30T23:59:59.999Z",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CrmLog"
+                      }
+                    },
+                    "hasMore": {
+                      "type": "boolean",
+                      "description": "Whether older logs exist past this page. For a contact or a company, it stays `false` on the page ending at row 5,000, even when older logs exist. For the team, it says whether they exist, and the next page answers `PAGE_OUT_OF_RANGE`. Past row 5,000, call again with `to`."
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "hasMore"
+                  ]
+                },
+                "example": {
+                  "data": [
+                    {
+                      "_id": "csa_WyNegcZi0ICh8UCWn",
+                      "crm": "hubspot",
+                      "direction": "lemlist_to_crm",
+                      "createdAt": "2026-09-28T09:12:00.653Z",
+                      "doneAt": "2026-09-28T09:12:02.940Z",
+                      "method": "contact_update",
+                      "label": "Contact update",
+                      "category": "contact",
+                      "state": "done",
+                      "contactId": "ctc_FVFd4GJGdYis6ht8D",
+                      "crmObjectId": "12345678901",
+                      "updatedFields": {
+                        "email": "john@example.com",
+                        "jobtitle": "Head of Sales"
+                      }
+                    },
+                    {
+                      "_id": "csa_J2SnPYgyKcs8Arith",
+                      "crm": "hubspot",
+                      "direction": "lemlist_to_crm",
+                      "createdAt": "2026-09-27T16:40:10.605Z",
+                      "method": "contact_update",
+                      "label": "Contact update",
+                      "category": "contact",
+                      "state": "error",
+                      "contactId": "ctc_FVFd4GJGdYis6ht8D",
+                      "error": {
+                        "code": "INVALID_EMAIL",
+                        "statusCode": 400,
+                        "message": "Property values were not valid",
+                        "label": "Invalid email"
+                      }
+                    },
+                    {
+                      "_id": "csa_DutgEnp4Kw6bF0XSZ",
+                      "crm": "hubspot",
+                      "direction": "lemlist_to_crm",
+                      "createdAt": "2026-09-26T11:05:42.118Z",
+                      "doneAt": "2026-09-26T11:05:43.501Z",
+                      "method": "association_from_company",
+                      "label": "Association from company",
+                      "category": "association",
+                      "state": "done",
+                      "contactId": "ctc_FVFd4GJGdYis6ht8D",
+                      "companyId": "cpn_3TiwSo3LiiOqjH5EH",
+                      "crmObjectId": "98765432109",
+                      "updatedFields": {
+                        "companyId": "__created__"
+                      }
+                    }
+                  ],
+                  "hasMore": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request: `INVALID_PARAMETER` (both `contactId` and `companyId`, or an empty or malformed id; a `page`, `limit`, `state`, `category` or `method` outside the contract), `INVALID_DATE_RANGE` (an unparsable date, `from` after `to`, or a team period over 31 days), `PAGE_OUT_OF_RANGE` (`page × limit` above 5,000). A request without an API key answers the plain-text message `no api key provided`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "examples": {
+                  "teamPeriodTooWide": {
+                    "summary": "Team period over 31 days",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "INVALID_DATE_RANGE",
+                        "message": "Invalid date range: from and to must be at most 31 days apart without contactId or companyId"
+                      }
+                    }
+                  },
+                  "invalidParameter": {
+                    "summary": "Invalid query parameter",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "INVALID_PARAMETER",
+                        "message": "Invalid query parameter: limit must be an integer between 1 and 100"
+                      }
+                    }
+                  },
+                  "invalidDateRange": {
+                    "summary": "Invalid date range",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "INVALID_DATE_RANGE",
+                        "message": "Invalid date range: from is after to"
+                      }
+                    }
+                  },
+                  "pageOutOfRange": {
+                    "summary": "Page past the 5,000 most recent logs",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "PAGE_OUT_OF_RANGE",
+                        "message": "Requested page is beyond the readable sync history: page * limit must not exceed 5000"
+                      }
+                    }
+                  }
+                }
+              },
+              "text/plain": {
+                "example": "no api key provided"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "The team's plan is below Email Pro, the plan CRM sync logs are available from.",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          },
+          "504": {
+            "description": "`READ_TOO_SLOW`: the read took more than 10 seconds, typically a rare filter over a dense team period. Narrow `from` / `to`, or pass a `contactId` or a `companyId`; the same request will time out again.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "READ_TOO_SLOW",
+                    "message": "The read took too long: narrow from / to, or pass a contactId or a companyId"
+                  }
+                }
               }
             }
           }
