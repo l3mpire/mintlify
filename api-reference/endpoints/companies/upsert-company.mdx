@@ -85,10 +85,14 @@ What happens depends on the company and on who already holds the id:
 | Situation | Result |
 |-----------|--------|
 | New company, the id is linked to no lemlist company | The company is created already linked to that record (`201`). |
-| Existing company, named by `companyId` or found by its domain or LinkedIn URL | Its link moves to that record (`200`), and each of its contacts is associated with the new CRM company, following your association settings. Updates queued for the previous record are cancelled. |
+| Existing company, named by `companyId`, or found by its domain and name, its LinkedIn URL or its Sales Navigator URL | Its link moves to that record (`200`), and each of its contacts is associated with the new CRM company, following your association settings. Updates queued for the previous record are cancelled. |
 | Existing company found by its name alone, linked to another CRM record | Refused: `409 COMPANY_LINKED_TO_OTHER_CRM_RECORD`. A name does not identify a company well enough to move its link; send its `companyId` with `crmId`. |
-| The id is linked to another lemlist company, and the body carries that company's `domain`, `linkedinUrl` or `linkedinUrlSalesNav` | That company is updated; its link stays as it is (`200`). Sending the same payload twice is safe. |
-| The id is linked to another lemlist company, otherwise | Refused, nothing written: `409 CRM_ID_ALREADY_LINKED`, `error.conflictingRecord` names that company. |
+| The id is already linked to a lemlist company, and at least one of the body's `domain`, `linkedinUrl` or `linkedinUrlSalesNav` is that company's | The `crmId` finds the company and that identifier confirms it: the body updates it (`200`), name included, and its link stays as it is. The body's other identifiers replace the company's, unless they already belong to another company: `409 COMPANY_IDENTIFIER_CONFLICT`. Sending the same payload twice is safe. |
+| The id is already linked to a lemlist company, and none of the body's identifiers is that company's | Refused, nothing written: `409 CRM_ID_ALREADY_LINKED`, `error.conflictingRecord` names that company. |
+
+<Warning>
+Several companies can share a domain. The domain then confirms the company holding the id even when the body's `name` is another company's: send `companyId` (or the LinkedIn URL) when your companies share a domain.
+</Warning>
 
 The `crmSync` block of the response shows the link the company ends up with.
 
