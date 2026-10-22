@@ -1354,6 +1354,16 @@
                 "type": "boolean",
                 "description": "When `true`, automatic sync is paused for this contact."
               },
+              "searching": {
+                "type": "boolean",
+                "description": "`true` while a CRM search (Search & connect, Create in CRM) is queued or running for this contact. A search started more than 15 minutes ago no longer counts: it stalled."
+              },
+              "notFoundAt": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true,
+                "description": "When the last CRM search found no matching record. `null` otherwise."
+              },
               "errors": {
                 "type": "array",
                 "description": "List of recent sync errors. Empty when the contact is synced cleanly.",
@@ -1462,6 +1472,67 @@
             "type": "integer",
             "description": "Number of campaigns the contact is in"
           },
+          "crmSync": {
+            "type": "object",
+            "description": "CRM sync status for the contact, resolved against the team's active CRM provider. Only present when a CRM is connected and the contact is linked to a record in it or was searched for in it. Read `searching` and `notFoundAt` to follow a Search & connect or Create in CRM.",
+            "properties": {
+              "provider": {
+                "type": "string",
+                "enum": [
+                  "hubspot",
+                  "salesforce",
+                  "pipedrive"
+                ],
+                "description": "Active CRM provider for the team."
+              },
+              "crmRecordId": {
+                "type": "string",
+                "nullable": true,
+                "description": "Identifier of the contact record on the CRM side. `null` when the lemlist contact has not been synced yet."
+              },
+              "syncDisabled": {
+                "type": "boolean",
+                "description": "When `true`, automatic sync is paused for this contact."
+              },
+              "searching": {
+                "type": "boolean",
+                "description": "`true` while a CRM search (Search & connect, Create in CRM) is queued or running for this contact. A search started more than 15 minutes ago no longer counts: it stalled."
+              },
+              "notFoundAt": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true,
+                "description": "When the last CRM search found no matching record. `null` otherwise."
+              },
+              "errors": {
+                "type": "array",
+                "description": "List of recent sync errors. Empty when the contact is synced cleanly.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Coarse error category (e.g. `CONNECT_FAILED`, `CREATE_FAILED`, `UPDATE_FAILED`)."
+                    },
+                    "reason": {
+                      "type": "string",
+                      "description": "Specific error reason (e.g. `UNIQUE_INDEX_ERROR_CONTACT`, `INVALID_EMAIL`, `PROPERTY_DOESNT_EXIST`)."
+                    },
+                    "raisedAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "Timestamp when the error was last raised."
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "additionalProperties": true,
+                      "description": "Extra context. For `UNIQUE_INDEX_ERROR_COMPANY`, contains `alreadyExistingCompanyId` — the lemlist company that already occupies the conflicting CRM record. Use it to remap contacts onto the right lemlist company before deleting the duplicate."
+                    }
+                  }
+                }
+              }
+            }
+          },
           "fieldRejections": {
             "type": "array",
             "description": "Values lemlist refused to write on this contact, each with its reason. Empty when none. Filter the list endpoint to only flagged contacts via `GET /contacts?fieldRejectionReason=...`.",
@@ -1546,6 +1617,16 @@
               "syncDisabled": {
                 "type": "boolean",
                 "description": "When `true`, automatic sync is paused for this company."
+              },
+              "searching": {
+                "type": "boolean",
+                "description": "`true` while a CRM search (Search & connect, Create in CRM) is queued or running for this company. A search started more than 15 minutes ago no longer counts: it stalled."
+              },
+              "notFoundAt": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true,
+                "description": "When the last CRM search found no matching record. `null` otherwise."
               },
               "errors": {
                 "type": "array",
@@ -23670,7 +23751,7 @@
             "name": "crmSyncStatus",
             "in": "query",
             "required": false,
-            "description": "Filter contacts by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, or Pipedrive) to be connected — otherwise the request returns `400 NO_CRM_CONNECTED`. Values:\n- `synced` — the contact has a CRM record and no sync errors.\n- `not_synced` — the contact has no CRM record yet.\n- `error` — at least one sync error is currently raised, whatever its reason.\n- A specific error reason (lowercase form), to filter by root cause:\n  - `invalid_email` — the CRM refused the contact's email.\n  - `property_doesnt_exist` — a mapped property does not exist in the CRM.\n  - `required_field_missing` — a field the CRM requires is missing.\n  - `unique_index_error_contact` — the CRM record is already synced with another lemlist contact.\n  - `contact_already_exists_with_name`, `contact_already_exists_with_linkedin_url`, `contact_already_exists_with_email` — a CRM contact already exists with the same first and last name, LinkedIn URL or email.\n  - `contact_blocked_by_company` — contact not created: its company already exists in the CRM.\n  - `contact_blocked_by_company_search` — contact not created: the company search is incomplete, retried later.\n  - `contact_blocked_by_company_without_name` — contact not created: its company needs a name to be found in the CRM.\n  - `contact_blocked_by_company_without_key` — contact not created: its company needs a domain or LinkedIn URL to be found in the CRM.\n  - `contact_blocked_by_company_already_synced` — contact not created: its company is already synced with another lemlist company.\n\nOnly applies to the paginated list — ignored when `idsOrEmails` or `crmIds` is provided.",
+            "description": "Filter contacts by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, or Pipedrive) to be connected — otherwise the request returns `400 NO_CRM_CONNECTED`. Values:\n- `synced` — the contact has a CRM record and no sync errors.\n- `not_synced` — the contact has no CRM record yet.\n- `searching` — a CRM search (Search & connect, Create in CRM), started less than 15 minutes ago, is queued or running for the contact.\n- `not_found` — the last CRM search found no record for the contact.\n- `error` — at least one sync error is currently raised, whatever its reason.\n- A specific error reason (lowercase form), to filter by root cause:\n  - `invalid_email` — the CRM refused the contact's email.\n  - `property_doesnt_exist` — a mapped property does not exist in the CRM.\n  - `required_field_missing` — a field the CRM requires is missing.\n  - `unique_index_error_contact` — the CRM record is already synced with another lemlist contact.\n  - `contact_already_exists_with_name`, `contact_already_exists_with_linkedin_url`, `contact_already_exists_with_email` — a CRM contact already exists with the same first and last name, LinkedIn URL or email.\n  - `contact_blocked_by_company` — contact not created: its company already exists in the CRM.\n  - `contact_blocked_by_company_search` — contact not created: the company search is incomplete, retried later.\n  - `contact_blocked_by_company_without_name` — contact not created: its company needs a name to be found in the CRM.\n  - `contact_blocked_by_company_without_key` — contact not created: its company needs a domain or LinkedIn URL to be found in the CRM.\n  - `contact_blocked_by_company_already_synced` — contact not created: its company is already synced with another lemlist company.\n\nOnly applies to the paginated list — ignored when `idsOrEmails` or `crmIds` is provided.",
             "example": "error",
             "schema": {
               "type": "string",
@@ -23678,6 +23759,8 @@
                 "synced",
                 "not_synced",
                 "error",
+                "searching",
+                "not_found",
                 "invalid_email",
                 "property_doesnt_exist",
                 "required_field_missing",
@@ -23795,6 +23878,8 @@
                           "provider": "hubspot",
                           "crmRecordId": "123456789",
                           "syncDisabled": false,
+                          "searching": false,
+                          "notFoundAt": null,
                           "errors": []
                         }
                       },
@@ -23858,6 +23943,14 @@
                           "createdBy": "usr_ahfFktBBHUIxbVG5P",
                           "unsubscribed": false,
                           "campaignCount": 1,
+                          "crmSync": {
+                            "provider": "hubspot",
+                            "crmRecordId": "123456789",
+                            "syncDisabled": false,
+                            "searching": false,
+                            "notFoundAt": null,
+                            "errors": []
+                          },
                           "fieldRejections": []
                         }
                       ],
@@ -24691,6 +24784,311 @@
                   "error": {
                     "code": "ENTITY_MERGE_ENRICHMENT_IN_PROGRESS",
                     "message": "A record is being enriched, retry once it finishes"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/crm/search-and-connect": {
+      "post": {
+        "summary": "Search & Connect Contacts in the CRM",
+        "description": "Searches your connected CRM for each contact and links it to the CRM record found — the **Search & connect** action of the Contacts page. No CRM record is ever created: use `POST /contacts/crm/create` for that. Each contact it links then syncs its mapped fields with that CRM record, which can update it.\n\nTarget the contacts with `idsOrEmails` (lemlist ids or email addresses) **or** with `listId` for a whole contact list: 10,000 contacts at most either way.\n\n**Asynchronous:** the call queues the work and answers at once with what was queued, not with what the CRM returned. Each contact's outcome lands on its `crmSync` block shortly after: read it with `GET /contacts?idsOrEmails=...` (100 per call), or, after a list, list its contacts by state with `listId` and `crmSyncStatus`: `searching` while the search runs, then `synced` once linked, or `not_found` when no CRM record matched. Without `listId`, `crmSyncStatus` reads every contact of the team: do not poll it.\n\n- A contact already linked to a CRM record is synced with it again (`alreadyLinked`).\n- A contact with nothing to search the CRM with is left untouched (`notSearchable`).\n- A contact whose CRM search is already queued is not queued twice (`alreadyInProgress`).\n\nRequires a connected CRM (HubSpot, Salesforce, Pipedrive, Attio or Zoho).",
+        "tags": [
+          "Contacts"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idsOrEmails": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1,
+                    "maxItems": 10000,
+                    "description": "lemlist contact ids (`ctc_xxx`) or email addresses, 10,000 at most. Send either `idsOrEmails` or `listId`.",
+                    "example": [
+                      "ctc_xW8Ou6C03Csv8vatp",
+                      "john.doe@acme.com"
+                    ]
+                  },
+                  "listId": {
+                    "type": "string",
+                    "description": "A contact list id (`clt_xxx`): acts on every contact of the list, static or dynamic, 10,000 at most. Use it instead of `idsOrEmails`.",
+                    "example": "clt_Ab12Cd34Ef56Gh78I"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Queued — **not done yet.** The counts say what was queued; each record's outcome lands on its `crmSync` block shortly after.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "alreadyLinked": {
+                          "type": "integer",
+                          "description": "Contacts already linked to a CRM record: synced with it again instead of searched."
+                        },
+                        "toSearch": {
+                          "type": "integer",
+                          "description": "Contacts searched in the CRM: linked to the record found, flagged `not_found` otherwise."
+                        },
+                        "notSearchable": {
+                          "type": "integer",
+                          "description": "Records with nothing the CRM can be searched with: no email address or LinkedIn URL for a contact, no domain or LinkedIn URL for a company (Pipedrive also searches by name). Left untouched."
+                        },
+                        "alreadyInProgress": {
+                          "type": "integer",
+                          "description": "Contacts whose CRM search was already queued: not queued twice."
+                        },
+                        "notFound": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "The references sent that match no contact of your team, as sent. Always empty with `listId`."
+                        }
+                      },
+                      "required": [
+                        "alreadyLinked",
+                        "toSearch",
+                        "notSearchable",
+                        "alreadyInProgress",
+                        "notFound"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "alreadyLinked": 2,
+                    "toSearch": 6,
+                    "notSearchable": 1,
+                    "alreadyInProgress": 0,
+                    "notFound": [
+                      "jane.doe@acme.com"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request. Possible error codes: `INVALID_SELECTION` (neither or both of `idsOrEmails` and `listId`, or an empty `idsOrEmails`), `TOO_MANY_RECORDS` (more than 10,000 references), `INVALID_LIST_ID` (not a `clt_xxx` id), `LIST_ENTITY_MISMATCH` (the list does not hold contacts), `LIST_TOO_LARGE` (the list holds more than 10,000 contacts), `NO_CRM_CONNECTED` (no CRM connected to the team), `VALIDATION_ERROR` (a field of the wrong type).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "NO_CRM_CONNECTED",
+                    "message": "No CRM connected for this team"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect.",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "The team has no list with this `listId` (`LIST_NOT_FOUND`).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "LIST_NOT_FOUND",
+                    "message": "List not found"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/crm/create": {
+      "post": {
+        "summary": "Create Contacts in the CRM",
+        "description": "Pushes contacts to your connected CRM — the **Create in CRM** action of the Contacts page. Each contact is searched in the CRM first: linked to the record found, created in the CRM otherwise. On Salesforce, `asLead: true` creates the missing contacts as Leads.\n\nTarget the contacts with `idsOrEmails` (lemlist ids or email addresses) **or** with `listId` for a whole contact list: 10,000 contacts at most either way.\n\n**Asynchronous:** the call queues the work and answers at once with what was queued, not with what the CRM returned. Each contact's outcome lands on its `crmSync` block shortly after: read it with `GET /contacts?idsOrEmails=...` (100 per call), or, after a list, list its contacts by state with `listId` and `crmSyncStatus`: `searching` while the search runs, then `synced` once linked or created, or `error` with its reason when the CRM refused it. Without `listId`, `crmSyncStatus` reads every contact of the team: do not poll it.\n\n- A contact already linked to a CRM record is synced with it again (`alreadyLinked`).\n- A contact with nothing to search the CRM with is left untouched (`notSearchable`).\n- A contact whose CRM search is already queued is not queued twice (`alreadyInProgress`).\n\nRequires a connected CRM (HubSpot, Salesforce, Pipedrive, Attio or Zoho) and an API key of a team **admin**. On Salesforce, the connection must grant the object created (Contact, or Lead with `asLead`).",
+        "tags": [
+          "Contacts"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idsOrEmails": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1,
+                    "maxItems": 10000,
+                    "description": "lemlist contact ids (`ctc_xxx`) or email addresses, 10,000 at most. Send either `idsOrEmails` or `listId`.",
+                    "example": [
+                      "ctc_xW8Ou6C03Csv8vatp",
+                      "john.doe@acme.com"
+                    ]
+                  },
+                  "listId": {
+                    "type": "string",
+                    "description": "A contact list id (`clt_xxx`): acts on every contact of the list, static or dynamic, 10,000 at most. Use it instead of `idsOrEmails`.",
+                    "example": "clt_Ab12Cd34Ef56Gh78I"
+                  },
+                  "asLead": {
+                    "type": "boolean",
+                    "description": "Salesforce only: create the contacts missing from the CRM as Leads instead of Contacts.",
+                    "example": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Queued — **not done yet.** The counts say what was queued; each record's outcome lands on its `crmSync` block shortly after.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "alreadyLinked": {
+                          "type": "integer",
+                          "description": "Contacts already linked to a CRM record: synced with it again instead of searched."
+                        },
+                        "toCreate": {
+                          "type": "integer",
+                          "description": "Contacts searched in the CRM first: linked to the record found, created in the CRM otherwise."
+                        },
+                        "notSearchable": {
+                          "type": "integer",
+                          "description": "Records with nothing the CRM can be searched with: no email address or LinkedIn URL for a contact, no domain or LinkedIn URL for a company (Pipedrive also searches by name). Left untouched."
+                        },
+                        "alreadyInProgress": {
+                          "type": "integer",
+                          "description": "Contacts whose CRM search was already queued: not queued twice."
+                        },
+                        "notFound": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "The references sent that match no contact of your team, as sent. Always empty with `listId`."
+                        }
+                      },
+                      "required": [
+                        "alreadyLinked",
+                        "toCreate",
+                        "notSearchable",
+                        "alreadyInProgress",
+                        "notFound"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "alreadyLinked": 2,
+                    "toCreate": 6,
+                    "notSearchable": 1,
+                    "alreadyInProgress": 0,
+                    "notFound": [
+                      "jane.doe@acme.com"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request. Possible error codes: `INVALID_SELECTION` (neither or both of `idsOrEmails` and `listId`, or an empty `idsOrEmails`), `TOO_MANY_RECORDS` (more than 10,000 references), `INVALID_LIST_ID` (not a `clt_xxx` id), `LIST_ENTITY_MISMATCH` (the list does not hold contacts), `LIST_TOO_LARGE` (the list holds more than 10,000 contacts), `NO_CRM_CONNECTED` (no CRM connected to the team), `VALIDATION_ERROR` (a field of the wrong type), `AS_LEAD_NOT_SUPPORTED` (`asLead` outside Salesforce), `CRM_OBJECT_NOT_ALLOWED` (the Salesforce connection does not grant the object to create).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "NO_CRM_CONNECTED",
+                    "message": "No CRM connected for this team"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect.",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "403": {
+            "description": "The API key does not belong to a team admin (`CREATE_IN_CRM_NOT_ALLOWED`).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "CREATE_IN_CRM_NOT_ALLOWED",
+                    "message": "Only a team admin can create records in the CRM"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The team has no list with this `listId` (`LIST_NOT_FOUND`).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "LIST_NOT_FOUND",
+                    "message": "List not found"
                   }
                 }
               }
@@ -26022,7 +26420,7 @@
             "name": "crmSyncStatus",
             "in": "query",
             "required": false,
-            "description": "Filter companies by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, or Pipedrive) to be connected — otherwise the request returns `400 NO_CRM_CONNECTED`. Common values:\n- `synced` — the company has a CRM record and no sync errors.\n- `not_synced` — the company has no CRM record yet.\n- `error` — at least one sync error is currently raised.\n- A specific error reason (lowercase form), to filter by root cause: `unique_index_error_company`, `property_doesnt_exist`, `required_field_missing`, `company_already_exists_with_name`, `company_already_exists_with_linkedin_url`.\n\nFor each returned company, see `crmSync.errors[].metadata.alreadyExistingCompanyId` to identify the lemlist company that already occupies the conflicting CRM record (useful to remap contacts before deleting the duplicate).",
+            "description": "Filter companies by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, or Pipedrive) to be connected — otherwise the request returns `400 NO_CRM_CONNECTED`. Common values:\n- `synced` — the company has a CRM record and no sync errors.\n- `not_synced` — the company has no CRM record yet.\n- `searching` — a CRM search (Search & connect, Create in CRM), started less than 15 minutes ago, is queued or running for the company.\n- `not_found` — the last CRM search found no record for the company.\n- `error` — at least one sync error is currently raised.\n- A specific error reason (lowercase form), to filter by root cause: `unique_index_error_company`, `property_doesnt_exist`, `required_field_missing`, `company_already_exists_with_name`, `company_already_exists_with_linkedin_url`.\n\nFor each returned company, see `crmSync.errors[].metadata.alreadyExistingCompanyId` to identify the lemlist company that already occupies the conflicting CRM record (useful to remap contacts before deleting the duplicate).",
             "example": "unique_index_error_company",
             "schema": {
               "type": "string",
@@ -26030,6 +26428,8 @@
                 "synced",
                 "not_synced",
                 "error",
+                "searching",
+                "not_found",
                 "unique_index_error_company",
                 "property_doesnt_exist",
                 "required_field_missing",
@@ -26161,6 +26561,8 @@
                         "provider": "hubspot",
                         "crmRecordId": null,
                         "syncDisabled": false,
+                        "searching": false,
+                        "notFoundAt": null,
                         "errors": [
                           {
                             "type": "CONNECT_FAILED",
@@ -27280,6 +27682,306 @@
         }
       }
     },
+    "/companies/crm/search-and-connect": {
+      "post": {
+        "summary": "Search & Connect Companies in the CRM",
+        "description": "Searches your connected CRM for each company and links it to the CRM record found — the **Search & connect** action of the Companies page. No CRM record is ever created: use `POST /companies/crm/create` for that. Each company it links then syncs its mapped fields with that CRM record, which can update it.\n\nTarget the companies with `idsOrDomains` (lemlist ids or domains) **or** with `listId` for a whole company list: 10,000 companies at most either way, a domain counting every company that carries it.\n\n**Asynchronous:** the call queues the work and answers at once with what was queued, not with what the CRM returned. Each company's outcome lands on its `crmSync` block shortly after: read it with `GET /companies?idsOrDomains=...` (100 per call), or, after a list, list its companies by state with `listId` and `crmSyncStatus`: `searching` while the search runs, then `synced` once linked, or `not_found` when no CRM record matched. Without `listId`, `crmSyncStatus` reads every company of the team: do not poll it.\n\n- A company already linked to a CRM record is synced with it again (`alreadyLinked`).\n- A company with nothing to search the CRM with is left untouched (`notSearchable`).\n- A company whose CRM search is already queued is not queued twice (`alreadyInProgress`).\n\nRequires a connected CRM (HubSpot, Salesforce, Pipedrive, Attio or Zoho).",
+        "tags": [
+          "Companies"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idsOrDomains": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1,
+                    "maxItems": 10000,
+                    "description": "lemlist company ids (`cpn_xxx`) or domains, 10,000 at most. A domain designates every company carrying it: 10,000 companies at most in total. Send either `idsOrDomains` or `listId`.",
+                    "example": [
+                      "cpn_xW8Ou6C03Csv8vatp",
+                      "acme.com"
+                    ]
+                  },
+                  "listId": {
+                    "type": "string",
+                    "description": "A company list id (`clt_xxx`): acts on every company of the list, static or dynamic, 10,000 at most. Use it instead of `idsOrDomains`.",
+                    "example": "clt_Ab12Cd34Ef56Gh78I"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Queued — **not done yet.** The counts say what was queued; each record's outcome lands on its `crmSync` block shortly after.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "alreadyLinked": {
+                          "type": "integer",
+                          "description": "Companies already linked to a CRM record: synced with it again instead of searched."
+                        },
+                        "toSearch": {
+                          "type": "integer",
+                          "description": "Companies searched in the CRM: linked to the record found, flagged `not_found` otherwise."
+                        },
+                        "notSearchable": {
+                          "type": "integer",
+                          "description": "Records with nothing the CRM can be searched with: no email address or LinkedIn URL for a contact, no domain or LinkedIn URL for a company (Pipedrive also searches by name). Left untouched."
+                        },
+                        "alreadyInProgress": {
+                          "type": "integer",
+                          "description": "Companies whose CRM search was already queued: not queued twice."
+                        },
+                        "notFound": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "The references sent that match no company of your team, as sent. Always empty with `listId`."
+                        }
+                      },
+                      "required": [
+                        "alreadyLinked",
+                        "toSearch",
+                        "notSearchable",
+                        "alreadyInProgress",
+                        "notFound"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "alreadyLinked": 2,
+                    "toSearch": 6,
+                    "notSearchable": 1,
+                    "alreadyInProgress": 0,
+                    "notFound": [
+                      "unknown-domain.io"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request. Possible error codes: `INVALID_SELECTION` (neither or both of `idsOrDomains` and `listId`, or an empty `idsOrDomains`), `TOO_MANY_RECORDS` (more than 10,000 references), `TOO_MANY_MATCHES` (the domains match more than 10,000 companies in total), `INVALID_LIST_ID` (not a `clt_xxx` id), `LIST_ENTITY_MISMATCH` (the list does not hold companies), `LIST_TOO_LARGE` (the list holds more than 10,000 companies), `NO_CRM_CONNECTED` (no CRM connected to the team), `VALIDATION_ERROR` (a field of the wrong type).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "NO_CRM_CONNECTED",
+                    "message": "No CRM connected for this team"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect.",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "The team has no list with this `listId` (`LIST_NOT_FOUND`).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "LIST_NOT_FOUND",
+                    "message": "List not found"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/companies/crm/create": {
+      "post": {
+        "summary": "Create Companies in the CRM",
+        "description": "Pushes companies to your connected CRM — the **Create in CRM** action of the Companies page. Each company is searched in the CRM first: linked to the record found, created in the CRM otherwise.\n\nTarget the companies with `idsOrDomains` (lemlist ids or domains) **or** with `listId` for a whole company list: 10,000 companies at most either way, a domain counting every company that carries it.\n\n**Asynchronous:** the call queues the work and answers at once with what was queued, not with what the CRM returned. Each company's outcome lands on its `crmSync` block shortly after: read it with `GET /companies?idsOrDomains=...` (100 per call), or, after a list, list its companies by state with `listId` and `crmSyncStatus`: `searching` while the search runs, then `synced` once linked or created, or `error` with its reason when the CRM refused it. Without `listId`, `crmSyncStatus` reads every company of the team: do not poll it.\n\n- A company already linked to a CRM record is synced with it again (`alreadyLinked`).\n- A company with nothing to search the CRM with is left untouched (`notSearchable`).\n- A company whose CRM search is already queued is not queued twice (`alreadyInProgress`).\n\nRequires a connected CRM (HubSpot, Salesforce, Pipedrive, Attio or Zoho) and an API key of a team **admin**. On Salesforce, the connection must grant the object created (Account).",
+        "tags": [
+          "Companies"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idsOrDomains": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1,
+                    "maxItems": 10000,
+                    "description": "lemlist company ids (`cpn_xxx`) or domains, 10,000 at most. A domain designates every company carrying it: 10,000 companies at most in total. Send either `idsOrDomains` or `listId`.",
+                    "example": [
+                      "cpn_xW8Ou6C03Csv8vatp",
+                      "acme.com"
+                    ]
+                  },
+                  "listId": {
+                    "type": "string",
+                    "description": "A company list id (`clt_xxx`): acts on every company of the list, static or dynamic, 10,000 at most. Use it instead of `idsOrDomains`.",
+                    "example": "clt_Ab12Cd34Ef56Gh78I"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Queued — **not done yet.** The counts say what was queued; each record's outcome lands on its `crmSync` block shortly after.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "alreadyLinked": {
+                          "type": "integer",
+                          "description": "Companies already linked to a CRM record: synced with it again instead of searched."
+                        },
+                        "toCreate": {
+                          "type": "integer",
+                          "description": "Companies searched in the CRM first: linked to the record found, created in the CRM otherwise."
+                        },
+                        "notSearchable": {
+                          "type": "integer",
+                          "description": "Records with nothing the CRM can be searched with: no email address or LinkedIn URL for a contact, no domain or LinkedIn URL for a company (Pipedrive also searches by name). Left untouched."
+                        },
+                        "alreadyInProgress": {
+                          "type": "integer",
+                          "description": "Companies whose CRM search was already queued: not queued twice."
+                        },
+                        "notFound": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "The references sent that match no company of your team, as sent. Always empty with `listId`."
+                        }
+                      },
+                      "required": [
+                        "alreadyLinked",
+                        "toCreate",
+                        "notSearchable",
+                        "alreadyInProgress",
+                        "notFound"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "data"
+                  ]
+                },
+                "example": {
+                  "success": true,
+                  "data": {
+                    "alreadyLinked": 2,
+                    "toCreate": 6,
+                    "notSearchable": 1,
+                    "alreadyInProgress": 0,
+                    "notFound": [
+                      "unknown-domain.io"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request. Possible error codes: `INVALID_SELECTION` (neither or both of `idsOrDomains` and `listId`, or an empty `idsOrDomains`), `TOO_MANY_RECORDS` (more than 10,000 references), `TOO_MANY_MATCHES` (the domains match more than 10,000 companies in total), `INVALID_LIST_ID` (not a `clt_xxx` id), `LIST_ENTITY_MISMATCH` (the list does not hold companies), `LIST_TOO_LARGE` (the list holds more than 10,000 companies), `NO_CRM_CONNECTED` (no CRM connected to the team), `VALIDATION_ERROR` (a field of the wrong type), `AS_LEAD_NOT_SUPPORTED` (`asLead` sent: Leads are contacts only), `CRM_OBJECT_NOT_ALLOWED` (the Salesforce connection does not grant the object to create).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "NO_CRM_CONNECTED",
+                    "message": "No CRM connected for this team"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect.",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "403": {
+            "description": "The API key does not belong to a team admin (`CREATE_IN_CRM_NOT_ALLOWED`).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "CREATE_IN_CRM_NOT_ALLOWED",
+                    "message": "Only a team admin can create records in the CRM"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The team has no list with this `listId` (`LIST_NOT_FOUND`).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "LIST_NOT_FOUND",
+                    "message": "List not found"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/companies/{companyId}": {
       "get": {
         "summary": "Get Company",
@@ -27327,6 +28029,8 @@
                     "provider": "hubspot",
                     "crmRecordId": "12345678901",
                     "syncDisabled": false,
+                    "searching": false,
+                    "notFoundAt": null,
                     "errors": []
                   }
                 }
