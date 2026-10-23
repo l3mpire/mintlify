@@ -1,0 +1,6 @@
+---
+openapi: get /campaigns/{campaignId}/settings
+description: Retrieves the settings of a campaign, including tracking, reply and link-click behavior, auto-launch and AI features.
+---
+
+Use this endpoint to read back what [Update Campaign](/api-reference/endpoints/campaigns/update-campaign) wrote. Tracking is returned in positive form: `disableTrackOpen: true` on update reads as `tracking.trackOpens: false`.

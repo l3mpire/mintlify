@@ -11093,6 +11093,19 @@
                       "manual",
                       "ai"
                     ]
+                  },
+                  "aiVoice": {
+                    "type": "object",
+                    "description": "Applies to `linkedinVoiceNote` steps with `recordMode` `ai` only; ignored otherwise. The voice that reads the script. It can only be set when the step is created.",
+                    "properties": {
+                      "voiceId": {
+                        "type": "string",
+                        "description": "A `voiceId` from GET /team/voices: a lemlist default voice or a voice cloned by your team. Any other voice is refused with a 400"
+                      }
+                    },
+                    "example": {
+                      "voiceId": "EXAMPLEvoice1A2b3C4d"
+                    }
                   }
                 }
               },
@@ -32711,6 +32724,739 @@
           },
           "405": {
             "description": "Method not allowed"
+          }
+        }
+      }
+    },
+    "/user/sending-settings": {
+      "get": {
+        "summary": "Get Email Account Daily Limits",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Daily email limit of each email account of the authenticated user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "emailAccounts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Email account identifier (usm_xxx)"
+                          },
+                          "email": {
+                            "type": "string",
+                            "description": "Email address"
+                          },
+                          "dailyEmailLimit": {
+                            "type": "integer",
+                            "description": "Max emails sent per day from this account"
+                          }
+                        }
+                      }
+                    },
+                    "bcc": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Address added in BCC of every email the user sends, if any"
+                    }
+                  }
+                },
+                "example": {
+                  "emailAccounts": [
+                    {
+                      "id": "usm_Example1A2b3C4d5E",
+                      "email": "john@example.com",
+                      "dailyEmailLimit": 50
+                    },
+                    {
+                      "id": "usm_Example6F7g8H9i0J",
+                      "email": "john@acme.com",
+                      "dailyEmailLimit": 12
+                    }
+                  ],
+                  "bcc": null
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The API key has no user",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "No user found for this api key"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Email Account Daily Limits",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "description": "The daily email limit to apply to each email account. Accounts can belong to any member of the team. Each item is applied independently: one failure does not abort the others.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "emailAccounts"
+                ],
+                "properties": {
+                  "emailAccounts": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 100,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "dailyEmailLimit"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Email account identifier (usm_xxx), as returned by GET /user/channels or GET /user/sending-settings"
+                        },
+                        "dailyEmailLimit": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "description": "Max emails sent per day from this account. 0 pauses sending. During the free trial, a value above the trial limit is lowered to it"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "emailAccounts": [
+                  {
+                    "id": "usm_Example1A2b3C4d5E",
+                    "dailyEmailLimit": 12
+                  },
+                  {
+                    "id": "usm_Example6F7g8H9i0J",
+                    "dailyEmailLimit": 12
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Outcome of each update. Check `success` on every item: a failed item does not change the status code",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "integer",
+                      "description": "Number of email accounts in the request"
+                    },
+                    "succeeded": {
+                      "type": "integer",
+                      "description": "Number of email accounts updated"
+                    },
+                    "failed": {
+                      "type": "integer",
+                      "description": "Number of email accounts not updated"
+                    },
+                    "emailAccounts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Email account identifier"
+                          },
+                          "success": {
+                            "type": "boolean",
+                            "description": "Whether the limit was applied"
+                          },
+                          "dailyEmailLimit": {
+                            "type": "integer",
+                            "description": "Limit applied, when `success` is true"
+                          },
+                          "error": {
+                            "type": "string",
+                            "description": "Why the limit was not applied, when `success` is false"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "total": 2,
+                  "succeeded": 1,
+                  "failed": 1,
+                  "emailAccounts": [
+                    {
+                      "id": "usm_Example1A2b3C4d5E",
+                      "success": true,
+                      "dailyEmailLimit": 12
+                    },
+                    {
+                      "id": "usm_Example6F7g8H9i0J",
+                      "success": false,
+                      "error": "Mailbox not found in this team"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body: `emailAccounts` missing, empty, longer than 100 items, or with a malformed item",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "emailAccounts must be a non-empty array"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "The team has no lemlist plan",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "You cannot change the limit. Choose a plan first."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The user lacks the permission to edit sending limits",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "You cannot edit sending limits for this team"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      }
+    },
+    "/campaigns/{campaignId}/settings": {
+      "parameters": [
+        {
+          "name": "campaignId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the campaign",
+          "example": "cam_A1B2C3D4E5F6G7H8I9",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Get Campaign Settings",
+        "tags": [
+          "Campaigns"
+        ],
+        "responses": {
+          "200": {
+            "description": "Current settings of the campaign. The `tracking`, `onReplied`, `onLinkClicked`, `onMeetingBooked` and `aiFeatures` sections have the shape PATCH /campaigns/{campaignId} accepts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "timezone": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Timezone of the campaign schedule"
+                    },
+                    "senderStrategy": {
+                      "type": "string",
+                      "description": "How a sender is picked for each lead: `random` (default), `contactOwner`, `leadImporter`, or `customField:<name>`"
+                    },
+                    "onReplied": {
+                      "type": "object",
+                      "description": "Behavior when a lead replies.",
+                      "properties": {
+                        "createNewTask": {
+                          "type": "boolean",
+                          "description": "Create a task when a lead replies."
+                        },
+                        "campaignProgress": {
+                          "type": "string",
+                          "enum": [
+                            "continue",
+                            "pause",
+                            "stop"
+                          ],
+                          "description": "What happens to the lead on reply."
+                        },
+                        "propagateProgressToCompany": {
+                          "type": "boolean",
+                          "description": "Apply the same action to other leads in the same company."
+                        },
+                        "disableOutOfOffice": {
+                          "type": "boolean",
+                          "description": "Whether out-of-office detection is disabled."
+                        }
+                      }
+                    },
+                    "onLinkClicked": {
+                      "type": "object",
+                      "description": "Behavior when a lead clicks a tracked link.",
+                      "properties": {
+                        "createNewTask": {
+                          "type": "boolean",
+                          "description": "Create a task when a lead clicks a link."
+                        },
+                        "campaignProgress": {
+                          "type": "string",
+                          "enum": [
+                            "continue",
+                            "pause",
+                            "stop"
+                          ],
+                          "description": "What happens to the lead on link click."
+                        },
+                        "propagateProgressToCompany": {
+                          "type": "boolean",
+                          "description": "Apply the same action to other leads in the same company."
+                        },
+                        "specificLinks": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "If non-empty, only these link URLs trigger the action (empty = all links)."
+                        }
+                      }
+                    },
+                    "onMeetingBooked": {
+                      "type": "object",
+                      "description": "Behavior when a meeting is booked.",
+                      "properties": {
+                        "campaignProgress": {
+                          "type": "string",
+                          "enum": [
+                            "continue",
+                            "pause",
+                            "stop"
+                          ],
+                          "description": "What happens to the lead when a meeting is booked."
+                        },
+                        "propagateProgressToCompany": {
+                          "type": "boolean",
+                          "description": "Apply the same action to other leads in the same company."
+                        }
+                      }
+                    },
+                    "tracking": {
+                      "type": "object",
+                      "description": "Open / click / reply tracking. `trackOpens: false` matches `disableTrackOpen: true` on PATCH /campaigns/{campaignId}, and so on.",
+                      "properties": {
+                        "trackOpens": {
+                          "type": "boolean",
+                          "description": "Whether email open tracking is enabled."
+                        },
+                        "trackClicks": {
+                          "type": "boolean",
+                          "description": "Whether link click tracking is enabled."
+                        },
+                        "trackReplies": {
+                          "type": "boolean",
+                          "description": "Whether reply tracking is enabled."
+                        }
+                      }
+                    },
+                    "automation": {
+                      "type": "object",
+                      "description": "Auto-launch of new leads.",
+                      "properties": {
+                        "autoReview": {
+                          "type": "boolean",
+                          "description": "Whether leads are launched as soon as they are added to the campaign."
+                        },
+                        "autoReviewConditions": {
+                          "type": "array",
+                          "nullable": true,
+                          "items": {
+                            "type": "string",
+                            "enum": [
+                              "deliverable",
+                              "risky",
+                              "undeliverable",
+                              "unverified"
+                            ]
+                          },
+                          "description": "Email statuses for which a lead is auto-launched."
+                        }
+                      }
+                    },
+                    "aiFeatures": {
+                      "type": "object",
+                      "description": "AI reply-handling settings.",
+                      "properties": {
+                        "scoreReplies": {
+                          "type": "boolean",
+                          "description": "Whether AI reply scoring is enabled."
+                        },
+                        "onInterestedReply": {
+                          "type": "object",
+                          "properties": {
+                            "enabled": {
+                              "type": "boolean",
+                              "description": "Whether the AI action is enabled."
+                            },
+                            "pauseAllCampaignsForLead": {
+                              "type": "boolean",
+                              "description": "Pause all campaigns for this lead."
+                            },
+                            "pauseCampaignForCompany": {
+                              "type": "boolean",
+                              "description": "Pause this campaign for other leads in the same company."
+                            },
+                            "pauseAllCampaignsForCompany": {
+                              "type": "boolean",
+                              "description": "Pause all campaigns for leads in the same company."
+                            }
+                          },
+                          "description": "AI action when a reply is detected as INTERESTED."
+                        },
+                        "onNotInterestedReply": {
+                          "type": "object",
+                          "properties": {
+                            "enabled": {
+                              "type": "boolean",
+                              "description": "Whether the AI action is enabled."
+                            },
+                            "pauseAllCampaignsForLead": {
+                              "type": "boolean",
+                              "description": "Pause all campaigns for this lead."
+                            },
+                            "pauseCampaignForCompany": {
+                              "type": "boolean",
+                              "description": "Pause this campaign for other leads in the same company."
+                            },
+                            "pauseAllCampaignsForCompany": {
+                              "type": "boolean",
+                              "description": "Pause all campaigns for leads in the same company."
+                            }
+                          },
+                          "description": "AI action when a reply is detected as NOT interested."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "timezone": "Europe/Paris",
+                  "senderStrategy": "random",
+                  "onReplied": {
+                    "createNewTask": false,
+                    "campaignProgress": "stop",
+                    "propagateProgressToCompany": false,
+                    "disableOutOfOffice": false
+                  },
+                  "onLinkClicked": {
+                    "createNewTask": false,
+                    "campaignProgress": "continue",
+                    "propagateProgressToCompany": false,
+                    "specificLinks": []
+                  },
+                  "onMeetingBooked": {
+                    "campaignProgress": "stop",
+                    "propagateProgressToCompany": false
+                  },
+                  "tracking": {
+                    "trackOpens": false,
+                    "trackClicks": false,
+                    "trackReplies": true
+                  },
+                  "automation": {
+                    "autoReview": false,
+                    "autoReviewConditions": null
+                  },
+                  "aiFeatures": {
+                    "scoreReplies": true,
+                    "onInterestedReply": {
+                      "enabled": false,
+                      "pauseAllCampaignsForLead": false,
+                      "pauseCampaignForCompany": false,
+                      "pauseAllCampaignsForCompany": false
+                    },
+                    "onNotInterestedReply": {
+                      "enabled": false,
+                      "pauseAllCampaignsForLead": false,
+                      "pauseCampaignForCompany": false,
+                      "pauseAllCampaignsForCompany": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "404": {
+            "description": "Campaign not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Campaign not found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      }
+    },
+    "/team/members": {
+      "get": {
+        "summary": "Get Team Members",
+        "tags": [
+          "Team"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Members of the team the API key belongs to",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "userId": {
+                        "type": "string",
+                        "description": "User identifier (usr_xxx)"
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "First and last name, `Unknown` when neither is set"
+                      },
+                      "email": {
+                        "type": "string",
+                        "description": "Email address of the member"
+                      },
+                      "role": {
+                        "type": "string",
+                        "description": "Role of the member in the team: `admin`, `member`, or the ID of a custom role (rol_xxx). Empty when none is set"
+                      }
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "userId": "usr_Example1A2b3C4d5E",
+                    "name": "John Doe",
+                    "email": "john@example.com",
+                    "role": "admin"
+                  },
+                  {
+                    "userId": "usr_Example6F7g8H9i0J",
+                    "name": "Jane Smith",
+                    "email": "jane@example.com",
+                    "role": "member"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "The team does not exist",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Bad team"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      }
+    },
+    "/team/voices": {
+      "get": {
+        "summary": "Get Team Voices",
+        "tags": [
+          "Team"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "AI voices the team can use on `linkedinVoiceNote` steps",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "defaultVoices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "voiceId": {
+                            "type": "string",
+                            "description": "Voice identifier, to pass as `aiVoice.voiceId` when adding a `linkedinVoiceNote` step"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Voice name"
+                          },
+                          "flag": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Flag emoji of the voice language, when set"
+                          },
+                          "previewUrl": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "URL of an audio sample of the voice"
+                          },
+                          "cloned": {
+                            "type": "boolean",
+                            "description": "Whether the voice was cloned by your team (`false` for a lemlist default voice)"
+                          }
+                        }
+                      },
+                      "description": "Voices lemlist provides to every team"
+                    },
+                    "teamVoices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "voiceId": {
+                            "type": "string",
+                            "description": "Voice identifier, to pass as `aiVoice.voiceId` when adding a `linkedinVoiceNote` step"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Voice name"
+                          },
+                          "flag": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Flag emoji of the voice language, when set"
+                          },
+                          "previewUrl": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "URL of an audio sample of the voice"
+                          },
+                          "cloned": {
+                            "type": "boolean",
+                            "description": "Whether the voice was cloned by your team (`false` for a lemlist default voice)"
+                          }
+                        }
+                      },
+                      "description": "Voices cloned by your team"
+                    }
+                  }
+                },
+                "example": {
+                  "defaultVoices": [
+                    {
+                      "voiceId": "EXAMPLEvoice1A2b3C4d",
+                      "name": "Example Voice",
+                      "flag": "🇺🇸",
+                      "previewUrl": "https://example.com/preview.mp3",
+                      "cloned": false
+                    }
+                  ],
+                  "teamVoices": [
+                    {
+                      "voiceId": "EXAMPLEvoice5E6f7G8h",
+                      "name": "John Doe",
+                      "flag": null,
+                      "previewUrl": "https://example.com/preview-2.mp3",
+                      "cloned": true
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          },
+          "503": {
+            "description": "The AI voice service is temporarily unavailable. Retry later",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "The AI voice service is temporarily unavailable, please try again."
+                }
+              }
+            }
           }
         }
       }
