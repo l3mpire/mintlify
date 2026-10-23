@@ -43,8 +43,10 @@ When the person opted out of enrichment, the value is never returned:
 ## Request errors
 
 When an enrichment cannot be started, the start call answers with a
-`code` naming why and a readable `message`. Bulk rows carry them as
-`error` and `message`.
+`code` naming why and a `message` explaining it. Bulk rows carry them as
+`error` and `message`. `message` is a human-readable text that may be
+translated to the language of the API user: branch on `code` (`error` on bulk
+rows), never on `message`.
 
 | Code | Meaning |
 |---|---|
@@ -73,7 +75,9 @@ depends on the code: `403` for `CREDITS_USAGE_FORBIDDEN`, `503` for
 
 An enrichment that started but failed as a whole answers `failed` on
 [Get Enrichment Result](/api-reference/endpoints/enrich/get-enrichment-result)
-and sends an `enrichmentError` webhook, with a `code` and a readable `reason`:
+and sends an `enrichmentError` webhook, with a `code` and a `reason`. `reason`
+is a human-readable text that may be translated to the language of the API
+user: branch on `code`, never on `reason`.
 
 | Code | Meaning |
 |---|---|
@@ -115,7 +119,7 @@ Each `enrichmentError` item:
 |---|---|---|
 | `id` | string | Enrichment ID |
 | `code` | string | One of the [failure codes](#failure-codes) |
-| `reason` | string | Readable explanation of `code` |
+| `reason` | string | Human-readable explanation of `code`, possibly translated to the language of the API user. Branch on `code` |
 | `error` | string | Raw cause stored on the enrichment, absent when none was stored. Prefer `code` |
 | `metadata` | string or object | The `metadata` sent with the bulk request, `{}` when none was sent |
 
