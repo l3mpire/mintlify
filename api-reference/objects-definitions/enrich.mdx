@@ -31,8 +31,11 @@ Polling and webhooks carry the same per-workflow results, under different key na
 | `linkedin_enrichment` | `linkedin` | `linkedin_enrichment` |
 
 A key is present only for a requested workflow that produced a result. A
-workflow that failed is absent from `data` and listed in `failedWorkflows`,
-which is only present when at least one workflow failed.
+`find_email` or `find_phone` that found nothing still produced a result: its
+key is present with `notFound: true`. `failedWorkflows` lists the requested
+workflows that ended without any result; they have no key in `data`. A workflow
+lemlist runs on its own as a dependency of a requested one is never listed.
+`failedWorkflows` is only present when it is not empty.
 
 When the person opted out of enrichment, the value is never returned:
 `notFound` is `true`, as when nothing was found.
@@ -86,7 +89,7 @@ Enrichments send two webhook events:
 
 | Event | When |
 |---|---|
-| `enrichmentDone` | The enrichment is over. Some workflows may have failed: check `failedWorkflows`. |
+| `enrichmentDone` | The enrichment is over. Some requested workflows may have ended without any result: check `failedWorkflows`. |
 | `enrichmentError` | The enrichment failed as a whole. |
 
 They are delivered to every webhook your team registered for the event with
@@ -104,7 +107,7 @@ Each `enrichmentDone` item:
 | `data.verify` | object | `status`: `deliverable`, `risky` or `undeliverable` |
 | `data.find_phone` | object | `phone` (absent when not found), `additionalPhones` (only when the provider returned more numbers), `notFound` |
 | `data.linkedin_enrichment` | object | The LinkedIn profile |
-| `failedWorkflows` | string[] | Requested workflows that failed. Only present when at least one failed |
+| `failedWorkflows` | string[] | Requested workflows that ended without any result, absent from `data`. A `find_email` or `find_phone` that found nothing is not listed: it answers `notFound: true`. Only present when not empty |
 | `metadata` | string or object | The `metadata` sent with the bulk request, `{}` when none was sent |
 
 Each `enrichmentError` item:

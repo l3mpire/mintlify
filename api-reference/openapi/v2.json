@@ -1109,7 +1109,7 @@
           },
           "data": {
             "type": "object",
-            "description": "What the enrichment found, keyed by result. Empty unless `enrichmentStatus` is `done`. A key is present only for a requested workflow that produced a result: a workflow that failed is absent and listed in `failedWorkflows`.",
+            "description": "What the enrichment found, keyed by result. Empty unless `enrichmentStatus` is `done`. A key is present only for a requested workflow that produced a result. A `find_email` or `find_phone` that found nothing still has its key, with `notFound: true`. A requested workflow that ended without any result has no key and is listed in `failedWorkflows`.",
             "properties": {
               "email": {
                 "type": "object",
@@ -1174,7 +1174,7 @@
                 "linkedin_enrichment"
               ]
             },
-            "description": "On `done`, the requested workflows that failed. Only present when at least one failed."
+            "description": "On `done`, the requested workflows that ended without any result; they have no key in `data`. A `find_email` or `find_phone` that found nothing is not listed: it answers `notFound: true` in `data`. A workflow lemlist runs on its own as a dependency of a requested one is never listed. Only present when not empty."
           },
           "code": {
             "type": "string",
@@ -31323,7 +31323,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Done. `data` holds a key per requested workflow that produced a result; failed workflows are listed in `failedWorkflows`. A cancelled enrichment also answers `done`.",
+            "description": "Done. `data` holds a key per requested workflow that produced a result, including a `find_email` or `find_phone` that found nothing (`notFound: true`); requested workflows that ended without any result are listed in `failedWorkflows`. A cancelled enrichment also answers `done`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -31358,7 +31358,7 @@
                     }
                   },
                   "notFound": {
-                    "summary": "Nothing found, one workflow failed",
+                    "summary": "Email not found, phone workflow ended without result",
                     "value": {
                       "enrichmentId": "enr_ExampleA1b2C3d4E5",
                       "enrichmentStatus": "done",

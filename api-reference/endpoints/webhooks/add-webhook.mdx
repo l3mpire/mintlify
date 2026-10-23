@@ -175,7 +175,7 @@ These aggregate multiple activity types into a single lead-state change event.
 
 | Event | Description |
 | ----- | ----------- |
-| `enrichmentDone` | Enrichment completed; workflows that failed are listed in `failedWorkflows` |
+| `enrichmentDone` | Enrichment completed; requested workflows that ended without any result are listed in `failedWorkflows` |
 | `enrichmentError` | Enrichment failed as a whole; the payload carries a `code` and a `reason` |
 
 Enrichment events do not mirror an activity: their body is `{"type": "<event>", "data": [...]}`, one item per enrichment. See [Enrichment webhooks](/api-reference/objects-definitions/enrich#webhooks) for the payload.
