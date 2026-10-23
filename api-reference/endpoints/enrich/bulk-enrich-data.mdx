@@ -7,6 +7,10 @@ description: Performs batch enrichment for up to 500 entities to find emails, ph
  Unlike other endpoints, this one starts with `/v2/enrichments`.
 </Warning>
 
+<Warning>
+Every call starts new enrichments and uses credits, even when the same person was enriched before.
+</Warning>
+
 ## How to use the endpoint
 
 The bulk enrichment API is ideal for:

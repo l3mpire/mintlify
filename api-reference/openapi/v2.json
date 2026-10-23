@@ -31820,7 +31820,7 @@
         "tags": [
           "Enrich"
         ],
-        "description": "Send a batch of enrichment requests for multiple entities. Maximum 500 enrichment requests per call. Each row answers with its own enrichment `id`, or with an `error` code and a `message` when that row could not be started. A malformed row rejects the whole call with a 400.",
+        "description": "Send a batch of enrichment requests for multiple entities. Maximum 500 enrichment requests per call. Each row answers with its own enrichment `id`, or with an `error` code and a `message` when that row could not be started. A malformed row rejects the whole call with a 400. Every call starts new enrichments and uses credits, even for a person enriched before.",
         "parameters": [
           {
             "name": "webhookUrl",
