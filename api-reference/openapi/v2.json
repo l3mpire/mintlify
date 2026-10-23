@@ -31628,7 +31628,7 @@
             }
           },
           "400": {
-            "description": "Bad request, or enrichment not started. Enrichment not started. `code` names why and `message` explains it; `error` is a short legacy text: `Missing credits` (`MISSING_FUNDS`), `Email is missing` (`MISSING_EMAIL`), `Missing inputs` (`MISSING_INPUTS`), `Failed to enrich lead` for the other codes.",
+            "description": "Bad request, or enrichment not started. For a rejected enrichment, `code` names why and `message` explains it; `error` is a short legacy text: `Missing credits` (`MISSING_FUNDS`), `Email is missing` (`MISSING_EMAIL`), `Missing inputs` (`MISSING_INPUTS`), `Failed to enrich lead` for the other codes.",
             "content": {
               "application/json": {
                 "schema": {
