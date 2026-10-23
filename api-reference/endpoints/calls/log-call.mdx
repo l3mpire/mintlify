@@ -1,0 +1,37 @@
+---
+openapi: post /calls
+description: Logs a call made outside lemlist, from an external dialer, with its status, note, recording and transcript.
+---
+
+A call logged here is a call like any other in lemlist: it shows in the contact's timeline, in the Calls table and in the call stats, it reaches the connected CRM (a Call in HubSpot, a completed Task with its Call Result in Salesforce, a call activity in Pipedrive, as set in **Settings → CRM → Activities**), and your outgoing webhooks fire for it.
+
+The usual flow for a dialer:
+
+1. Map your outcomes to the team's call statuses once, from [`GET /call-statuses`](/api-reference/endpoints/calls/get-call-statuses).
+2. When a call ends, log it with your own `externalId`, the rep's `userId`, the numbers (`from`, `to`), and the task it was made for (`taskId`, from `GET /tasks`) or the contact it was with.
+3. When the recording or the transcript lands, send it with [`PATCH /calls/{id}`](/api-reference/endpoints/calls/update-call).
+4. Read the call back with [`GET /calls/{id}`](/api-reference/endpoints/calls/get-call) when you need its state, `hasRecording` first.
+
+Retry on any network error: the same `externalId` is never logged twice.
+
+## What the status does
+
+The automations a call runs come from the status the team configured, not from the status key. lemlist's default statuses, `connected-positive` included, only count the call as answered: a status that marks the lead interested or pauses its campaigns is one the team set up so in **Settings → Calls**. Read the `callPositive`, `callNegative` and `pausesCampaigns` flags of each key from `GET /call-statuses` before mapping your outcomes, and expect no effect a flag does not announce.
+
+## Task or lead
+
+With a `taskId`, the call completes that task and the sequence moves on, as when a rep marks it done from the dialer. To log a call on a lead without touching its tasks, send `leadId` (or `contactId`) instead: the call lands in the timeline and the CRM, the task stays open.
+
+## The numbers
+
+`from` and `to` take what your telephony reported. A value that reads as a phone number is standardized to E.164 as the contact panel does: its own country code first, else the team's billing country for a national number. Anything else is kept as sent and never refuses the call: an anonymous caller, an extension, a test number that is no real number such as `+15555555555`. Only an E.164 finds a contact when `to` (or `from` on an inbound call) is the only reference you send.
+
+## What the answer guarantees
+
+A `201` (or a `200` on a replay) means the call is stored. Everything that follows runs right after it and is alerted to lemlist when it fails, never answered to you: the push to the CRM, the completion of the task, the status automations, the copy of the recording, the storage of the transcript. A retry answers the stored call and runs none of them again.
+
+What you can observe and repair from the API:
+
+- `hasRecording` stays `false` when the recording could not be fetched (an expired or protected URL): send the `PATCH` again with a reachable URL.
+- The note and the status can be sent again with a `PATCH`; both reach the CRM call.
+- A call missing from the CRM is on lemlist's side: lemlist is alerted and looks at it.
