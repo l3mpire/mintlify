@@ -24033,6 +24033,23 @@
           },
           "405": {
             "description": "Method not allowed"
+          },
+          "504": {
+            "description": "`READ_TOO_SLOW`: a `crmSyncStatus` read took more than 10 seconds. Without a `listId`, that filter reads every contact of the team: pass a `listId` to narrow it; the same request will time out again.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "READ_TOO_SLOW",
+                    "message": "The read took too long: pass a listId to narrow crmSyncStatus"
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -26684,6 +26701,23 @@
           },
           "405": {
             "description": "Method not allowed"
+          },
+          "504": {
+            "description": "`READ_TOO_SLOW`: a `crmSyncStatus` read took more than 10 seconds. Without a `listId`, that filter reads every company of the team: pass a `listId` to narrow it; the same request will time out again.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "READ_TOO_SLOW",
+                    "message": "The read took too long: pass a listId to narrow crmSyncStatus"
+                  }
+                }
+              }
+            }
           }
         }
       },
