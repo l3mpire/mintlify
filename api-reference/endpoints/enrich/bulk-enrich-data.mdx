@@ -34,11 +34,11 @@ The bulk enrichment API is ideal for:
 - A row missing these inputs fails with `MISSING_INPUTS`; for `verify`, with `MISSING_EMAIL` when `email` is absent and `BAD_EMAIL` when it is not a valid email.
 - Requesting `find_email` and `verify` in the same row runs only one of them: `verify` when `email` is a valid email, `find_email` otherwise.
 
-Every input value must be a string, and `input` may only hold the input fields: anything else rejects the whole call with `WRONG_INPUT_FORMAT`.
+Every input value must be a string of at most 400 characters that contains no `<…>` sequence, and `input` may only hold the input fields: anything else rejects the whole call with `WRONG_INPUT_FORMAT`.
 
 ### Metadata
 
-The `metadata` field can be a string or an object whose values are strings. It is returned in the API response and in the webhooks, allowing you to track and correlate enrichment requests. Any other value rejects the whole call with `WRONG_METADATA_FORMAT`.
+The `metadata` field can be a string or an object whose values are strings, each of at most 400 characters and without any `<…>` sequence. It is returned in the API response and in the webhooks, allowing you to track and correlate enrichment requests. Any other value rejects the whole call with `WRONG_METADATA_FORMAT`.
 
 ## Response
 
@@ -87,8 +87,8 @@ These reject the whole call with a 400 (405 for `METHOD_NOT_ALLOWED`) and a `{"e
 | `WRONG_BODY_FORMAT` | The body must be a JSON array |
 | `NO_ENRICHMENTS_REQUESTED` | The body must contain at least one enrichment |
 | `TOO_MANY_ENRICHMENTS_REQUESTED` | Maximum 500 enrichments per request |
-| `WRONG_INPUT_FORMAT` | An `input` is not an object, has a key that is not an input field, or a value that is not a string |
-| `WRONG_METADATA_FORMAT` | A `metadata` is neither a string nor an object whose values are strings |
+| `WRONG_INPUT_FORMAT` | An `input` is not an object, has a key that is not an input field, or a value that is not a string, is longer than 400 characters or contains a `<…>` sequence |
+| `WRONG_METADATA_FORMAT` | A `metadata` is neither a string nor an object whose values are strings, or one of its strings is longer than 400 characters or contains a `<…>` sequence |
 | `WRONG_ENRICHMENT_REQUEST_FORMAT` | An `enrichmentRequests` is not an array |
 | `NO_WORKFLOW_REQUESTED` | An `enrichmentRequests` is empty |
 | `UNAUTHORIZED_WORKFLOW_REQUESTED` | An `enrichmentRequests` holds an unknown enrichment type |

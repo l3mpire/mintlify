@@ -31848,7 +31848,7 @@
                   "properties": {
                     "input": {
                       "type": "object",
-                      "description": "Input data for enrichment. Required fields depend on enrichmentRequests (see Required inputs). Values must be strings; an unknown key rejects the whole call with `WRONG_INPUT_FORMAT`.",
+                      "description": "Input data for enrichment. Required fields depend on enrichmentRequests (see Required inputs). Values must be strings of at most 400 characters without any `<…>` sequence; an unknown key or any other value rejects the whole call with `WRONG_INPUT_FORMAT`.",
                       "properties": {
                         "linkedinUrl": {
                           "type": "string",
@@ -31905,7 +31905,7 @@
                       ]
                     },
                     "metadata": {
-                      "description": "Custom data returned in the response and in the webhooks. A string, or an object whose values are strings; anything else rejects the whole call with `WRONG_METADATA_FORMAT`.",
+                      "description": "Custom data returned in the response and in the webhooks. A string, or an object whose values are strings, each of at most 400 characters without any `<…>` sequence; anything else rejects the whole call with `WRONG_METADATA_FORMAT`.",
                       "oneOf": [
                         {
                           "type": "string"
@@ -32186,14 +32186,14 @@
                 "examples": {
                   "wrong_input_format": {
                     "summary": "Wrong input format",
-                    "description": "An input is not an object, has a key that is not an input field or a value that is not a string",
+                    "description": "An input is not an object, has a key that is not an input field, or a value that is not a string, is longer than 400 characters or contains a `<…>` sequence",
                     "value": {
                       "error": "WRONG_INPUT_FORMAT"
                     }
                   },
                   "wrong_metadata_format": {
                     "summary": "Wrong metadata format",
-                    "description": "A metadata is neither a string nor an object whose values are strings",
+                    "description": "A metadata is neither a string nor an object whose values are strings, or one of its strings is longer than 400 characters or contains a `<…>` sequence",
                     "value": {
                       "error": "WRONG_METADATA_FORMAT"
                     }
