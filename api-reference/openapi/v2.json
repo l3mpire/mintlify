@@ -32545,12 +32545,12 @@
             "description": "Method not allowed"
           },
           "409": {
-            "description": "Enrichment cannot proceed because of the current state of the lead/contact",
+            "description": "Enrichment not started. `ALREADY_ENRICHED` when none of the requested workflows can add anything: the contact already has the data, a recent enrichment on the same inputs found nothing, `verifyEmail` is requested but the contact has no email, or the value was rejected as a CRM duplicate. Without a `code`, the lead is already being enriched.",
             "content": {
               "application/json": {
                 "examples": {
                   "alreadyEnriched": {
-                    "summary": "Contact already has the requested data — retry with ?force=true to override",
+                    "summary": "No requested workflow can add anything — `force=true` only bypasses data already present on the contact",
                     "value": {
                       "error": "Enrichment skipped: contact already has the requested data or was recently enriched",
                       "code": "ALREADY_ENRICHED"
