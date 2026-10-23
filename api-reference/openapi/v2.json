@@ -4761,6 +4761,32 @@
                 "additionalProperties": {
                   "type": "string"
                 }
+              },
+              "githubActionType": {
+                "type": "string",
+                "description": "[githubStargazer] GitHub action that produced the signal",
+                "enum": ["star", "fork", "issue", "pull_request", "comment"]
+              },
+              "githubActionTitle": {
+                "type": "string",
+                "description": "[githubStargazer] Title of the issue or pull request (for a comment, the title of the issue it was posted on; absent for a star or a fork)"
+              },
+              "githubActionUrl": {
+                "type": "string",
+                "description": "[githubStargazer] URL of the fork, issue, pull request or comment (absent for a star)"
+              },
+              "githubEventAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "[githubStargazer] When the action happened on GitHub (the latest one when the same person repeats the same action on the same repository)"
+              },
+              "githubRepoUrl": {
+                "type": "string",
+                "description": "[githubStargazer] Monitored repository the action happened on"
+              },
+              "githubProfileUrl": {
+                "type": "string",
+                "description": "[githubStargazer] GitHub profile URL of the person who acted"
               }
             }
           }
@@ -4990,12 +5016,13 @@
               "crmListIds",
               "minJobCount",
               "timeframe",
-              "githubRepoUrls"
+              "githubRepoUrls",
+              "githubEventTypes"
             ]
           },
           "in": {
             "type": "array",
-            "description": "Values to include. For `externalSignalFieldMapping` and `externalSignalCustomFieldMapping`, an array of mapping objects (see `WatchListExternalSignalMapping`); the JSON-serialized form returned when reading an agent is also accepted.",
+            "description": "Values to include. For `externalSignalFieldMapping` and `externalSignalCustomFieldMapping`, an array of mapping objects (see `WatchListExternalSignalMapping`); the JSON-serialized form returned when reading an agent is also accepted. For `githubEventTypes` (required on `githubStargazer` agents), one or more of `star`, `fork`, `issue`, `pull_request`, `comment`.",
             "items": {
               "oneOf": [
                 {
