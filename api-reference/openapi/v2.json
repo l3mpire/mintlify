@@ -18727,7 +18727,7 @@
                   "fromSearchId": {
                     "type": "string",
                     "pattern": "^lsh_[a-zA-Z0-9]{17}$",
-                    "description": "Id of a previous People search of your team (not a Companies search): the `search` value returned by `POST /database/people` (optional). The search is replayed with its saved filters. Each filter you pass in `filters` replaces the saved filter with the same `filterId`, the other saved filters are kept, and the merged filters are validated again as for a new search. With `fromSearchId`, `filters` is optional: an empty or absent `filters` replays the search as is.\n\nA `search` id can be replayed for 1 year. A replay counts as one search in the daily search quota (see `limitation` in the response); only a paid part triggered elsewhere, such as LinkedIn post engagement, is not billed again.\n\nCannot be combined with `personaId`: the request is rejected with 400 `Parameter filters is invalid`. If no search matches this id for your team and this mode, or the search is older than 1 year, the request is rejected with 404.",
+                    "description": "Id of a previous People search of your team (not a Companies search): the `search` value returned by `POST /database/people` (optional). The search is replayed with its saved filters. Each filter you pass in `filters` replaces the saved filter with the same `filterId`, the other saved filters are kept, and the merged filters are validated again as for a new search. With `fromSearchId`, `filters` is optional: an empty or absent `filters` replays the search as is.\n\nA `search` id can be replayed for 6 months. A replay counts as one search in the daily search quota (see `limitation` in the response); only a paid part triggered elsewhere, such as LinkedIn post engagement, is not billed again.\n\nCannot be combined with `personaId`: the request is rejected with 400 `Parameter filters is invalid`. If no search matches this id for your team and this mode, or the search is older than 6 months, the request is rejected with 404.",
                     "example": "lsh_ExAmPlEuJiOYFFPTI"
                   },
                   "page": {
@@ -18805,7 +18805,7 @@
                     },
                     "search": {
                       "type": "string",
-                      "description": "Unique identifier of the current search. Reuse it as `fromSearchId` on `POST /database/people` to replay this search; it stays valid for 1 year."
+                      "description": "Unique identifier of the current search. Reuse it as `fromSearchId` on `POST /database/people` to replay this search; it stays valid for 6 months."
                     },
                     "limitation": {
                       "type": "integer",
@@ -18901,7 +18901,7 @@
             }
           },
           "404": {
-            "description": "No search found for this `fromSearchId` in this team and mode (another team, another mode, or older than 1 year)",
+            "description": "No search found for this `fromSearchId` in this team and mode (another team, another mode, or older than 6 months)",
             "content": {
               "text/plain": {
                 "example": "No search found for this fromSearchId in this team and mode. Pass the searchId returned by a search of the same mode, or run the search again with filters"
@@ -18958,7 +18958,7 @@
                   "fromSearchId": {
                     "type": "string",
                     "pattern": "^lsh_[a-zA-Z0-9]{17}$",
-                    "description": "Id of a previous Companies search of your team (not a People search): the `search` value returned by `POST /database/companies` (optional). The search is replayed with its saved filters. Each filter you pass in `filters` replaces the saved filter with the same `filterId`, the other saved filters are kept, and the merged filters are validated again as for a new search. With `fromSearchId`, `filters` is optional: an empty or absent `filters` replays the search as is.\n\nA `search` id can be replayed for 1 year. A replay counts as one search in the daily search quota (see `limitation` in the response); only a paid part triggered elsewhere, such as LinkedIn post engagement, is not billed again.\n\nCannot be combined with `personaId`: the request is rejected with 400 `Parameter filters is invalid`. If no search matches this id for your team and this mode, or the search is older than 1 year, the request is rejected with 404.",
+                    "description": "Id of a previous Companies search of your team (not a People search): the `search` value returned by `POST /database/companies` (optional). The search is replayed with its saved filters. Each filter you pass in `filters` replaces the saved filter with the same `filterId`, the other saved filters are kept, and the merged filters are validated again as for a new search. With `fromSearchId`, `filters` is optional: an empty or absent `filters` replays the search as is.\n\nA `search` id can be replayed for 6 months. A replay counts as one search in the daily search quota (see `limitation` in the response); only a paid part triggered elsewhere, such as LinkedIn post engagement, is not billed again.\n\nCannot be combined with `personaId`: the request is rejected with 400 `Parameter filters is invalid`. If no search matches this id for your team and this mode, or the search is older than 6 months, the request is rejected with 404.",
                     "example": "lsh_ExAmPlE3wQ7nKd5Hs"
                   },
                   "page": {
@@ -19022,7 +19022,7 @@
                     },
                     "search": {
                       "type": "string",
-                      "description": "Search session identifier. Reuse it as `fromSearchId` on `POST /database/companies` to replay this search; it stays valid for 1 year."
+                      "description": "Search session identifier. Reuse it as `fromSearchId` on `POST /database/companies` to replay this search; it stays valid for 6 months."
                     },
                     "limitation": {
                       "type": "integer",
@@ -19273,7 +19273,7 @@
             }
           },
           "404": {
-            "description": "No search found for this `fromSearchId` in this team and mode (another team, another mode, or older than 1 year)",
+            "description": "No search found for this `fromSearchId` in this team and mode (another team, another mode, or older than 6 months)",
             "content": {
               "text/plain": {
                 "example": "No search found for this fromSearchId in this team and mode. Pass the searchId returned by a search of the same mode, or run the search again with filters"
