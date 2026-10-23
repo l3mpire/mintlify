@@ -1,0 +1,23 @@
+---
+openapi: post /v2/enrichments/waterfalls
+description: Creates a custom enrichment waterfall serving the contacts of a set of countries.
+---
+
+A custom waterfall runs instead of the default one for every contact whose country is in `conditions.country.in`. The country comes from the contact's free-text `location` (`input.location` on [Bulk Enrich Data](/api-reference/endpoints/enrich/bulk-enrich-data), or the `location` field of a contact); contacts with no location, or a location lemlist cannot map to a country, use the default waterfall.
+
+A country belongs to only one custom waterfall per type, and a type holds at most 20 waterfalls, the default included. Get the legal `providers[].id` from [List Enrichment Providers](/api-reference/endpoints/enrichment-providers/list-enrichment-providers); providers you leave out are appended, disabled.
+
+## Error codes
+
+| Code | Status | Cause |
+| ---- | ------ | ----- |
+| `ROUTE_BAD_REQUEST` | 400 | Malformed body: missing field, `name` empty or longer than 100 characters. |
+| `ENRICHMENT_WATERFALL_INVALID_TYPE` | 400 | `type` is not `email` or `phone`. |
+| `ENRICHMENT_WATERFALL_INVALID_COUNTRY` | 400 | A `conditions.country.in` entry is not an ISO 3166-1 alpha-2 code. |
+| `ENRICHMENT_WATERFALL_CUSTOM_WITHOUT_CONDITION` | 400 | `conditions.country.in` is empty. |
+| `ENRICHMENT_WATERFALL_NO_ENABLED_PROVIDER` | 400 | No provider is enabled. |
+| `ENRICHMENT_WATERFALL_UNKNOWN_PROVIDER` | 400 | A `providers[].id` is not available to your team for this `type` (unknown, or external and not connected). |
+| `ENRICHMENT_WATERFALL_DUPLICATE_PROVIDER` | 400 | The same provider id appears twice. |
+| `ENRICHMENT_WATERFALL_COUNTRY_CONFLICT` | 409 | A country already belongs to another custom waterfall of this type. |
+| `ENRICHMENT_WATERFALL_DUPLICATE_NAME` | 409 | Another waterfall of this type has this name, or the name is a reserved default name. |
+| `ENRICHMENT_WATERFALL_LIMIT_REACHED` | 409 | The type already holds 20 waterfalls. |

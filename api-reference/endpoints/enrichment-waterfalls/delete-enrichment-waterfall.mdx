@@ -1,0 +1,8 @@
+---
+openapi: delete /v2/enrichments/waterfalls/{waterfallId}
+description: Deletes a custom enrichment waterfall; its countries go back to the default waterfall.
+---
+
+Only custom waterfalls (`ecw_` ids) can be deleted. From then on the contacts of its countries are served by the default waterfall of the type. Enrichments already requested keep the path they were given.
+
+A default waterfall answers `400 ENRICHMENT_WATERFALL_CANNOT_DELETE_DEFAULT`; use [Reset Enrichment Waterfall](/api-reference/endpoints/enrichment-waterfalls/reset-enrichment-waterfall) to hand it back to lemlist.
