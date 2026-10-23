@@ -31653,7 +31653,6 @@
                         "NOT_ALLOWED_VERIFY",
                         "LINKEDIN_UNSUBSCRIBED",
                         "TEAM_BLOCKED",
-                        "TEAM_MIGRATION_IN_PROGRESS",
                         "NO_AVAILABLE_PROVIDER"
                       ]
                     },
@@ -32063,7 +32062,6 @@
                           "LINKEDIN_UNSUBSCRIBED",
                           "TEAM_BLOCKED",
                           "TEAM_IN_ERROR",
-                          "TEAM_MIGRATION_IN_PROGRESS",
                           "SYSTEM_DISABLED",
                           "NO_AVAILABLE_PROVIDER"
                         ]
@@ -32409,7 +32407,6 @@
                         "NOT_ALLOWED_VERIFY",
                         "LINKEDIN_UNSUBSCRIBED",
                         "TEAM_BLOCKED",
-                        "TEAM_MIGRATION_IN_PROGRESS",
                         "NO_AVAILABLE_PROVIDER"
                       ]
                     },
