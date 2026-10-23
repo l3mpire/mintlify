@@ -28,6 +28,17 @@ be strictly greater than `minDate` when both are set.
 
 The response can include `sequenceStep` and `totalSequenceStep` fields, which are zero-indexed (starting at 0).
 
+Activities created from a campaign step also carry `journeyDepth`: how deep
+the step sits on the lead's own path, zero-indexed. It is the step the lead
+reached before it, plus one. A skipped step counts. A step added to the
+sequence after the lead passed that point does not, so two leads can show a
+different `journeyDepth` for the same step.
+
+<Note>
+  `journeyDepth` is present on activities created from now on. Activities
+  recorded earlier do not have it: read `totalSequenceStep` for them.
+</Note>
+
 Activities also carry `stepId`, the stable identifier of the step that produced
 them. Unlike `sequenceStep` — a position that shifts when a sequence's steps are
 reordered — `stepId` always points at the same step, so prefer it when you store
