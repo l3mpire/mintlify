@@ -1931,6 +1931,10 @@
             "type": "integer",
             "description": "Position in sequence"
           },
+          "customName": {
+            "type": "string",
+            "description": "The step's own name, shown instead of its type label (\"Email\", \"Call\") wherever the app names the step. Absent when the step has none"
+          },
           "delay": {
             "type": "integer",
             "description": "Wait days before execution"
@@ -10614,6 +10618,10 @@
                               "type": "string",
                               "description": "The type of step (e.g., email, linkedinSend, linkedinInMail, linkedinInvite, conditional)"
                             },
+                            "customName": {
+                              "type": "string",
+                              "description": "The step's own name, shown instead of its type label (\"Email\", \"Call\") wherever the app names the step. Absent when the step has none"
+                            },
                             "index": {
                               "type": "integer",
                               "description": "The position of the step in the sequence"
@@ -10882,6 +10890,10 @@
                     "type": {
                       "type": "string"
                     },
+                    "customName": {
+                      "type": "string",
+                      "description": "The step's own name, shown instead of its type label (\"Email\", \"Call\") wherever the app names the step. Absent when the step has none"
+                    },
                     "delay": {
                       "type": "integer"
                     },
@@ -10987,6 +10999,11 @@
                   "altMessagePremium": {
                     "type": "string",
                     "description": "For `linkedinSend` steps only. The premium variant of the out-of-network note, sent instead of `altMessage` when the sending LinkedIn account is Premium or Sales Navigator (300-character LinkedIn cap). Rejected with `400` on any other step type"
+                  },
+                  "customName": {
+                    "maxLength": 70,
+                    "type": "string",
+                    "description": "The step's own name, shown instead of its type label (\"Email\", \"Call\") wherever the app names the step. Plain text, up to 70 characters once trimmed and once runs of spaces collapse to one; HTML tags count toward the 70, then are dropped. A longer name is rejected with `400`. Accepted on every step type, ignored on `conditional` steps, which keep their type label"
                   },
                   "title": {
                     "type": "string",
@@ -11260,6 +11277,10 @@
                     "type": {
                       "type": "string"
                     },
+                    "customName": {
+                      "type": "string",
+                      "description": "The step's own name, shown instead of its type label (\"Email\", \"Call\") wherever the app names the step. Absent when the step has none"
+                    },
                     "delay": {
                       "type": "integer"
                     },
@@ -11375,6 +11396,11 @@
                   "altMessagePremium": {
                     "type": "string",
                     "description": "For `linkedinSend` steps only. The premium variant of the out-of-network note, sent instead of `altMessage` when the sending LinkedIn account is Premium or Sales Navigator (300-character LinkedIn cap). Pass an empty string to clear it. Rejected with `400` on any other step type"
+                  },
+                  "customName": {
+                    "maxLength": 70,
+                    "type": "string",
+                    "description": "The step's own name, shown instead of its type label (\"Email\", \"Call\") wherever the app names the step. Plain text, up to 70 characters once trimmed and once runs of spaces collapse to one; HTML tags count toward the 70, then are dropped. A longer name is rejected with `400`. Accepted on every step type, ignored on `conditional` steps, which keep their type label. Pass an empty string to remove it and go back to the type label; omit it to keep the current name"
                   },
                   "title": {
                     "type": "string",
