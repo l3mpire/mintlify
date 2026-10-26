@@ -34385,7 +34385,7 @@
                   "summary": "create a select synced with a CRM picklist (beta)",
                   "value": {
                     "entity": "contact",
-                    "name": "leadStatus",
+                    "name": "hubspotLeadStatus",
                     "label": "Lead status",
                     "type": "select",
                     "crmPicklist": {
