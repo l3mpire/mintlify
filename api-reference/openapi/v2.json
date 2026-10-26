@@ -34310,7 +34310,7 @@
                   },
                   "crmPicklist": {
                     "type": "object",
-                    "description": "Beta. Creates the `select` synced with a single-select picklist of your connected CRM: its options are the picklist's active options, kept in sync, and the field is mapped to the CRM property. Creation only, with `type: \"select\"` and no option operations.",
+                    "description": "Beta. Creates the `select` synced with a single-select picklist of your connected CRM: its options are the picklist's active options, kept in sync, and the field is mapped to the CRM property. Creation only, with `type: \"select\"` and no option operations. A read-only property (computed by the CRM) or a picklist without any option is refused.",
                     "properties": {
                       "crmField": {
                         "type": "string",
@@ -34706,7 +34706,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `INVALID_ENTITY_PARAM`, `INVALID_TYPE_PARAM`, `INVALID_LABEL`, `INVALID_NAME`, `OPTIONS_NOT_ALLOWED`, `INVALID_OPTIONS`, `OPTION_NOT_FOUND`, `OPTION_ALREADY_EXISTS`, `FIELD_NAME_RESERVED`, `CONTACT_FIELD_COMPANY_PREFIXED`, `TYPE_CHANGE_NOT_ALLOWED`, `INVALID_CRM_PICKLIST`; with `crmPicklist`, `CRM_SYNC_PICKLIST_OBJECT_TYPE_INVALID`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_NOT_FOUND`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_NOT_SINGLE_SELECT`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_NOT_MAPPABLE`."
+                          "description": "Error code: `INVALID_ENTITY_PARAM`, `INVALID_TYPE_PARAM`, `INVALID_LABEL`, `INVALID_NAME`, `OPTIONS_NOT_ALLOWED`, `INVALID_OPTIONS`, `OPTION_NOT_FOUND`, `OPTION_ALREADY_EXISTS`, `FIELD_NAME_RESERVED`, `CONTACT_FIELD_COMPANY_PREFIXED`, `TYPE_CHANGE_NOT_ALLOWED`, `INVALID_CRM_PICKLIST`; with `crmPicklist`, `CRM_SYNC_PICKLIST_OBJECT_TYPE_INVALID`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_NOT_FOUND`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_NOT_SINGLE_SELECT`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_NOT_MAPPABLE`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_READ_ONLY`."
                         },
                         "message": {
                           "type": "string"
@@ -34853,6 +34853,16 @@
                       "error": {
                         "code": "CRM_SYNC_PICKLIST_CRM_PROPERTY_NOT_SINGLE_SELECT",
                         "message": "This CRM property is not a single-select picklist"
+                      }
+                    }
+                  },
+                  "crm-property-read-only": {
+                    "summary": "the CRM property is read-only (computed by the CRM)",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_SYNC_PICKLIST_CRM_PROPERTY_READ_ONLY",
+                        "message": "This CRM property is read-only in your CRM: lemlist could not write its values back"
                       }
                     }
                   }
