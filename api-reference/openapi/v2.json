@@ -33943,6 +33943,41 @@
                                   "type": "string"
                                 },
                                 "description": "The options of a select field, in order (custom select fields only)"
+                              },
+                              "crmPicklist": {
+                                "type": "object",
+                                "description": "Beta. The CRM picklist a custom select is synced with (synced fields only): its options follow the CRM and cannot be edited through the API",
+                                "properties": {
+                                  "crm": {
+                                    "type": "string",
+                                    "enum": [
+                                      "hubspot",
+                                      "salesforce",
+                                      "pipedrive",
+                                      "attio",
+                                      "zoho"
+                                    ],
+                                    "description": "The CRM the picklist belongs to"
+                                  },
+                                  "objectType": {
+                                    "type": "string",
+                                    "enum": [
+                                      "contacts",
+                                      "leads",
+                                      "companies"
+                                    ],
+                                    "description": "The CRM object of the property"
+                                  },
+                                  "crmField": {
+                                    "type": "string",
+                                    "description": "Internal (API) name of the CRM property"
+                                  }
+                                },
+                                "required": [
+                                  "crm",
+                                  "objectType",
+                                  "crmField"
+                                ]
                               }
                             },
                             "required": [
@@ -34001,6 +34036,41 @@
                                   "type": "string"
                                 },
                                 "description": "The options of a select field, in order (custom select fields only)"
+                              },
+                              "crmPicklist": {
+                                "type": "object",
+                                "description": "Beta. The CRM picklist a custom select is synced with (synced fields only): its options follow the CRM and cannot be edited through the API",
+                                "properties": {
+                                  "crm": {
+                                    "type": "string",
+                                    "enum": [
+                                      "hubspot",
+                                      "salesforce",
+                                      "pipedrive",
+                                      "attio",
+                                      "zoho"
+                                    ],
+                                    "description": "The CRM the picklist belongs to"
+                                  },
+                                  "objectType": {
+                                    "type": "string",
+                                    "enum": [
+                                      "contacts",
+                                      "leads",
+                                      "companies"
+                                    ],
+                                    "description": "The CRM object of the property"
+                                  },
+                                  "crmField": {
+                                    "type": "string",
+                                    "description": "Internal (API) name of the CRM property"
+                                  }
+                                },
+                                "required": [
+                                  "crm",
+                                  "objectType",
+                                  "crmField"
+                                ]
                               }
                             },
                             "required": [
@@ -34167,7 +34237,7 @@
       },
       "post": {
         "summary": "Create or Update Field",
-        "description": "Creates a custom field on contacts or companies, or updates the one the entity already has under that `name`, under the rules of the lemlist app: the same reserved names, the same type conversions, the same permission.\n\n**Create.** No field of that `name` on the entity: it is created, as the **New field** button does in the app. Any API key may create a field. The field is created on behalf of the user of the API key and logged in the team activity feed. Once created, write it through `POST /contacts` or `POST /companies` with its `name` as the key. A new contact field is then filled in the background from data lemlist already holds (the LinkedIn data of enriched contacts, the lead variable of the same name in your campaigns).\n\n**Update.** A field of that `name` exists: the call updates it, and the API key user needs the **Update contact & companies fields** permission, as in the app (`403` otherwise, even when nothing would change). What can change:\n\n- `label`, when sent and different;\n- `type`, only to `text` or `multilineText`, from any type but `phone` and `user`: the conversions the app offers. The stored values are converted, as in the app. Any other `type` than the stored one answers `400 TYPE_CHANGE_NOT_ALLOWED`. Note that the app promotes a `text` field to `multilineText` on its own when a value with a line break reaches it (import, CRM, API), and `GET /fields` then lists it as `multilineText`: replaying a body with `type: \"text\"` converts it back and flattens the line breaks, as the app's **Change type** menu does;\n- the options of a `select`, through `upsertOptions` (added when missing, never removed), `renameOptions` (the contacts or companies holding the old value are rewritten to the new one) and `removeOptions` (the contacts or companies holding the option are cleared). Applied in that order: renames, removals, additions. A select keeps at least one option. Options are matched as in the app, regardless of case and surrounding spaces: `gold` matches an existing `Gold`, renaming `Gold` to `GOLD` only changes its case, and values are stored without surrounding spaces, so a value written on a contact or company matches them. An operation already applied reads as done (a rename whose source is gone while its target exists, a removal of an absent option).\n\nSending the same body again changes nothing and answers `200` with empty `changes`.\n\nTwo calls changing the options of the same field at the same time: the one planned from a list that changed meanwhile answers `409 FIELD_CHANGED_RETRY` and writes nothing (the options are written first, before any `label` change); read the field again and replay the call.\n\n**Name.** `name` is the key your integrations write to, and never changes afterwards: it must start with a lowercase letter, followed by letters and digits only. `label` is optional and defaults to `name` on creation.\n\n**Types.** `select` is created with its `upsertOptions` (at least one). A `user` field takes a team member on `POST /contacts` or `POST /companies` (email or `usr_` id), as in the app.\n\n**Read it back.** The response carries the field. A `GET /fields` sent right after may take a moment to list it. Renaming or removing an option, and converting a type, rewrite every contact or company of the team holding a value, within the call.",
+        "description": "Creates a custom field on contacts or companies, or updates the one the entity already has under that `name`, under the rules of the lemlist app: the same reserved names, the same type conversions, the same permission.\n\n**Create.** No field of that `name` on the entity: it is created, as the **New field** button does in the app. Any API key may create a field. The field is created on behalf of the user of the API key and logged in the team activity feed. Once created, write it through `POST /contacts` or `POST /companies` with its `name` as the key. A new contact field is then filled in the background from data lemlist already holds (the LinkedIn data of enriched contacts, the lead variable of the same name in your campaigns).\n\n**Update.** A field of that `name` exists: the call updates it, and the API key user needs the **Update contact & companies fields** permission, as in the app (`403` otherwise, even when nothing would change). What can change:\n\n- `label`, when sent and different;\n- `type`, only to `text` or `multilineText`, from any type but `phone` and `user`: the conversions the app offers. The stored values are converted, as in the app. Any other `type` than the stored one answers `400 TYPE_CHANGE_NOT_ALLOWED`. Note that the app promotes a `text` field to `multilineText` on its own when a value with a line break reaches it (import, CRM, API), and `GET /fields` then lists it as `multilineText`: replaying a body with `type: \"text\"` converts it back and flattens the line breaks, as the app's **Change type** menu does;\n- the options of a `select`, through `upsertOptions` (added when missing, never removed), `renameOptions` (the contacts or companies holding the old value are rewritten to the new one) and `removeOptions` (the contacts or companies holding the option are cleared). Applied in that order: renames, removals, additions. A select keeps at least one option. Options are matched as in the app, regardless of case and surrounding spaces: `gold` matches an existing `Gold`, renaming `Gold` to `GOLD` only changes its case, and values are stored without surrounding spaces, so a value written on a contact or company matches them. An operation already applied reads as done (a rename whose source is gone while its target exists, a removal of an absent option).\n\nSending the same body again changes nothing and answers `200` with empty `changes`.\n\nTwo calls changing the options of the same field at the same time: the one planned from a list that changed meanwhile answers `409 FIELD_CHANGED_RETRY` and writes nothing (the options are written first, before any `label` change); read the field again and replay the call.\n\n**Name.** `name` is the key your integrations write to, and never changes afterwards: it must start with a lowercase letter, followed by letters and digits only. `label` is optional and defaults to `name` on creation.\n\n**Synced with a CRM picklist (beta).** With `crmPicklist`, the call creates a `select` that mirrors a single-select picklist of your connected CRM, as the **Sync this picklist** switch does in the app: its options are the picklist's active options, kept in sync from then on, and the field is mapped to the CRM property both ways. Send `type: \"select\"` without option operations: the options come from the CRM. The team needs the beta (`403 BETA_NOT_ENABLED` otherwise), and the API key user the **Manage CRM settings** and **Edit integrations** permissions (`403 CRM_SYNC_PICKLIST_NOT_ALLOWED`). It only creates a field: a `name` already held by a field not synced with that very property answers `409 CRM_PICKLIST_FIELD_EXISTS` and changes nothing (an existing list is synced from the app, in your CRM settings > Field mapping, where you decide what each of its values becomes), while the same body sent again reads as an update of the field it created. The options of a synced field cannot be edited through the API (`409 FIELD_SYNCED_WITH_CRM`), and `GET /fields` lists it with its `crmPicklist`.\n\n**Types.** `select` is created with its `upsertOptions` (at least one), or from a CRM picklist with `crmPicklist`. A `user` field takes a team member on `POST /contacts` or `POST /companies` (email or `usr_` id), as in the app.\n\n**Read it back.** The response carries the field. A `GET /fields` sent right after may take a moment to list it. Renaming or removing an option, and converting a type, rewrite every contact or company of the team holding a value, within the call.",
         "tags": [
           "Fields"
         ],
@@ -34237,6 +34307,28 @@
                       "type": "string"
                     },
                     "description": "Select fields only, on an update: options to drop. The contacts or companies holding one are cleared. At least one option must remain."
+                  },
+                  "crmPicklist": {
+                    "type": "object",
+                    "description": "Beta. Creates the `select` synced with a single-select picklist of your connected CRM: its options are the picklist's active options, kept in sync, and the field is mapped to the CRM property. Creation only, with `type: \"select\"` and no option operations.",
+                    "properties": {
+                      "crmField": {
+                        "type": "string",
+                        "description": "Internal (API) name of the CRM property, as your CRM shows it: `hs_lead_status` on HubSpot, `LeadSource` on Salesforce."
+                      },
+                      "objectType": {
+                        "type": "string",
+                        "enum": [
+                          "contacts",
+                          "leads",
+                          "companies"
+                        ],
+                        "description": "The CRM object of the property. Defaults to `contacts` for a contact field and `companies` for a company field; `leads` reads a Salesforce Lead property for a contact field."
+                      }
+                    },
+                    "required": [
+                      "crmField"
+                    ]
                   }
                 }
               },
@@ -34287,6 +34379,18 @@
                     "entity": "contact",
                     "name": "tier",
                     "type": "text"
+                  }
+                },
+                "create-synced-select": {
+                  "summary": "create a select synced with a CRM picklist (beta)",
+                  "value": {
+                    "entity": "contact",
+                    "name": "leadStatus",
+                    "label": "Lead status",
+                    "type": "select",
+                    "crmPicklist": {
+                      "crmField": "hs_lead_status"
+                    }
                   }
                 }
               }
@@ -34351,6 +34455,41 @@
                             "type": "string"
                           },
                           "description": "The options of a `select` field, in order (select fields only)"
+                        },
+                        "crmPicklist": {
+                          "type": "object",
+                          "description": "Beta. The CRM picklist a synced `select` mirrors (synced fields only): its options follow the CRM",
+                          "properties": {
+                            "crm": {
+                              "type": "string",
+                              "enum": [
+                                "hubspot",
+                                "salesforce",
+                                "pipedrive",
+                                "attio",
+                                "zoho"
+                              ],
+                              "description": "The CRM the picklist belongs to"
+                            },
+                            "objectType": {
+                              "type": "string",
+                              "enum": [
+                                "contacts",
+                                "leads",
+                                "companies"
+                              ],
+                              "description": "The CRM object of the property"
+                            },
+                            "crmField": {
+                              "type": "string",
+                              "description": "Internal (API) name of the CRM property"
+                            }
+                          },
+                          "required": [
+                            "crm",
+                            "objectType",
+                            "crmField"
+                          ]
                         },
                         "created": {
                           "type": "boolean",
@@ -34467,6 +34606,41 @@
                           },
                           "description": "The options of a `select` field, in order (select fields only)"
                         },
+                        "crmPicklist": {
+                          "type": "object",
+                          "description": "Beta. The CRM picklist a synced `select` mirrors (synced fields only): its options follow the CRM",
+                          "properties": {
+                            "crm": {
+                              "type": "string",
+                              "enum": [
+                                "hubspot",
+                                "salesforce",
+                                "pipedrive",
+                                "attio",
+                                "zoho"
+                              ],
+                              "description": "The CRM the picklist belongs to"
+                            },
+                            "objectType": {
+                              "type": "string",
+                              "enum": [
+                                "contacts",
+                                "leads",
+                                "companies"
+                              ],
+                              "description": "The CRM object of the property"
+                            },
+                            "crmField": {
+                              "type": "string",
+                              "description": "Internal (API) name of the CRM property"
+                            }
+                          },
+                          "required": [
+                            "crm",
+                            "objectType",
+                            "crmField"
+                          ]
+                        },
                         "created": {
                           "type": "boolean",
                           "description": "`true` when the call created the field"
@@ -34532,7 +34706,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `INVALID_ENTITY_PARAM`, `INVALID_TYPE_PARAM`, `INVALID_LABEL`, `INVALID_NAME`, `OPTIONS_NOT_ALLOWED`, `INVALID_OPTIONS`, `OPTION_NOT_FOUND`, `OPTION_ALREADY_EXISTS`, `FIELD_NAME_RESERVED`, `CONTACT_FIELD_COMPANY_PREFIXED`, `TYPE_CHANGE_NOT_ALLOWED`."
+                          "description": "Error code: `INVALID_ENTITY_PARAM`, `INVALID_TYPE_PARAM`, `INVALID_LABEL`, `INVALID_NAME`, `OPTIONS_NOT_ALLOWED`, `INVALID_OPTIONS`, `OPTION_NOT_FOUND`, `OPTION_ALREADY_EXISTS`, `FIELD_NAME_RESERVED`, `CONTACT_FIELD_COMPANY_PREFIXED`, `TYPE_CHANGE_NOT_ALLOWED`, `INVALID_CRM_PICKLIST`; with `crmPicklist`, `CRM_SYNC_PICKLIST_OBJECT_TYPE_INVALID`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_NOT_FOUND`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_NOT_SINGLE_SELECT`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_NOT_MAPPABLE`."
                         },
                         "message": {
                           "type": "string"
@@ -34651,6 +34825,36 @@
                         "message": "A field can only be converted to text or multilineText, and a phone or user field keeps its type"
                       }
                     }
+                  },
+                  "invalid-crm-picklist": {
+                    "summary": "`crmPicklist` malformed, on another type than select, or sent with option operations",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "INVALID_CRM_PICKLIST",
+                        "message": "Invalid crmPicklist. Expected { crmField, objectType? } on a select field, sent without upsertOptions, renameOptions or removeOptions: the options come from the CRM picklist. objectType is one of: contacts, companies, leads"
+                      }
+                    }
+                  },
+                  "crm-property-not-found": {
+                    "summary": "`crmPicklist.crmField` names no property of that CRM object",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_SYNC_PICKLIST_CRM_PROPERTY_NOT_FOUND",
+                        "message": "No property of this internal name on this CRM object: crmPicklist.crmField takes the API name of the property, as your CRM shows it"
+                      }
+                    }
+                  },
+                  "crm-property-not-single-select": {
+                    "summary": "the CRM property is not a single-select picklist",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_SYNC_PICKLIST_CRM_PROPERTY_NOT_SINGLE_SELECT",
+                        "message": "This CRM property is not a single-select picklist"
+                      }
+                    }
                   }
                 }
               }
@@ -34675,7 +34879,7 @@
             }
           },
           "403": {
-            "description": "The API key user lacks the \"Update contact & companies fields\" permission, needed to update or delete a field (creating one needs none, as in the app).",
+            "description": "The API key user lacks the \"Update contact & companies fields\" permission, needed to update or delete a field (creating one needs none, as in the app). With `crmPicklist`, the team is out of the beta, or the API key user lacks the \"Manage CRM settings\" and \"Edit integrations\" permissions.",
             "content": {
               "application/json": {
                 "schema": {
@@ -34689,7 +34893,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `FIELD_PERMISSION_DENIED`."
+                          "description": "Error code: `FIELD_PERMISSION_DENIED`, `BETA_NOT_ENABLED`, `CRM_SYNC_PICKLIST_NOT_ALLOWED`."
                         },
                         "message": {
                           "type": "string"
@@ -34698,18 +34902,43 @@
                     }
                   }
                 },
-                "example": {
-                  "success": false,
-                  "error": {
-                    "code": "FIELD_PERMISSION_DENIED",
-                    "message": "The API key user is not allowed to update or delete custom fields (permission \"Update contact & companies fields\")"
+                "examples": {
+                  "field-permission-denied": {
+                    "summary": "update or delete without the permission",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "FIELD_PERMISSION_DENIED",
+                        "message": "The API key user is not allowed to update or delete custom fields (permission \"Update contact & companies fields\")"
+                      }
+                    }
+                  },
+                  "beta-not-enabled": {
+                    "summary": "`crmPicklist` on a team out of the beta",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "BETA_NOT_ENABLED",
+                        "message": "Syncing a field with a CRM picklist is in beta: ask lemlist support to enable it for your team"
+                      }
+                    }
+                  },
+                  "crm-picklist-not-allowed": {
+                    "summary": "`crmPicklist` without the CRM permissions",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_SYNC_PICKLIST_NOT_ALLOWED",
+                        "message": "The API key user is not allowed to sync a field with a CRM picklist (permissions \"Manage CRM settings\" and \"Edit integrations\")"
+                      }
+                    }
                   }
                 }
               }
             }
           },
           "409": {
-            "description": "Another request changed the options of this field between the read and the write; nothing was written. Read the field again and replay the call.",
+            "description": "The call conflicts with the field or the CRM as they are; nothing was written. `FIELD_CHANGED_RETRY`: another request changed the options of this field between the read and the write, read the field again and replay the call. `FIELD_SYNCED_WITH_CRM`: an option edit or a type change on a field synced with a CRM picklist. With `crmPicklist`: the name is held by a field not synced with that property, no CRM is connected, the property is already mapped to or synced with another lemlist field, or the field changed during the creation (replay the call).",
             "content": {
               "application/json": {
                 "schema": {
@@ -34723,7 +34952,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `FIELD_CHANGED_RETRY`."
+                          "description": "Error code: `FIELD_CHANGED_RETRY`, `FIELD_SYNCED_WITH_CRM`, `CRM_PICKLIST_FIELD_EXISTS`, `CRM_SYNC_PICKLIST_CRM_NOT_CONNECTED`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_ALREADY_MAPPED`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_ALREADY_SYNCED`, `CRM_SYNC_PICKLIST_CONCURRENT_UPDATE`."
                         },
                         "message": {
                           "type": "string"
@@ -34732,11 +34961,134 @@
                     }
                   }
                 },
-                "example": {
-                  "success": false,
-                  "error": {
-                    "code": "FIELD_CHANGED_RETRY",
-                    "message": "The field options were modified by another request meanwhile: read the field again and replay your call"
+                "examples": {
+                  "field-changed-retry": {
+                    "summary": "options changed by another request meanwhile",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "FIELD_CHANGED_RETRY",
+                        "message": "The field options were modified by another request meanwhile: read the field again and replay your call"
+                      }
+                    }
+                  },
+                  "field-synced-with-crm": {
+                    "summary": "option edit or type change on a synced field",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "FIELD_SYNCED_WITH_CRM",
+                        "message": "The field is synced with your CRM: its options are edited in your CRM and its type cannot change"
+                      }
+                    }
+                  },
+                  "crm-picklist-field-exists": {
+                    "summary": "`crmPicklist` on a name held by a field not synced with that property",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_PICKLIST_FIELD_EXISTS",
+                        "message": "A field of this name already exists on this entity and is not synced with this CRM picklist: crmPicklist only creates a new field. Pick another name, or sync the existing field from lemlist, in your CRM settings (Field mapping)"
+                      }
+                    }
+                  },
+                  "crm-property-already-mapped": {
+                    "summary": "the CRM property is already mapped to another lemlist field",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_SYNC_PICKLIST_CRM_PROPERTY_ALREADY_MAPPED",
+                        "message": "This CRM property is already mapped to the lemlist field Lead status"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "With `crmPicklist`: the CRM picklist cannot feed a lemlist select as it is, fix it in your CRM then replay the call.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Error code: `CRM_SYNC_PICKLIST_NO_ACTIVE_OPTIONS`, `CRM_SYNC_PICKLIST_DUPLICATE_LABELS`."
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "no-active-options": {
+                    "summary": "the picklist has no active option",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_SYNC_PICKLIST_NO_ACTIVE_OPTIONS",
+                        "message": "This CRM picklist has no active option"
+                      }
+                    }
+                  },
+                  "duplicate-labels": {
+                    "summary": "two active options share a label",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_SYNC_PICKLIST_DUPLICATE_LABELS",
+                        "message": "This CRM picklist has two options with the same label"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "With `crmPicklist`: the CRM could not be read; nothing was written, replay the call.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "description": "Error code: `CRM_SYNC_PICKLIST_CRM_READ_INCONCLUSIVE`."
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "crm-read-inconclusive": {
+                    "summary": "the CRM read failed",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CRM_SYNC_PICKLIST_CRM_READ_INCONCLUSIVE",
+                        "message": "Your CRM could not be read, please retry"
+                      }
+                    }
                   }
                 }
               }
