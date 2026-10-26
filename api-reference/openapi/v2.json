@@ -18927,6 +18927,359 @@
         "parameters": []
       }
     },
+    "/database/people/linkedin-post-engagement": {
+      "post": {
+        "summary": "Search LinkedIn Post Engagers",
+        "description": "Finds the people who commented on or reacted to a LinkedIn post and returns them as People Database rows, in a single call.\n\nThe post is read first, then the engagers are searched in the People Database. Comments are collected before reactions, the post author is excluded and the slugs are deduplicated, for at most 1000 people. `filters` are applied to the engagers in the same search, for example to keep one country.\n\nThis endpoint is paid: each call debits 50 credits once the post has been read, even when the search finds nobody. A `200` always means credits were debited, and no error code debits credits.\n\nThe response carries a `search` id. To get the next pages or to refine the filters, send it as `fromSearchId` to `POST /database/people`, which is free. Do not call this endpoint again on the same post for that, it would be billed again.",
+        "operationId": "searchLinkedInPostEngagers",
+        "tags": [
+          "People Database"
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "The LinkedIn post to read, and optionally the filters to apply to its engagers. Unknown keys are rejected with 400.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "url"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000,
+                    "description": "Link of the LinkedIn post. Prefer the post page (`linkedin.com/posts/...`). A short `lnkd.in` link or a `linkedin.com/feed/update/urn:li:activity:...` link also works, but a feed/update link can fail on a post published in the last few hours.",
+                    "example": "https://www.linkedin.com/posts/example-post-activity-1234567890123456789-AbCd"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "all",
+                      "comments",
+                      "reactions"
+                    ],
+                    "default": "all",
+                    "description": "Which engagers to collect. `all` collects the comments first, then the reactions.",
+                    "example": "all"
+                  },
+                  "filters": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PersonaFilter"
+                    },
+                    "description": "People Database leads filters (optional), applied to the engagers in the same search, for example a country. They are validated before any credit is debited. `linkedinPostEngagement` and `leadLinkedInSlug` are rejected with 400, the search sets them itself."
+                  },
+                  "size": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 100,
+                    "default": 100,
+                    "description": "Number of People Database rows returned in `data.people`, between 1 and 100 (optional)."
+                  }
+                }
+              },
+              "example": {
+                "url": "https://www.linkedin.com/posts/example-post-activity-1234567890123456789-AbCd",
+                "type": "all",
+                "filters": [
+                  {
+                    "filterId": "country",
+                    "in": [
+                      "France"
+                    ],
+                    "out": []
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The post was read and 50 credits were debited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "slugs",
+                        "totals",
+                        "isCapped",
+                        "filters"
+                      ],
+                      "properties": {
+                        "slugs": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "LinkedIn slugs of the engagers, post author excluded and deduplicated"
+                        },
+                        "totals": {
+                          "type": "object",
+                          "description": "Totals announced by LinkedIn for the requested `type`",
+                          "properties": {
+                            "comments": {
+                              "type": "integer",
+                              "description": "Number of comments on the post"
+                            },
+                            "reactions": {
+                              "type": "integer",
+                              "description": "Number of reactions on the post"
+                            }
+                          }
+                        },
+                        "isCapped": {
+                          "type": "boolean",
+                          "description": "`true` when the post had more than 1000 engagers"
+                        },
+                        "filters": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/PersonaFilter"
+                          },
+                          "description": "Exact filters of the People Database search: `leadLinkedInSlug` plus the filters you passed. Empty when nobody engaged with the post."
+                        },
+                        "search": {
+                          "type": "string",
+                          "description": "Id of the People Database search. Send it as `fromSearchId` to `POST /database/people` to get the next pages or refine the filters for free. Absent when nobody engaged with the post."
+                        },
+                        "people": {
+                          "type": "object",
+                          "description": "First page of the People Database search, in the format of `POST /database/people`. Absent when nobody engaged with the post or when the People Database search failed.",
+                          "properties": {
+                            "results": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/PeopleSchema"
+                              },
+                              "description": "Results array"
+                            },
+                            "total": {
+                              "type": "integer",
+                              "description": "Total number of results"
+                            },
+                            "page": {
+                              "type": "integer",
+                              "description": "Current page number"
+                            },
+                            "size": {
+                              "type": "integer",
+                              "description": "Size of the results"
+                            }
+                          }
+                        },
+                        "peopleSearchFailed": {
+                          "type": "boolean",
+                          "enum": [
+                            true
+                          ],
+                          "description": "Present and `true` when the credits were debited and `slugs` exist, but the People Database search failed. Run `POST /database/people` yourself with `filters`."
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "slugs": [
+                      "john-doe",
+                      "jane-smith"
+                    ],
+                    "totals": {
+                      "comments": 1,
+                      "reactions": 1
+                    },
+                    "isCapped": false,
+                    "filters": [
+                      {
+                        "filterId": "leadLinkedInSlug",
+                        "in": [
+                          "john-doe",
+                          "jane-smith"
+                        ],
+                        "out": []
+                      },
+                      {
+                        "filterId": "country",
+                        "in": [
+                          "France"
+                        ],
+                        "out": []
+                      }
+                    ],
+                    "search": "lsh_ExAmPlEnGgR8d2Kq5",
+                    "people": {
+                      "results": [
+                        {
+                          "lead_id": 100000001,
+                          "full_name": "John Doe",
+                          "country": "France",
+                          "lead_linkedin_url": "https://www.linkedin.com/in/john-doe",
+                          "linkedin_short": "john-doe",
+                          "headline": "Head of Sales at Acme Inc",
+                          "current_exp_company_name": "Acme Inc"
+                        }
+                      ],
+                      "total": 1,
+                      "page": 1,
+                      "size": 100
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request. No credit is debited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "examples": {
+                  "ROUTE_BAD_REQUEST": {
+                    "summary": "ROUTE_BAD_REQUEST",
+                    "value": {
+                      "error": "Request body does not match the expected schema",
+                      "code": "ROUTE_BAD_REQUEST"
+                    }
+                  },
+                  "LINKEDIN_POST_ENGAGEMENT_INVALID_URL": {
+                    "summary": "LINKEDIN_POST_ENGAGEMENT_INVALID_URL",
+                    "value": {
+                      "error": "The url is not a LinkedIn post link",
+                      "code": "LINKEDIN_POST_ENGAGEMENT_INVALID_URL"
+                    }
+                  },
+                  "LINKEDIN_POST_ENGAGEMENT_INVALID_FILTERS": {
+                    "summary": "LINKEDIN_POST_ENGAGEMENT_INVALID_FILTERS",
+                    "value": {
+                      "error": "The filters are not valid for a LinkedIn post engagement search",
+                      "code": "LINKEDIN_POST_ENGAGEMENT_INVALID_FILTERS"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "Payment required. No credit is debited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "examples": {
+                  "LINKEDIN_POST_ENGAGEMENT_PAID_PLAN_REQUIRED": {
+                    "summary": "LINKEDIN_POST_ENGAGEMENT_PAID_PLAN_REQUIRED",
+                    "value": {
+                      "error": "A paid plan is required (free trial, no subscription or cancelled subscription)",
+                      "code": "LINKEDIN_POST_ENGAGEMENT_PAID_PLAN_REQUIRED"
+                    }
+                  },
+                  "LINKEDIN_POST_ENGAGEMENT_INSUFFICIENT_CREDITS": {
+                    "summary": "LINKEDIN_POST_ENGAGEMENT_INSUFFICIENT_CREDITS",
+                    "value": {
+                      "error": "Not enough credits for this search",
+                      "code": "LINKEDIN_POST_ENGAGEMENT_INSUFFICIENT_CREDITS"
+                    }
+                  },
+                  "limit-reached": {
+                    "summary": "limit-reached",
+                    "value": {
+                      "error": "Limit reached",
+                      "code": "limit-reached"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden. No credit is debited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "examples": {
+                  "BETA_NOT_ENABLED": {
+                    "summary": "BETA_NOT_ENABLED",
+                    "value": {
+                      "error": "Beta is not enabled",
+                      "code": "BETA_NOT_ENABLED"
+                    }
+                  },
+                  "linkedin-not-linked": {
+                    "summary": "linkedin-not-linked",
+                    "value": {
+                      "error": "No LinkedIn account is linked",
+                      "code": "linkedin-not-linked"
+                    }
+                  },
+                  "LINKEDIN_POST_ENGAGEMENT_SEARCH_QUOTA_REACHED": {
+                    "summary": "LINKEDIN_POST_ENGAGEMENT_SEARCH_QUOTA_REACHED",
+                    "value": {
+                      "error": "The 24-hour People Database search quota is reached",
+                      "code": "LINKEDIN_POST_ENGAGEMENT_SEARCH_QUOTA_REACHED"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          },
+          "422": {
+            "description": "The post is private, deleted or cannot be found. No credit is debited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "The LinkedIn post is unavailable",
+                  "code": "LINKEDIN_POST_ENGAGEMENT_POST_UNAVAILABLE"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "LinkedIn data is unavailable. No credit is debited, try again later.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonaError"
+                },
+                "example": {
+                  "error": "LinkedIn data is unavailable",
+                  "code": "LINKEDIN_POST_ENGAGEMENT_PROVIDER_FAILED"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/database/companies": {
       "post": {
         "summary": "Search Companies Database",

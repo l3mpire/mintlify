@@ -1,0 +1,35 @@
+---
+openapi: "post /database/people/linkedin-post-engagement"
+description: "Finds the people who commented on or reacted to a LinkedIn post and returns them as People Database rows."
+title: "Search LinkedIn post engagers"
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="People" objectPath="people-database" />
+
+<Warning>
+This endpoint is paid. Each call debits 50 credits once the post has been read, even when nobody engaged with it and the search returns no one. A `200` always means credits were debited, and no error code debits credits.
+
+Never call it again on the same post to get the next pages or to refine the filters. Pass the `search` id of the response as `fromSearchId` to [Search People database](/api-reference/endpoints/people-database/search-people-database), which does not bill the post again.
+</Warning>
+
+<Note>
+The search covers at most 1000 people, commenters first. `isCapped` is `true` when the post had more engagers than that. Use `type` to restrict the search to `comments` or `reactions`.
+
+`filters` take the same format as [Search People database](/api-reference/endpoints/people-database/search-people-database) (see [Get Database Filters](/api-reference/endpoints/people-database/get-database-filters) for the valid `filterId` values). They are validated before any credit is debited. `linkedinPostEngagement` and `leadLinkedInSlug` are rejected with a `400`, because the search sets them itself.
+</Note>
+
+<Note>
+If `peopleSearchFailed` is `true`, the credits were debited and `slugs` are valid, but the People Database search failed and `people` is absent. Run [Search People database](/api-reference/endpoints/people-database/search-people-database) yourself with the returned `filters`.
+</Note>
+
+```bash
+curl -X POST "https://api.lemlist.com/api/database/people/linkedin-post-engagement" \
+  -u ":YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://www.linkedin.com/posts/example-post-activity-1234567890123456789-AbCd",
+    "type": "all",
+    "filters": [{ "filterId": "country", "in": ["France"], "out": [] }]
+  }'
+```
