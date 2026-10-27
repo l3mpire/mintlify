@@ -1,0 +1,8 @@
+---
+title: Self-recovery case
+openapi-schema: SelfRecoveryCase
+---
+
+A self-recovery incident case, opened when a monitored asset degrades. The history is append-only: one case per trigger.
+
+`status` is `recommended` when nothing ran (no authorized and wired action for the diagnosis) or `executed` when at least one recommendation was applied. Each entry in `recommendations` carries its own `executionStatus` (`executed`, `skippedNotAuthorized`, `notExecutable`, or `failed`), so a single case can mix executed and recommendation-only fixes.
