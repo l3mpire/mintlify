@@ -1,6 +1,6 @@
 ---
 openapi: get /self-recovery/config
-description: Retrieves your team's self-recovery configuration — whether it is enabled, which signals are monitored, and which actions are authorized.
+description: Retrieves your team's self-recovery configuration — whether it is enabled, which signals are monitored, which actions are authorized, and how often the recovery digest is sent. `config` is `null` until the team saves its configuration for the first time.
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 

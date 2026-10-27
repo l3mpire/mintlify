@@ -11,6 +11,9 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 - `enabled` — turn self-recovery on or off for the account.
 - `monitoredSignals` — the signals self-recovery watches. This **replaces** the current list, so send the full set, not a delta. `inboxPlacement` requires the inbox-placement test to be active on the account.
 - `authorizedActions` — the strategies self-recovery may run automatically. This **replaces** the current list.
+- `digestFrequency` — how often team admins get the recovery summary email: `daily`, or `weekly` on Mondays. It is sent at 8am in the team timezone, and only when self-recovery opened a case.
+
+The first update creates the configuration; `digestFrequency` starts at `daily` unless you send it.
 
 ## Authorized actions
 

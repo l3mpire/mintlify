@@ -72,6 +72,14 @@
             },
             "description": "Strategies self-recovery may execute automatically. Only `fixDns` and `recover` can be authorized; `provision`, `replace` and `listHygiene` are diagnosis-only and rejected here."
           },
+          "digestFrequency": {
+            "type": "string",
+            "enum": [
+              "daily",
+              "weekly"
+            ],
+            "description": "How often team admins get the recovery summary email: `daily`, or `weekly` on Mondays. Sent at 8am in the team timezone, only when self-recovery opened a case. Absent on configs created before this setting existed, which get the `daily` digest."
+          },
           "createdBy": {
             "type": "string",
             "description": "ID of the user who created the config."
@@ -6904,7 +6912,13 @@
                   "type": "object",
                   "properties": {
                     "config": {
-                      "$ref": "#/components/schemas/SelfRecoveryConfig"
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/SelfRecoveryConfig"
+                        }
+                      ],
+                      "nullable": true,
+                      "description": "`null` until the team saves its self-recovery configuration for the first time."
                     }
                   }
                 },
@@ -6920,6 +6934,7 @@
                     "authorizedActions": [
                       "recover"
                     ],
+                    "digestFrequency": "daily",
                     "createdBy": "usr_ExampleAcmeUserId",
                     "createdAt": "2026-04-12T09:30:00.000Z",
                     "updatedAt": "2026-05-06T14:10:00.000Z"
@@ -6930,9 +6945,6 @@
           },
           "401": {
             "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Self-recovery beta not enabled for the team"
           }
         }
       },
@@ -6943,7 +6955,7 @@
         ],
         "requestBody": {
           "required": true,
-          "description": "All fields are optional; only the supplied fields change. `monitoredSignals` and `authorizedActions` replace the current lists (send the full set). Only `fixDns` and `recover` may be authorized.",
+          "description": "All fields are optional; only the supplied fields change. `monitoredSignals` and `authorizedActions` replace the current lists (send the full set). Only `fixDns` and `recover` may be authorized. The first update creates the configuration, with `digestFrequency` set to `daily` unless you send it.",
           "content": {
             "application/json": {
               "schema": {
@@ -6975,6 +6987,14 @@
                       ]
                     },
                     "description": "Replaces the authorized-actions list. Only fixDns and recover are accepted."
+                  },
+                  "digestFrequency": {
+                    "type": "string",
+                    "enum": [
+                      "daily",
+                      "weekly"
+                    ],
+                    "description": "How often team admins get the recovery summary email: daily, or weekly on Mondays."
                   }
                 }
               },
@@ -6985,7 +7005,8 @@
                 ],
                 "authorizedActions": [
                   "recover"
-                ]
+                ],
+                "digestFrequency": "weekly"
               }
             }
           }
@@ -7015,6 +7036,7 @@
                     "authorizedActions": [
                       "recover"
                     ],
+                    "digestFrequency": "weekly",
                     "createdBy": "usr_ExampleAcmeUserId",
                     "createdAt": "2026-04-12T09:30:00.000Z",
                     "updatedAt": "2026-05-06T14:10:00.000Z"
@@ -7028,9 +7050,6 @@
           },
           "401": {
             "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Self-recovery beta not enabled for the team"
           }
         }
       }
@@ -7120,9 +7139,6 @@
           },
           "401": {
             "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Self-recovery beta not enabled for the team"
           }
         }
       }
