@@ -3,5 +3,5 @@ openapi: get /watchlist/filters
 description: Lists, per signal type, the filters you can set on a Signal Agent.
 ---
 <Note>
-Each filter descriptor tells you the sides it supports (`in` to include, `out` to exclude), which sides are required, and any numeric bounds. Pass `type` to scope the response to a single signal type.
+Each filter descriptor tells you the sides it supports (`in` to include, `out` to exclude), which sides are required, any numeric bounds, and whether a `query` is needed to list its values (`requiresQuery`, computed per signal type: `companyIndustries` requires one on `companyRunningAds` only). Pass `type` to scope the response to a single signal type.
 </Note>
