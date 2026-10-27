@@ -1,0 +1,32 @@
+---
+openapi: patch /sequences/{sequenceId}/steps/{stepId}/branches
+description: Rewrites the execution priority of a condition step's branches.
+---
+
+<Note>
+New to condition branches? Start with
+[List Condition Branches](/api-reference/endpoints/sequences/list-condition-branches), which explains
+how a step branches and how a branch is addressed.
+</Note>
+
+Order **is** priority: lemlist tests the branches in array order and the first match wins. Reordering
+is therefore a behaviour change, not cosmetics — a lead matching two branches follows whichever comes
+first.
+
+`order` must list every non-fallback branch of the step **exactly once**, by `sequenceId`. Leave the
+Else branch out: it is not orderable and always stays last. A list that repeats a branch, omits one,
+or names an id that is not a branch of this step is refused with `SEQUENCE_BRANCH_ORDER_INVALID`.
+
+Sending the order the step already has changes nothing and still returns the branches.
+
+<Warning>
+Reordering is refused with `409` once leads have entered the campaign: leads already sitting in a
+branch were routed there under the old priority. See
+[Editing a running campaign](/api-reference/endpoints/sequences/list-condition-branches#editing-a-running-campaign).
+</Warning>
+
+## Why PATCH on the collection
+
+The reorder is a `PATCH` on `…/branches` rather than on a `…/branches/order` sub-path, which would
+collide with the `{branchSequenceId}` segment. `PATCH …/branches` reorders; `PATCH …/branches/{id}`
+edits one branch.

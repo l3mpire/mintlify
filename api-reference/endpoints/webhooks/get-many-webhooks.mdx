@@ -5,3 +5,10 @@ description: Retrieves all webhooks configured for your team.
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Webhook" objectPath="webhook" />
+
+<Note>
+  The list includes webhooks lemlist disabled after a failed delivery — they carry
+  `disabled: true` and stop firing, but still count toward the 200-webhook cap.
+  Count every entry returned here to know the room left before
+  [Add Webhook](/api-reference/endpoints/webhooks/add-webhook) answers `409`.
+</Note>

@@ -1,0 +1,17 @@
+---
+openapi: get /sender-picture/mailboxes
+description: Lists the mailboxes a user bought through lemlist in your team, with whether their lemlist profile picture has been pushed to each one.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Sender picture" objectPath="sender-picture" />
+
+<Note>
+Omit `userId` to read your own mailboxes. A teammate's `userId` must belong to your team, otherwise the call answers `403` with the code `SENDER_PICTURE_USER_NOT_IN_TEAM`. Only active mailboxes assigned to that user in your team are listed.
+
+When `hasPicture` is `false`, the user has no lemlist profile picture: every sync is refused until they upload one in Settings > Account.
+</Note>
+
+<Warning>
+This endpoint is in closed beta. It answers `403` with the code `BETA_NOT_ENABLED` unless the sender picture beta is enabled for your team.
+</Warning>

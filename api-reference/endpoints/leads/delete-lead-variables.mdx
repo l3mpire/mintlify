@@ -6,3 +6,7 @@ description: Erases the values of custom variables on a lead.
 <Warning>
     Using this endpoint, you are **NOT** deleting your custom variables, you are erasing the values within.
 </Warning>
+
+<Note>
+  Company fields — `companyName`, `companyIndustry`, any `company`-prefixed key — reach the **company record** the lead is linked to, the same record every other lead linked to it reads, not that lead alone. The response says so: `warnings` carries a `company-fields-write-company-record` entry naming those keys in `params.fields`. It is informational, your request went through. To edit a company on purpose, use [Upsert Company](/api-reference/endpoints/companies/upsert-company). `companyDomain` cannot be erased here — it is one of the identifiers this endpoint refuses.
+</Note>

@@ -1,0 +1,14 @@
+---
+title: Persona
+openapi-schema: Persona
+---
+
+A persona is a named, reusable set of People Database filters saved by your team. It is a way to store an audience definition once — a job title, a country, a company size — and reference it by id instead of repeating the filters on every call.
+
+Personas are team-shared: every member of the team sees and can edit the same personas. A persona id (`pdp_...`) can be referenced elsewhere in the API, for example through the `persona` filter of a [Signal Agent](/api-reference/objects-definitions/watch-list).
+
+Use [Create persona](/api-reference/endpoints/people-database/create-persona) to obtain an id, [List personas](/api-reference/endpoints/people-database/list-personas) to retrieve the ones your team already has, and [Get Database Filters](/api-reference/endpoints/people-database/get-database-filters) to discover the `filterId` values a persona can hold.
+
+<Note>
+Alongside your own personas, lemlist derives one persona automatically from your AI business context. That one is internal: it is never returned by the API and cannot be deleted.
+</Note>

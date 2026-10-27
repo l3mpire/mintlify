@@ -1,6 +1,6 @@
 ---
 title: 'MCP Server Setup'
-description: 'Connect lemlist to your AI assistant (Claude, Cursor, and more) using the Model Context Protocol'
+description: 'Connect lemlist to your AI assistant (Claude, ChatGPT, Grok, Cursor, and more) using the Model Context Protocol'
 ---
 
 The lemlist MCP server lets you interact with lemlist directly from your AI assistant. Manage campaigns, search leads, analyze performance — all through natural conversation.
@@ -12,7 +12,7 @@ With OAuth, you don't need to create an API key. Your AI client handles authenti
 <Tabs>
   <Tab title="Claude Desktop">
     In Claude Desktop, open the sidebar, click the **+** icon next to **Connectors**, then choose **Add custom connector**. Set:
-    - **Name**: `lemlist`
+    - **Name**: `lm`
     - **URL**: `https://app.lemlist.com/mcp`
 
     Or add this directly to your `claude_desktop_config.json`:
@@ -20,7 +20,7 @@ With OAuth, you don't need to create an API key. Your AI client handles authenti
     ```json
     {
       "mcpServers": {
-        "lemlist": {
+        "lm": {
           "command": "npx",
           "args": [
             "mcp-remote",
@@ -35,15 +35,42 @@ With OAuth, you don't need to create an API key. Your AI client handles authenti
   </Tab>
   <Tab title="Claude Code">
     ```bash
-    claude mcp add --transport http lemlist https://app.lemlist.com/mcp
+    claude mcp add --transport http lm https://app.lemlist.com/mcp
     ```
 
     No `--header` flag needed — OAuth handles authentication automatically.
   </Tab>
+  <Tab title="ChatGPT">
+    lemlist is available as an official plugin in ChatGPT:
+
+    1. In ChatGPT, open **Plugins** in the sidebar (or go to [chatgpt.com/plugins](https://chatgpt.com/plugins))
+    2. Search for **lemlist** and open the plugin published by lemlist
+    3. Click **Install plugin**, then sign in to lemlist when prompted
+
+    Whether you can install plugins depends on your ChatGPT plan, workspace and role.
+
+    You can also add the lemlist MCP server yourself: on the Plugins page, click the **+** button, then **Add custom MCP server**. Enter a name, set **Server URL** to `https://app.lemlist.com/mcp`, choose **OAuth** as the authentication, select **I understand and want to continue**, then click **Create as a plugin** and install the plugin it creates. This works on ChatGPT web, subject to your workspace permissions (see [OpenAI's guide](https://developers.openai.com/api/docs/guides/custom-mcp-server)).
+  </Tab>
+  <Tab title="Grok">
+    On [grok.com](https://grok.com), open [grok.com/connectors](https://grok.com/connectors), click **New Connector**, then choose **Custom**. Enter the MCP server URL `https://app.lemlist.com/mcp` and complete the authentication Grok asks for.
+
+    On Grok Business and Enterprise, a team admin must first add the connector in the [xAI console](https://console.x.ai) (select your team, then **Grok Business > Connectors > Add Connector > Other**) before members can use it. See [xAI's connector docs](https://docs.x.ai/grok/connectors).
+  </Tab>
+  <Tab title="Grok Build">
+    ```bash
+    grok mcp add --transport http lm https://app.lemlist.com/mcp
+    ```
+
+    The Grok Build CLI handles the OAuth flow itself: your browser opens on first use.
+  </Tab>
 </Tabs>
 
-The first time you use a lemlist tool, your **browser will open** a consent page where you select your team and authorize access.
+In Claude Desktop, Claude Code and Grok Build, the first time you use a lemlist tool, your **browser will open** a consent page where you select your team and authorize access.
 Tokens are managed automatically (access token: 1h, refresh token: 30 days).
+
+<Warning>
+  With OAuth, don't put "lemlist" (or another lemlist brand) in the name you give the server. Many clients build their app name from it, "Claude Code (lemlist)" for instance, and lemlist refuses to register an app whose name claims its brand, so the connection fails with `client_name must not contain the reserved name "lemlist"`. Pick any other name, like `lm` above. API key setups are not affected.
+</Warning>
 
 ## With API Key
 
@@ -76,6 +103,12 @@ Then configure your AI client:
   <Tab title="Claude Code">
     ```bash
     claude mcp add --transport http lemlist https://app.lemlist.com/mcp \
+      --header "X-API-Key: YOUR_API_KEY"
+    ```
+  </Tab>
+  <Tab title="Grok Build">
+    ```bash
+    grok mcp add --transport http lemlist https://app.lemlist.com/mcp \
       --header "X-API-Key: YOUR_API_KEY"
     ```
   </Tab>
@@ -130,15 +163,55 @@ Then configure your AI client:
 The MCP server exposes a growing set of tools that evolve regularly. Simply ask your AI assistant what lemlist operations it can perform, and it will provide the most up-to-date list.
 
 Current capabilities include:
+
 - **Campaign management** — create, update, start, pause campaigns and sequences
 - **Lead management** — add, search, update leads across campaigns
 - **Lead sourcing** — search the 450M+ B2B database by role, industry, company size, location
 - **Email enrichment** — find and verify email addresses
 - **Team & stats** — view team info, campaign performance metrics
 - **Webhooks** — manage event subscriptions
+- **Message templates & snippets** — browse the team library and read a template or a snippet to reuse
 
 <Note>
 Some operations (email finding, verification, phone enrichment) consume credits. Your AI assistant will warn you before using them.
+</Note>
+
+## Advanced: limit the exposed tools
+
+By default the server exposes every tool your team has access to. If your AI assistant only needs part of lemlist, add a `?bucket=` parameter to the connector URL to expose a smaller, focused set:
+
+```text
+https://app.lemlist.com/mcp?bucket=engagement
+```
+
+Pass several buckets by separating them with commas:
+
+```text
+https://app.lemlist.com/mcp?bucket=prospecting,crm
+```
+
+Repeating the parameter works too, if your client writes URLs that way: `?bucket=prospecting&bucket=crm`.
+
+| Bucket | What it covers |
+| --- | --- |
+| `core` | The always-available core on its own (see below), the smallest connector you can ask for |
+| `builder` | Build and launch campaigns: sequence steps, previews, AI variables, A/B variants, senders (who sends, from which mailbox, WhatsApp account or phone number, forced sender of a step, sender strategy) |
+| `prospecting` | Find, enrich and add leads: database search, enrichment, CSV import, lead edits |
+| `crm` | Contacts, companies, lists and list membership |
+| `engagement` | Inbox conversations, follow-up tasks and calls |
+| `deliverability` | Domains, DNS, mailboxes, channel connection, warmup, inbox placement |
+| `insights` | Reporting, watch lists, webhooks, unsubscribes, campaign folders |
+
+Every bucket also ships with a small always-available core: campaigns and team context, settings, memory, help center search, and the generic `call_api` tool. That core is what keeps a narrowed connector usable, since anything outside your bucket stays reachable through `call_api`.
+
+Ask for `?bucket=core` to get that core on its own. Combining it with a bucket changes nothing, since it is always included: `?bucket=core,crm` and `?bucket=crm` expose exactly the same tools.
+
+<Warning>
+`?bucket=` controls what the server **advertises**, not what your API key is allowed to do. A narrowed connector still reaches the rest of lemlist through `call_api`, so use it to keep your assistant focused, not to restrict its access. To limit what an integration can reach, scope the API key itself.
+</Warning>
+
+<Note>
+Omit the parameter to keep the full tool list. An unrecognized bucket name is ignored, and if none of the names match the server falls back to the full list, so a typo never leaves your assistant without tools.
 </Note>
 
 ---

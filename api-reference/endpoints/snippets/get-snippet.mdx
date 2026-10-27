@@ -1,0 +1,14 @@
+---
+openapi: get /snippets/{snippetId}
+description: Returns one snippet with its content.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Snippet" objectPath="snippet" />
+
+The content is HTML as authored, with `{{variables}}` left raw.
+
+<Note>
+A deleted snippet and another workspace's snippet both answer
+`404 SNIPPET_NOT_FOUND`.
+</Note>

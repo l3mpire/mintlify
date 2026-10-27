@@ -1,0 +1,15 @@
+---
+openapi: get /message-templates/{templateId}
+description: Returns one library message template with its body.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Message template" objectPath="message-template" />
+
+The body is HTML as stored, with `{{variables}}` left raw: keep them as they
+are when reusing the template in a step.
+
+<Note>
+A deleted template, another workspace's template and a campaign step body all
+answer `404 EMAIL_TEMPLATE_NOT_FOUND`: only the team library is readable here.
+</Note>

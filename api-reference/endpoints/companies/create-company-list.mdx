@@ -1,0 +1,10 @@
+---
+openapi: post /companies/lists
+description: Creates a new static company list.
+---
+
+Creates a new static company list in your CRM. After creation, use `POST /companies/lists/{listId}/entities` to add companies to it.
+
+<Warning>
+Only **static** lists can be created via the API. Dynamic lists (auto-populated by filters) are managed through the lemlist UI.
+</Warning>

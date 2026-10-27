@@ -1,0 +1,84 @@
+---
+openapi: post /contact-sourcing
+description: Starts an AI contact-sourcing run for one or more accounts.
+---
+
+Contact sourcing finds the **buying committee** of an account: it sources the
+company's employees from the People Database, then classifies each one as a
+`decision_maker`, a `user` or an `influencer`, with an ICP fit score and a short
+reason.
+
+One account or two hundred — same call, pass a list of one.
+
+## The run is asynchronous
+
+You get a `runId` per account immediately; the classification itself takes from
+a few seconds to a couple of minutes depending on how many employees the company
+has. Two ways to collect the result:
+
+- **Poll** [Get Contact Sourcing Run](/api-reference/endpoints/contact-sourcing/get-contact-sourcing-run).
+  It answers `202` while a run is going and `200` once it is done.
+- **Subscribe** to the `contactSourcingDone` webhook and let lemlist call you.
+  Subscribe to `contactSourcingFailed` too, or a failed run leaves you waiting.
+
+## One answer per account
+
+The call responds `200` even when some accounts could not be started — with 200
+accounts in a request, one unrunnable account is not a reason to fail the other
+199. Read both arrays:
+
+```json
+{
+  "results": [
+    { "companyId": "cpn_K4tRm2Qw9Yb7Xz1Ns", "runId": "air_H2nQv7Bs4Jm1Ty8Wk", "status": "started" },
+    { "companyId": "cpn_G7yFs4Nc1Vd8Bh3Zp", "runId": "air_D5cLp3Xg9Rn6Vt2Fs", "status": "reused" }
+  ],
+  "errors": [
+    {
+      "companyId": "cpn_M9jTx6Rw2Kf5Cq0Ld",
+      "code": "ABS_CONTACT_SOURCING_COMPANY_NOT_IDENTIFIED",
+      "message": "Add this account's website or public LinkedIn URL before searching for leads."
+    }
+  ]
+}
+```
+
+Entries come back in the order you sent them, so you can zip them against your
+own list. Only a malformed body or more than 200 ids is refused outright (`400`).
+
+## Re-running an account
+
+By default an account that already has a committee is **not** re-run: you get
+the previous run back with `status: "reused"` and nothing is charged. Pass
+`overwrite: true` to force a fresh run and replace the previous result.
+
+`overwrite` never stacks a second run on one that is **still going**: you get
+that run back as `reused`, and nothing is charged. So retrying a request that
+timed out on your side is always safe — you cannot pay twice for one account by
+retrying.
+
+<Note>
+  Each run costs one credit, charged when the run succeeds. A reused run is free.
+  Accounts left out by the workspace's daily limit come back in `errors` with
+  `ABS_CONTACT_SOURCING_TEAM_DAILY_CAP_REACHED` — retry them the next day.
+</Note>
+
+## Starting from a domain or a LinkedIn URL
+
+This endpoint takes lemlist company IDs. If you hold a domain or a LinkedIn page
+instead, resolve it first with
+[Get Many Companies](/api-reference/endpoints/companies/get-many-companies):
+
+```bash
+curl -u :$LEMLIST_API_KEY \
+  "https://api.lemlist.com/api/companies?idsOrDomains=acme.com"
+```
+
+## Before your first run
+
+The team needs its **AI Context** filled in — in the lemlist app, open
+**Settings → AI Context Center** (lemlist uses it to know what a good fit looks
+like) — and the account
+needs a website or a LinkedIn URL — a company name alone matches every company
+that shares it, so the run is refused rather than sourcing people from the wrong
+company.

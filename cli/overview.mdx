@@ -1,0 +1,100 @@
+---
+title: 'CLI Overview'
+description: 'The lemlist command-line interface — the whole API in one command, built for scripts and AI agents.'
+---
+import SnippetFeedback from '/snippets/snippet-feedback.mdx';
+
+**The entire lemlist API, in one command.** Log in with your browser, run every
+endpoint from your terminal, and pipe clean JSON into `jq`, your scripts, or an
+AI agent — across all of your client accounts, from a single tool.
+
+No SDK to wire up. No key to paste. No boilerplate. Just `lemlist`.
+
+### <Icon icon="users-gear" color="#316bff" /> Every account, one tool
+
+Named profiles per client team. Switch with `lemlist auth use`, or override per
+call. Key-juggling becomes one word.
+
+### <Icon icon="right-to-bracket" color="#316bff" /> Log in with your browser
+
+OAuth in a single command — tokens refresh themselves in the background. Or drop
+in an API key. Either way, you authenticate once.
+
+### <Icon icon="robot" color="#316bff" /> Built for AI agents
+
+JSON on stdout, stable [exit codes](/cli/output), deterministic commands. Drive
+it from Claude Code or Cursor with no browser round-trip.
+
+### <Icon icon="bolt" color="#316bff" /> Never miss an endpoint
+
+The command surface is generated from the live OpenAPI spec, so a newly-shipped
+endpoint works the same day — no upgrade, no wait.
+
+### <Icon icon="shield-halved" color="#316bff" /> Resilient by default
+
+Transient failures (`429`, `5xx`, network blips) retry automatically with
+exponential backoff — idempotent-aware, so a `POST` never replays into a
+double-created lead.
+
+## Install
+
+<CodeGroup>
+```bash Global install
+npm install -g @lemlist-official/cli
+```
+
+```bash Run without installing
+npx @lemlist-official/cli endpoints
+```
+</CodeGroup>
+
+Requires Node.js 20 or later. The published package is
+[`@lemlist-official/cli`](https://www.npmjs.com/package/@lemlist-official/cli)
+and exposes the `lemlist` binary.
+
+## Quick start
+
+<Steps>
+  <Step title="Log in">
+    ```bash
+    lemlist auth login
+    ```
+
+    Opens your browser for OAuth and stores the tokens. No key to copy. See
+    [Authentication](/cli/authentication) for API keys and multiple accounts.
+  </Step>
+  <Step title="Discover the API surface">
+    ```bash
+    lemlist endpoints
+    ```
+
+    Lists every endpoint from the live API catalog. This also populates the
+    local cache the named subcommands are built from.
+  </Step>
+  <Step title="Call an endpoint">
+    ```bash
+    lemlist api GET /campaigns
+    lemlist campaigns list
+    ```
+
+    Use the generic `api` command for any endpoint, or a named subcommand for
+    the common flows. See [Commands](/cli/commands).
+  </Step>
+</Steps>
+
+## CLI or MCP server?
+
+Use both — they are two surfaces onto the same API. The
+[MCP server](/mcp/setup) is the conversational surface: ask your AI assistant
+in plain English. The CLI is the deterministic, scriptable surface: exact
+commands, machine-readable output, stable exit codes an agent or a cron job
+can branch on.
+
+## Good to know
+
+The CLI wires your input to an API call and formats the response — that focus
+is deliberate. It holds no business logic, no local data store or sync engine,
+and no automation engine. Scheduled or event-driven flows stay in your own cron
+or agent layer; the CLI is the fast, reliable building block they call.
+
+<SnippetFeedback />

@@ -6,7 +6,7 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 Creates a new company in your CRM, or updates an existing one if a company with the same `domain`, `linkedinUrl`, or `linkedinUrlSalesNav` already exists (upsert).
 
-During updates, only non-empty fields are applied — null or empty values are ignored to preserve existing data.
+On update, the `updateStrategy` query parameter decides what the existing record keeps (see below). By default, sent values replace stored ones and empty values are ignored.
 
 <SnippetObjectReference objectName="Company" objectPath="company" />
 
@@ -23,11 +23,98 @@ The endpoint matches existing companies by:
 
 If a company with the same `domain`, `linkedinUrl`, or `linkedinUrlSalesNav` already exists, the endpoint updates it instead of creating a duplicate.
 
-When `companyId` is provided, the company is matched by its ID directly — `name` and `domain` are not required and are not used for matching (they are stored as data if provided). Without `companyId`, both `name` and `domain` remain required.
+Creating a company requires the "Create companies" permission on the API key's user, otherwise the request fails with `403 COMPANY_CREATE_NOT_ALLOWED` and nothing is written. Updating an existing company does not require it.
+
+Without `companyId`, `name` is required together with at least one identifier: `domain`, `linkedinUrl` or `linkedinUrlSalesNav`. A company known only by its LinkedIn page can be created with `name` and `linkedinUrl`; a name alone is refused with `400 MISSING_REQUIRED_FIELD`.
+
+A `domain` that designates no single company is not stored: a personal email provider (`gmail.com`) or a platform host (`facebook.com`, `linkedin.com`, a bare `wordpress.com`). The company is still written, without it, and `warnings` carries a `COMPANY_DOMAIN_IGNORED` entry naming the domain in `params.companyDomain`. A site hosted on a site builder keeps its own address (`acme.wordpress.com`).
+
+When `companyId` is provided, the company is matched by its ID directly. `name` and the identifiers are not required and are not used for matching (they are stored as data if provided).
 
 <Warning>
-`companyId` can only be used to **update** an existing company. It cannot be used to create a new company — use `name` and `domain` for creation.
+`companyId` can only be used to **update** an existing company. It cannot be used to create a new company: use `name` and an identifier for creation.
 </Warning>
+
+## Update strategy
+
+The `updateStrategy` query parameter decides what an existing company keeps:
+
+| Value | Stored value | Empty string sent |
+|-------|--------------|-------------------|
+| `overwriteIgnoreEmpty` (default) | Replaced | Ignored |
+| `overwrite` | Replaced | Cleared |
+| `fillEmptyOnly` | Kept | Ignored |
+
+`null` and absent keys never touch a field. Identifiers (`name`, `domain`, `linkedinUrl`, `linkedinUrlSalesNav`) are never cleared. Under `fillEmptyOnly`, the owner and the status are kept when set and filled when missing. A new company receives every value sent. Any other value answers `400 INVALID_UPDATE_STRATEGY`.
+
+```bash
+curl -X POST "https://api.lemlist.com/api/companies?updateStrategy=fillEmptyOnly" \
+  -u ":YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Acme Inc", "domain": "acme.com", "industry": "Retail"}'
+```
+
+Kept values are reported: `warnings` carries a `FIELDS_KEPT` entry with the field names in `params.fields`. It appears under `fillEmptyOnly` on a stored value, and under the default when an empty string is ignored on a filled field, never for an identical value.
+
+```json
+{
+  "success": true,
+  "data": { "_id": "cpn_2aB3cD4eF5gH6iJ7k", "industry": "Software", "location": "Lyon", "created": false, "updated": true },
+  "warnings": [
+    { "code": "FIELDS_KEPT", "message": "Fields kept: the record already holds a different value, left unchanged by the update strategy", "params": { "fields": ["industry"] } }
+  ]
+}
+```
+
+## Linking to a CRM record
+
+Send `crmId` with the id of a record in your connected CRM to link the company to that record. lemlist links it without searching the CRM, then runs a first sync that follows your field mapping (the CRM wins conflicts by default).
+
+<Warning>
+`crmId` is in closed beta. Unless the CRM ID remap beta is enabled for your team, it is refused like any unknown field, with `400 INVALID_FIELD`. It also requires an **admin** API key.
+</Warning>
+
+| CRM | Accepted id |
+|-----|-------------|
+| HubSpot, Pipedrive, Zoho | Numeric record id. Send a Zoho id as a string: its 19 digits are too long for a JSON number. |
+| Attio | Record id (UUID) |
+| Salesforce | Account (`001…`) id, 15 or 18 characters. A 15-character id is stored as 18. |
+
+What happens depends on the company and on who already holds the id:
+
+| Situation | Result |
+|-----------|--------|
+| New company, the id is linked to no lemlist company | The company is created already linked to that record (`201`). |
+| Existing company, named by `companyId`, or found by its domain and name, its LinkedIn URL or its Sales Navigator URL | Its link moves to that record (`200`), and each of its contacts is associated with the new CRM company, following your association settings. Updates queued for the previous record are cancelled. |
+| Existing company found by its name alone, linked to another CRM record | Refused: `409 COMPANY_LINKED_TO_OTHER_CRM_RECORD`. A name does not identify a company well enough to move its link; send its `companyId` with `crmId`. |
+| The id is already linked to a lemlist company, and at least one of the body's `domain`, `linkedinUrl` or `linkedinUrlSalesNav` is that company's | The `crmId` finds the company and that identifier confirms it: the body updates it (`200`), name included, and its link stays as it is. The body's other identifiers replace the company's, unless they already belong to another company: `409 COMPANY_IDENTIFIER_CONFLICT`. Sending the same payload twice is safe. |
+| The id is already linked to a lemlist company, and none of the body's identifiers is that company's | Refused, nothing written: `409 CRM_ID_ALREADY_LINKED`, `error.conflictingRecord` names that company. |
+
+<Warning>
+Several companies can share a domain. The domain then confirms the company holding the id even when the body's `name` is another company's: send `companyId` (or the LinkedIn URL) when your companies share a domain.
+</Warning>
+
+The `crmSync` block of the response shows the link the company ends up with.
+
+```bash
+curl -X POST "https://api.lemlist.com/api/companies" \
+  -u ":YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Acme Inc", "domain": "acme.com", "crmId": "123456789"}'
+```
+
+Every check runs before anything is written, so a refused call leaves the company as it was:
+
+| Status | Code | When |
+|--------|------|------|
+| `400` | `INVALID_CRM_ID` | The id does not have the format of your CRM, or points to another kind of record (a Salesforce Contact id for a company). |
+| `400` | `NO_CRM_CONNECTED` | Your team has no CRM connected. |
+| `403` | `CRM_ID_UPDATE_NOT_ALLOWED` | The API key does not belong to a team admin. |
+| `409` | `CRM_ID_ALREADY_LINKED` | Another lemlist company holds the id (see above); `error.conflictingRecord` names it. |
+| `409` | `COMPANY_LINKED_TO_OTHER_CRM_RECORD` | The company was found by its name alone and is linked to another CRM record. |
+| `422` | `CRM_RECORD_NOT_FOUND` | No record with this id exists in the CRM, or it was deleted. |
+| `422` | `CRM_RECORD_MERGED` | The record was merged into another one; `error.survivorId` is the id to send. |
+| `503` | `CRM_RECORD_UNREACHABLE` | The CRM could not be reached to check the record. Retry. |
 
 ## Owner assignment
 
@@ -39,5 +126,15 @@ You can assign an owner to the company using the `companyOwner` field. Accepted 
 | Team member email | `john@yourcompany.com` |
 
 <Note>
-If the provided value does not match a team member (invalid format, unknown email, or unknown user ID), the owner is **silently ignored** — no error or warning is returned. On creation, the company defaults to the API key owner.
+If the provided value does not match a team member (invalid format, unknown email, or unknown user ID), the company is still written and the response carries an `OWNER_NOT_FOUND` or `INVALID_OWNER_FORMAT` entry in `warnings`. On creation, the company defaults to the API key owner; on update, the current owner is unchanged.
 </Note>
+
+On an existing company, `updateStrategy` decides the owner:
+
+| Strategy | Current owner set | No current owner |
+|----------|-------------------|------------------|
+| `overwriteIgnoreEmpty` (default) and `overwrite` | Replaced by `companyOwner` | Set to `companyOwner` |
+| `fillEmptyOnly` | Kept, reported as `ownerId` under `warnings` (`FIELDS_KEPT`) | Set to `companyOwner` |
+
+Without `companyOwner`, the owner is never touched.
+

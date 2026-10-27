@@ -1,0 +1,43 @@
+---
+openapi: get /campaigns/{campaignId}/senders
+description: Returns the sender pool of a campaign, as the campaign editor shows it.
+---
+
+<Note>
+The sender pool requires at least the **Email Pro** plan.
+</Note>
+
+<Tip>
+To pin the sender of one step, outside the pool, see
+[Set Step Sender](/api-reference/endpoints/sequences/set-step-sender) in the
+Sequences group.
+</Tip>
+
+The sender pool is the list of senders and channels that a campaign enables.
+The campaign gives each lead one sender of the pool.
+
+- `readOnly: true` means that the campaign uses a dynamic sender strategy
+  (`contactOwner`, `leadImporter` or `customField:<field>`): the leads
+  select the senders, and the write endpoints answer `409`.
+- A sender forced on a step shows in the pool with its forced channel, even
+  when the sender is not in the pool.
+- `senders[].channels[]` without `label`, `esp` and `diagnostics` is a
+  valid `channels` list for the write endpoints.
+
+## Diagnostics
+
+Each sender, each channel and the pool carry `diagnostics`. An `error` blocks
+the sending. A `warning` or an `info` does not.
+
+| `code`                       | `scope` | `type`  | Meaning                                                                     |
+| ---------------------------- | ------- | ------- | --------------------------------------------------------------------------- |
+| `channel_missing`            | channel | error   | A step needs a channel type that the sender does not have.                  |
+| `channel_disconnected`       | channel | error   | The account is disconnected.                                                |
+| `channel_linked_elsewhere`   | channel | error   | The LinkedIn profile is active on another lemlist account.                  |
+| `channel_issue`              | channel | error   | The mailbox has an error. `message` gives the error.                        |
+| `channel_not_required`       | channel | info    | No step uses this channel type. The channel sends nothing.                  |
+| `no_required_channel_active` | user    | error   | The sender has no enabled channel of a channel type that a step uses.       |
+| `license_missing`            | user    | warning | The user has no active seat.                                                |
+| `sender_paused`              | user    | info    | The user paused their sending for a date range. The sending starts again after. |
+| `no_account_connected`       | global  | info    | Nobody in the team has an account of a channel type that a step uses.       |
+| `no_sender_enabled`          | global  | error   | The pool is empty, and a step needs a sender.                               |

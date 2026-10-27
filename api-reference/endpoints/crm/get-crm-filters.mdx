@@ -1,9 +1,6 @@
 ---
 openapi: get /crm/filters
-description: Retrieves available CRM filters for your team's connected CRM services.
+description: Retrieves the filters of your team's connected CRM that leads can be imported from.
 ---
-import SnippetBetaTesters from '/snippets/snippet-beta-testers.mdx';
 
-<SnippetBetaTesters />
-
-You can get the list of CRM and connected users with [Get Team CRM Users](../team/get-team-crm-users).
+Use the returned `id` with [Import Leads from CRM](/api-reference/endpoints/leads/import-leads-from-crm).

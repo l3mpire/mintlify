@@ -1,0 +1,9 @@
+---
+openapi: delete /database/saved-searches/{savedSearchId}
+description: Deletes a People Database saved search.
+---
+<Note>
+Pass the `savedSearchId` as a path parameter. Deletion is permanent — there is no undo.
+
+An unknown id and a saved search belonging to another team answer the same `404`.
+</Note>

@@ -1,0 +1,25 @@
+---
+openapi: delete /campaigns/{campaignId}/senders/{userId}
+description: Removes one sender from the sender pool of a campaign.
+---
+
+<Note>
+The sender pool requires at least the **Email Pro** plan.
+</Note>
+
+<Tip>
+To pin the sender of one step, outside the pool, see
+[Set Step Sender](/api-reference/endpoints/sequences/set-step-sender) in the
+Sequences group.
+</Tip>
+
+Removes one sender, with all their channels, from the pool. A user who is not
+in the pool does not change the pool.
+
+- The leads not contacted yet get another sender of the pool at their next
+  step.
+- The contacted leads keep the removed sender. Their next steps stop with a
+  "Send user is missing" error, until the sender comes back in the pool.
+  `impact.contactedLeads` gives the number of these leads.
+- A step with this user as forced sender keeps it. To change it, see
+  [Set Step Sender](/api-reference/endpoints/sequences/set-step-sender).

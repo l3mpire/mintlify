@@ -1,0 +1,17 @@
+---
+openapi: post /database/saved-searches
+description: Creates a People Database saved search for your team.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Saved search" objectPath="saved-search" />
+
+<Note>
+`name`, `filters` and `mode` are all required. The name must be unique within your team — a duplicate answers `409`.
+
+Pick your filters from [Get Database Filters](/api-reference/endpoints/people-database/get-database-filters) called with `usage=ui`: filters that are not usable in the People Database UI answer `400` with the code `FILTER_UNAVAILABLE_FOR_USAGE`. Filters incompatible with the `mode` or with your team's plan are dropped silently.
+</Note>
+
+<Note>
+The response contains only the created id. The stored `name` and `filters` are sanitized and plan-gated server-side — call [Get saved search](/api-reference/endpoints/people-database/get-saved-search) to read the stored saved search.
+</Note>

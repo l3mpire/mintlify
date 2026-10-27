@@ -1,0 +1,31 @@
+---
+openapi: put /campaigns/{campaignId}/leads/{leadIdOrEmail}/steps/{stepId}/personalization
+description: Personalizes the message of one campaign step for a single lead.
+---
+
+The lead receives this version of the step instead of its shared content, which
+stays unchanged for every other lead. Same as **Personalize** in the lemlist
+review page.
+
+Every body field is optional and overlays the lead's current version: its
+existing personalization, otherwise the step's content. Fields you leave out
+are kept; the response returns the full personalized content. Sending only
+`variant` puts the lead on that version as is.
+
+- **A/B tests:** a personalized step is no longer A/B tested for that lead. It
+  pins the lead to the variant it is written on (before the campaign starts,
+  it also decides which sequence variant the lead follows). Switching
+  `variant` replaces the lead's personalization of the other variant.
+- **Email threads:** on a follow-up email, a non-empty `subject` starts a new
+  thread. Leave `subject` out to stay in the thread.
+- **Cc:** `cc: []` removes the step's cc for this lead.
+- **LinkedIn, SMS and WhatsApp:** messages are plain text; HTML you send is
+  converted to text.
+- **Supported steps:** email, LinkedIn message, LinkedIn invitation, SMS and
+  WhatsApp message. Voice notes and conditions answer `422`, and so do steps
+  in a wait-until fallback or in a branch several conditions lead to.
+- **Reached steps:** once the lead reached the step (sent, skipped or ignored),
+  the request answers `409`.
+
+A reviewer who has the lead open in the lemlist review page at the same time
+overwrites this change on their next edit.

@@ -1,0 +1,18 @@
+---
+openapi: patch /deliverability/alerts/{alertId}
+description: Updates a deliverability alert's threshold, evaluation window, notification channels, scope filter, or enabled state.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Deliverability alert" objectPath="deliverability-alert" />
+
+<Note>
+`widget`, `metric`, `severity`, and `scope` are immutable. To change one of them, delete this alert and create a new one.
+</Note>
+
+## Common updates
+
+- **Pause/resume** an alert by sending `{"enabled": false}` or `{"enabled": true}`.
+- **Tune sensitivity** by adjusting `threshold`, `periodDays`, or `periodMode`.
+- **Add a channel** by sending the full `channelConfig` with the new channel set to `enabled: true`. Channels you omit are left untouched.
+- **Restrict the scope** by sending `scopeEntities` (only meaningful when `scope` is `mailbox` or `domain`).

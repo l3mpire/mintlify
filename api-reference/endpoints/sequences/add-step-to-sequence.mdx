@@ -66,32 +66,74 @@ Then you can call `/api/sequences/seq_jacL5GNH3YpNnuNQ2/steps` to add a send ste
 }
 ```
 
+## Branching on a lead variable
+
+The `customLeadInfo` condition branches on a lead variable or a contact field instead of on a lead
+action. It takes three extra fields:
+
+```json
+{
+    "type": "conditional",
+    "conditionKey": "customLeadInfo",
+    "delayType": "within",
+    "delay": 1,
+    "customField": "jobTitle",
+    "customOperator": "contains",
+    "customValue": "CEO"
+}
+```
+
+`customField` reads a bare name as a lead variable — `jobTitle` becomes `variables.jobTitle`. Prefix
+it with `fields.` to test a contact field instead.
+
+A company field is written `company.<field>` — `company.name`, or `company.sector` for a company
+custom field named `Sector`. `companyName` and `variables.companyName` are stored as `company.name`.
+
+`customOperator` is one of `equal`, `contains`, `empty`, `notEmpty`. The first two need a
+`customValue`; the last two refuse one.
+
+<Note>
+A condition step created here has one branch plus the Else fallback. To give it more branches — "CEO
+or Founder here, CTO there, everyone else in Else" — use the
+[condition branch endpoints](/api-reference/endpoints/sequences/list-condition-branches).
+</Note>
+
 ## Step Types and Required Fields
 
 The table below summarizes the required and optional fields for each step type. Note that all step requests must include a common `type` field.
 
 | Step Type | Required Fields | Optional Fields |
 | --- | --- | --- |
-| `email` | `subject`, `message` | `index`, `delay` |
+| `email` | `message` | `subject`, `index`, `delay` |
 | `manual` | `title` | `message`, `index`, `delay` |
 | `phone` | - | `message`, `index`, `delay` |
 | `api` | `method`, `url` | `index`, `delay` |
 | `linkedinVisit` | - | `index`, `delay` |
-| `linkedinInvite` | - | `message`, `images`, `videos`, `index`, `delay` |
-| `linkedinSend` | `message` | `altMessage`, `images`, `videos`, `index`, `delay` |
-| `linkedinVoiceNote` | - | `index`, `delay`, `recordMode` |
+| `linkedinInvite` | - | `message`, `altMessage`, `images`, `videos`, `index`, `delay` |
+| `linkedinSend` | `message` | `altMessage`, `altMessagePremium`, `images`, `videos`, `index`, `delay` |
+| `linkedinInMail` | `subject`, `message` | `index`, `delay` |
+| `linkedinVoiceNote` | - | `message`, `altMessage`, `index`, `delay`, `recordMode` |
 | `linkedinFollow` | - | `index`, `delay` |
 | `linkedinLikeLastPost` | - | `index`, `delay` |
 | `linkedinCommentLastPost` | - | `index`, `delay` |
 | `linkedinEndorse` | - | `index`, `delay`, `skillName`, `endorseAnyFallback` |
 | `linkedinWithdrawInvitation` | - | `index`, `delay` |
-| `sendToAnotherCampaign` | `campaignId` | `index`, `delay` |
+| `sendToAnotherCampaign` | `campaignId` | `leadAction`, `index` |
 | `conditional` | `conditionKey`, `delayType` (and `delay` when `delayType` is `within`) | `index` |
 | `whatsappMessage` | `message` | `index`, `delay` |
 | `sms` | `message` | `index`, `delay` |
 
 <Note>
 In conditional steps, if the `delayType` is not `"within"`, the `delay` field is not required.
+</Note>
+
+<Note>
+A `linkedinInMail` step sends a LinkedIn InMail, so it reaches leads who are not connected to the
+sender — the step to use in the "invite not accepted" branch of a `linkedinInviteAccepted`
+condition. It needs a LinkedIn Premium or Sales Navigator sender: a sender without one is skipped.
+Each send spends one of the sender's InMail credits. A blank `subject` or `message` is saved but
+blocks the campaign launch, as for the other message steps. Both are sent as plain text: LinkedIn
+does not render HTML. The step takes no `altMessage`, `images` or `videos`.
 </Note>
 
 <Note>
@@ -102,23 +144,108 @@ In conditional steps, if the `delayType` is not `"within"`, the `delay` field is
 
 | Field | Description |
 | --- | --- |
-| `type` (String, Required) | The type of step to create. Allowed values: `email`, `manual`, `phone`, `api`, `linkedinVisit`, `linkedinInvite`, `linkedinSend`, `linkedinVoiceNote`, `linkedinFollow`, `linkedinLikeLastPost`, `linkedinCommentLastPost`, `linkedinEndorse`, `linkedinWithdrawInvitation`, `sendToAnotherCampaign`, `conditional`, `whatsappMessage`, `sms` |
+| `type` (String, Required) | The type of step to create. Allowed values: `email`, `manual`, `phone`, `api`, `linkedinVisit`, `linkedinInvite`, `linkedinSend`, `linkedinInMail`, `linkedinVoiceNote`, `linkedinFollow`, `linkedinLikeLastPost`, `linkedinCommentLastPost`, `linkedinEndorse`, `linkedinWithdrawInvitation`, `sendToAnotherCampaign`, `conditional`, `whatsappMessage`, `sms` |
 | `index` (Integer, Optional) | The position within the sequence to insert the new step. Must be an integer ≥ -1. If omitted or if the index is greater than the number of steps, the new step is added to the end |
 | `delay` (Integer, Optional) | The delay (in days) before executing the step. Must be between 0 and 1500. Defaults to 0 for the first step and to 1 for subsequent steps (except for certain conditional configurations) |
-| `subject` (String, Conditional) | The email subject. Required for steps of type `email`. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
-| `message` (String, Conditional) | Content of the email or message. Used for `email`, `linkedinInvite`, `linkedinSend`, `whatsappMessage`, and `sms` step types, or the note of `manual` and `phone` step types. Required for `linkedinSend`, `whatsappMessage`, and `sms` |
-| `altMessage` (String, Conditional) | An alternate message for steps of type `linkedinSend` |
+| `subject` (String, Conditional) | For `email` and `linkedinInMail` steps. Required on `linkedinInMail`, where it is the InMail subject: a blank one is saved but blocks the campaign launch. On `email`, the email subject. Omit it or send an empty string on a follow-up so the email replies in the thread of the previous one. If no email has been sent to the lead in this campaign yet, it goes out with an empty subject. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
+| `message` (String, Conditional) | Content of the email or message. Used for `email`, `linkedinInvite`, `linkedinSend`, `linkedinInMail`, `whatsappMessage`, and `sms` step types, the AI script of a `linkedinVoiceNote` step in `ai` record mode, or the note of `manual` and `phone` step types. Required for `linkedinSend`, `linkedinInMail`, `whatsappMessage`, and `sms` |
+| `altMessage` (String, Conditional) | For `linkedinInvite`, `linkedinSend` and `linkedinVoiceNote` steps only. The premium invitation note on an invite, the out-of-network note on the other two. See [LinkedIn invitation notes](#linkedin-invitation-notes) below |
+| `altMessagePremium` (String, Conditional) | For `linkedinSend` steps only. The premium variant of the out-of-network note. See [LinkedIn invitation notes](#linkedin-invitation-notes) below |
 | `title` (String, Conditional) | A title or label used in `manual` steps. Maximum 400 characters |
 | `method` (String, Conditional) | The HTTP method to use for API steps. Allowed values: `GET`, `POST`, `PUT`, `DELETE`, `PATCH` |
 | `url` (String, Conditional) | The URL of the API endpoint to call. Must be a valid URL (starting with `http://` or `https://`) |
-| `conditionKey` (String, Conditional) | For conditional steps only. Defines the condition key. Allowed values: `hasEmailAddress`, `hasLinkedinUrl`, `hasPhoneNumber`, `hasScore`, `emailsOpened`, `emailsClicked`, `emailsUnsubscribed`, `meetingBooked`, `linkedinInviteAccepted`, `linkedinOpened`, `aircallDone`, `linkedinNetworkCheck`, `hasWhatsappAccount` |
+| `conditionKey` (String, Conditional) | For conditional steps only. Defines the condition key. Allowed values: `hasEmailAddress`, `hasLinkedinUrl`, `hasPhoneNumber`, `customLeadInfo`, `hasScore`, `emailsOpened`, `emailsClicked`, `emailsUnsubscribed`, `meetingBooked`, `linkedinInviteAccepted`, `linkedinOpened`, `aircallDone`, `linkedinNetworkCheck`, `hasWhatsappAccount` |
 | `delayType` (String, Conditional) | For conditional steps only. Specifies the delay type. Allowed values: `within`, `waitUntil` |
+| `customField` (String, Conditional) | For `customLeadInfo` conditions only. The field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` to test a contact field; a company field is written `company.<field>` (`companyName` is stored as `company.name`). `$` and the reserved keys `_id`, `teamId`, `campaignId`, `leadId`, `__proto__`, `constructor`, `prototype` are refused |
+| `customOperator` (String, Conditional) | For `customLeadInfo` conditions only. How the field is compared. Allowed values: `equal`, `contains`, `empty`, `notEmpty` |
+| `customValue` (String, Conditional) | For `customLeadInfo` conditions only. The value the field is compared to. Required for `equal` and `contains`, and refused for `empty` and `notEmpty` |
 | `campaignId` (String, Conditional) | For steps of type `sendToAnotherCampaign` only. The target campaign ID to which a lead should be sent. The specified campaign must exist in the team and not be archived |
+| `leadAction` (String, Optional) | For steps of type `sendToAnotherCampaign` only. What happens to the lead in the **source** campaign once it has been moved. Allowed values: `continue` (keeps running the remaining steps), `pause`, `stop` (ends the source campaign for that lead). Omitted leaves the step without a value, which behaves as `continue`. See [What happens to the transferred lead](#what-happens-to-the-transferred-lead) below |
 | `images` (Array of strings, Optional) | For `linkedinInvite` and `linkedinSend` steps only. Public HTTPS URLs of images to attach to the LinkedIn message. lemlist downloads each file and re-hosts it. See the [LinkedIn media constraints](#linkedin-media-constraints) below |
 | `videos` (Array of strings, Optional) | For `linkedinInvite` and `linkedinSend` steps only. Public HTTPS URLs of videos to attach to the LinkedIn message. lemlist downloads each file and re-hosts it. See the [LinkedIn media constraints](#linkedin-media-constraints) below |
 | `skillName` (String, Optional) | For `linkedinEndorse` steps only. Name of the LinkedIn skill to endorse on the lead's profile |
 | `endorseAnyFallback` (Boolean, Optional) | For `linkedinEndorse` steps only. When `true` and the named skill is not on the lead's profile, lemlist falls back to endorsing any available skill |
 | `recordMode` (String, Optional) | For `linkedinVoiceNote` steps only. Determines how the audio is sourced. Allowed values: `manual` (user records the audio after step creation; default), `ai` (audio is generated from a text template provided in the lemlist UI) |
+
+## What happens to the transferred lead
+
+A `sendToAnotherCampaign` step adds the lead to the target campaign. `leadAction` decides what the
+**source** campaign then does with it.
+
+| Value | Effect on the lead in the source campaign |
+| --- | --- |
+| `continue` | Keeps running the remaining steps (the behaviour of a step with no `leadAction`) |
+| `pause` | Paused. The next step is created but not scheduled; resuming the lead schedules it |
+| `stop` | The source campaign is ended for that lead and its pending steps are dropped |
+
+<Note>
+A transfer that fails always **pauses** the lead, whatever `leadAction` says, so a lead that never
+moved does not walk on as if it had. A transfer fails when the target campaign is missing or
+archived, when it has reached its 40,000-lead limit, when the lead's email address is unsubscribed,
+and when the lead is **already in the target campaign** — a re-run of the same step, or two
+campaigns feeding one target, both land there.
+</Note>
+
+<Note>
+Omitting `leadAction` leaves the step without a value, which the runtime reads as `continue`. A step
+added from the lemlist UI defaults to `stop` instead; that default belongs to the editor, not to the
+API.
+</Note>
+
+<Note>
+`leadAction` is read when the step runs, not when the lead reaches it. Updating it applies to every
+lead still waiting at that step, including leads whose transfer is already queued.
+</Note>
+
+```json
+{
+    "type": "sendToAnotherCampaign",
+    "campaignId": "cam_target123",
+    "leadAction": "stop"
+}
+```
+
+## LinkedIn invitation notes
+
+Three LinkedIn step types carry a second note besides `message`, and `altMessage` does not mean the
+same thing on each of them.
+
+| Field | Step type | What it holds |
+| --- | --- | --- |
+| `altMessage` | `linkedinInvite` | The **premium invitation note**, attached to the connection request instead of `message` when the sending account has LinkedIn Premium |
+| `altMessage` | `linkedinSend` | The **out-of-network note**, sent as a connection request instead of the message when the lead is not a 1st-degree connection |
+| `altMessage` | `linkedinVoiceNote` | The same out-of-network note, sent instead of the voice note when the lead is not connected |
+| `altMessagePremium` | `linkedinSend` | The **premium variant** of the out-of-network note, sent instead of `altMessage` when the sending account is Premium or Sales Navigator |
+
+```json
+{
+    "type": "linkedinSend",
+    "message": "Thanks for connecting, {{firstName}}!",
+    "altMessage": "Hi {{firstName}}, we are not connected yet, happy to change that!",
+    "altMessagePremium": "Hi {{firstName}}, we are not connected yet. I work with teams like {{companyName}} on the same problem and would love to swap notes."
+}
+```
+
+LinkedIn caps a connection-request note at 200 characters on a free account and 300 on Premium or
+Sales Navigator. These endpoints do not enforce those caps, but an over-long note is a blocking
+step error: the campaign refuses to launch until you shorten it.
+
+Sending either field here on a step type that does not take it is rejected with `400 Invalid request
+body`.
+
+## Running campaigns
+
+A campaign that leads have entered still accepts new steps. Where the step lands decides who
+receives it:
+
+- **Appended after the last step** of a sequence leads finish on: the leads parked on that last
+  step move on to the new one.
+- **Inserted before an existing step** (with `index`): the leads waiting on that step are moved
+  onto the new one and run it first. Leads already past that position never receive it.
+
+The move is applied to the campaign's leads right after the response. While it runs, another
+structural change on the same campaign answers `409 campaign-reroute-in-progress`; nothing is
+written and the same call succeeds a minute later.
 
 ## LinkedIn media constraints
 

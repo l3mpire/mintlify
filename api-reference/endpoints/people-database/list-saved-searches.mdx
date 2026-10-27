@@ -1,0 +1,11 @@
+---
+openapi: get /database/saved-searches
+description: Retrieves the People Database saved searches of your team.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Saved search" objectPath="saved-search" />
+
+<Note>
+Saved searches are team-shared: every member sees the same list. Results are sorted by name. Use `mode` to restrict the list to one search mode — saved searches created before modes existed are returned for both.
+</Note>

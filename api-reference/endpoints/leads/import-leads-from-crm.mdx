@@ -1,8 +1,10 @@
 ---
 openapi: post /campaigns/{campaignId}/leads/import
-description: Imports leads from your connected CRM into a campaign.
+description: Links a campaign to a filter of your connected CRM and imports its records as leads, now and as the filter picks up new ones.
 ---
 
-import SnippetBetaTesters from '/snippets/snippet-beta-testers.mdx';
+<Note>
+    Only a campaign that is not linked to a CRM filter yet can be linked. To change or unlink a campaign's CRM filter, use the lemlist app.
+</Note>
 
-<SnippetBetaTesters />
+Get the filter ID from [Get CRM Filters](/api-reference/endpoints/crm/get-crm-filters).

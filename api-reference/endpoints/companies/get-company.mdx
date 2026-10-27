@@ -1,0 +1,11 @@
+---
+openapi: get /companies/{companyId}
+description: Retrieves one company by its lemlist id (`cpn_xxx`), as a bare object. Answers 404 when no company of your team carries this id.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+Returns the company object itself, not a list. The endpoint answers `404 COMPANY_NOT_FOUND_BY_ID` when no company of your team carries this id, where `GET /companies?idsOrDomains=` answers `200` with an empty `data` array.
+
+Lookups by domain stay on `GET /companies?idsOrDomains=`: a domain is not guaranteed to designate a single company, so this endpoint takes ids only.
+
+<SnippetObjectReference objectName="Company" objectPath="company" />

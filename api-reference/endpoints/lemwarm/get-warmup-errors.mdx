@@ -1,0 +1,17 @@
+---
+openapi: get /lemwarm/errors
+description: Lists the mailboxes lemwarm keeps out of warmup, with the cause and the fix for each one.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Warmup Error" objectPath="warmup-error" />
+
+<Note>
+Only mailboxes with a recorded cause are returned: a disconnected mailbox, a DNS lock, a pause triggered by bounces or send failures, or a temporary high spam-rate lock. Healthy mailboxes and mailboxes you paused yourself are not listed.
+
+Once the cause is fixed, resume warmup with [Start lemwarm](/api-reference/endpoints/lemwarm/start-lemwarm), using `mailboxId` as the `userMailboxId`.
+</Note>
+
+<Warning>
+This endpoint is in closed beta. It answers `403` with the code `BETA_NOT_ENABLED` unless the warmup error guidance beta is enabled for your team.
+</Warning>

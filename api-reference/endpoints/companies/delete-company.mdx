@@ -7,6 +7,8 @@ Removes a lemlist company. Only the lemlist record is deleted — **no CRM-side 
 
 By default, the request fails with `400 COMPANY_HAS_CONTACTS` if any contact is still attached to the company. Pass `?force=true` to detach those contacts (their `companyId` is unset) before deletion.
 
+The API key's user must have the "Delete companies" permission, otherwise the request fails with `403 COMPANY_DELETE_NOT_ALLOWED` and nothing is detached or deleted.
+
 ## Remapping duplicates: typical workflow
 
 This endpoint is the final step of the contact-to-company remapping flow used to resolve `UNIQUE_INDEX_ERROR_COMPANY` sync failures:

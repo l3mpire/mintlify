@@ -1,0 +1,10 @@
+---
+openapi: get /companies/lists
+description: Retrieves all company lists for the team, with optional name filtering.
+---
+
+Returns all static and dynamic company lists, newest first. Use the `search` parameter to filter lists by name.
+
+List IDs (`clt_xxx`) can be used with:
+- `GET /companies` — filter companies by list via the `listId` query parameter
+- `POST /companies/lists/{listId}/entities` — add companies to a list

@@ -1,0 +1,26 @@
+---
+title: Message template
+openapi-schema: MessageTemplate
+---
+
+A message template is a whole reusable message — a subject and an HTML body —
+saved by a member of your team from the Templates page (Templates > Emails) or
+from any editor's "Save as template". The library is shared by the team, and a
+template can be inserted as a step on any channel, as an inbox reply or as an
+extension message: it carries no channel of its own.
+
+Bodies are stored as HTML with `{{variables}}` left raw, so a template reads
+the same way it will be personalized at send time. `subject`, `cc` and `tags`
+are always present in the API, empty when the template never set them.
+
+Use [List message templates](/api-reference/endpoints/message-templates/list-message-templates)
+to browse the library with the Templates page filters (name search, tags,
+creators), [List message template tags](/api-reference/endpoints/message-templates/list-message-template-tags)
+to discover the tags in use, and [Get message template](/api-reference/endpoints/message-templates/get-message-template)
+to read one with its body.
+
+<Note>
+Campaign step bodies are stored alongside the library but are not templates:
+they are never listed here. Read a campaign's steps with
+[Get campaign sequences](/api-reference/endpoints/sequences/get-campaign-sequences).
+</Note>

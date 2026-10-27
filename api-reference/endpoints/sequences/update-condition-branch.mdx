@@ -1,0 +1,47 @@
+---
+openapi: patch /sequences/{sequenceId}/steps/{stepId}/branches/{branchSequenceId}
+description: Renames a branch and/or changes what it tests.
+---
+
+<Note>
+New to condition branches? Start with
+[List Condition Branches](/api-reference/endpoints/sequences/list-condition-branches), which explains
+how a step branches and how a branch is addressed.
+</Note>
+
+Send only the halves you want to change. A body that changes nothing is refused with
+`SEQUENCE_BRANCH_NO_UPDATE`.
+
+## Renaming
+
+`name` is the branch's display name. An empty string clears it, and lemlist goes back to labelling
+the branch by its rank ("Branch 1", "Branch 2", …). The Else branch cannot be renamed:
+`SEQUENCE_BRANCH_IS_FALLBACK`.
+
+## Changing what the branch tests
+
+Send the same parameters
+[`POST /sequences/{sequenceId}/steps`](/api-reference/endpoints/sequences/add-step-to-sequence) takes
+for a condition — `customField`, `customOperator`, `customValue`, `scoreComparator`,
+`scoreThreshold`, `emailStatusFilter`, `callStatusFilter`. `conditionKey` is refused: every branch of
+a step shares the step's condition, and changing it is a change to the step, not to one branch.
+
+On a `customLeadInfo` step, changing `customField` changes it on **every** branch — a step tests one
+field, and each branch keeps its own operator and values.
+
+## The two halves are gated differently
+
+Once leads have entered the campaign:
+
+| Body | Result |
+| --- | --- |
+| `{ "name": "Founders" }` | applied — a rename never re-routes a lead |
+| `{ "customValue": "CTO" }` | `409` — re-routing live leads would strand those already sent down the old value |
+| `{ "name": "Founders", "customValue": "CTO" }` | `409`, **and the rename does not land either** |
+
+The request is atomic, so a mixed body is refused whole. Send the rename on its own when that is all
+you need.
+
+One selector edit escapes the lock: on a lead-action condition (`hasScore`, `aircallDone`), a body
+carrying only `delay` changes how long the condition waits, not what it waits for, and is applied.
+Adding any other selector field to that body locks it again.

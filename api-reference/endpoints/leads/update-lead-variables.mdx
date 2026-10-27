@@ -6,3 +6,13 @@ description: Updates the values of custom variables on a lead.
 <Warning>
  This is not about renaming your custom variables, but really about updating the values within, just like the [Update Lead](./update-lead) endpoint would do on default variables.
 </Warning>
+
+<Note>
+  Default variables follow the [Update Lead](./update-lead) rules: they are written on the lead's contact and company as well, and `companyName` alone renames the company the lead is linked to.
+
+  The response reports it: `warnings` carries a `company-fields-write-company-record` entry naming the `company`-prefixed keys you sent in `params.fields`. It is informational, the update went through. To edit a company on purpose, use [Upsert Company](/api-reference/endpoints/companies/upsert-company).
+</Note>
+
+A write that would create a company not yet in lemlist requires the "Create companies" permission on the API key's user, otherwise it fails with `403 COMPANY_CREATE_NOT_ALLOWED` and nothing is written.
+
+On a lead with no linked contact, a write that would create one requires the "Create contacts" permission on the API key's user, otherwise it fails with `403 CONTACT_CREATE_NOT_ALLOWED` and nothing is written.

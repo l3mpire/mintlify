@@ -1,0 +1,11 @@
+---
+openapi: put /watchlist/signals
+description: Marks one or several signals as handled or ignored.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Signal" objectPath="signal" />
+
+<Note>
+Set the status of up to 1000 signals in one call. `status` is either `handled` or `ignored`; pass an optional `reason` to note why (only meaningful for `ignored`). The write is scoped to your team, so `updatedCount` can be lower than `requestedCount` when some ids no longer exist or belong to another team.
+</Note>

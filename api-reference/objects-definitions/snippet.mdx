@@ -1,0 +1,18 @@
+---
+title: Snippet
+openapi-schema: Snippet
+---
+
+A snippet is an HTML fragment — a signature, a paragraph, a call-to-action —
+saved by a member of your team from the Templates page (Templates > Snippets)
+or from an editor, and inserted *inside* a message. It differs from a
+[message template](/api-reference/objects-definitions/message-template), which
+is a whole message.
+
+Contents are stored as authored, with `{{variables}}` left raw, and are not
+sanitized on save: sanitize before rendering them outside lemlist.
+
+Use [List snippets](/api-reference/endpoints/snippets/list-snippets) to browse
+the team's snippets (name search, creators) and
+[Get snippet](/api-reference/endpoints/snippets/get-snippet) to read one with
+its content.

@@ -13,8 +13,10 @@ Auth: OAuth (automatic) or X-API-Key header
 
 Setup for Claude Code:
 ```bash
-claude mcp add --transport http lemlist https://app.lemlist.com/mcp
+claude mcp add --transport http lm https://app.lemlist.com/mcp
 ```
+
+With OAuth, don't name the server "lemlist": lemlist refuses to register a client whose name contains its brand.
 
 Setup for Claude Desktop / Cursor: see [MCP Setup](https://developer.lemlist.com/mcp/setup)
 

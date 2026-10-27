@@ -1,0 +1,15 @@
+---
+openapi: post /campaigns/{campaignId}/steps/{stepId}/skip
+description: Skips one step of a running campaign for every lead.
+---
+
+Leads that have not reached the step move on to the next one after that step's
+own delay, and leads added to the campaign later will not receive it either.
+Leads that already ran the step are unaffected — nothing already sent changes.
+
+A skip cannot be undone, here or in the lemlist app. Condition steps can never
+be skipped (`422`).
+
+The response returns as soon as the step is marked, before the pending tasks
+are closed: that part happens asynchronously and emits one step-skipped
+activity — and its webhook — per pending lead.

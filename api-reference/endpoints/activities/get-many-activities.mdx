@@ -27,3 +27,14 @@ be strictly greater than `minDate` when both are set.
 ## Response
 
 The response can include `sequenceStep` and `totalSequenceStep` fields, which are zero-indexed (starting at 0).
+
+Activities also carry `stepId`, the stable identifier of the step that produced
+them. Unlike `sequenceStep` — a position that shifts when a sequence's steps are
+reordered — `stepId` always points at the same step, so prefer it when you store
+a reference. `sequenceStep` keeps being returned exactly as before.
+
+<Note>
+  `stepId` is present on every activity created from now on. Activities recorded
+  earlier gain it progressively as historical records are backfilled, so treat it
+  as optional when you read back through history.
+</Note>

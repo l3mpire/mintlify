@@ -1,0 +1,11 @@
+---
+openapi: get /watchlist
+description: Retrieves your Signal Agents (watch lists) with pagination and optional filtering by signal type and status.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Watch List" objectPath="watch-list" />
+
+<Note>
+Results are paginated. Use `type` and `status` to narrow the list — both accept a comma-separated list of values. By default every status except `delete` is returned.
+</Note>

@@ -1,0 +1,40 @@
+---
+openapi: post /deliverability/alerts
+description: Creates a new deliverability alert that monitors a warm-up or outreach metric and notifies you through the configured channels when the threshold is breached.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Deliverability alert" objectPath="deliverability-alert" />
+
+## Choosing the right dimensions
+
+Each alert is defined by the combination of `widget`, `metric`, `severity`, and `scope`. These four fields, along with `threshold`, `comparisonOperator`, `periodDays`, `periodMode`, and `scopeEntities`, must be unique per team — creating a duplicate returns `409`.
+
+### `widget` × `metric`
+
+| widget | Allowed metrics |
+| ------ | --------------- |
+| `warmup` | `inboxRate`, `spamRate`, `score` |
+| `outreach` | `deliveryRate`, `bounceRate` |
+
+### `scope`
+
+| scope | Meaning | `scopeEntities` |
+| ----- | ------- | --------------- |
+| `global` | All mailboxes aggregated. Only valid for `widget=warmup`. | Ignored. |
+| `mailbox` | Each mailbox evaluated individually. | Optional filter. Each entry must use the format `userId\|email\|mailboxId` (e.g. `usr_A1B2C3...|john@example.com|usm_X9Y8Z7...`). Omit to monitor every mailbox. |
+| `domain` | Mailboxes grouped by their sending domain. | Optional filter. Each entry is a bare domain (e.g. `acme.com`). Omit to monitor every domain. |
+
+### `periodMode`
+
+- `rolling` — averages the metric over the last `periodDays` days. Best for noisy rate metrics like `bounceRate` or `deliveryRate`.
+- `consecutive` — requires the condition to hold on **every** one of the last `periodDays` days. Useful with `score`-style metrics that are reported once per day.
+
+## Notification channels
+
+Set at least one channel to `enabled: true` in `channelConfig`. If you omit `channelConfig` entirely, the alert defaults to `inapp` only.
+
+- `inapp` — surfaces the alert in the lemlist deliverability dashboard.
+- `email` — sends to the listed `addresses`. At least one address is required when this channel is enabled.
+- `webhook` — posts a `deliverabilityAlertTriggered` event to every webhook subscribed to that event. Configure the destination URL with [Add Webhook](/api-reference/endpoints/webhooks/add-webhook).
+- `slack` — sends a Slack message. Requires a Slack integration to be connected on the team.

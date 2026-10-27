@@ -1,0 +1,7 @@
+---
+openapi: get /watchlist/filters
+description: Lists, per signal type, the filters you can set on a Signal Agent.
+---
+<Note>
+Each filter descriptor tells you the sides it supports (`in` to include, `out` to exclude), which sides are required, and any numeric bounds. Pass `type` to scope the response to a single signal type.
+</Note>

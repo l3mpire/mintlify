@@ -19,6 +19,29 @@ You **cannot** change the `type` of a step (e.g., from `email` to `linkedinInvit
 However, you **need** to add the `type` field in the request body even if you can't modify it...
 </Warning>
 
+<Warning>
+This endpoint refuses any condition step that has **more than one branch** besides Else, with
+`400 Multi-branch conditions cannot be edited via the API yet.` — its rebuild would collapse the step
+back to a single branch plus Else and silently drop the others.
+
+To change the condition key of such a step, remove branches with
+[`DELETE …/branches/{branchSequenceId}`](/api-reference/endpoints/sequences/delete-condition-branch)
+until one is left, then patch it here. To change what one branch tests without touching the others,
+use [`PATCH …/branches/{branchSequenceId}`](/api-reference/endpoints/sequences/update-condition-branch)
+instead.
+</Warning>
+
+
+## Running campaigns
+
+Editing a step does not require pausing the campaign. The new content applies to the sends that
+follow: a lead who already received that step keeps the version that was sent to them, and a lead
+who has not reached it yet gets the edited one.
+
+A refusal carries a `code` in the body next to the message, so a rejected edit can be told apart
+from a transport failure.
+
+
 ## Supported Step Types
 
 | Type | Editable Fields | Description |
@@ -28,16 +51,17 @@ However, you **need** to add the `type` field in the request body even if you ca
 | `phone` | `message`, `delay` | Reminder to make a phone call |
 | `api` | `method`, `url`, `delay` | Makes an API call |
 | `linkedinVisit` | `delay` | Simulates a profile visit on LinkedIn |
-| `linkedinInvite` | `message`, `images`, `videos`, `delay` | Sends a LinkedIn invite with message |
-| `linkedinSend` | `message`, `altMessage`, `images`, `videos`, `delay` | Sends a LinkedIn message |
-| `linkedinVoiceNote` | `delay`, `recordMode` | Sends a LinkedIn voice note. Audio is either recorded manually or AI-generated from a text template, depending on `recordMode` |
+| `linkedinInvite` | `message`, `altMessage`, `images`, `videos`, `delay` | Sends a LinkedIn invite with message |
+| `linkedinSend` | `message`, `altMessage`, `altMessagePremium`, `images`, `videos`, `delay` | Sends a LinkedIn message |
+| `linkedinInMail` | `subject`, `message`, `delay` | Sends a LinkedIn InMail, from a Premium or Sales Navigator sender only |
+| `linkedinVoiceNote` | `message`, `altMessage`, `delay`, `recordMode` | Sends a LinkedIn voice note. Audio is either recorded manually or AI-generated from a text template, depending on `recordMode` |
 | `linkedinFollow` | `delay` | Follows the lead on LinkedIn |
 | `linkedinLikeLastPost` | `delay` | Likes the lead's most recent LinkedIn post |
 | `linkedinCommentLastPost` | `delay` | Posts an AI-generated comment on the lead's most recent LinkedIn post |
 | `linkedinEndorse` | `delay`, `skillName`, `endorseAnyFallback` | Endorses a skill on the lead's LinkedIn profile |
 | `linkedinWithdrawInvitation` | `delay` | Withdraws a pending LinkedIn invite |
 | `sendToAnotherCampaign` | `campaignId` | Sends the lead to another campaign |
-| `conditional` | `conditionKey`, `delayType`, `delay` | Triggers the next step based on lead behavior |
+| `conditional` | `conditionKey`, `delayType`, `delay`, `customField`, `customOperator`, `customValue` | Triggers the next step based on lead behavior |
 | `whatsappMessage` | `message`, `delay` | Sends a WhatsApp message |
 | `sms` | `message`, `delay` | Sends an SMS to the lead |
 
@@ -47,21 +71,31 @@ Only include the fields you want to update. Required fields are not enforced her
 
 | Field | Type | Applies To | Description |
 | --- | --- | --- | --- |
-| `subject` | string | `email` | Email subject line. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
-| `message` | string | `email`, `linkedin*`, `manual`, `phone`, `whatsappMessage`, `sms` | Message text |
-| `altMessage` | string | `linkedinSend` | Fallback LinkedIn message |
+| `subject` | string | `email`, `linkedinInMail` | Email or InMail subject line. On `linkedinInMail`, a blank one is saved but blocks the campaign launch. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
+| `message` | string | `email`, `linkedin*`, `manual`, `phone`, `whatsappMessage`, `sms` | Message text. Pass an empty string to clear it (ignored on `manual` and `phone` steps) |
+| `altMessage` | string | `linkedinInvite`, `linkedinSend`, `linkedinVoiceNote` | The premium invitation note on an invite, the out-of-network note on the other two. Pass an empty string to clear it. See [LinkedIn invitation notes](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-invitation-notes) on Add Step |
+| `altMessagePremium` | string | `linkedinSend` | The premium variant of the out-of-network note. Pass an empty string to clear it. See [LinkedIn invitation notes](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-invitation-notes) on Add Step |
 | `title` | string | `manual` | Title for manual task. Maximum 400 characters |
 | `method` | string | `api` | One of `GET`, `POST`, `PUT`, `DELETE`, `PATCH` |
 | `url` | string | `api` | Valid HTTP/HTTPS URL |
 | `delay` | integer | all except `sendToAnotherCampaign` | Delay before this step, in days. Must be between 0 and 1500 |
 | `delayType` | string | `conditional` | One of `within`, `waitUntil` |
 | `conditionKey` | string | `conditional` | See supported condition keys below |
+| `customField` | string | `conditional` keyed `customLeadInfo` | The field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` for a contact field; a company field is written `company.<field>` (`companyName` is stored as `company.name`) |
+| `customOperator` | string | `conditional` keyed `customLeadInfo` | One of `equal`, `contains`, `empty`, `notEmpty` |
+| `customValue` | string | `conditional` keyed `customLeadInfo` | The value the field is compared to. Required for `equal` and `contains`, refused for `empty` and `notEmpty` |
 | `campaignId` | string | `sendToAnotherCampaign` | ID of destination campaign |
+| `leadAction` | string | `sendToAnotherCampaign` | What happens to the lead in the source campaign once it has been moved. One of `continue`, `pause`, `stop`. See [What happens to the transferred lead](/api-reference/endpoints/sequences/add-step-to-sequence#what-happens-to-the-transferred-lead) on Add Step |
 | `images` | array of strings | `linkedinInvite`, `linkedinSend` | Public HTTPS URLs of images to attach. Replaces the step's current images — pass `[]` to clear them. See the [LinkedIn media constraints](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-media-constraints) on Add Step |
 | `videos` | array of strings | `linkedinInvite`, `linkedinSend` | Public HTTPS URLs of videos to attach. Replaces the step's current videos — pass `[]` to clear them. See the [LinkedIn media constraints](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-media-constraints) on Add Step |
 | `skillName` | string | `linkedinEndorse` | Name of the LinkedIn skill to endorse on the lead's profile |
 | `endorseAnyFallback` | boolean | `linkedinEndorse` | When `true` and the named skill is not on the lead's profile, lemlist falls back to endorsing any available skill |
 | `recordMode` | string | `linkedinVoiceNote` | One of `manual` (user records the audio after step creation; default) or `ai` (audio is generated from a text template provided in the lemlist UI) |
+
+<Note>
+To remove the subject of an `email` step, send `"subject": ""`. The email then replies in the thread
+of the previous email sent to the lead in this campaign instead of starting a new one.
+</Note>
 
 ## Supported Condition Keys
 
@@ -70,6 +104,7 @@ For `conditional` steps:
 - `hasEmailAddress`
 - `hasLinkedinUrl`
 - `hasPhoneNumber`
+- `customLeadInfo`
 - `hasScore`
 - `emailsOpened`
 - `emailsClicked`
@@ -80,3 +115,7 @@ For `conditional` steps:
 - `aircallDone`
 - `linkedinNetworkCheck`
 - `hasWhatsappAccount`
+
+A `customLeadInfo` step is patched with `customField` / `customOperator` / `customValue`; omitted
+fields keep their stored value, so `{ "type": "conditional", "customValue": "CTO" }` changes the
+tested value alone.

@@ -87,6 +87,7 @@
             "pages": [
               "api-reference/getting-started/overview",
               "api-reference/getting-started/authentication",
+              "api-reference/getting-started/multiple-accounts",
               "api-reference/getting-started/rate-limits"
             ]
           },
@@ -117,7 +118,8 @@
                 "expanded": false,
                 "pages": [
                   "api-reference/endpoints/users/get-user",
-                  "api-reference/endpoints/users/get-user-channels"
+                  "api-reference/endpoints/users/get-user-channels",
+                  "api-reference/endpoints/users/update-user-linkedin-limits"
                 ]
               },
               {
@@ -140,14 +142,31 @@
                   "api-reference/endpoints/campaigns/get-campaign-statutes",
                   "api-reference/endpoints/campaigns/start-campaign",
                   "api-reference/endpoints/campaigns/pause-campaign",
+                  "api-reference/endpoints/campaigns/skip-step-for-everyone",
+                  "api-reference/endpoints/campaigns/skip-step-for-leads",
+                  "api-reference/endpoints/campaigns/add-watch-list-trigger",
+                  "api-reference/endpoints/campaigns/remove-watch-list-trigger",
                   "api-reference/endpoints/campaigns/duplicate-campaign",
                   "api-reference/endpoints/campaigns/get-campaign-stats",
                   "api-reference/endpoints/campaigns/get-batch-campaign-stats",
                   "api-reference/endpoints/campaigns/start-campaign-export",
                   "api-reference/endpoints/campaigns/get-campaign-export-status",
                   "api-reference/endpoints/campaigns/set-export-email-notification",
+                  "api-reference/endpoints/campaigns/export-campaign-leads-v2",
                   "api-reference/endpoints/campaigns/export-campaign-leads",
                   "api-reference/endpoints/campaigns/get-campaign-reports"
+                ]
+              },
+              {
+                "group": "Senders",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/senders/list-senders",
+                  "api-reference/endpoints/senders/get-campaign-senders",
+                  "api-reference/endpoints/senders/add-campaign-senders",
+                  "api-reference/endpoints/senders/replace-campaign-senders",
+                  "api-reference/endpoints/senders/update-campaign-sender-channels",
+                  "api-reference/endpoints/senders/remove-campaign-sender"
                 ]
               },
               {
@@ -157,7 +176,37 @@
                   "api-reference/endpoints/sequences/get-campaign-sequences",
                   "api-reference/endpoints/sequences/add-step-to-sequence",
                   "api-reference/endpoints/sequences/update-sequence-step",
-                  "api-reference/endpoints/sequences/delete-sequence-step"
+                  "api-reference/endpoints/sequences/delete-sequence-step",
+                  "api-reference/endpoints/sequences/get-step-sender",
+                  "api-reference/endpoints/sequences/set-step-sender",
+                  "api-reference/endpoints/sequences/remove-step-sender",
+                  "api-reference/endpoints/sequences/list-condition-branches",
+                  "api-reference/endpoints/sequences/add-condition-branch",
+                  "api-reference/endpoints/sequences/reorder-condition-branches",
+                  "api-reference/endpoints/sequences/update-condition-branch",
+                  "api-reference/endpoints/sequences/delete-condition-branch",
+                  "api-reference/endpoints/sequences/create-ab-test-variant",
+                  "api-reference/endpoints/sequences/get-ab-test-variant",
+                  "api-reference/endpoints/sequences/update-ab-test-variant",
+                  "api-reference/endpoints/sequences/delete-ab-test-variant",
+                  "api-reference/endpoints/sequences/select-ab-test-winner"
+                ]
+              },
+              {
+                "group": "Message templates",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/message-templates/list-message-templates",
+                  "api-reference/endpoints/message-templates/list-message-template-tags",
+                  "api-reference/endpoints/message-templates/get-message-template"
+                ]
+              },
+              {
+                "group": "Snippets",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/snippets/list-snippets",
+                  "api-reference/endpoints/snippets/get-snippet"
                 ]
               },
               {
@@ -194,6 +243,9 @@
                   "api-reference/endpoints/leads/mark-lead-as-not-interested",
                   "api-reference/endpoints/leads/mark-lead-as-interested-in-campaign",
                   "api-reference/endpoints/leads/mark-lead-as-not-interested-in-campaign",
+                  "api-reference/endpoints/leads/skip-step-for-lead",
+                  "api-reference/endpoints/leads/personalize-step-for-lead",
+                  "api-reference/endpoints/leads/reset-step-personalization-for-lead",
                   "api-reference/endpoints/leads/import-leads-from-crm",
                   "api-reference/endpoints/leads/upload-audio-for-voice-message-step"
                 ]
@@ -203,8 +255,15 @@
                 "expanded": false,
                 "pages": [
                   "api-reference/endpoints/companies/upsert-company",
+                  "api-reference/endpoints/companies/get-company",
                   "api-reference/endpoints/companies/get-many-companies",
                   "api-reference/endpoints/companies/delete-company",
+                  "api-reference/endpoints/companies/merge-companies",
+                  "api-reference/endpoints/companies/search-and-connect-companies",
+                  "api-reference/endpoints/companies/create-companies-in-crm",
+                  "api-reference/endpoints/companies/get-company-lists",
+                  "api-reference/endpoints/companies/create-company-list",
+                  "api-reference/endpoints/companies/manage-company-list-entities",
                   "api-reference/endpoints/companies/create-company-note",
                   "api-reference/endpoints/companies/get-company-notes"
                 ]
@@ -216,10 +275,16 @@
                   "api-reference/endpoints/contacts/upsert-contact",
                   "api-reference/endpoints/contacts/get-contact",
                   "api-reference/endpoints/contacts/get-many-contacts",
+                  "api-reference/endpoints/contacts/delete-contact",
+                  "api-reference/endpoints/contacts/merge-contacts",
+                  "api-reference/endpoints/contacts/search-and-connect-contacts",
+                  "api-reference/endpoints/contacts/create-contacts-in-crm",
                   "api-reference/endpoints/contacts/get-contact-lists",
                   "api-reference/endpoints/contacts/create-contact-list",
                   "api-reference/endpoints/contacts/manage-contact-list-entities",
-                  "api-reference/endpoints/contacts/export-contact-list"
+                  "api-reference/endpoints/contacts/export-contact-list",
+                  "api-reference/endpoints/contacts/create-contact-note",
+                  "api-reference/endpoints/contacts/get-contact-notes"
                 ]
               },
               {
@@ -231,6 +296,7 @@
                   "api-reference/endpoints/inbox/send-email",
                   "api-reference/endpoints/inbox/send-linkedin-message",
                   "api-reference/endpoints/inbox/send-whatsapp-message",
+                  "api-reference/endpoints/inbox/send-sms-message",
                   "api-reference/endpoints/inbox/get-many-labels",
                   "api-reference/endpoints/inbox/get-label",
                   "api-reference/endpoints/inbox/create-label",
@@ -248,6 +314,8 @@
                 "expanded": false,
                 "pages": [
                   "api-reference/endpoints/tasks/create-task",
+                  "api-reference/endpoints/tasks/get-many-tasks-v2",
+                  "api-reference/endpoints/tasks/get-task-filters",
                   "api-reference/endpoints/tasks/get-many-tasks",
                   "api-reference/endpoints/tasks/update-task",
                   "api-reference/endpoints/tasks/ignore-tasks"
@@ -262,11 +330,22 @@
                 ]
               },
               {
+                "group": "Calls",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/calls/log-call",
+                  "api-reference/endpoints/calls/update-call",
+                  "api-reference/endpoints/calls/get-call",
+                  "api-reference/endpoints/calls/get-call-statuses"
+                ]
+              },
+              {
                 "group": "CRMs",
                 "expanded": false,
                 "pages": [
                   "api-reference/endpoints/crm/get-team-crm-users",
-                  "api-reference/endpoints/crm/get-crm-filters"
+                  "api-reference/endpoints/crm/get-crm-filters",
+                  "api-reference/endpoints/crm/get-crm-logs"
                 ]
               },
               {
@@ -320,7 +399,26 @@
                 "pages": [
                   "api-reference/endpoints/people-database/search-people-database",
                   "api-reference/endpoints/people-database/search-companies-database",
-                  "api-reference/endpoints/people-database/get-database-filters"
+                  "api-reference/endpoints/people-database/export-people-database",
+            "api-reference/endpoints/people-database/export-companies-database",
+            "api-reference/endpoints/people-database/get-database-filters",
+                  "api-reference/endpoints/people-database/list-personas",
+                  "api-reference/endpoints/people-database/create-persona",
+                  "api-reference/endpoints/people-database/delete-persona",
+                  "api-reference/endpoints/people-database/list-saved-searches",
+                  "api-reference/endpoints/people-database/create-saved-search",
+                  "api-reference/endpoints/people-database/get-saved-search",
+                  "api-reference/endpoints/people-database/update-saved-search",
+                  "api-reference/endpoints/people-database/delete-saved-search"
+                ]
+              },
+              {
+                "group": "Contact sourcing",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/contact-sourcing/run-contact-sourcing",
+                  "api-reference/endpoints/contact-sourcing/get-contact-sourcing-run",
+                  "api-reference/endpoints/contact-sourcing/add-sourced-contact"
                 ]
               },
               {
@@ -334,13 +432,33 @@
                 ]
               },
               {
+                "group": "Enrichment Providers",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/enrichment-providers/list-enrichment-providers",
+                  "api-reference/endpoints/enrichment-providers/connect-provider",
+                  "api-reference/endpoints/enrichment-providers/disconnect-provider"
+                ]
+              },
+              {
+                "group": "Enrichment Waterfalls",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/enrichment-waterfalls/list-enrichment-waterfalls",
+                  "api-reference/endpoints/enrichment-waterfalls/get-enrichment-waterfall",
+                  "api-reference/endpoints/enrichment-waterfalls/update-enrichment-waterfall",
+                  "api-reference/endpoints/enrichment-waterfalls/reset-enrichment-waterfall"
+                ]
+              },
+              {
                 "group": "lemwarm",
                 "expanded": false,
                 "pages": [
                   "api-reference/endpoints/lemwarm/start-lemwarm",
                   "api-reference/endpoints/lemwarm/pause-lemwarm",
                   "api-reference/endpoints/lemwarm/get-lemwarm-settings",
-                  "api-reference/endpoints/lemwarm/update-lemwarm-settings"
+                  "api-reference/endpoints/lemwarm/update-lemwarm-settings",
+                  "api-reference/endpoints/lemwarm/get-warmup-errors"
                 ]
               },
               {
@@ -355,12 +473,49 @@
               {
                 "group": "Signal Agents",
                 "expanded": false,
-                "pages": ["api-reference/endpoints/watch-list/get-signals"]
+                "pages": [
+                  "api-reference/endpoints/watch-list/list-watch-lists",
+                  "api-reference/endpoints/watch-list/create-watch-list",
+                  "api-reference/endpoints/watch-list/update-watch-list",
+                  "api-reference/endpoints/watch-list/associate-crm-lists",
+                  "api-reference/endpoints/watch-list/delete-watch-list",
+                  "api-reference/endpoints/watch-list/get-history",
+                  "api-reference/endpoints/watch-list/get-signals",
+                  "api-reference/endpoints/watch-list/mark-signals",
+                  "api-reference/endpoints/watch-list/push-external-signals",
+                  "api-reference/endpoints/watch-list/get-library",
+                  "api-reference/endpoints/watch-list/get-filters",
+                  "api-reference/endpoints/watch-list/get-filter-values"
+                ]
+              },
+              {
+                "group": "Deliverability alerts",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/deliverability-alerts/list-alerts",
+                  "api-reference/endpoints/deliverability-alerts/create-alert",
+                  "api-reference/endpoints/deliverability-alerts/get-alert",
+                  "api-reference/endpoints/deliverability-alerts/update-alert",
+                  "api-reference/endpoints/deliverability-alerts/delete-alert",
+                  "api-reference/endpoints/deliverability-alerts/list-incidents"
+                ]
+              },
+              {
+                "group": "Sender picture",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/sender-picture/get-sender-picture-status",
+                  "api-reference/endpoints/sender-picture/sync-sender-picture"
+                ]
               },
               {
                 "group": "Fields",
                 "expanded": false,
-                "pages": ["api-reference/endpoints/fields/list-fields"]
+                "pages": [
+                  "api-reference/endpoints/fields/list-fields",
+                  "api-reference/endpoints/fields/create-field",
+                  "api-reference/endpoints/fields/delete-field"
+                ]
               }
             ]
           },
@@ -387,23 +542,34 @@
                 "pages": [
                   "api-reference/objects-definitions/database",
                   "api-reference/objects-definitions/people-database",
-                  "api-reference/objects-definitions/company-database"
+                  "api-reference/objects-definitions/company-database",
+                  "api-reference/objects-definitions/persona",
+                  "api-reference/objects-definitions/saved-search"
                 ]
               },
               "api-reference/objects-definitions/crm-filter",
               "api-reference/objects-definitions/company",
               "api-reference/objects-definitions/lemwarm",
+              "api-reference/objects-definitions/warmup-error",
               "api-reference/objects-definitions/campaign-status",
               "api-reference/objects-definitions/channel",
               "api-reference/objects-definitions/sequence",
               "api-reference/objects-definitions/step",
+              "api-reference/objects-definitions/message-template",
+              "api-reference/objects-definitions/snippet",
               "api-reference/objects-definitions/schedule",
               "api-reference/objects-definitions/label",
               "api-reference/objects-definitions/report",
               "api-reference/objects-definitions/webhook",
               "api-reference/objects-definitions/mailbox",
               "api-reference/objects-definitions/company-note",
-              "api-reference/objects-definitions/signal"
+              "api-reference/objects-definitions/contact-note",
+              "api-reference/objects-definitions/crm-log",
+              "api-reference/objects-definitions/signal",
+              "api-reference/objects-definitions/watch-list",
+              "api-reference/objects-definitions/deliverability-alert",
+              "api-reference/objects-definitions/deliverability-incident",
+              "api-reference/objects-definitions/sender-picture"
             ]
           }
         ]
@@ -414,6 +580,20 @@
           {
             "group": "MCP",
             "pages": ["mcp/setup", "mcp/lemlist-agent"]
+          }
+        ]
+      },
+      {
+        "tab": "CLI",
+        "groups": [
+          {
+            "group": "CLI",
+            "pages": [
+              "cli/overview",
+              "cli/authentication",
+              "cli/commands",
+              "cli/output"
+            ]
           }
         ]
       },

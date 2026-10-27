@@ -1,0 +1,15 @@
+---
+openapi: patch /database/saved-searches/{savedSearchId}
+description: Renames a People Database saved search and/or replaces its filters.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Saved search" objectPath="saved-search" />
+
+<Note>
+Send at least one of `name` and `filters`. `filters` replace the saved ones entirely — they are not merged. `mode` is only read together with `filters` and defaults to the current mode of the saved search.
+</Note>
+
+<Warning>
+The filters and the name are applied as two separate writes. If the rename is refused because the name is already taken (`409`), the new filters are already saved.
+</Warning>

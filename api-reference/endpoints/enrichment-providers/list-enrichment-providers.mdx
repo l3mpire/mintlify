@@ -1,0 +1,8 @@
+---
+openapi: get /v2/enrichments/providers
+description: Lists the enrichment providers your team can place in a waterfall, for one enrichment type.
+---
+
+This is the catalog of legal `providers[].id` values for the waterfall endpoints: read it before updating a waterfall.
+
+An external provider shows `connected: false` until its API key is saved with [Connect Provider](/api-reference/endpoints/enrichment-providers/connect-provider); a waterfall cannot enable a provider that is not connected.

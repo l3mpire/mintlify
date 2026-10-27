@@ -5,3 +5,14 @@ description: Deletes a specific step from a sequence.
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Step" objectPath="step" />
+
+<Warning>
+This endpoint refuses any condition step that has **more than one branch** besides Else, with
+`400 Multi-branch conditions cannot be edited via the API yet.`
+
+Remove branches with
+[`DELETE …/branches/{branchSequenceId}`](/api-reference/endpoints/sequences/delete-condition-branch)
+until one is left, then delete the step here.
+</Warning>
+
+Deleting a condition step deletes the sequences behind its branches with it.

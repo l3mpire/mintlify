@@ -1,0 +1,6 @@
+---
+openapi: put /v2/enrichments/waterfalls/{waterfallId}/reset
+description: Hands a default enrichment waterfall back to lemlist, restoring its random provider order.
+---
+
+Only default waterfalls can be reset. A custom waterfall answers `400 ENRICHMENT_WATERFALL_NOT_DEFAULT`.
