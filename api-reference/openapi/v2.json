@@ -4395,7 +4395,8 @@
               "costCutting",
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
-              "githubStargazer"
+              "githubStargazer",
+              "companyRunningAds"
             ]
           },
           "status": {
@@ -4822,6 +4823,74 @@
                 "type": "string",
                 "description": "[promotion] Promotion start date"
               },
+              "adPlatform": {
+                "type": "string",
+                "description": "[companyRunningAds] Platform of the company's most recent ad",
+                "enum": [
+                  "linkedin",
+                  "facebook",
+                  "google",
+                  "tiktok",
+                  "apple"
+                ]
+              },
+              "adHeadline": {
+                "type": "string",
+                "description": "[companyRunningAds] Ad headline (truncated to 256 characters)"
+              },
+              "adFormat": {
+                "type": "string",
+                "description": "[companyRunningAds] Ad format",
+                "enum": [
+                  "image",
+                  "video",
+                  "text",
+                  "carousel",
+                  "dynamic_product",
+                  "document",
+                  "message",
+                  "event",
+                  "article",
+                  "spotlight",
+                  "follow",
+                  "job",
+                  "engagement"
+                ]
+              },
+              "adDestinationUrl": {
+                "type": "string",
+                "description": "[companyRunningAds] Landing page the ad links to (http(s) only, absent otherwise)"
+              },
+              "adTargetCountries": {
+                "type": "string",
+                "description": "[companyRunningAds] Countries the ad targets, ISO alpha-2 codes joined by `, ` (e.g. `FR, DE`)"
+              },
+              "adImpressions": {
+                "type": "string",
+                "description": "[companyRunningAds] Impression range reported by the provider (e.g. `10k-20k`, `< 1k`). Often absent while the ad is still running"
+              },
+              "adStartDate": {
+                "type": "string",
+                "format": "date-time",
+                "description": "[companyRunningAds] Ad start date (UTC midnight)"
+              },
+              "adEndDate": {
+                "type": "string",
+                "format": "date-time",
+                "description": "[companyRunningAds] Ad end date (UTC midnight). Absent while the ad is still running"
+              },
+              "adUrl": {
+                "type": "string",
+                "description": "[companyRunningAds] Link to the ad in the platform's ad library (http(s) only)"
+              },
+              "adImageUrl": {
+                "type": "string",
+                "description": "[companyRunningAds] Creative preview URL. Absent for non-image ads"
+              },
+              "adsCount": {
+                "type": "integer",
+                "description": "[companyRunningAds] Number of ads delivered for the company in this signal"
+              },
               "externalSignalCustomFields": {
                 "type": "object",
                 "description": "[externalSignalContact/externalSignalCompany] Custom fields map",
@@ -4892,7 +4961,8 @@
               "costCutting",
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
-              "githubStargazer"
+              "githubStargazer",
+              "companyRunningAds"
             ]
           },
           "status": {
@@ -5057,7 +5127,11 @@
               "crmListIds",
               "minJobCount",
               "timeframe",
-              "githubRepoUrls"
+              "githubRepoUrls",
+              "adPlatforms",
+              "adFormats",
+              "adTargetCountries",
+              "adSearchTerms"
             ]
           },
           "in": {
@@ -5368,7 +5442,8 @@
               "costCutting",
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
-              "githubStargazer"
+              "githubStargazer",
+              "companyRunningAds"
             ]
           },
           "entity": {
@@ -5502,7 +5577,8 @@
               "costCutting",
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
-              "githubStargazer"
+              "githubStargazer",
+              "companyRunningAds"
             ]
           },
           "title": {
@@ -35456,7 +35532,8 @@
                       "costCutting",
                       "outagesAndSecurityBreaches",
                       "lawsuitsAndLegalIssues",
-                      "githubStargazer"
+                      "githubStargazer",
+                      "companyRunningAds"
                     ]
                   },
                   "filters": {
@@ -36146,7 +36223,8 @@
                 "costCutting",
                 "outagesAndSecurityBreaches",
                 "lawsuitsAndLegalIssues",
-                "githubStargazer"
+                "githubStargazer",
+                "companyRunningAds"
               ]
             },
             "example": "companyIsHiring"
@@ -36242,7 +36320,11 @@
                 "seniority",
                 "crmListIds",
                 "minJobCount",
-                "timeframe"
+                "timeframe",
+                "adPlatforms",
+                "adFormats",
+                "adTargetCountries",
+                "adSearchTerms"
               ]
             },
             "example": "companyIndustries"
