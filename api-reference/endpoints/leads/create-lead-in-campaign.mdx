@@ -33,3 +33,25 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <Note>
   Company fields — `companyName`, `companyDomain`, `companyIndustry`, any `company`-prefixed key — reach the **company record** the lead is matched to, the same record every other lead linked to it reads, not that lead alone. Creating a lead with its company is the intended flow; to edit a company on purpose, use [Upsert Company](/api-reference/endpoints/companies/upsert-company).
 </Note>
+
+## Linking to a CRM record
+
+Send `crmId` with the id of a record in your connected CRM to link the lead's contact to that record. lemlist links it without searching the CRM, then runs a first sync that follows your field mapping (the CRM wins conflicts by default). The response's `hubspotLeadId`, `salesforceContactId`, `salesforceLeadId`, `pipedriveLeadId` or `attioLeadId` shows the record the contact is linked to.
+
+<Warning>
+`crmId` is in closed beta. Unless the CRM ID remap beta is enabled for your team, it is stored as a custom variable like any other key. It also requires an **admin** API key.
+</Warning>
+
+The id takes the formats of [Upsert Contact](/api-reference/endpoints/contacts/upsert-contact#linking-to-a-crm-record): a HubSpot, Pipedrive or Zoho numeric id (send a Zoho id as a string), an Attio record id, or a Salesforce Contact (`003…`) or Lead (`00Q…`) id.
+
+This call adds a lead: it never moves a link, and never refuses the lead because of its `crmId`.
+
+| Situation | Result |
+|-----------|--------|
+| No lemlist contact matches the lead | The contact is created already linked to that record. |
+| The contact the lead matches has no CRM link | It is linked to that record. |
+| The contact the lead matches is already linked to that record | The link stays as it is. |
+| The contact the lead matches is linked to another record | It keeps its link: `warnings` carries `CRM_ID_NOT_APPLIED`, `params.crmId` names the id sent. To move the link, send the contact's `contactId` and the `crmId` to [Upsert Contact](/api-reference/endpoints/contacts/upsert-contact#linking-to-a-crm-record), or change it from the contact page. |
+| Another lemlist contact, which the lead's email and LinkedIn URLs do not match, holds the id | The lead is added without the link: `warnings` carries `CRM_ID_ALREADY_LINKED`, `params.conflictingContactId` names that contact. |
+
+Any other reason the id cannot be applied — an API key that is not an admin's, an id that is not one of your CRM's, no CRM connected, a record missing, merged or converted in the CRM, a CRM that did not answer — adds the lead without the link and names the reason in `warnings` (see the `200` response).
