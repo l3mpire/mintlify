@@ -330,6 +330,16 @@
                 ]
               },
               {
+                "group": "Calls",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/calls/log-call",
+                  "api-reference/endpoints/calls/update-call",
+                  "api-reference/endpoints/calls/get-call",
+                  "api-reference/endpoints/calls/get-call-statuses"
+                ]
+              },
+              {
                 "group": "CRMs",
                 "expanded": false,
                 "pages": [
