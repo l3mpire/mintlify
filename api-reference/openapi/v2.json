@@ -6849,6 +6849,242 @@
             "description": "Machine-readable error code, stable across releases"
           }
         }
+      },
+      "Domain": {
+        "type": "object",
+        "description": "A domain the team bought or is transferring through lemlist.",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Unique domain identifier",
+            "example": "dom_Kd8Wq2Lr5Tx9Mz3Pv"
+          },
+          "domain": {
+            "type": "string",
+            "description": "Domain name, lowercase",
+            "example": "getacme.com"
+          },
+          "registrar": {
+            "type": "string",
+            "enum": [
+              "google",
+              "m365",
+              "infraforge"
+            ],
+            "description": "Mailbox provider chosen at purchase. It is permanent: a `google` domain only gets Google Workspace mailboxes, `m365` only Microsoft 365, `infraforge` only SMTP."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ordered",
+              "paid",
+              "registered",
+              "pending",
+              "automating",
+              "active"
+            ],
+            "description": "Setup progress. `ordered`: waiting for payment. `paid`: being registered or transferred. `registered`: DNS being set up. `pending`: DNS checks and mailboxes in progress. `automating`: Google Workspace post-setup (DKIM, mailbox connection) running. `active`: ready."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Order date"
+          },
+          "emailCount": {
+            "type": "integer",
+            "description": "Number of mailboxes ordered on the domain",
+            "example": 0
+          }
+        },
+        "required": [
+          "_id",
+          "domain",
+          "registrar",
+          "status",
+          "createdAt",
+          "emailCount"
+        ]
+      },
+      "DomainSearchResult": {
+        "type": "object",
+        "description": "Availability of one domain name.",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "example": "getacme.com"
+          },
+          "available": {
+            "type": "boolean",
+            "description": "Whether the domain can be bought through lemlist"
+          },
+          "price": {
+            "type": "number",
+            "description": "Yearly price of the domain, renewal included at the same price. Mailboxes are billed separately.",
+            "example": 15
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency of the registrar quote",
+            "example": "USD"
+          },
+          "providers": {
+            "type": "array",
+            "description": "Providers that can register the domain, with their price. Pass one of them as `provider` to Purchase Domain. Empty when the domain is unavailable.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "enum": [
+                    "google",
+                    "m365",
+                    "infraforge"
+                  ]
+                },
+                "price": {
+                  "type": "number",
+                  "example": 15
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "domain",
+          "available",
+          "providers"
+        ]
+      },
+      "DomainBillingContact": {
+        "type": "object",
+        "description": "Registrant contact of the team, sent to the registrar. Stored on the team and reused for every later purchase; sending it again overwrites the stored one.",
+        "additionalProperties": false,
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Must not be an address on the domain being bought.",
+            "example": "john@example.com"
+          },
+          "phone": {
+            "type": "string",
+            "description": "International format. The phone country must match a real number.",
+            "example": "+15555550123"
+          },
+          "name": {
+            "type": "string",
+            "description": "Organization name",
+            "example": "Acme Inc"
+          },
+          "line1": {
+            "type": "string",
+            "description": "Street address",
+            "example": "1 Main Street"
+          },
+          "city": {
+            "type": "string",
+            "example": "Springfield"
+          },
+          "postalCode": {
+            "type": "string",
+            "description": "Required for most countries",
+            "example": "12345"
+          },
+          "countryCode": {
+            "type": "string",
+            "description": "ISO 3166-1 alpha-2 country of the address",
+            "example": "US"
+          },
+          "state": {
+            "type": "string",
+            "description": "Required for US, CA, CH, IN, IT and AU: its name or ISO 3166-2 code (`CA`, `US-CA`).",
+            "example": "CA"
+          },
+          "companyIdentificationCode": {
+            "type": "string",
+            "description": "SIREN/SIRET. Required to register a `.fr` or `.be` domain with `google` or `m365`."
+          },
+          "vatIdentificationCode": {
+            "type": "string",
+            "description": "VAT number, used for `.fr` and `.be` domains"
+          }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "phone",
+          "name",
+          "line1",
+          "city",
+          "countryCode"
+        ]
+      },
+      "DomainMailbox": {
+        "type": "object",
+        "description": "A mailbox bought on a lemlist domain.",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Unique mailbox identifier",
+            "example": "dem_Rb4Nc7Fy1Hs6Jq0Wt"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john@getacme.com"
+          },
+          "domainId": {
+            "type": "string",
+            "example": "dom_Kd8Wq2Lr5Tx9Mz3Pv"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ordered",
+              "paid",
+              "registered",
+              "pending",
+              "active"
+            ],
+            "description": "Setup progress. `ordered`: waiting for the domain to be ready and for payment. `paid` to `pending`: being created at the provider. `active`: created. See the warning on List Domain Mailboxes about connecting it."
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "google",
+              "m365",
+              "infraforge"
+            ]
+          },
+          "assignedToUserId": {
+            "type": "string",
+            "nullable": true,
+            "description": "The team member who sends from this mailbox",
+            "example": "usr_Ye6Ta3Uo8Ic1Mn7Bh"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "_id",
+          "email",
+          "domainId",
+          "status",
+          "provider",
+          "assignedToUserId",
+          "createdAt"
+        ]
       }
     },
     "responses": {
@@ -40948,6 +41184,853 @@
           },
           "500": {
             "$ref": "#/components/responses/EnrichmentWaterfallInternalError"
+          }
+        }
+      }
+    },
+    "/domains-core/search": {
+      "post": {
+        "summary": "Search Domains",
+        "description": "Checks whether a domain can be bought through lemlist, with its price and the providers that can register it.",
+        "operationId": "searchDomains",
+        "tags": [
+          "Domains"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "base": {
+                    "type": "string",
+                    "description": "A full domain name to check",
+                    "example": "getacme.com"
+                  },
+                  "includeSuggestions": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Also check variants on `.com`, `.net` and `.ai` and with or without a `get` prefix, up to 9 names in total"
+                  }
+                },
+                "required": [
+                  "base"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Availability of the requested name, then of the variants",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "domains": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/DomainSearchResult"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "domains": [
+                    {
+                      "domain": "getacme.com",
+                      "available": true,
+                      "price": 15,
+                      "currency": "USD",
+                      "providers": [
+                        {
+                          "name": "google",
+                          "price": 15
+                        },
+                        {
+                          "name": "m365",
+                          "price": 15
+                        },
+                        {
+                          "name": "infraforge",
+                          "price": 15
+                        }
+                      ]
+                    },
+                    {
+                      "domain": "getacme.net",
+                      "available": false,
+                      "price": 0,
+                      "providers": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`base` is not a domain name, or the API key has no user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Match error: Failed Match.Where validation"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Unauthorized"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The API key user lacks the Manage domains permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "You do not have permission to perform this action"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Internal error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/domains-core/team-domains": {
+      "get": {
+        "summary": "List Domains",
+        "description": "Lists the team's domains bought or being transferred through lemlist, canceled ones excluded.",
+        "operationId": "listDomains",
+        "tags": [
+          "Domains"
+        ],
+        "responses": {
+          "200": {
+            "description": "The team's domains",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "domains": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Domain"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "domains": [
+                    {
+                      "_id": "dom_Kd8Wq2Lr5Tx9Mz3Pv",
+                      "domain": "getacme.com",
+                      "registrar": "google",
+                      "status": "active",
+                      "createdAt": "2026-01-15T10:30:00.000Z",
+                      "emailCount": 2
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Unauthorized"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Internal error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/domains-core/purchase": {
+      "post": {
+        "summary": "Purchase Domain",
+        "description": "Orders a domain, or a transfer of a domain you own elsewhere, and bills the team. The domain is then set up in the background.",
+        "operationId": "purchaseDomain",
+        "tags": [
+          "Domains"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "domain": {
+                    "type": "string",
+                    "description": "Domain to buy or transfer",
+                    "example": "getacme.com"
+                  },
+                  "provider": {
+                    "type": "string",
+                    "enum": [
+                      "google",
+                      "m365",
+                      "infraforge"
+                    ],
+                    "default": "infraforge",
+                    "description": "Mailbox provider of the domain, permanent: `google` (Google Workspace), `m365` (Microsoft 365) or `infraforge` (SMTP). Pick one listed in the Search Domains `providers`. A transfer requires `google`."
+                  },
+                  "isTransfer": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Transfer a domain registered elsewhere instead of registering a new one"
+                  },
+                  "authCode": {
+                    "type": "string",
+                    "description": "Transfer authorization code from the current registrar. Required when `isTransfer` is `true`."
+                  },
+                  "dnsRecords": {
+                    "type": "array",
+                    "description": "Transfer only: records to recreate on the zone once the transfer completes. Ignored for a registration.",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "hostName": {
+                          "type": "string",
+                          "example": "www"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "TXT",
+                            "CNAME",
+                            "A",
+                            "AAAA",
+                            "NS",
+                            "MX",
+                            "SRV"
+                          ]
+                        },
+                        "value": {
+                          "type": "string",
+                          "example": "example.com"
+                        },
+                        "ttl": {
+                          "type": "integer",
+                          "example": 3600
+                        },
+                        "priority": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "hostName",
+                        "type",
+                        "value"
+                      ]
+                    }
+                  },
+                  "billingContact": {
+                    "$ref": "#/components/schemas/DomainBillingContact"
+                  }
+                },
+                "required": [
+                  "domain"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Domain ordered, or already ordered by the team (`alreadyOwned: true`, nothing billed)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "domain": {
+                      "$ref": "#/components/schemas/Domain"
+                    },
+                    "alreadyOwned": {
+                      "type": "boolean",
+                      "description": "True when the team already had a live order for this domain: the call billed nothing and returns that order."
+                    }
+                  },
+                  "required": [
+                    "domain",
+                    "alreadyOwned"
+                  ]
+                },
+                "example": {
+                  "domain": {
+                    "_id": "dom_Kd8Wq2Lr5Tx9Mz3Pv",
+                    "domain": "getacme.com",
+                    "registrar": "google",
+                    "status": "ordered",
+                    "createdAt": "2026-01-15T10:30:00.000Z",
+                    "emailCount": 0
+                  },
+                  "alreadyOwned": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request or contact: malformed field, missing or incomplete billing contact, address the registrar cannot verify, contact refused by the registrar, missing SIREN/SIRET for a `.fr`/`.be` domain, registrant country not accepted by the extension, Google Workspace unavailable in the contact country, transfer without `authCode` or with another provider than `google`, or the API key has no user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "A domain billing contact is required before purchasing. Provide the billingContact field, then retry."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Unauthorized"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The API key user lacks the Manage domains permission, or the team cannot buy domains",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "You do not have permission to perform this action"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The domain cannot be ordered: taken, already ordered through lemlist (including a past order that failed), its extension cannot be transferred, no transfer price, or it already has a Google Workspace",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "This domain was already purchased or is not available anymore."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Internal error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/domains-core/{domainId}/mailboxes": {
+      "post": {
+        "summary": "Order Mailboxes",
+        "description": "Orders mailboxes on one of the team's domains and bills the team. The mailboxes are created in the background.",
+        "operationId": "orderDomainMailboxes",
+        "tags": [
+          "Domains"
+        ],
+        "parameters": [
+          {
+            "name": "domainId",
+            "in": "path",
+            "required": true,
+            "description": "The domain, from List Domains or Purchase Domain",
+            "example": "dom_Kd8Wq2Lr5Tx9Mz3Pv",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "emails": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "username": {
+                          "type": "string",
+                          "description": "Local part of the address, lowercased: `john` for `john@getacme.com`",
+                          "example": "john"
+                        },
+                        "sendername": {
+                          "type": "string",
+                          "description": "Display name of an `infraforge` (SMTP) mailbox. Google Workspace and Microsoft 365 mailboxes take the name of the assigned user.",
+                          "example": "John Doe"
+                        },
+                        "assignToUser": {
+                          "type": "string",
+                          "description": "Team member who will send from the mailbox. Defaults to the API key user, so pass it for every mailbox when ordering for several people.",
+                          "example": "usr_Ye6Ta3Uo8Ic1Mn7Bh"
+                        },
+                        "workspaceAdmin": {
+                          "type": "boolean",
+                          "description": "`google` domains only: the mailbox that becomes the Google Workspace super admin. Only applies while the domain has no admin yet; without it, lemlist picks one of the ordered mailboxes."
+                        }
+                      },
+                      "required": [
+                        "username"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "emails"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Mailboxes ordered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "added": {
+                      "type": "integer"
+                    },
+                    "mailboxes": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string"
+                          },
+                          "email": {
+                            "type": "string",
+                            "format": "email"
+                          },
+                          "assignToUser": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "added": 2,
+                  "mailboxes": [
+                    {
+                      "_id": "dem_Rb4Nc7Fy1Hs6Jq0Wt",
+                      "email": "john@getacme.com",
+                      "assignToUser": "usr_Ye6Ta3Uo8Ic1Mn7Bh"
+                    },
+                    {
+                      "_id": "dem_Zp2Gx8Vm4Lk9Ds5Qe",
+                      "email": "jane@getacme.com",
+                      "assignToUser": "usr_Wf3Kp9Rd2Nz6Xc4Lj"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed body, unknown `domainId`, or the API key has no user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Match error: Expected object, got undefined"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Unauthorized"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The API key user lacks the Manage domains permission, or the team cannot buy mailboxes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "You do not have permission to perform this action"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The order is refused, nothing billed: invalid or duplicate address, address already taken, assignee outside the team, canceled domain, nameservers not pointing to lemlist (Google), Google Workspace held elsewhere, reserved username or assignee without a last name (Microsoft 365), more than 10 SMTP mailboxes on the domain",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Some emails are already taken"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Internal error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "The Google Workspace status could not be checked; retry later",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Unable to verify your workspace status. Please try again in a moment."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/domains-core/mailboxes": {
+      "get": {
+        "summary": "List Domain Mailboxes",
+        "description": "Lists the mailboxes bought on the team's lemlist domains, newest first, canceled ones excluded.",
+        "operationId": "listDomainMailboxes",
+        "tags": [
+          "Domains"
+        ],
+        "parameters": [
+          {
+            "name": "domainId",
+            "in": "query",
+            "required": false,
+            "description": "Only the mailboxes of this domain",
+            "example": "dom_Kd8Wq2Lr5Tx9Mz3Pv",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The mailboxes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "mailboxes": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/DomainMailbox"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "mailboxes": [
+                    {
+                      "_id": "dem_Rb4Nc7Fy1Hs6Jq0Wt",
+                      "email": "john@getacme.com",
+                      "domainId": "dom_Kd8Wq2Lr5Tx9Mz3Pv",
+                      "status": "active",
+                      "provider": "google",
+                      "assignedToUserId": "usr_Ye6Ta3Uo8Ic1Mn7Bh",
+                      "createdAt": "2026-01-15T10:31:00.000Z"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`domainId` is not a domain id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Match error: Failed Match.OneOf, Match.Maybe or Match.Optional validation"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Unauthorized"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Internal error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/domains-core/mailboxes/{mailboxId}": {
+      "patch": {
+        "summary": "Update Domain Mailbox",
+        "description": "Assigns a mailbox bought through lemlist to another team member.",
+        "operationId": "updateDomainMailbox",
+        "tags": [
+          "Domains"
+        ],
+        "parameters": [
+          {
+            "name": "mailboxId",
+            "in": "path",
+            "required": true,
+            "description": "The mailbox, from List Domain Mailboxes or Order Mailboxes",
+            "example": "dem_Rb4Nc7Fy1Hs6Jq0Wt",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "assignToUserId": {
+                    "type": "string",
+                    "description": "Team member who will send from the mailbox",
+                    "example": "usr_Wf3Kp9Rd2Nz6Xc4Lj"
+                  }
+                },
+                "required": [
+                  "assignToUserId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Mailbox updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "mailboxId": {
+                      "type": "string"
+                    },
+                    "applied": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Fields applied"
+                    },
+                    "assignedToUserId": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "ok": true,
+                  "mailboxId": "dem_Rb4Nc7Fy1Hs6Jq0Wt",
+                  "applied": [
+                    "assignToUserId"
+                  ],
+                  "assignedToUserId": "usr_Wf3Kp9Rd2Nz6Xc4Lj"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No field to update, or malformed id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "At least one update field must be provided"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Unauthorized"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The API key user lacks the Manage domains permission, or the target user is not in the team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "User is not part of current team"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No mailbox with this id in the team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Mailbox not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Internal error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "The mail provider refused the change; retry later",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorMessage"
+                },
+                "example": {
+                  "error": "Error while assigning mailbox to user. Please try again later."
+                }
+              }
+            }
           }
         }
       }

@@ -1,0 +1,16 @@
+---
+openapi: post /domains-core/search
+description: Checks whether a domain can be bought through lemlist, with its price and the providers that can register it.
+---
+
+Pass one of the returned `providers` as `provider` to [Purchase Domain](/api-reference/endpoints/domains/purchase-domain). The provider sets the mailbox type of the domain for good, so pick it from the mailboxes you want (Google Workspace, Microsoft 365 or SMTP), not from the domain price.
+
+<Note>
+`price` is the yearly price of the domain. Mailboxes are billed on top, monthly, per mailbox.
+
+A domain already ordered through lemlist, by any team, reads `available: false`, including an order that failed or was canceled.
+</Note>
+
+<Warning>
+Requires the **Manage domains** permission on the user of the API key.
+</Warning>
