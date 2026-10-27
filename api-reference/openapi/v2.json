@@ -1629,7 +1629,7 @@
               },
               "searching": {
                 "type": "boolean",
-                "description": "`true` while a CRM search (Search & connect, Create in CRM) is queued or running for this contact. A search started more than 15 minutes ago no longer counts: it stalled."
+                "description": "`true` while a CRM search (Search & connect, Create in CRM) is queued or running for this contact, however long the queue takes. A search marked running more than 15 minutes ago with nothing left in the queue stalled: the read clears it and returns `false`."
               },
               "notFoundAt": {
                 "type": "string",
@@ -1769,7 +1769,7 @@
               },
               "searching": {
                 "type": "boolean",
-                "description": "`true` while a CRM search (Search & connect, Create in CRM) is queued or running for this contact. A search started more than 15 minutes ago no longer counts: it stalled."
+                "description": "`true` while a CRM search (Search & connect, Create in CRM) is queued or running for this contact, however long the queue takes. A search marked running more than 15 minutes ago with nothing left in the queue stalled: the read clears it and returns `false`."
               },
               "notFoundAt": {
                 "type": "string",
@@ -1893,7 +1893,7 @@
               },
               "searching": {
                 "type": "boolean",
-                "description": "`true` while a CRM search (Search & connect, Create in CRM) is queued or running for this company. A search started more than 15 minutes ago no longer counts: it stalled."
+                "description": "`true` while a CRM search (Search & connect, Create in CRM) is queued or running for this company, however long the queue takes. A search marked running more than 15 minutes ago with nothing left in the queue stalled: the read clears it and returns `false`."
               },
               "notFoundAt": {
                 "type": "string",
@@ -24481,7 +24481,7 @@
             "name": "crmSyncStatus",
             "in": "query",
             "required": false,
-            "description": "Filter contacts by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, or Pipedrive) to be connected — otherwise the request returns `400 NO_CRM_CONNECTED`. Values:\n- `synced` — the contact has a CRM record and no sync errors.\n- `not_synced` — the contact has no CRM record yet.\n- `searching` — a CRM search (Search & connect, Create in CRM), started less than 15 minutes ago, is queued or running for the contact.\n- `not_found` — the last CRM search found no record for the contact.\n- `error` — at least one sync error is currently raised, whatever its reason.\n- A specific error reason (lowercase form), to filter by root cause:\n  - `invalid_email` — the CRM refused the contact's email.\n  - `property_doesnt_exist` — a mapped property does not exist in the CRM.\n  - `required_field_missing` — a field the CRM requires is missing.\n  - `unique_index_error_contact` — the CRM record is already synced with another lemlist contact.\n  - `contact_already_exists_with_name`, `contact_already_exists_with_linkedin_url`, `contact_already_exists_with_email` — a CRM contact already exists with the same first and last name, LinkedIn URL or email.\n  - `contact_blocked_by_company` — contact not created: its company already exists in the CRM.\n  - `contact_blocked_by_company_search` — contact not created: the company search is incomplete, retried later.\n  - `contact_blocked_by_company_without_name` — contact not created: its company needs a name to be found in the CRM.\n  - `contact_blocked_by_company_without_key` — contact not created: its company needs a domain or LinkedIn URL to be found in the CRM.\n  - `contact_blocked_by_company_already_synced` — contact not created: its company is already synced with another lemlist company.\n\nOnly applies to the paginated list — ignored when `idsOrEmails` or `crmIds` is provided.",
+            "description": "Filter contacts by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, or Pipedrive) to be connected — otherwise the request returns `400 NO_CRM_CONNECTED`. Values:\n- `synced` — the contact has a CRM record and no sync errors.\n- `not_synced` — the contact has no CRM record yet.\n- `searching` — a CRM search (Search & connect, Create in CRM) is queued or running for the contact.\n- `not_found` — the last CRM search found no record for the contact.\n- `error` — at least one sync error is currently raised, whatever its reason.\n- A specific error reason (lowercase form), to filter by root cause:\n  - `invalid_email` — the CRM refused the contact's email.\n  - `property_doesnt_exist` — a mapped property does not exist in the CRM.\n  - `required_field_missing` — a field the CRM requires is missing.\n  - `unique_index_error_contact` — the CRM record is already synced with another lemlist contact.\n  - `contact_already_exists_with_name`, `contact_already_exists_with_linkedin_url`, `contact_already_exists_with_email` — a CRM contact already exists with the same first and last name, LinkedIn URL or email.\n  - `contact_blocked_by_company` — contact not created: its company already exists in the CRM.\n  - `contact_blocked_by_company_search` — contact not created: the company search is incomplete, retried later.\n  - `contact_blocked_by_company_without_name` — contact not created: its company needs a name to be found in the CRM.\n  - `contact_blocked_by_company_without_key` — contact not created: its company needs a domain or LinkedIn URL to be found in the CRM.\n  - `contact_blocked_by_company_already_synced` — contact not created: its company is already synced with another lemlist company.\n\nOnly applies to the paginated list — ignored when `idsOrEmails` or `crmIds` is provided.",
             "example": "error",
             "schema": {
               "type": "string",
@@ -24763,6 +24763,23 @@
           },
           "405": {
             "description": "Method not allowed"
+          },
+          "504": {
+            "description": "`READ_TOO_SLOW`: a `crmSyncStatus` read took more than 10 seconds. Without a `listId`, that filter reads every contact of the team: pass a `listId` to narrow it; the same request will time out again.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "READ_TOO_SLOW",
+                    "message": "The read took too long: pass a listId to narrow crmSyncStatus"
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -27150,7 +27167,7 @@
             "name": "crmSyncStatus",
             "in": "query",
             "required": false,
-            "description": "Filter companies by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, or Pipedrive) to be connected — otherwise the request returns `400 NO_CRM_CONNECTED`. Common values:\n- `synced` — the company has a CRM record and no sync errors.\n- `not_synced` — the company has no CRM record yet.\n- `searching` — a CRM search (Search & connect, Create in CRM), started less than 15 minutes ago, is queued or running for the company.\n- `not_found` — the last CRM search found no record for the company.\n- `error` — at least one sync error is currently raised.\n- A specific error reason (lowercase form), to filter by root cause: `unique_index_error_company`, `property_doesnt_exist`, `required_field_missing`, `company_already_exists_with_name`, `company_already_exists_with_linkedin_url`.\n\nFor each returned company, see `crmSync.errors[].metadata.alreadyExistingCompanyId` to identify the lemlist company that already occupies the conflicting CRM record (useful to remap contacts before deleting the duplicate).",
+            "description": "Filter companies by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, or Pipedrive) to be connected — otherwise the request returns `400 NO_CRM_CONNECTED`. Common values:\n- `synced` — the company has a CRM record and no sync errors.\n- `not_synced` — the company has no CRM record yet.\n- `searching` — a CRM search (Search & connect, Create in CRM) is queued or running for the company.\n- `not_found` — the last CRM search found no record for the company.\n- `error` — at least one sync error is currently raised.\n- A specific error reason (lowercase form), to filter by root cause: `unique_index_error_company`, `property_doesnt_exist`, `required_field_missing`, `company_already_exists_with_name`, `company_already_exists_with_linkedin_url`.\n\nFor each returned company, see `crmSync.errors[].metadata.alreadyExistingCompanyId` to identify the lemlist company that already occupies the conflicting CRM record (useful to remap contacts before deleting the duplicate).",
             "example": "unique_index_error_company",
             "schema": {
               "type": "string",
@@ -27414,6 +27431,23 @@
           },
           "405": {
             "description": "Method not allowed"
+          },
+          "504": {
+            "description": "`READ_TOO_SLOW`: a `crmSyncStatus` read took more than 10 seconds. Without a `listId`, that filter reads every company of the team: pass a `listId` to narrow it; the same request will time out again.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "READ_TOO_SLOW",
+                    "message": "The read took too long: pass a listId to narrow crmSyncStatus"
+                  }
+                }
+              }
+            }
           }
         }
       },
