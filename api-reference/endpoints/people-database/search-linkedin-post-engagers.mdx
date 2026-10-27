@@ -10,7 +10,7 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <Warning>
 This endpoint is paid. Each call debits 50 credits once the post has been read, even when nobody engaged with it and the search returns no one. A `200` always means credits were debited, and no error code debits credits.
 
-Never call it again on the same post to get the next pages or to refine the filters. Pass the `search` id of the response as `fromSearchId` to [Search People database](/api-reference/endpoints/people-database/search-people-database), which does not bill the post again.
+Never call it again on the same post to get the next pages or to refine the filters. Pass the `search` id of the response as `fromSearchId` to [Search People database](/api-reference/endpoints/people-database/search-people-database), which does not bill the post again. It debits no credits, but it counts in your 24-hour People Database search quota, like any search.
 </Warning>
 
 <Note>

@@ -18930,7 +18930,7 @@
     "/database/people/linkedin-post-engagement": {
       "post": {
         "summary": "Search LinkedIn Post Engagers",
-        "description": "Finds the people who commented on or reacted to a LinkedIn post and returns them as People Database rows, in a single call.\n\nThe post is read first, then the engagers are searched in the People Database. Comments are collected before reactions, the post author is excluded and the slugs are deduplicated, for at most 1000 people. `filters` are applied to the engagers in the same search, for example to keep one country.\n\nThis endpoint is paid: each call debits 50 credits once the post has been read, even when the search finds nobody. A `200` always means credits were debited, and no error code debits credits.\n\nThe response carries a `search` id. To get the next pages or to refine the filters, send it as `fromSearchId` to `POST /database/people`, which is free. Do not call this endpoint again on the same post for that, it would be billed again.",
+        "description": "Finds the people who commented on or reacted to a LinkedIn post and returns them as People Database rows, in a single call.\n\nThe post is read first, then the engagers are searched in the People Database. Comments are collected before reactions, the post author is excluded and the slugs are deduplicated, for at most 1000 people. `filters` are applied to the engagers in the same search, for example to keep one country.\n\nThis endpoint is paid: each call debits 50 credits once the post has been read, even when the search finds nobody. A `200` always means credits were debited, and no error code debits credits.\n\nThe response carries a `search` id. To get the next pages or to refine the filters, send it as `fromSearchId` to `POST /database/people`. This debits no credits, but it counts in the 24-hour People Database search quota, like any search. Do not call this endpoint again on the same post for that, it would be billed again.",
         "operationId": "searchLinkedInPostEngagers",
         "tags": [
           "People Database"
@@ -19051,7 +19051,7 @@
                         },
                         "search": {
                           "type": "string",
-                          "description": "Id of the People Database search. Send it as `fromSearchId` to `POST /database/people` to get the next pages or refine the filters for free. Absent when nobody engaged with the post."
+                          "description": "Id of the People Database search. Send it as `fromSearchId` to `POST /database/people` to get the next pages or refine the filters. This debits no credits, but it counts in the 24-hour People Database search quota, like any search. Absent when nobody engaged with the post."
                         },
                         "people": {
                           "type": "object",
@@ -19150,21 +19150,21 @@
                   "ROUTE_BAD_REQUEST": {
                     "summary": "ROUTE_BAD_REQUEST",
                     "value": {
-                      "error": "Request body does not match the expected schema",
+                      "error": "Route bad request",
                       "code": "ROUTE_BAD_REQUEST"
                     }
                   },
                   "LINKEDIN_POST_ENGAGEMENT_INVALID_URL": {
                     "summary": "LINKEDIN_POST_ENGAGEMENT_INVALID_URL",
                     "value": {
-                      "error": "The url is not a LinkedIn post link",
+                      "error": "This link is not a LinkedIn post; paste the link of a LinkedIn post",
                       "code": "LINKEDIN_POST_ENGAGEMENT_INVALID_URL"
                     }
                   },
                   "LINKEDIN_POST_ENGAGEMENT_INVALID_FILTERS": {
                     "summary": "LINKEDIN_POST_ENGAGEMENT_INVALID_FILTERS",
                     "value": {
-                      "error": "The filters are not valid for a LinkedIn post engagement search",
+                      "error": "filters must be People Database leads filters available over the API, without linkedinPostEngagement or leadLinkedInSlug: the search sets those itself",
                       "code": "LINKEDIN_POST_ENGAGEMENT_INVALID_FILTERS"
                     }
                   }
@@ -19191,21 +19191,21 @@
                   "LINKEDIN_POST_ENGAGEMENT_PAID_PLAN_REQUIRED": {
                     "summary": "LINKEDIN_POST_ENGAGEMENT_PAID_PLAN_REQUIRED",
                     "value": {
-                      "error": "A paid plan is required (free trial, no subscription or cancelled subscription)",
+                      "error": "The LinkedIn post engagement search is only available on a paid plan; upgrade to use it",
                       "code": "LINKEDIN_POST_ENGAGEMENT_PAID_PLAN_REQUIRED"
                     }
                   },
                   "LINKEDIN_POST_ENGAGEMENT_INSUFFICIENT_CREDITS": {
                     "summary": "LINKEDIN_POST_ENGAGEMENT_INSUFFICIENT_CREDITS",
                     "value": {
-                      "error": "Not enough credits for this search",
+                      "error": "Not enough credits. Buy credits to use this feature.",
                       "code": "LINKEDIN_POST_ENGAGEMENT_INSUFFICIENT_CREDITS"
                     }
                   },
                   "limit-reached": {
                     "summary": "limit-reached",
                     "value": {
-                      "error": "Limit reached",
+                      "error": "Monthly credit limit reached. Please contact your admin to get more",
                       "code": "limit-reached"
                     }
                   }
@@ -19231,14 +19231,14 @@
                   "linkedin-not-linked": {
                     "summary": "linkedin-not-linked",
                     "value": {
-                      "error": "No LinkedIn account is linked",
+                      "error": "LinkedIn account not linked",
                       "code": "linkedin-not-linked"
                     }
                   },
                   "LINKEDIN_POST_ENGAGEMENT_SEARCH_QUOTA_REACHED": {
                     "summary": "LINKEDIN_POST_ENGAGEMENT_SEARCH_QUOTA_REACHED",
                     "value": {
-                      "error": "The 24-hour People Database search quota is reached",
+                      "error": "The team has reached its People Database search quota for the last 24 hours; no credits were spent, try again later",
                       "code": "LINKEDIN_POST_ENGAGEMENT_SEARCH_QUOTA_REACHED"
                     }
                   }
@@ -19257,7 +19257,7 @@
                   "$ref": "#/components/schemas/PersonaError"
                 },
                 "example": {
-                  "error": "The LinkedIn post is unavailable",
+                  "error": "This LinkedIn post could not be read; it may be private or deleted, check the link",
                   "code": "LINKEDIN_POST_ENGAGEMENT_POST_UNAVAILABLE"
                 }
               }
@@ -19271,7 +19271,7 @@
                   "$ref": "#/components/schemas/PersonaError"
                 },
                 "example": {
-                  "error": "LinkedIn data is unavailable",
+                  "error": "LinkedIn data is temporarily unavailable; no credits were spent, try again in a minute",
                   "code": "LINKEDIN_POST_ENGAGEMENT_PROVIDER_FAILED"
                 }
               }
