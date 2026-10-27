@@ -8827,6 +8827,112 @@
         }
       }
     },
+    "/campaigns/{campaignId}/abm-leads": {
+      "parameters": [
+        {
+          "name": "campaignId",
+          "in": "path",
+          "required": true,
+          "description": "The ABM campaign, opened with Engage on a company",
+          "example": "cam_A1B2C3D4E5F6G7H8I9",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Add ABM Campaign Leads",
+        "tags": [
+          "Campaigns"
+        ],
+        "description": "**Beta**: requires the ABM beta on your team, otherwise the call answers `403 BETA_NOT_ENABLED`.\n\nAdds People Database people to an account-based (ABM) campaign. Each person becomes a contact filed under the campaign's company, whatever their profile lists as their current employer, then a lead of the campaign. Someone your workspace already has as a contact of another company is skipped, never moved.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "leadIds"
+                ],
+                "properties": {
+                  "leadIds": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 199,
+                    "description": "People Database ids, from People Database search results or a contact-sourcing run's `contacts[].leadId`.",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "example": {
+                "leadIds": [
+                  "123456789",
+                  "987654321"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "What the call did. A skipped person is a normal outcome, not an error.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": {
+                    "addedCount": 1,
+                    "alreadyInCampaignCount": 0,
+                    "skipped": [
+                      {
+                        "leadId": "987654321",
+                        "code": "ABS_CONTACT_SOURCING_CONTACT_ON_ANOTHER_COMPANY"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`leadIds` is missing, empty or longer than the limit, or `campaignId` is malformed.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Too many leads selected",
+                  "code": "ABS_ENGAGE_TOO_MANY_LEADS"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The ABM beta is not enabled for your team (`BETA_NOT_ENABLED`), or the API key's user does not have the \"Create contacts\" permission (`ABS_CONTACT_SOURCING_CONTACT_CREATE_NOT_ALLOWED`). Nothing is written.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Beta is not enabled",
+                  "code": "BETA_NOT_ENABLED"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The campaign is not an ABM campaign of your team (`ABS_ENGAGE_CAMPAIGN_NOT_ABM`), or its company no longer exists.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This campaign is not an ABM campaign",
+                  "code": "ABS_ENGAGE_CAMPAIGN_NOT_ABM"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/campaigns/{campaignId}/steps/{stepId}/skip-for-leads": {
       "parameters": [
         {

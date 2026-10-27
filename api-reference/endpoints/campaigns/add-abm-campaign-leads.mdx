@@ -1,0 +1,28 @@
+---
+openapi: post /campaigns/{campaignId}/abm-leads
+description: Adds People Database people to an ABM campaign.
+---
+
+<Note>
+  Beta: this endpoint requires the ABM beta on your team. Without it, the call
+  answers `403` with `BETA_NOT_ENABLED`.
+</Note>
+
+Takes People Database ids, from a People Database search or a contact-sourcing
+run's `contacts[].leadId`, and adds each person to the campaign as a lead.
+
+## Filed under the campaign's company
+
+Each new contact is filed under the company the ABM campaign engages, whatever
+the person's profile lists as their current employer. That keeps every lead of
+an ABM campaign on its account.
+
+Someone your workspace already has as a contact of another company is skipped
+and left where they are: the response lists them in `skipped`.
+
+| Code | Meaning |
+| ---- | ------- |
+| `200` | Done. `addedCount` leads added, `alreadyInCampaignCount` already there, `skipped` people not added. |
+| `400` | `leadIds` is missing, empty or too long, or `campaignId` is malformed. |
+| `403` | The ABM beta is not enabled, or the API key's user cannot create contacts. Nothing is written. |
+| `404` | The campaign is not an ABM campaign of your team, or its company no longer exists. |
