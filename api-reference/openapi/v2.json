@@ -32693,6 +32693,88 @@
         "parameters": []
       }
     },
+    "/companies/{companyId}/engage": {
+      "parameters": [
+        {
+          "name": "companyId",
+          "in": "path",
+          "required": true,
+          "description": "The company to engage",
+          "example": "cpn_A1B2C3D4E5F6G7H8I9",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Engage Company",
+        "tags": [
+          "Companies"
+        ],
+        "description": "**Beta**: requires the ABM beta on your team, otherwise the call answers `403 BETA_NOT_ENABLED`.\n\nOpens the account-based (ABM) campaign of a company, like the Engage button: reopens its most recent live ABM campaign, or creates a draft named after the company and adds the company's contacts as leads. A company has one live ABM campaign at a time, so calling again returns the same campaign until it is archived or ended. No request body.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The company's ABM campaign. `created` is true when this call created it; `shouldReviewLeads` is true when its leads were just added, so they are worth reviewing before writing the sequence.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "data": {
+                    "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
+                    "created": true,
+                    "shouldReviewLeads": true
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "`companyId` is malformed.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Wrong param company id",
+                  "code": "WRONG_PARAM_COMPANY_ID"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The ABM beta is not enabled for your team. Nothing is written.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Beta is not enabled",
+                  "code": "BETA_NOT_ENABLED"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The company does not exist in your team.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This company no longer exists",
+                  "code": "ABS_ENGAGE_COMPANY_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Another engage of the same company is still running. Retry in a moment: it returns the campaign that engage opened.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This company is already being engaged, try again in a moment",
+                  "code": "ABS_ENGAGE_COMPANY_IN_PROGRESS"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/activities": {
       "get": {
         "summary": "Get Many Activities",

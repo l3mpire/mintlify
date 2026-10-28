@@ -270,6 +270,7 @@
                   "api-reference/endpoints/companies/get-many-companies",
                   "api-reference/endpoints/companies/delete-company",
                   "api-reference/endpoints/companies/merge-companies",
+                  "api-reference/endpoints/companies/engage-company",
                   "api-reference/endpoints/companies/search-and-connect-companies",
                   "api-reference/endpoints/companies/create-companies-in-crm",
                   "api-reference/endpoints/companies/get-company-lists",
