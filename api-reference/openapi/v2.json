@@ -4744,6 +4744,7 @@
               "customSignals",
               "competitorConnections",
               "competitorReactions",
+              "warmIntros",
               "technologyChange",
               "linkedinPeopleProfile",
               "linkedinCompanyProfile",
@@ -5113,6 +5114,66 @@
                 "type": "string",
                 "description": "[competitorReactions] Engagement date"
               },
+              "warmIntrosIntroStrength": {
+                "type": "number",
+                "description": "[warmIntros] Intro strength score of the best intro path, from 0 to 100"
+              },
+              "warmIntrosIntroTier": {
+                "type": "string",
+                "description": "[warmIntros] Intro tier, one of strong, likely or possible"
+              },
+              "warmIntrosIntroReason": {
+                "type": "string",
+                "description": "[warmIntros] Sentence explaining the introduction"
+              },
+              "warmIntrosIntroPathsCount": {
+                "type": "number",
+                "description": "[warmIntros] Number of intro paths found for the lead"
+              },
+              "warmIntrosIntroType": {
+                "type": "string",
+                "description": "[warmIntros] Type of the best intro path"
+              },
+              "warmIntrosIntroducerName": {
+                "type": "string",
+                "description": "[warmIntros] Name of the introducer of the best path"
+              },
+              "warmIntrosIntroducerTitle": {
+                "type": "string",
+                "description": "[warmIntros] Job title of the introducer"
+              },
+              "warmIntrosIntroducerLinkedinUrl": {
+                "type": "string",
+                "description": "[warmIntros] LinkedIn URL of the introducer"
+              },
+              "warmIntrosSharedCompany": {
+                "type": "string",
+                "description": "[warmIntros] Company where the introducer and the lead worked together"
+              },
+              "warmIntrosSharedCompanyLinkedinUrl": {
+                "type": "string",
+                "description": "[warmIntros] LinkedIn URL of the shared company"
+              },
+              "warmIntrosSharedCompanyEmployeeCount": {
+                "type": "number",
+                "description": "[warmIntros] Employee count of the shared company"
+              },
+              "warmIntrosOverlapStart": {
+                "type": "string",
+                "description": "[warmIntros] Start of the overlap period, YYYY-MM"
+              },
+              "warmIntrosOverlapEnd": {
+                "type": "string",
+                "description": "[warmIntros] End of the overlap period, YYYY-MM"
+              },
+              "warmIntrosOverlapMonths": {
+                "type": "number",
+                "description": "[warmIntros] Months the introducer and the lead worked together"
+              },
+              "warmIntrosSameFunction": {
+                "type": "boolean",
+                "description": "[warmIntros] Whether the introducer and the lead had the same function"
+              },
               "acquisitionType": {
                 "type": "string",
                 "description": "[mergersAcquisitions] Acquisition type"
@@ -5241,6 +5302,7 @@
               "customSignals",
               "competitorConnections",
               "competitorReactions",
+              "warmIntros",
               "technologyChange",
               "linkedinPeopleProfile",
               "linkedinCompanyProfile",
@@ -5717,6 +5779,7 @@
               "customSignals",
               "competitorConnections",
               "competitorReactions",
+              "warmIntros",
               "technologyChange",
               "linkedinPeopleProfile",
               "linkedinCompanyProfile",
@@ -5851,6 +5914,7 @@
               "customSignals",
               "competitorConnections",
               "competitorReactions",
+              "warmIntros",
               "technologyChange",
               "linkedinPeopleProfile",
               "linkedinCompanyProfile",
@@ -37442,6 +37506,7 @@
                       "customSignals",
                       "competitorConnections",
                       "competitorReactions",
+                      "warmIntros",
                       "technologyChange",
                       "linkedinPeopleProfile",
                       "linkedinCompanyProfile",
@@ -38132,6 +38197,7 @@
                 "customSignals",
                 "competitorConnections",
                 "competitorReactions",
+                "warmIntros",
                 "technologyChange",
                 "linkedinPeopleProfile",
                 "linkedinCompanyProfile",
