@@ -247,6 +247,7 @@ Each event is delivered as a `POST` to your `targetUrl` with a JSON body that mi
 | `sequenceId` | string | Sequence the task belonged to |
 | `sequenceStep` | number | 0-based step index in the sequence |
 | `stepId` | string | Stable identifier of the step (survives a reorder — see note below) |
+| `journeyDepth` | number | 0-based depth of the step on the lead's own path: the step the lead reached before it, plus one. Absent on events recorded before it shipped |
 | `leadId` | string | Lead targeted by the activity (campaign events only) |
 | `contactId` | string | Contact the activity relates to |
 | `leadEmail`, `leadFirstName`, `leadLastName`, `leadCompanyName`, `leadPhone`, `leadPicture` | string | Lead identity as it was when the event happened. Campaign events only, and only the variables the lead had at that moment |

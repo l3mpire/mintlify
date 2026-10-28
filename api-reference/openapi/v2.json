@@ -1186,6 +1186,10 @@
             "type": "number",
             "description": "0-based count of the sequence steps already delivered to this lead."
           },
+          "journeyDepth": {
+            "type": "number",
+            "description": "0-based depth of the step on the lead's own path: the step the lead reached before it, plus one. Skipped steps count; a step added to the sequence after the lead passed that point does not. Absent on activities recorded before the field shipped: read `totalSequenceStep` then."
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time",
