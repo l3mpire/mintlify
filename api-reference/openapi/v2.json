@@ -3763,7 +3763,7 @@
           },
           "type": {
             "type": "string",
-            "description": "Kind of input the filter expects. `level` is a two-level dropdown of the People Database UI; it is reported as `select` by default.",
+            "description": "Kind of input the filter expects. `level` is a two-level dropdown of the People Database UI; it is reported as `select` by default. A `slider` filter takes `min|max` ranges in `in` (see `range`) and no `out` value. The search, export and Create persona endpoints refuse an `out` value or a range in another format on it.",
             "enum": [
               "text",
               "select",
@@ -3789,7 +3789,7 @@
           },
           "range": {
             "type": "object",
-            "description": "Slider configuration, for the `slider` filters",
+            "description": "Slider configuration, for the `slider` filters. Send the ranges to keep in the filter's `in`, formatted `min|max` like `default`.",
             "properties": {
               "min": {
                 "type": "number",
@@ -4344,7 +4344,7 @@
           },
           "in": {
             "type": "array",
-            "description": "Values to include",
+            "description": "Values to include. For a `slider` filter, one or more `min|max` ranges (e.g. `2015|2024`). Create persona refuses a slider range in another format with `PEOPLE_DATABASE_PERSONA_API_INVALID_SLIDER`. A saved search stores it as is, but the search endpoints refuse it.",
             "items": {
               "type": "string"
             },
@@ -4352,7 +4352,7 @@
           },
           "out": {
             "type": "array",
-            "description": "Values to exclude",
+            "description": "Values to exclude. Keep it empty on a `slider` filter. Create persona refuses a slider `out` value with `PEOPLE_DATABASE_PERSONA_API_INVALID_SLIDER`. A saved search stores it but ignores it, and the search endpoints refuse it.",
             "items": {
               "type": "string"
             },
@@ -19473,6 +19473,21 @@
                       "Finance / Legal / Admin",
                       "Other"
                     ]
+                  },
+                  {
+                    "filterId": "currentCompanyFounded",
+                    "description": "Company founded year: Filter by the founding year range of the current company (e.g. \"2015|2024\"). Use to target young startups, mature companies, or specific founding cohorts.",
+                    "mode": [
+                      "leads",
+                      "companies"
+                    ],
+                    "type": "slider",
+                    "range": {
+                      "min": 1900,
+                      "max": 2026,
+                      "default": "1980|2010",
+                      "percentage": false
+                    }
                   }
                 ]
               }
@@ -19561,7 +19576,7 @@
     "/database/people": {
       "post": {
         "summary": "Search People Database",
-        "description": "This endpoint allows you to query our People database. To do so, you may use the following parameters: filters (required, unless `fromSearchId` is provided), fromSearchId (optional), page (optional), size (optional), and excludes (optional). Each filter should have the following properties: filterId (filter identifier), in (list of the values you want to include), and out (list of the values you want to exclude). To know which filters you are able to use, refer to the GET Filters section. To run a previous search again, pass the `search` id it returned as `fromSearchId`.\n\nThe `department` filter accepts the following values: `Sales`, `Customer service`, `Engineering`, `Marketing`, `Operations`, `Human Resources`, `Finance / Legal / Admin`, `Other`.",
+        "description": "This endpoint allows you to query our People database. To do so, you may use the following parameters: filters (required, unless `fromSearchId` is provided), fromSearchId (optional), page (optional), size (optional), and excludes (optional). Each filter should have the following properties: filterId (filter identifier), in (list of the values you want to include), and out (list of the values you want to exclude). Filters of type `slider` (such as `currentCompanyFounded`) take one or more `min|max` ranges in `in`: two numbers joined by `|`, such as `2015|2024`. Their `out` must be an empty array. An `out` value, or a range in another format (such as `2015-2024`), is refused with a 400 `Parameter filters is invalid`. To exclude a range, send the ranges around it in `in`. To know which filters you are able to use, refer to the GET Filters section. To run a previous search again, pass the `search` id it returned as `fromSearchId`.\n\nThe `department` filter accepts the following values: `Sales`, `Customer service`, `Engineering`, `Marketing`, `Operations`, `Human Resources`, `Finance / Legal / Admin`, `Other`.",
         "operationId": "searchPeopleDatabase",
         "tags": [
           "People Database"
@@ -19588,14 +19603,14 @@
                           "items": {
                             "type": "string"
                           },
-                          "description": "List of the values you want to include"
+                          "description": "List of the values you want to include. For a `slider` filter, one or more `min|max` ranges, both bounds included (e.g. `2015|2024`). A record matches if it falls in any of them. Each range is two numbers joined by `|`; negative and decimal numbers are allowed. Another format (such as `2015-2024`, `10%|50%` or `2015|`) is refused with a 400."
                         },
                         "out": {
                           "type": "array",
                           "items": {
                             "type": "string"
                           },
-                          "description": "List of the values you want to exclude"
+                          "description": "List of the values you want to exclude. Must be empty on a `slider` filter, which refuses `out` with a 400. To exclude a range, send the ranges around it in `in`: `[\"1900|1989\", \"2001|2026\"]` on `currentCompanyFounded` excludes the companies founded from 1990 to 2000."
                         }
                       }
                     }
@@ -19761,7 +19776,7 @@
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / Parameter filters is invalid",
+            "description": "Possible errors: Bad team / Parameter filters is invalid. `Parameter filters is invalid` answers any refused filter, including an `out` value on a `slider` filter or a slider range not written `min|max`.",
             "content": {
               "text/plain": {
                 "example": "Bad team"
@@ -20147,7 +20162,7 @@
     "/database/companies": {
       "post": {
         "summary": "Search Companies Database",
-        "description": "Search the lemlist Companies database using structured filters with pagination support. Returns comprehensive company data including technologies used, location, employee count, and other business intelligence. To run a previous search again, pass the `search` id it returned as `fromSearchId`.",
+        "description": "Search the lemlist Companies database using structured filters with pagination support. Returns comprehensive company data including technologies used, location, employee count, and other business intelligence. Filters of type `slider` (such as `currentCompanyFounded`) take one or more `min|max` ranges in `in`: two numbers joined by `|`, such as `2015|2024`. Their `out` must be an empty array. An `out` value, or a range in another format (such as `2015-2024`), is refused with a 400 `Parameter filters is invalid`. To exclude a range, send the ranges around it in `in`. To run a previous search again, pass the `search` id it returned as `fromSearchId`.",
         "tags": [
           "People Database"
         ],
@@ -20169,14 +20184,14 @@
                         },
                         "in": {
                           "type": "array",
-                          "description": "Array of values to include in the filter",
+                          "description": "Array of values to include in the filter. For a `slider` filter, one or more `min|max` ranges, both bounds included (e.g. `2015|2024`). A record matches if it falls in any of them. Each range is two numbers joined by `|`; negative and decimal numbers are allowed. Another format (such as `2015-2024`, `10%|50%` or `2015|`) is refused with a 400.",
                           "items": {
                             "type": "string"
                           }
                         },
                         "out": {
                           "type": "array",
-                          "description": "Array of values to exclude from the filter",
+                          "description": "Array of values to exclude from the filter. Must be empty on a `slider` filter, which refuses `out` with a 400. To exclude a range, send the ranges around it in `in`: `[\"1900|1989\", \"2001|2026\"]` on `currentCompanyFounded` excludes the companies founded from 1990 to 2000.",
                           "items": {
                             "type": "string"
                           }
@@ -20486,7 +20501,7 @@
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / Parameter filters is invalid",
+            "description": "Possible errors: Bad team / Parameter filters is invalid. `Parameter filters is invalid` answers any refused filter, including an `out` value on a `slider` filter or a slider range not written `min|max`.",
             "content": {
               "text/plain": {
                 "example": "Bad team"
@@ -20526,7 +20541,7 @@
             "name": "filters",
             "in": "query",
             "required": true,
-            "description": "The search to export, URL-encoded JSON array — the same `filters` array `POST /database/people` takes. Each entry needs a `filterId` and at least one `in`/`out` value.\n\nFilter ids and their allowed values come from `GET /database/filters`. That endpoint returns `values` only for filters with a closed list; filters of type `autocomplete` (job titles, companies, countries, skills, technologies…) have no enumerable list, so their values are discovered by running a search rather than read upfront.",
+            "description": "The search to export, URL-encoded JSON array — the same `filters` array `POST /database/people` takes. Each entry needs a `filterId` and at least one `in`/`out` value. A `slider` filter takes `min|max` ranges in `in` only: an `out` value on it, or a range in another format, is refused with a 400.\n\nFilter ids and their allowed values come from `GET /database/filters`. That endpoint returns `values` only for filters with a closed list; filters of type `autocomplete` (job titles, companies, countries, skills, technologies…) have no enumerable list, so their values are discovered by running a search rather than read upfront.",
             "example": "[{\"filterId\":\"currentTitle\",\"in\":[\"CTO\"],\"out\":[]}]",
             "schema": { "type": "string" }
           },
@@ -20548,7 +20563,7 @@
             }
           },
           "400": {
-            "description": "Invalid `filters` JSON, a filter unavailable for API usage, or a `limit` above the cap",
+            "description": "Invalid `filters` JSON, a filter unavailable for API usage, an `out` value or a range not written `min|max` on a `slider` filter, or a `limit` above the cap",
             "content": {
               "application/json": {
                 "example": { "error": "A CSV export holds at most 1000 rows" }
@@ -20579,7 +20594,7 @@
             "name": "filters",
             "in": "query",
             "required": true,
-            "description": "The search to export, URL-encoded JSON array — the same `filters` array `POST /database/companies` takes. Each entry needs a `filterId` and at least one `in`/`out` value.\n\nFilter ids and their allowed values come from `GET /database/filters?mode=companies`. That endpoint returns `values` only for filters with a closed list; filters of type `autocomplete` (companies, countries, technologies…) have no enumerable list, so their values are discovered by running a search rather than read upfront.",
+            "description": "The search to export, URL-encoded JSON array — the same `filters` array `POST /database/companies` takes. Each entry needs a `filterId` and at least one `in`/`out` value. A `slider` filter takes `min|max` ranges in `in` only: an `out` value on it, or a range in another format, is refused with a 400.\n\nFilter ids and their allowed values come from `GET /database/filters?mode=companies`. That endpoint returns `values` only for filters with a closed list; filters of type `autocomplete` (companies, countries, technologies…) have no enumerable list, so their values are discovered by running a search rather than read upfront.",
             "example": "[{\"filterId\":\"currentCompanyCountry\",\"in\":[\"France\"],\"out\":[]}]",
             "schema": { "type": "string" }
           },
@@ -20601,7 +20616,7 @@
             }
           },
           "400": {
-            "description": "Invalid `filters` JSON, a filter unavailable for API usage, or a `limit` above the cap",
+            "description": "Invalid `filters` JSON, a filter unavailable for API usage, an `out` value or a range not written `min|max` on a `slider` filter, or a `limit` above the cap",
             "content": {
               "application/json": {
                 "example": { "error": "A CSV export holds at most 1000 rows" }
@@ -20729,7 +20744,7 @@
       },
       "post": {
         "summary": "Create Persona",
-        "description": "Creates a persona for your team from a name and a set of People Database filters.\n\nUse [Get Database Filters](/api-reference/endpoints/people-database/get-database-filters) to discover the valid `filterId` values. Filters carry no `type` property: it is derived from `filterId` server-side. Filters that require a plan your team does not have are dropped silently, so the persona is stored with the subset your plan allows.\n\nOnly the created id is returned. The stored `name` and `filters` are sanitized and plan-gated server-side, so echoing the request payload back would misreport what was persisted; call [List Personas](/api-reference/endpoints/people-database/list-personas) to read the stored persona.\n\nThis endpoint is in closed beta and answers `403` unless the beta is enabled for your team.",
+        "description": "Creates a persona for your team from a name and a set of People Database filters.\n\nUse [Get Database Filters](/api-reference/endpoints/people-database/get-database-filters) to discover the valid `filterId` values. Filters carry no `type` property: it is derived from `filterId` server-side. Filters that require a plan your team does not have are dropped silently, so the persona is stored with the subset your plan allows.\n\nA `slider` filter (such as `currentCompanyFounded`) takes one or more `min|max` ranges in `in`, and its `out` must stay empty. An `out` value or a range in another format answers `400` with the code `PEOPLE_DATABASE_PERSONA_API_INVALID_SLIDER`.\n\nOnly the created id is returned. The stored `name` and `filters` are sanitized and plan-gated server-side, so echoing the request payload back would misreport what was persisted; call [List Personas](/api-reference/endpoints/people-database/list-personas) to read the stored persona.\n\nThis endpoint is in closed beta and answers `403` unless the beta is enabled for your team.",
         "operationId": "createPersona",
         "tags": ["People Database"],
         "requestBody": {
@@ -20797,7 +20812,7 @@
             }
           },
           "400": {
-            "description": "Validation error - invalid name, mode, or filters",
+            "description": "Validation error - invalid name, mode, or filters. `PEOPLE_DATABASE_PERSONA_API_INVALID_SLIDER` answers a `slider` filter with an `out` value or a range not written `min|max`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -20826,6 +20841,12 @@
                     "value": {
                       "error": "You have no valid filters with the current search mode",
                       "code": "SEARCH_FILTERS_INVALID"
+                    }
+                  },
+                  "invalidSlider": {
+                    "value": {
+                      "error": "Range filters take the ranges to keep in \"in\" (\"min|max\"); leave \"out\" empty",
+                      "code": "PEOPLE_DATABASE_PERSONA_API_INVALID_SLIDER"
                     }
                   }
                 }

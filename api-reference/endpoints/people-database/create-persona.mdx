@@ -10,6 +10,8 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 `name`, `filters` and `mode` are all required. The name must be unique within your team — a duplicate answers `409`. Only the `leads` mode is accepted today; `companies` answers `400` with the code `PEOPLE_DATABASE_PERSONA_MODE_NOT_SUPPORTED`.
 
 Filters carry no `type` property — it is derived from `filterId` server-side. Use [Get Database Filters](/api-reference/endpoints/people-database/get-database-filters) to discover which `filterId` values you can use. Filters that require a plan your team does not have are dropped silently.
+
+A filter of type `slider` (such as `currentCompanyFounded`) takes one or more `min|max` ranges in `in`, such as `2015|2024`. Its `out` must stay empty. An `out` value, or a range in another format such as `2015-2024`, answers `400` with the code `PEOPLE_DATABASE_PERSONA_API_INVALID_SLIDER`.
 </Note>
 
 <Note>
