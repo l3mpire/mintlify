@@ -1,0 +1,10 @@
+---
+openapi: patch /user/sending-settings
+description: Sets the daily email limit of one or more email accounts of the team, up to 100 per call.
+---
+
+<Note>
+Requires the permission to edit sending limits and a lemlist plan. The email accounts can belong to any member of the team the API key belongs to.
+</Note>
+
+Each email account is updated independently: the call returns `200` even when some items fail, so check `success` on every item of `emailAccounts`.
