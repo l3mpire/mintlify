@@ -13,9 +13,11 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 </Note>
 
 <Note>
-  The lead is imported as the API key's user. When its company is not in lemlist yet, that user needs the "Create companies" permission, otherwise the request fails with `403` (`{"error": "You do not have the permission to create companies"}`) and nothing is written. A company already in lemlist is linked as usual.
+  The lead is imported as the API key's user. When its company is not in lemlist yet, that user needs the "Create companies" permission, otherwise the request fails with `403` (`{"error": "The user jane@acme.com does not have the permission to create companies"}`) and nothing is written. A company already in lemlist is linked as usual.
 
-  Likewise, when its contact is not in lemlist yet, that user needs the "Create contacts" permission, otherwise the request fails with `403` (`{"error": "You do not have the permission to create contacts"}`) and nothing is written, company included. A contact already in lemlist is updated as usual.
+  Likewise, when its contact is not in lemlist yet, that user needs the "Create contacts" permission, otherwise the request fails with `403` (`{"error": "The user jane@acme.com does not have the permission to create contacts"}`) and nothing is written, company included. A contact already in lemlist is updated as usual.
+
+  When the API key's user is no longer in the team, they hold no permission there: the error says so (`{"error": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect"}`). Create a new API key from a current member.
 </Note>
 
 <Note>
