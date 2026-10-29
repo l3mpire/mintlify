@@ -5339,6 +5339,7 @@
               "github_token_required",
               "empty_crm_lists",
               "excluded_crm_lists_too_large",
+              "target_crm_lists_too_large",
               "error",
               "delete"
             ]
@@ -5488,14 +5489,17 @@
               "externalSignalCustomFieldMapping",
               "seniority",
               "crmListIds",
+              "targetCrmListIds",
               "minJobCount",
               "timeframe",
-              "githubRepoUrls"
+              "githubRepoUrls",
+              "minOverlapMonths",
+              "includeCurrentCompanies"
             ]
           },
           "in": {
             "type": "array",
-            "description": "Values to include. For `externalSignalFieldMapping` and `externalSignalCustomFieldMapping`, an array of mapping objects (see `WatchListExternalSignalMapping`); the JSON-serialized form returned when reading an agent is also accepted.",
+            "description": "Values to include. For `externalSignalFieldMapping` and `externalSignalCustomFieldMapping`, an array of mapping objects (see `WatchListExternalSignalMapping`); the JSON-serialized form returned when reading an agent is also accepted. For the Warm Intros filters: `targetCrmListIds` takes company CRM list ids (up to 50) and the agent then delivers only people working at the companies of those lists, the other filters still applying; `minOverlapMonths` takes one integer between 3 and 120, as a string (6 when absent); `includeCurrentCompanies` takes `true` to also include the current colleagues of the introducers (only past colleagues when absent).",
             "items": {
               "oneOf": [
                 {
