@@ -19515,7 +19515,7 @@
       ],
       "post": {
         "summary": "Import Leads from CRM",
-        "description": "Links a campaign to a filter of your connected CRM and imports its records as leads.\n\n**Recurring:** the campaign stays linked to the filter, and the records the filter picks up later are imported automatically.\n\n**New link only:** the campaign must not be linked to a CRM filter yet. Changing or unlinking a campaign's CRM filter is done in the lemlist app.\n\nThe filter is checked in your CRM before anything is saved. The import runs in the background: leads appear over the next minutes, not in the response.\n\n**Paused campaign:** the filter is linked, but no lead is imported until the campaign is resumed; the first import then starts about an hour after the resume. The response says so with `campaignPaused: true`.\n\n**Credits:** the enrichments requested in `enrichFeature` run on every imported lead, now and later, and are charged to the user of the API key.",
+        "description": "Links a campaign to a filter of your connected CRM and imports its records as leads.\n\n**Recurring:** the campaign stays linked to the filter, and the records the filter picks up later are imported automatically.\n\n**New link only:** the campaign must not be linked to a CRM filter yet. Changing or unlinking a campaign's CRM filter is done in the lemlist app.\n\nThe filter is checked in your CRM before anything is saved. The import runs in the background: leads appear over the next minutes, not in the response.\n\n**Import pending:** on a paused, archived or CRM-sync-paused campaign, the filter is linked but no lead is imported until that is lifted; the first import then starts about an hour later. The response says so with `importPending: true` and a `reason`.\n\n**Credits:** the enrichments requested in `enrichFeature` run on every imported lead, now and later, and are charged to the user of the API key.",
         "tags": [
           "Leads"
         ],
@@ -19602,7 +19602,7 @@
         },
         "responses": {
           "200": {
-            "description": "The campaign is linked to the filter; the import runs in the background, or waits for the campaign to be resumed when `campaignPaused` is `true`.",
+            "description": "The campaign is linked to the filter; the import runs in the background, or waits until `reason` is lifted when `importPending` is `true`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -19611,21 +19611,31 @@
                     "ok": {
                       "type": "boolean"
                     },
-                    "campaignPaused": {
+                    "importPending": {
                       "type": "boolean",
-                      "description": "`true` when the campaign is paused: no lead is imported until it is resumed."
+                      "description": "Present and `true` when no lead is imported yet: the campaign is in a state the import waits on, named by `reason`."
+                    },
+                    "reason": {
+                      "type": "string",
+                      "enum": [
+                        "campaign_paused",
+                        "campaign_archived",
+                        "campaign_crm_sync_paused"
+                      ],
+                      "description": "Present with `importPending`. `campaign_paused`: resume the campaign. `campaign_archived`: unarchive then resume it. `campaign_crm_sync_paused`: fix the cause shown in the campaign's import history in lemlist. The first import starts about an hour after that."
                     }
                   }
                 },
                 "example": {
                   "ok": true,
-                  "campaignPaused": false
+                  "importPending": true,
+                  "reason": "campaign_paused"
                 }
               }
             }
           },
           "400": {
-            "description": "The request was refused; `error` explains why (e.g. `This campaign already imports from a CRM filter: ...`, `CRM filter not found: ...`, `CRM not connected: ...`, `User not in team`, `Bad params`, `Unsupported enrichment features`, `Upgrade your plan to use this feature`, or a credit refusal for the requested enrichments).",
+            "description": "The request was refused; `error` explains why (e.g. `This campaign already imports from the CRM filter \"...\": ...`, which also says when no lead is imported because the campaign is paused, archived or its CRM sync paused, `CRM filter not found: ...`, `CRM not connected: ...`, `User not in team`, `Bad params`, `Unsupported enrichment features`, `Upgrade your plan to use this feature`, or a credit refusal for the requested enrichments).",
             "content": {
               "application/json": {
                 "schema": {
@@ -19637,7 +19647,7 @@
                   }
                 },
                 "example": {
-                  "error": "This campaign already imports from a CRM filter: change or unlink it in lemlist"
+                  "error": "This campaign already imports from the CRM filter \"Q4 prospects\": change or unlink it in lemlist"
                 }
               }
             }

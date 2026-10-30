@@ -8,7 +8,7 @@ description: Links a campaign to a filter of your connected CRM and imports its 
 </Note>
 
 <Warning>
-    On a paused campaign, the filter is linked but no lead is imported until the campaign is resumed; the first import then starts about an hour after the resume. The response then carries `campaignPaused: true`.
+    On a paused, archived or CRM-sync-paused campaign, the filter is linked but no lead is imported until that is lifted; the first import then starts about an hour later. The response then carries `importPending: true` and the `reason`.
 </Warning>
 
 Get the filter ID from [Get CRM Filters](/api-reference/endpoints/crm/get-crm-filters).
