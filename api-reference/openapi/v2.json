@@ -4767,7 +4767,8 @@
               "costCutting",
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
-              "githubStargazer"
+              "githubStargazer",
+              "companyRunningAds"
             ]
           },
           "status": {
@@ -5254,6 +5255,74 @@
                 "type": "string",
                 "description": "[promotion] Promotion start date"
               },
+              "adPlatform": {
+                "type": "string",
+                "description": "[companyRunningAds] Platform of the company's most recent ad",
+                "enum": [
+                  "linkedin",
+                  "facebook",
+                  "google",
+                  "tiktok",
+                  "apple"
+                ]
+              },
+              "adHeadline": {
+                "type": "string",
+                "description": "[companyRunningAds] Ad headline (truncated to 256 characters)"
+              },
+              "adFormat": {
+                "type": "string",
+                "description": "[companyRunningAds] Ad format",
+                "enum": [
+                  "image",
+                  "video",
+                  "text",
+                  "carousel",
+                  "dynamic_product",
+                  "document",
+                  "message",
+                  "event",
+                  "article",
+                  "spotlight",
+                  "follow",
+                  "job",
+                  "engagement"
+                ]
+              },
+              "adDestinationUrl": {
+                "type": "string",
+                "description": "[companyRunningAds] Landing page the ad links to (http(s) only, absent otherwise)"
+              },
+              "adTargetCountries": {
+                "type": "string",
+                "description": "[companyRunningAds] Countries the ad targets, ISO alpha-2 codes joined by `, ` (e.g. `FR, DE`)"
+              },
+              "adImpressions": {
+                "type": "string",
+                "description": "[companyRunningAds] Impression range reported by the provider (e.g. `10k-20k`, `< 1k`). Often absent while the ad is still running"
+              },
+              "adStartDate": {
+                "type": "string",
+                "format": "date-time",
+                "description": "[companyRunningAds] Ad start date (UTC midnight)"
+              },
+              "adEndDate": {
+                "type": "string",
+                "format": "date-time",
+                "description": "[companyRunningAds] Ad end date (UTC midnight). Absent while the ad is still running"
+              },
+              "adUrl": {
+                "type": "string",
+                "description": "[companyRunningAds] Link to the ad in the platform's ad library (http(s) only)"
+              },
+              "adImageUrl": {
+                "type": "string",
+                "description": "[companyRunningAds] Creative preview URL. Absent for non-image ads"
+              },
+              "adsCount": {
+                "type": "integer",
+                "description": "[companyRunningAds] Number of ads delivered for the company in this signal"
+              },
               "externalSignalCustomFields": {
                 "type": "object",
                 "description": "[externalSignalContact/externalSignalCompany] Custom fields map",
@@ -5325,7 +5394,8 @@
               "costCutting",
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
-              "githubStargazer"
+              "githubStargazer",
+              "companyRunningAds"
             ]
           },
           "status": {
@@ -5490,7 +5560,11 @@
               "crmListIds",
               "minJobCount",
               "timeframe",
-              "githubRepoUrls"
+              "githubRepoUrls",
+              "adPlatforms",
+              "adFormats",
+              "adTargetCountries",
+              "adSearchTerms"
             ]
           },
           "in": {
@@ -5802,7 +5876,8 @@
               "costCutting",
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
-              "githubStargazer"
+              "githubStargazer",
+              "companyRunningAds"
             ]
           },
           "entity": {
@@ -5900,6 +5975,10 @@
           "max": {
             "type": "number",
             "description": "Maximum value (numeric filters)"
+          },
+          "requiresQuery": {
+            "type": "boolean",
+            "description": "When true, `GET /watchlist/filter-values` needs a `query` for this filter: it runs a keyword search and has no full-list mode. Depends on the signal `type`, not only on the filter — e.g. `companyIndustries` is `requiresQuery: true` on `companyRunningAds` (Pubrio vertical names) and absent on the other company types."
           }
         }
       },
@@ -5937,7 +6016,8 @@
               "costCutting",
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
-              "githubStargazer"
+              "githubStargazer",
+              "companyRunningAds"
             ]
           },
           "title": {
@@ -38245,7 +38325,8 @@
                       "costCutting",
                       "outagesAndSecurityBreaches",
                       "lawsuitsAndLegalIssues",
-                      "githubStargazer"
+                      "githubStargazer",
+                      "companyRunningAds"
                     ]
                   },
                   "filters": {
@@ -38377,7 +38458,7 @@
             }
           },
           "400": {
-            "description": "Validation error - invalid body, filters, or activate prerequisites. `WATCH_LIST_API_INVALID_CAMPAIGN_ID` when `campaignId` is malformed or sent without signalProcessingType = push_to_campaign. `WATCH_LIST_API_INVALID_FILTERS` when a filter is rejected: `details.invalidFilters` lists each one, and a refused external-signal mapping (`externalSignalFieldMapping`, `externalSignalCustomFieldMapping`) carries a `message` saying what to fix.",
+            "description": "Validation error - invalid body, filters, or activate prerequisites. `WATCH_LIST_API_INVALID_CAMPAIGN_ID` when `campaignId` is malformed or sent without signalProcessingType = push_to_campaign. `WATCH_LIST_API_INVALID_FILTERS` when a filter is rejected: `details.invalidFilters` lists each one, and a refused external-signal mapping (`externalSignalFieldMapping`, `externalSignalCustomFieldMapping`) carries a `message` saying what to fix. Autocomplete values are validated against the taxonomy of the signal type (`companyIndustries` on `companyRunningAds`: Pubrio vertical names): a value with no match is listed with reason `INVALID_FILTER_VALUE`.",
             "content": {
               "text/plain": {
                 "example": "activate requires both segmentType and signalProcessingType"
@@ -38453,6 +38534,17 @@
             "content": {
               "text/plain": {
                 "example": "Monitoring limit exceeded"
+              }
+            }
+          },
+          "503": {
+            "description": "The taxonomy backend used to validate autocomplete filter values (`companyIndustries`, locations…) is temporarily unavailable — `WATCH_LIST_API_TAXONOMY_UNAVAILABLE`. Retry shortly.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "The search taxonomy backend is temporarily unavailable — retry shortly",
+                  "code": "WATCH_LIST_API_TAXONOMY_UNAVAILABLE"
+                }
               }
             }
           },
@@ -38538,7 +38630,7 @@
             }
           },
           "400": {
-            "description": "Validation error - invalid body or filters",
+            "description": "Validation error - invalid body or filters. `WATCH_LIST_API_INVALID_FILTERS` lists the rejected filters in `details.invalidFilters`; autocomplete values are validated against the taxonomy of the agent's signal type (`companyIndustries` on `companyRunningAds`: Pubrio vertical names).",
             "content": {
               "text/plain": {
                 "example": "name must be a non-empty string"
@@ -38582,6 +38674,17 @@
             "content": {
               "text/plain": {
                 "example": "Monitoring limit exceeded"
+              }
+            }
+          },
+          "503": {
+            "description": "The taxonomy backend used to validate autocomplete filter values (`companyIndustries`, locations…) is temporarily unavailable — `WATCH_LIST_API_TAXONOMY_UNAVAILABLE`. Retry shortly.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "The search taxonomy backend is temporarily unavailable — retry shortly",
+                  "code": "WATCH_LIST_API_TAXONOMY_UNAVAILABLE"
+                }
               }
             }
           },
@@ -38936,7 +39039,8 @@
                 "costCutting",
                 "outagesAndSecurityBreaches",
                 "lawsuitsAndLegalIssues",
-                "githubStargazer"
+                "githubStargazer",
+                "companyRunningAds"
               ]
             },
             "example": "companyIsHiring"
@@ -39032,16 +39136,30 @@
                 "seniority",
                 "crmListIds",
                 "minJobCount",
-                "timeframe"
+                "timeframe",
+                "adPlatforms",
+                "adFormats",
+                "adTargetCountries",
+                "adSearchTerms"
               ]
             },
             "example": "companyIndustries"
           },
           {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Signal type the filter is resolved for. Some filters change vocabulary per type: `companyIndustries` with `type=companyRunningAds` returns Pubrio vertical names (keyword search, `query` required, at most 25 matches); without `type` the filter resolves against the default taxonomy.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "companyRunningAds"
+          },
+          {
             "name": "query",
             "in": "query",
             "required": false,
-            "description": "Search text (required for autocomplete filters). 1-100 characters.",
+            "description": "Search text, 1-100 characters. Required when [`GET /watchlist/filters`](/api-reference/endpoints/watch-list/get-filters) returns `requiresQuery: true` for the filter on that `type` — `companyIndustries` on `companyRunningAds` included: a missing or blank `query` is a `400 WATCH_LIST_API_INVALID_QUERY`. Static (select) filters ignore it.",
             "schema": {
               "type": "string",
               "minLength": 1,
@@ -39062,10 +39180,16 @@
             }
           },
           "400": {
-            "description": "Validation error - invalid filterId or query",
+            "description": "Validation error - invalid filterId, type or query. `WATCH_LIST_API_INVALID_QUERY` also when `query` is missing for a filter that requires one on the given `type`.",
             "content": {
               "text/plain": {
                 "example": "filterId is not a supported watch list autocomplete filter"
+              },
+              "application/json": {
+                "example": {
+                  "error": "query must be a non-empty string of at most 100 characters",
+                  "code": "WATCH_LIST_API_INVALID_QUERY"
+                }
               }
             }
           },

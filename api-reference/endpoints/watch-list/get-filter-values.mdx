@@ -3,5 +3,5 @@ openapi: get /watchlist/filter-values
 description: Autocompletes allowed values for a Signal Agent filter (job titles, industries, locations, company sizes, and more).
 ---
 <Note>
-Autocomplete filters require a `query`. Static (select) filters ignore it and return their full value list. Use the `filterId` values returned by [List allowed filters](/api-reference/endpoints/watch-list/get-filters).
+Autocomplete filters require a `query`. Static (select) filters ignore it and return their full value list. Use the `filterId` values returned by [List allowed filters](/api-reference/endpoints/watch-list/get-filters), and pass `type` when the vocabulary depends on the signal type: `companyIndustries` with `type=companyRunningAds` is a keyword search over Pubrio vertical names (`query` required, 25 matches at most, no full list).
 </Note>
