@@ -1,0 +1,26 @@
+---
+openapi: get /campaigns/{campaignId}/dynamic-sender-exclusions
+description: Returns the senders that the leads of a campaign cannot select.
+---
+
+<Note>
+This endpoint requires at least the **Email Pro** plan.
+</Note>
+
+Returns the list in force on the campaign:
+
+- `source: "campaign"`: the campaign has its own list, which replaces the team
+  list. An empty list excludes nobody on this campaign.
+- `source: "team"`: the campaign uses the
+  [team list](/api-reference/endpoints/senders/get-team-sender-exclusions).
+
+The list applies only when `senderStrategy` is dynamic: `contactOwner`,
+`leadImporter` or `customField:<fieldName>`. On a `random` campaign, the
+[sender pool](/api-reference/endpoints/senders/get-campaign-senders) applies.
+
+A campaign hidden from the user of the API key answers `404`.
+
+<Warning>
+These endpoints need an API key linked to a user. A key not linked to a user
+gets a `401`.
+</Warning>

@@ -1,0 +1,42 @@
+---
+openapi: patch /campaigns/{campaignId}/settings
+description: Changes the settings of a campaign, then returns all its settings.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Campaign Settings" objectPath="campaign-settings" />
+
+<Note>
+This endpoint requires at least the **Email Pro** plan.
+</Note>
+
+Send only the sections and fields to change. An omitted section or field keeps
+its value. The response gives all the settings after the change, as
+[Get Campaign Settings](/api-reference/endpoints/campaigns/get-campaign-settings)
+does.
+
+## Validation
+
+- An unknown field or a read-only field answers `400`
+  `CAMPAIGN_SETTINGS_INVALID_INPUT`. `details.issues` lists every refused
+  field, so that you can fix them all in one retry.
+- An empty body answers `400`.
+- All the checks run before the first write. A refused request writes nothing.
+
+## Conditions
+
+| Change                        | Condition                                                                  | Error if not met                                   |
+| ----------------------------- | -------------------------------------------------------------------------- | -------------------------------------------------- |
+| `senders.espMatching: true`   | The team has at least one active mailbox.                                  | `409` `CAMPAIGN_SETTINGS_ESP_MATCHING_UNAVAILABLE` |
+| `automation.autoReview: true` | The team has a custom tracking domain, or open and click tracking are off. | `409` `CAMPAIGN_SETTINGS_AUTO_REVIEW_REQUIRES_CTD` |
+| `senderStrategy`              | `random`, `contactOwner`, `leadImporter` or `customField:<fieldName>`.     | `400` `CAMPAIGN_INVALID_SENDER_STRATEGY`           |
+
+The checks read the settings after the change. To turn on auto-review on a team
+without a custom tracking domain, send
+`tracking: { "trackOpens": false, "trackClicks": false }` in the same request.
+
+<Tip>
+On a campaign with a dynamic sender strategy, set the senders that the leads
+cannot select with
+[Replace Campaign Sender Exclusions](/api-reference/endpoints/senders/replace-campaign-sender-exclusions).
+</Tip>

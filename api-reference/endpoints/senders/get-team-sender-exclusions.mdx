@@ -1,0 +1,27 @@
+---
+openapi: get /team/dynamic-sender-exclusions
+description: Returns the senders that the dynamic sender strategies of the team cannot select.
+---
+
+<Note>
+This endpoint requires at least the **Email Pro** plan.
+</Note>
+
+A campaign with a dynamic sender strategy (`contactOwner`, `leadImporter` or
+`customField:<fieldName>`) takes the sender of each lead from the lead data.
+The exclusion list removes senders, or some of their channels, from the senders
+that the leads can select.
+
+The team list applies to each dynamic campaign without a list of its own. To
+read the list in force on one campaign, use
+[Get Campaign Sender Exclusions](/api-reference/endpoints/senders/get-campaign-sender-exclusions).
+
+- An entry without `channels` excludes the sender on every channel, also on the
+  accounts that they connect later.
+- A user who left the team and a deleted account do not show.
+- A team without a list returns `{ "data": { "senders": [] } }`.
+
+<Warning>
+These endpoints need an API key linked to a user. A key not linked to a user
+gets a `401`.
+</Warning>
