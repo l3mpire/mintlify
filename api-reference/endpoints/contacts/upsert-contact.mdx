@@ -23,6 +23,8 @@ At least one identifier is required:
 
 If a contact with the same `email`, `linkedinUrl`, or `linkedinUrlSalesNav` already exists, the endpoint updates it instead of creating a duplicate.
 
+Creating a contact requires the "Create contacts" permission on the API key's user, otherwise the request fails with `403 CONTACT_CREATE_NOT_ALLOWED` and nothing is written. Updating an existing contact does not require it.
+
 When `contactId` is provided, the contact is matched by its ID directly — `email` and `linkedinUrl` are not required and are not used for matching (they are stored as data if provided).
 
 <Warning>
@@ -91,9 +93,9 @@ What happens depends on the contact and on who already holds the id:
 | Situation | Result |
 |-----------|--------|
 | New contact, the id is linked to no lemlist contact | The contact is created already linked to that record (`201`). |
-| Existing contact, named by `contactId` or found by its email or LinkedIn URL | Its link moves to that record (`200`). The previous CRM record stops being synced: updates queued for it are cancelled, and when your mapping includes the "synced with lemlist" field, it is set to false there. |
-| The id is linked to another lemlist contact, and the body carries that contact's `email`, `linkedinUrl` or `linkedinUrlSalesNav` | That contact is updated; its link stays as it is (`200`). Sending the same payload twice is safe. |
-| The id is linked to another lemlist contact, otherwise | Refused, nothing written: `409 CRM_ID_ALREADY_LINKED`, `error.conflictingRecord` names that contact. |
+| Existing contact, named by `contactId` or found by its email or LinkedIn URL | Its link moves to that record (`200`). The previous CRM record stops being synced: updates queued for it are cancelled. When your mapping includes the "synced with lemlist" field, it is set to false there; when it includes the Lemlist Contact ID, that field is cleared there. |
+| The id is already linked to a lemlist contact, and at least one of the body's `email` (its primary email), `linkedinUrl` or `linkedinUrlSalesNav` is that contact's | The `crmId` finds the contact and that identifier confirms it: the body updates it (`200`) and its link stays as it is. The body's other identifiers are written to the contact, unless they already belong to another contact: `409 CONTACT_IDENTIFIER_CONFLICT`. Sending the same payload twice is safe. |
+| The id is already linked to a lemlist contact, and none of the body's identifiers is that contact's | Refused, nothing written: `409 CRM_ID_ALREADY_LINKED`, `error.conflictingRecord` names that contact. Another of its email addresses is not enough: only its primary email confirms it. |
 
 The `crmSync` block of the response shows the link the contact ends up with.
 

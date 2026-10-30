@@ -1,0 +1,8 @@
+---
+openapi: get /calls/{id}
+description: Reads a call of the team back, by its id or, for a call logged through the API, by the externalId you sent.
+---
+
+Reach any call of the team by its `_id`, whatever made it: the lemlist dialer, Aircall, Ringover or this API. A call logged through [`POST /calls`](/api-reference/endpoints/calls/log-call) is also reached by the `externalId` you sent; the other calls have none (`externalId: null`) and show the dialer that made them in `phoneProvider`.
+
+Read a call back when you need to know whether its recording landed (`hasRecording`), what status and note it holds now, or when a `POST` answered nothing (a timeout, a network error): the call is stored under your `externalId` as soon as lemlist answered, and this reads it without logging it again.

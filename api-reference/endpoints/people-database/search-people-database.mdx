@@ -5,4 +5,6 @@ title: "Search People database"
 ---
 <Note>
   To know which filters you are able to use, refer to the [GET Filters](/api-reference/endpoints/people-database/get-database-filters) section.
+
+  Filters of type `slider` (such as `currentCompanyFounded`) take one or more `min|max` ranges in `in`: two numbers joined by `|`, such as `2015|2024`. Their `out` must stay empty. An `out` value, or a range in another format such as `2015-2024`, answers `400` `Parameter filters is invalid`. To exclude a range, send the ranges around it in `in`. For example, `["1900|1989", "2001|2026"]` excludes the companies founded from 1990 to 2000.
 </Note>
