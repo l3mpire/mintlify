@@ -4767,7 +4767,8 @@
               "costCutting",
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
-              "githubStargazer"
+              "githubStargazer",
+              "linkedinProfileViews"
             ]
           },
           "status": {
@@ -5178,6 +5179,26 @@
                 "type": "boolean",
                 "description": "[warmIntros] Whether the introducer and the lead had the same function"
               },
+              "linkedinProfileViewsJobTitle": {
+                "type": "string",
+                "description": "[linkedinProfileViews] Job title of the viewer"
+              },
+              "linkedinProfileViewsHeadline": {
+                "type": "string",
+                "description": "[linkedinProfileViews] LinkedIn headline of the viewer"
+              },
+              "linkedinProfileViewsLocation": {
+                "type": "string",
+                "description": "[linkedinProfileViews] Location of the viewer"
+              },
+              "linkedinProfileViewsViewedMemberFirstName": {
+                "type": "string",
+                "description": "[linkedinProfileViews] First name of the team member whose profile was viewed"
+              },
+              "linkedinProfileViewsViewedMemberLastName": {
+                "type": "string",
+                "description": "[linkedinProfileViews] Last name of the team member whose profile was viewed"
+              },
               "acquisitionType": {
                 "type": "string",
                 "description": "[mergersAcquisitions] Acquisition type"
@@ -5325,7 +5346,8 @@
               "costCutting",
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
-              "githubStargazer"
+              "githubStargazer",
+              "linkedinProfileViews"
             ]
           },
           "status": {
@@ -5491,7 +5513,8 @@
               "crmListIds",
               "minJobCount",
               "timeframe",
-              "githubRepoUrls"
+              "githubRepoUrls",
+              "linkedinProfileViewsUserIds"
             ]
           },
           "in": {
@@ -5803,7 +5826,8 @@
               "costCutting",
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
-              "githubStargazer"
+              "githubStargazer",
+              "linkedinProfileViews"
             ]
           },
           "entity": {
@@ -5938,7 +5962,8 @@
               "costCutting",
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
-              "githubStargazer"
+              "githubStargazer",
+              "linkedinProfileViews"
             ]
           },
           "title": {
@@ -6102,6 +6127,43 @@
               "items": {
                 "$ref": "#/components/schemas/WatchListFilterDescriptor"
               }
+            }
+          }
+        }
+      },
+      "LinkedinProfileViewsMember": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "User id, the value the `linkedinProfileViewsUserIds` filter takes",
+            "example": "usr_ExAmPlE1234567890a"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "Omitted when empty"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Omitted when empty"
+          },
+          "email": {
+            "type": "string",
+            "description": "Omitted when the member has no email"
+          }
+        },
+        "required": [
+          "_id"
+        ]
+      },
+      "LinkedinProfileViewsMembersResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "description": "The team members whose LinkedIn account is connected to lemlist",
+            "items": {
+              "$ref": "#/components/schemas/LinkedinProfileViewsMember"
             }
           }
         }
@@ -38246,7 +38308,8 @@
                       "costCutting",
                       "outagesAndSecurityBreaches",
                       "lawsuitsAndLegalIssues",
-                      "githubStargazer"
+                      "githubStargazer",
+                      "linkedinProfileViews"
                     ]
                   },
                   "filters": {
@@ -38378,7 +38441,7 @@
             }
           },
           "400": {
-            "description": "Validation error - invalid body, filters, or activate prerequisites. `WATCH_LIST_API_INVALID_CAMPAIGN_ID` when `campaignId` is malformed or sent without signalProcessingType = push_to_campaign. `WATCH_LIST_API_INVALID_FILTERS` when a filter is rejected: `details.invalidFilters` lists each one, and a refused external-signal mapping (`externalSignalFieldMapping`, `externalSignalCustomFieldMapping`) carries a `message` saying what to fix.",
+            "description": "Validation error - invalid body, filters, or activate prerequisites. `WATCH_LIST_API_INVALID_CAMPAIGN_ID` when `campaignId` is malformed or sent without signalProcessingType = push_to_campaign. `WATCH_LIST_API_INVALID_FILTERS` when a filter is rejected: `details.invalidFilters` lists each one, and a refused external-signal mapping (`externalSignalFieldMapping`, `externalSignalCustomFieldMapping`) carries a `message` saying what to fix. A `linkedinProfileViewsUserIds` value that is not a team member with a connected LinkedIn account is rejected there too, as `INVALID_FILTER_VALUE`.",
             "content": {
               "text/plain": {
                 "example": "activate requires both segmentType and signalProcessingType"
@@ -38539,7 +38602,7 @@
             }
           },
           "400": {
-            "description": "Validation error - invalid body or filters",
+            "description": "Validation error - invalid body or filters. `WATCH_LIST_API_INVALID_FILTERS` lists each rejected filter in `details.invalidFilters`; on a `linkedinProfileViews` agent, a `linkedinProfileViewsUserIds` value added that is not a team member with a connected LinkedIn account is rejected there as `INVALID_FILTER_VALUE`.",
             "content": {
               "text/plain": {
                 "example": "name must be a non-empty string"
@@ -38937,7 +39000,8 @@
                 "costCutting",
                 "outagesAndSecurityBreaches",
                 "lawsuitsAndLegalIssues",
-                "githubStargazer"
+                "githubStargazer",
+                "linkedinProfileViews"
               ]
             },
             "example": "companyIsHiring"
@@ -38981,6 +39045,64 @@
         }
       }
     },
+    "/watchlist/linkedin-profile-views/members": {
+      "get": {
+        "summary": "List LinkedIn profile views members",
+        "description": "Lists the members of your team whose LinkedIn profile views a `linkedinProfileViews` Signal Agent can track: the members whose LinkedIn account is connected to lemlist. Their `_id` are the only values the `linkedinProfileViewsUserIds` filter accepts; a member missing here must connect their LinkedIn account in lemlist first.\n\nThis endpoint is in closed beta and answers `403` unless the `linkedinProfileViews` beta is enabled for your team.",
+        "operationId": "listLinkedinProfileViewsMembers",
+        "tags": [
+          "Signal Agents"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkedinProfileViewsMembersResponse"
+                },
+                "example": {
+                  "data": [
+                    {
+                      "_id": "usr_ExAmPlE1234567890a",
+                      "firstName": "Mia",
+                      "lastName": "Member",
+                      "email": "mia@acme.com"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "text/plain": {
+                "example": "Unauthorized"
+              }
+            }
+          },
+          "403": {
+            "description": "The linkedinProfileViews beta is not enabled for your team",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Beta is not enabled"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "text/plain": {
+                "example": "Internal server error"
+              }
+            }
+          }
+        }
+      }
+    },
     "/watchlist/filter-values": {
       "get": {
         "summary": "Autocomplete filter values",
@@ -38992,7 +39114,7 @@
             "name": "filterId",
             "in": "query",
             "required": true,
-            "description": "Filter to resolve values for",
+            "description": "Filter to resolve values for. `linkedinProfileViewsUserIds` takes no `query` and resolves to the ids of the team members whose LinkedIn account is connected to lemlist, the only ids a `linkedinProfileViews` Signal Agent accepts.",
             "schema": {
               "type": "string",
               "enum": [
@@ -39034,7 +39156,8 @@
                 "seniority",
                 "crmListIds",
                 "minJobCount",
-                "timeframe"
+                "timeframe",
+                "linkedinProfileViewsUserIds"
               ]
             },
             "example": "companyIndustries"

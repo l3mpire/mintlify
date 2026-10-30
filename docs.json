@@ -487,7 +487,8 @@
                   "api-reference/endpoints/watch-list/push-external-signals",
                   "api-reference/endpoints/watch-list/get-library",
                   "api-reference/endpoints/watch-list/get-filters",
-                  "api-reference/endpoints/watch-list/get-filter-values"
+                  "api-reference/endpoints/watch-list/get-filter-values",
+                  "api-reference/endpoints/watch-list/get-linkedin-profile-views-members"
                 ]
               },
               {
