@@ -26193,7 +26193,7 @@
         },
         "responses": {
           "200": {
-            "description": "Merge run — **`success: true` does not mean complete.** The contacts fold one at a time and the run stops at the first failure, so ALWAYS check `remainingIds`: the contacts listed there were NOT merged and still exist. Fix the cause (typically an enrichment in progress) and call again with the survivor and the remaining ids.",
+            "description": "Merge run — **`success: true` does not mean complete.** The contacts fold one at a time and the run stops at the first failure, so ALWAYS check `remainingIds`: the contacts listed there were NOT merged and still exist. Fix the cause and call again with the survivor and the remaining ids.",
             "content": {
               "application/json": {
                 "schema": {
@@ -26301,20 +26301,6 @@
                   "error": {
                     "code": "ENTITY_MERGE_ENTITY_NOT_FOUND",
                     "message": "One of the records was not found"
-                  }
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "A contact is being enriched and cannot be merged yet (`ENTITY_MERGE_ENRICHMENT_IN_PROGRESS`); retry once it finishes.",
-            "content": {
-              "application/json": {
-                "example": {
-                  "success": false,
-                  "error": {
-                    "code": "ENTITY_MERGE_ENRICHMENT_IN_PROGRESS",
-                    "message": "A record is being enriched, retry once it finishes"
                   }
                 }
               }
@@ -29208,20 +29194,6 @@
                   "error": {
                     "code": "ENTITY_MERGE_ENTITY_NOT_FOUND",
                     "message": "One of the records was not found"
-                  }
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "A company is being enriched and cannot be merged yet (`ENTITY_MERGE_ENRICHMENT_IN_PROGRESS`); retry once it finishes.",
-            "content": {
-              "application/json": {
-                "example": {
-                  "success": false,
-                  "error": {
-                    "code": "ENTITY_MERGE_ENRICHMENT_IN_PROGRESS",
-                    "message": "A record is being enriched, retry once it finishes"
                   }
                 }
               }
