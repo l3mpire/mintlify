@@ -36150,6 +36150,246 @@
         }
       }
     },
+    "/users/{userId}/signature": {
+      "get": {
+        "summary": "Get User Signature",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the team member whose signatures to read (usr_xxx). Your own id is always allowed; a teammate's requires the permission to edit sending settings",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The HTML and plain-text signatures of the team member, an empty string when unset",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "description": "ID of the team member (usr_xxx)"
+                        },
+                        "signature": {
+                          "type": "string",
+                          "description": "HTML signature, inserted by {{signature}} in emails sent as HTML; empty when unset"
+                        },
+                        "plainTextSignature": {
+                          "type": "string",
+                          "description": "Plain-text signature, inserted by {{plainTextSignature}} in emails sent as plain text and in lemwarm; empty when unset"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "userId": "usr_Tq8Wm3Zk6RbP2NxYv",
+                    "signature": "<p>Best regards,<br>John Doe<br>Acme Inc</p>",
+                    "plainTextSignature": "Best regards,\nJohn Doe\nAcme Inc"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed userId (`WRONG_PARAM_USER_ID`)",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Wrong param user id",
+                  "code": "WRONG_PARAM_USER_ID"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The API key does not resolve a user"
+          },
+          "403": {
+            "description": "The user is a teammate and the API key's user lacks the permission to edit sending settings",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "You cannot read or edit your teammates' signatures in this team",
+                  "code": "SIGNATURE_PERMISSION_DENIED"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The user is not a member of the team",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This user is not a member of your team",
+                  "code": "SIGNATURE_USER_NOT_IN_TEAM"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method other than GET"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Internal error",
+                  "code": "INTERNAL_ERROR"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update User Signature",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the team member whose signatures to update (usr_xxx). Your own id is always allowed; a teammate's requires the permission to edit sending settings",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The signatures to change. Provide `signature` and/or `plainTextSignature`: an omitted one keeps its stored value, and at least one is required. Unknown fields are refused, and an invalid body fails the whole update, so nothing is written. The HTML signature is sanitized on save, so link images by URL instead of embedding them; an empty string clears it.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "properties": {
+                  "signature": {
+                    "type": "string",
+                    "maxLength": 100000,
+                    "description": "HTML signature, inserted by {{signature}} in emails sent as HTML. Sanitized on save; an empty string clears it"
+                  },
+                  "plainTextSignature": {
+                    "type": "string",
+                    "maxLength": 50000,
+                    "description": "Plain-text signature, inserted by {{plainTextSignature}} in emails sent as plain text and in lemwarm. Line breaks are kept and HTML is converted to text; an empty string clears it"
+                  }
+                }
+              },
+              "example": {
+                "signature": "<p>Best regards,<br>John Doe<br>Acme Inc</p>",
+                "plainTextSignature": "Best regards,\nJohn Doe\nAcme Inc"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Both signatures of the team member after the update, as stored: the HTML one comes back sanitized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "description": "ID of the team member (usr_xxx)"
+                        },
+                        "signature": {
+                          "type": "string",
+                          "description": "HTML signature as stored after sanitizing; empty when unset"
+                        },
+                        "plainTextSignature": {
+                          "type": "string",
+                          "description": "Plain-text signature as stored; empty when unset"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "userId": "usr_Tq8Wm3Zk6RbP2NxYv",
+                    "signature": "<p>Best regards,<br>John Doe<br>Acme Inc</p>",
+                    "plainTextSignature": "Best regards,\nJohn Doe\nAcme Inc"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body - unknown field, wrong type, more than 100,000 characters for signature or 50,000 for plainTextSignature (`SIGNATURE_INVALID_INPUT`) - or neither signature provided (`SIGNATURE_NOTHING_TO_UPDATE`); also a malformed userId (`WRONG_PARAM_USER_ID`)",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Send only signature (HTML, at most 100,000 characters) and/or plainTextSignature (at most 50,000 characters), as strings",
+                  "code": "SIGNATURE_INVALID_INPUT"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The API key does not resolve a user"
+          },
+          "403": {
+            "description": "The user is a teammate and the API key's user lacks the permission to edit sending settings",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "You cannot read or edit your teammates' signatures in this team",
+                  "code": "SIGNATURE_PERMISSION_DENIED"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The user is not a member of the team",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This user is not a member of your team",
+                  "code": "SIGNATURE_USER_NOT_IN_TEAM"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method other than GET or PATCH"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Internal error",
+                  "code": "INTERNAL_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/campaigns/{campaignId}/duplicate": {
       "parameters": [
         {

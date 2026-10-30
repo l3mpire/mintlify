@@ -119,7 +119,9 @@
                 "pages": [
                   "api-reference/endpoints/users/get-user",
                   "api-reference/endpoints/users/get-user-channels",
-                  "api-reference/endpoints/users/update-user-linkedin-limits"
+                  "api-reference/endpoints/users/update-user-linkedin-limits",
+                  "api-reference/endpoints/users/get-user-signature",
+                  "api-reference/endpoints/users/update-user-signature"
                 ]
               },
               {
