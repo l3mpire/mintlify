@@ -1,0 +1,10 @@
+---
+openapi: get /users/{userId}/signature
+description: Retrieves the HTML and plain-text email signatures of a team member.
+---
+
+<Note>
+Any member of your team can be read, including yourself: the only rule is that the user belongs to the team the API key belongs to.
+</Note>
+
+Both signatures come back as stored, an empty string when the team member never set one.

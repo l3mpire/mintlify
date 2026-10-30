@@ -1,0 +1,15 @@
+---
+openapi: patch /users/{userId}/signature
+description: Updates the HTML and plain-text email signatures of a team member.
+---
+
+<Note>
+Any member of your team can be edited, including yourself: the only rule is that the user belongs to the team the API key belongs to. Send at least one of `signature` and `plainTextSignature`, and note that unknown fields are refused.
+</Note>
+
+## How each signature is used
+
+- `signature` — HTML, capped at 100,000 characters, inserted where an email carries `{{signature}}`. It is sanitized on save, so link images by URL instead of embedding them.
+- `plainTextSignature` — plain text, capped at 50,000 characters, inserted by `{{plainTextSignature}}` in emails sent as plain text and in lemwarm. Line breaks are kept and HTML is converted to text.
+
+An empty string clears a signature, and a field you omit keeps its stored value. The response returns both signatures as stored, so the HTML one may come back modified by the sanitizing. A `plainTextSignature` that passes 50,000 characters once its angle brackets are escaped is rejected as well, since the rest would be dropped on the way to plain text.
