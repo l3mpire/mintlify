@@ -511,6 +511,18 @@
                 ]
               },
               {
+                "group": "Domains",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/domains/search-domains",
+                  "api-reference/endpoints/domains/purchase-domain",
+                  "api-reference/endpoints/domains/list-domains",
+                  "api-reference/endpoints/domains/order-mailboxes",
+                  "api-reference/endpoints/domains/list-domain-mailboxes",
+                  "api-reference/endpoints/domains/update-domain-mailbox"
+                ]
+              },
+              {
                 "group": "Fields",
                 "expanded": false,
                 "pages": [
@@ -564,6 +576,8 @@
               "api-reference/objects-definitions/report",
               "api-reference/objects-definitions/webhook",
               "api-reference/objects-definitions/mailbox",
+              "api-reference/objects-definitions/domain",
+              "api-reference/objects-definitions/domain-mailbox",
               "api-reference/objects-definitions/company-note",
               "api-reference/objects-definitions/contact-note",
               "api-reference/objects-definitions/crm-log",
