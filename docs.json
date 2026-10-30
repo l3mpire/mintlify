@@ -139,6 +139,8 @@
                   "api-reference/endpoints/campaigns/get-campaign",
                   "api-reference/endpoints/campaigns/get-many-campaigns",
                   "api-reference/endpoints/campaigns/update-campaign",
+                  "api-reference/endpoints/campaigns/get-campaign-settings",
+                  "api-reference/endpoints/campaigns/update-campaign-settings",
                   "api-reference/endpoints/campaigns/get-campaign-statutes",
                   "api-reference/endpoints/campaigns/start-campaign",
                   "api-reference/endpoints/campaigns/pause-campaign",
@@ -167,7 +169,11 @@
                   "api-reference/endpoints/senders/add-campaign-senders",
                   "api-reference/endpoints/senders/replace-campaign-senders",
                   "api-reference/endpoints/senders/update-campaign-sender-channels",
-                  "api-reference/endpoints/senders/remove-campaign-sender"
+                  "api-reference/endpoints/senders/remove-campaign-sender",
+                  "api-reference/endpoints/senders/get-team-sender-exclusions",
+                  "api-reference/endpoints/senders/replace-team-sender-exclusions",
+                  "api-reference/endpoints/senders/get-campaign-sender-exclusions",
+                  "api-reference/endpoints/senders/replace-campaign-sender-exclusions"
                 ]
               },
               {
@@ -540,6 +546,7 @@
               "api-reference/objects-definitions/credits",
               "api-reference/objects-definitions/user",
               "api-reference/objects-definitions/campaign",
+              "api-reference/objects-definitions/campaign-settings",
               "api-reference/objects-definitions/lead",
               "api-reference/objects-definitions/activity",
               "api-reference/objects-definitions/unsubscribe",

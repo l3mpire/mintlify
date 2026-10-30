@@ -1,0 +1,26 @@
+---
+openapi: put /campaigns/{campaignId}/dynamic-sender-exclusions
+description: Replaces the senders that the leads of a campaign cannot select.
+---
+
+<Note>
+This endpoint requires at least the **Email Pro** plan.
+</Note>
+
+- `senders: [...]` gives the campaign its own list, which replaces the team
+  list. An empty list excludes nobody on this campaign.
+- `senders: null` removes the campaign list. The campaign uses the
+  [team list](/api-reference/endpoints/senders/get-team-sender-exclusions)
+  again.
+
+The entries follow the validation rules of
+[Replace Team Sender Exclusions](/api-reference/endpoints/senders/replace-team-sender-exclusions).
+A refused request writes nothing.
+
+The campaign must use a dynamic sender strategy (`contactOwner`,
+`leadImporter` or `customField:<fieldName>`). Else the request answers `409`.
+Change the strategy with
+[Update Campaign Settings](/api-reference/endpoints/campaigns/update-campaign-settings).
+
+Only the leads reviewed or launched after the change get a sender from the new
+list.
