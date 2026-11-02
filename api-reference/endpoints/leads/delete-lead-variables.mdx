@@ -10,3 +10,5 @@ description: Erases the values of custom variables on a lead.
 <Note>
   Company fields — `companyName`, `companyIndustry`, any `company`-prefixed key — reach the **company record** the lead is linked to, the same record every other lead linked to it reads, not that lead alone. The response says so: `warnings` carries a `company-fields-write-company-record` entry naming those keys in `params.fields`. It is informational, your request went through. To edit a company on purpose, use [Upsert Company](/api-reference/endpoints/companies/upsert-company). `companyDomain` cannot be erased here — it is one of the identifiers this endpoint refuses.
 </Note>
+
+On a lead with no linked contact, a write that would create the contact or its company requires the "Create contacts" or "Create companies" permission on the API key's user, otherwise it fails with `403 CONTACT_CREATE_NOT_ALLOWED` or `403 COMPANY_CREATE_NOT_ALLOWED` and nothing is written. The error names that user; when the API key's user is no longer in the team, it fails with `403 API_USER_NOT_IN_TEAM` instead.

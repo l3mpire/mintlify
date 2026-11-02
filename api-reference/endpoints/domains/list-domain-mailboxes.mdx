@@ -1,0 +1,13 @@
+---
+openapi: get /domains-core/mailboxes
+description: Lists the mailboxes bought on the team's lemlist domains.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Domain mailbox" objectPath="domain-mailbox" />
+
+Poll this endpoint to follow mailboxes after [Order Mailboxes](/api-reference/endpoints/domains/order-mailboxes). Canceled mailboxes are not listed.
+
+<Warning>
+`active` means the mailbox exists at the provider, not that it can send yet. SMTP mailboxes, and Google Workspace mailboxes on a domain bought or transferred through lemlist, are connected automatically. Microsoft 365 mailboxes, and Google Workspace mailboxes on a domain connected from your own registrar, must be connected by their user in the lemlist app (Settings > Sending) before campaigns can use them.
+</Warning>

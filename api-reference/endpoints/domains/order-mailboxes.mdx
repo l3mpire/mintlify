@@ -1,0 +1,33 @@
+---
+openapi: post /domains-core/{domainId}/mailboxes
+description: Orders mailboxes on one of the team's domains and bills the team.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Domain mailbox" objectPath="domain-mailbox" />
+
+<Warning>
+This call bills the team: each mailbox is a monthly seat on the domain's mailbox subscription, prorated on the first invoice. Nothing can be canceled through the API; use the lemlist app.
+</Warning>
+
+The mailbox type is the domain's `registrar`: Google Workspace, Microsoft 365 or SMTP. The order is checked as a whole: one invalid mailbox refuses it all, and nothing is billed.
+
+You can order right after [Purchase Domain](/api-reference/endpoints/domains/purchase-domain). The mailboxes stay `ordered` until the domain is set up, then they are billed and created. Follow them with [List Domain Mailboxes](/api-reference/endpoints/domains/list-domain-mailboxes).
+
+## Rules by provider
+
+| Provider | Rules |
+| -------- | ----- |
+| `google` | The first mailbox set up becomes the Google Workspace super admin. Pick it with `workspaceAdmin: true`, otherwise lemlist picks one. The order is refused while the domain's nameservers do not point to lemlist. |
+| `m365` | The username `admin` is reserved by Microsoft. Every assigned user needs a first and last name in lemlist. |
+| `infraforge` | At most 10 mailboxes per domain. Set a `sendername`. |
+
+<Note>
+Pass `assignToUser` for each mailbox: without it the mailbox goes to the user of the API key.
+
+This call is not idempotent. Calling it again with the same usernames answers `409` (`Some emails are already taken`): check List Domain Mailboxes before retrying.
+</Note>
+
+<Warning>
+Requires the **Manage domains** permission on the user of the API key.
+</Warning>

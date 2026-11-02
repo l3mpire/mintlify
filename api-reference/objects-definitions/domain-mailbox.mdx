@@ -1,0 +1,10 @@
+---
+title: Domain mailbox
+openapi-schema: DomainMailbox
+---
+
+A mailbox bought on a lemlist [domain](/api-reference/objects-definitions/domain), assigned to the team member who sends from it. Its provider is the one of its domain.
+
+It is created in the background after [Order Mailboxes](/api-reference/endpoints/domains/order-mailboxes), once its domain is ready: its `status` goes from `ordered` to `active`. Poll [List Domain Mailboxes](/api-reference/endpoints/domains/list-domain-mailboxes).
+
+Once connected, it is also a [mailbox](/api-reference/objects-definitions/mailbox) of its user, the account campaigns send from.

@@ -1,0 +1,13 @@
+---
+openapi: get /domains-core/team-domains
+description: Lists the team's domains bought or being transferred through lemlist.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Domain" objectPath="domain" />
+
+Poll this endpoint to follow a domain after [Purchase Domain](/api-reference/endpoints/domains/purchase-domain): it is ready once its `status` reads `active`.
+
+<Note>
+Canceled domains are not listed. Domains connected from your own registrar in the lemlist app are listed too.
+</Note>
