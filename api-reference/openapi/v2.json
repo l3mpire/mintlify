@@ -13948,7 +13948,7 @@
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / Error from updateStep",
+            "description": "Possible errors: Bad team / Error from updateStep. On a `customLeadInfo` branch set in the campaign editor with an operator or a field the API does not offer, a patch that leaves them out answers `customOperator is required on a typed branch (stored operator \"gt\")` or `customField is required on a typed branch`. A patch writes the branch back with the API's operators, so it then compares the field as text.",
             "content": {
               "text/plain": {
                 "example": "Bad team"
@@ -14576,7 +14576,7 @@
             }
           },
           "400": {
-            "description": "The body or the step cannot host the branch. `SEQUENCE_BRANCH_VALUE_REQUIRED` - the condition needs a tested value the body did not carry. `SEQUENCE_BRANCH_CONDITION_NOT_CONFIGURABLE` - the condition has no branch parameters on the API. `SEQUENCE_BRANCH_CONDITION_KEY_NOT_ALLOWED` - `conditionKey` was sent. `not-multi-capable` - the condition supports a single branch plus Else. `cap-reached` - the step is at its 200-entry ceiling. `SEQUENCE_BRANCH_INVALID_PARAM` - a malformed body or path identifier. A bad `customField`, `customOperator` or `customValue` answers with a plain message and no `code` - for instance `customValue is required for operator \"contains\"`.",
+            "description": "The body or the step cannot host the branch. `SEQUENCE_BRANCH_VALUE_REQUIRED` - the condition needs a tested value the body did not carry. `SEQUENCE_BRANCH_CONDITION_NOT_CONFIGURABLE` - the condition has no branch parameters on the API. `SEQUENCE_BRANCH_CONDITION_KEY_NOT_ALLOWED` - `conditionKey` was sent. `not-multi-capable` - the condition supports a single branch plus Else. `cap-reached` - the step is at its 200-entry ceiling. `SEQUENCE_BRANCH_TYPED_STEP` - the step's first branch was set in the campaign editor on a contact field the API does not write yet: add this branch in the campaign editor. `SEQUENCE_BRANCH_INVALID_PARAM` - a malformed body or path identifier. A bad `customField`, `customOperator` or `customValue` answers with a plain message and no `code` - for instance `customValue is required for operator \"contains\"`.",
             "content": {
               "application/json": {
                 "example": {
@@ -14957,7 +14957,7 @@
             }
           },
           "400": {
-            "description": "`SEQUENCE_BRANCH_NO_UPDATE` - the body changed nothing. `SEQUENCE_BRANCH_IS_FALLBACK` - the Else branch cannot be renamed or edited. `SEQUENCE_BRANCH_CONDITION_KEY_NOT_ALLOWED` - `conditionKey` was sent. `SEQUENCE_BRANCH_UPDATE_REJECTED` - the change did not apply. `SEQUENCE_BRANCH_INVALID_PARAM` - a malformed body or path identifier. A bad `customField`, `customOperator` or `customValue` answers with a plain message and no `code` - for instance `customValue is required for operator \"contains\"`.",
+            "description": "`SEQUENCE_BRANCH_NO_UPDATE` - the body changed nothing. `SEQUENCE_BRANCH_IS_FALLBACK` - the Else branch cannot be renamed or edited. `SEQUENCE_BRANCH_CONDITION_KEY_NOT_ALLOWED` - `conditionKey` was sent. `SEQUENCE_BRANCH_UPDATE_REJECTED` - the change did not apply. `SEQUENCE_BRANCH_INVALID_PARAM` - a malformed body or path identifier. A bad `customField`, `customOperator` or `customValue` answers with a plain message and no `code` - for instance `customValue is required for operator \"contains\"`. On a branch set in the campaign editor with an operator or a field the API does not offer, a patch that leaves them out answers `customOperator is required on a typed branch (stored operator \"gt\")` or `customField is required on a typed branch`. A patch writes the branch back with the API's operators, so it then compares the field as text.",
             "content": {
               "application/json": {
                 "example": {
