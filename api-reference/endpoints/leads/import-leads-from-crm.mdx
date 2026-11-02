@@ -7,4 +7,8 @@ description: Links a campaign to a filter of your connected CRM and imports its 
     Only a campaign that is not linked to a CRM filter yet can be linked. To change or unlink a campaign's CRM filter, use the lemlist app.
 </Note>
 
+<Warning>
+    On a paused, archived or CRM-sync-paused campaign, the filter is linked but no lead is imported until that is lifted; the first import then starts about an hour later. The response then carries `importPending: true` and the `reason`.
+</Warning>
+
 Get the filter ID from [Get CRM Filters](/api-reference/endpoints/crm/get-crm-filters).
