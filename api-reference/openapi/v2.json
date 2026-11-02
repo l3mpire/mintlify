@@ -18655,7 +18655,7 @@
             }
           },
           "403": {
-            "description": "Possible errors: User linked to this API key is blocked (plain text) / The lead brings a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission (JSON body) / The lead brings a contact not yet in lemlist and the API key's user does not have the \"Create contacts\" permission (JSON body); nothing is written.",
+            "description": "Possible errors: User linked to this API key is blocked (plain text) / The lead brings a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission (JSON body) / The lead brings a contact not yet in lemlist and the API key's user does not have the \"Create contacts\" permission (JSON body); nothing is written. A permission error names the API key's user by email, or says that user is no longer in the team.",
             "content": {
               "text/plain": {
                 "example": "User linked to this API key is blocked"
@@ -18664,12 +18664,17 @@
                 "examples": {
                   "company-create-not-allowed": {
                     "value": {
-                      "error": "You do not have the permission to create companies"
+                      "error": "The user jane@acme.com does not have the permission to create companies"
                     }
                   },
                   "contact-create-not-allowed": {
                     "value": {
-                      "error": "You do not have the permission to create contacts"
+                      "error": "The user jane@acme.com does not have the permission to create contacts"
+                    }
+                  },
+                  "api-user-not-in-team": {
+                    "value": {
+                      "error": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect"
                     }
                   }
                 }
@@ -18970,15 +18975,18 @@
             "description": "Unauthorized"
           },
           "403": {
-            "description": "Possible errors: The update brings a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission / The lead has no linked contact, the update would create one and the API key's user does not have the \"Create contacts\" permission; nothing is written.",
+            "description": "Possible errors: The update brings a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission / The lead has no linked contact, the update would create one and the API key's user does not have the \"Create contacts\" permission; nothing is written. A permission error names the API key's user by email, or says that user is no longer in the team.",
             "content": {
               "text/plain": {
                 "examples": {
                   "company-create-not-allowed": {
-                    "value": "You do not have the permission to create companies"
+                    "value": "The user jane@acme.com does not have the permission to create companies"
                   },
                   "contact-create-not-allowed": {
-                    "value": "You do not have the permission to create contacts"
+                    "value": "The user jane@acme.com does not have the permission to create contacts"
+                  },
+                  "api-user-not-in-team": {
+                    "value": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect"
                   }
                 }
               }
@@ -20533,18 +20541,23 @@
             "description": "Unauthorized"
           },
           "403": {
-            "description": "Possible errors: The write would create a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`) / The lead has no linked contact, the write would create one and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); nothing is written.",
+            "description": "Possible errors: The write would create a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`) / The lead has no linked contact, the write would create one and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); nothing is written. A permission error names the API key's user by email; when that user is no longer in the team, the code is `API_USER_NOT_IN_TEAM`.",
             "content": {
               "application/json": {
                 "examples": {
                   "company-create-not-allowed": {
                     "value": {
-                      "error": "You do not have the permission to create companies [COMPANY_CREATE_NOT_ALLOWED]"
+                      "error": "The user jane@acme.com does not have the permission to create companies [COMPANY_CREATE_NOT_ALLOWED]"
                     }
                   },
                   "contact-create-not-allowed": {
                     "value": {
-                      "error": "You do not have the permission to create contacts [CONTACT_CREATE_NOT_ALLOWED]"
+                      "error": "The user jane@acme.com does not have the permission to create contacts [CONTACT_CREATE_NOT_ALLOWED]"
+                    }
+                  },
+                  "api-user-not-in-team": {
+                    "value": {
+                      "error": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect [API_USER_NOT_IN_TEAM]"
                     }
                   }
                 }
@@ -20699,18 +20712,23 @@
             "description": "Unauthorized"
           },
           "403": {
-            "description": "Possible errors: The write would create a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`) / The lead has no linked contact, the write would create one and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); nothing is written.",
+            "description": "Possible errors: The write would create a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`) / The lead has no linked contact, the write would create one and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); nothing is written. A permission error names the API key's user by email; when that user is no longer in the team, the code is `API_USER_NOT_IN_TEAM`.",
             "content": {
               "application/json": {
                 "examples": {
                   "company-create-not-allowed": {
                     "value": {
-                      "error": "You do not have the permission to create companies [COMPANY_CREATE_NOT_ALLOWED]"
+                      "error": "The user jane@acme.com does not have the permission to create companies [COMPANY_CREATE_NOT_ALLOWED]"
                     }
                   },
                   "contact-create-not-allowed": {
                     "value": {
-                      "error": "You do not have the permission to create contacts [CONTACT_CREATE_NOT_ALLOWED]"
+                      "error": "The user jane@acme.com does not have the permission to create contacts [CONTACT_CREATE_NOT_ALLOWED]"
+                    }
+                  },
+                  "api-user-not-in-team": {
+                    "value": {
+                      "error": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect [API_USER_NOT_IN_TEAM]"
                     }
                   }
                 }
@@ -20840,18 +20858,23 @@
             "description": "Unauthorized"
           },
           "403": {
-            "description": "Possible errors: The lead has no linked contact, its stored company is not yet in lemlist and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`) / The lead has no linked contact, the write would create one and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); nothing is written.",
+            "description": "Possible errors: The lead has no linked contact, its stored company is not yet in lemlist and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`) / The lead has no linked contact, the write would create one and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); nothing is written. A permission error names the API key's user by email; when that user is no longer in the team, the code is `API_USER_NOT_IN_TEAM`.",
             "content": {
               "application/json": {
                 "examples": {
                   "company-create-not-allowed": {
                     "value": {
-                      "error": "You do not have the permission to create companies [COMPANY_CREATE_NOT_ALLOWED]"
+                      "error": "The user jane@acme.com does not have the permission to create companies [COMPANY_CREATE_NOT_ALLOWED]"
                     }
                   },
                   "contact-create-not-allowed": {
                     "value": {
-                      "error": "You do not have the permission to create contacts [CONTACT_CREATE_NOT_ALLOWED]"
+                      "error": "The user jane@acme.com does not have the permission to create contacts [CONTACT_CREATE_NOT_ALLOWED]"
+                    }
+                  },
+                  "api-user-not-in-team": {
+                    "value": {
+                      "error": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect [API_USER_NOT_IN_TEAM]"
                     }
                   }
                 }
@@ -27444,7 +27467,7 @@
       },
       "post": {
         "summary": "Add and update contact",
-        "description": "Creates a new contact or updates an existing one (upsert). If a contact with the same email, LinkedIn URL, or Sales Navigator URL already exists, it is updated as the `updateStrategy` query parameter says (by default, sent values replace stored ones and empty values are ignored). You can target an existing contact directly by providing `contactId`, bypassing email/LinkedIn matching. You can optionally link the contact to a company by providing `companyId`, `companyDomain`, or `companyLinkedinUrl`.\n\n**Permission:** creating a contact requires the \"Create contacts\" permission on the API key's user, otherwise the request fails with `403 CONTACT_CREATE_NOT_ALLOWED`. Updating an existing contact does not.",
+        "description": "Creates a new contact or updates an existing one (upsert). If a contact with the same email, LinkedIn URL, or Sales Navigator URL already exists, it is updated as the `updateStrategy` query parameter says (by default, sent values replace stored ones and empty values are ignored). You can target an existing contact directly by providing `contactId`, bypassing email/LinkedIn matching. You can optionally link the contact to a company by providing `companyId`, `companyDomain`, or `companyLinkedinUrl`.\n\n**Permission:** creating a contact requires the \"Create contacts\" permission on the API key's user, otherwise the request fails with `403 CONTACT_CREATE_NOT_ALLOWED`; when that user is no longer in the team, with `403 API_USER_NOT_IN_TEAM`. Updating an existing contact does not.",
         "tags": [
           "Contacts"
         ],
@@ -27857,7 +27880,7 @@
             }
           },
           "403": {
-            "description": "The request would create a contact and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); updating an existing contact is not affected. Or the API key does not belong to a team admin, and the body carries `crmId` (`CRM_ID_UPDATE_NOT_ALLOWED`).",
+            "description": "The request would create a contact and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); updating an existing contact is not affected. The message names the API key's user by email; when that user is no longer in the team, the code is `API_USER_NOT_IN_TEAM`. Or the API key does not belong to a team admin, and the body carries `crmId` (`CRM_ID_UPDATE_NOT_ALLOWED`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -27869,7 +27892,16 @@
                       "success": false,
                       "error": {
                         "code": "CONTACT_CREATE_NOT_ALLOWED",
-                        "message": "You do not have the permission to create contacts"
+                        "message": "The user jane@acme.com does not have the permission to create contacts"
+                      }
+                    }
+                  },
+                  "api-user-not-in-team": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "API_USER_NOT_IN_TEAM",
+                        "message": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect"
                       }
                     }
                   },
@@ -28504,7 +28536,7 @@
       ],
       "delete": {
         "summary": "Delete Contact",
-        "description": "Deletes a lemlist contact resolved by its id (`ctc_xxx`) or email. Cascades to the contact's leads, opportunities, list associations, inbox conversations and activities. **No CRM-side propagation** — only the lemlist record is removed. Fails with `409 CONTACT_DELETE_BLOCKED` when the contact cannot be deleted right now — for example while an enrichment is still running (retry once it finishes); the response `error.message` states the specific reason.\n\n**Permission:** the API key's user must have the \"Delete contacts\" permission, otherwise the request fails with `403 CONTACT_DELETE_NOT_ALLOWED`.",
+        "description": "Deletes a lemlist contact resolved by its id (`ctc_xxx`) or email. Cascades to the contact's leads, opportunities, list associations, inbox conversations and activities. **No CRM-side propagation** — only the lemlist record is removed. Fails with `409 CONTACT_DELETE_BLOCKED` when the contact cannot be deleted right now — for example while an enrichment is still running (retry once it finishes); the response `error.message` states the specific reason.\n\n**Permission:** the API key's user must have the \"Delete contacts\" permission, otherwise the request fails with `403 CONTACT_DELETE_NOT_ALLOWED`; when that user is no longer in the team, with `403 API_USER_NOT_IN_TEAM`.",
         "tags": [
           "Contacts"
         ],
@@ -28545,7 +28577,7 @@
             }
           },
           "403": {
-            "description": "The API key's user does not have the \"Delete contacts\" permission (`CONTACT_DELETE_NOT_ALLOWED`).",
+            "description": "The API key's user does not have the \"Delete contacts\" permission (`CONTACT_DELETE_NOT_ALLOWED`). The message names that user by email; when they are no longer in the team, the code is `API_USER_NOT_IN_TEAM`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -28567,11 +28599,24 @@
                     }
                   }
                 },
-                "example": {
-                  "success": false,
-                  "error": {
-                    "code": "CONTACT_DELETE_NOT_ALLOWED",
-                    "message": "You do not have the permission to delete contacts"
+                "examples": {
+                  "delete-not-allowed": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CONTACT_DELETE_NOT_ALLOWED",
+                        "message": "The user jane@acme.com does not have the permission to delete contacts"
+                      }
+                    }
+                  },
+                  "api-user-not-in-team": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "API_USER_NOT_IN_TEAM",
+                        "message": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect"
+                      }
+                    }
                   }
                 }
               }
@@ -30098,7 +30143,7 @@
       },
       "post": {
         "summary": "Add and update company",
-        "description": "Creates a new company or updates an existing one (upsert). If a company with the same domain, LinkedIn URL, or Sales Navigator URL already exists, it is updated as the `updateStrategy` query parameter says (by default, sent values replace stored ones and empty values are ignored). You can target an existing company directly by providing `companyId`, bypassing domain/LinkedIn matching, in which case `name` and the identifiers become optional. Without `companyId`, `name` is required together with at least one identifier: `domain`, `linkedinUrl` or `linkedinUrlSalesNav`.\n\n**Permission:** creating a company requires the \"Create companies\" permission on the API key's user, otherwise the request fails with `403 COMPANY_CREATE_NOT_ALLOWED`. Updating an existing company does not.",
+        "description": "Creates a new company or updates an existing one (upsert). If a company with the same domain, LinkedIn URL, or Sales Navigator URL already exists, it is updated as the `updateStrategy` query parameter says (by default, sent values replace stored ones and empty values are ignored). You can target an existing company directly by providing `companyId`, bypassing domain/LinkedIn matching, in which case `name` and the identifiers become optional. Without `companyId`, `name` is required together with at least one identifier: `domain`, `linkedinUrl` or `linkedinUrlSalesNav`.\n\n**Permission:** creating a company requires the \"Create companies\" permission on the API key's user, otherwise the request fails with `403 COMPANY_CREATE_NOT_ALLOWED`; when that user is no longer in the team, with `403 API_USER_NOT_IN_TEAM`. Updating an existing company does not.",
         "tags": [
           "Companies"
         ],
@@ -30434,7 +30479,7 @@
             }
           },
           "403": {
-            "description": "The request would create a company and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`); updating an existing company is not affected. Or the API key does not belong to a team admin, and the body carries `crmId` (`CRM_ID_UPDATE_NOT_ALLOWED`).",
+            "description": "The request would create a company and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`); updating an existing company is not affected. The message names the API key's user by email; when that user is no longer in the team, the code is `API_USER_NOT_IN_TEAM`. Or the API key does not belong to a team admin, and the body carries `crmId` (`CRM_ID_UPDATE_NOT_ALLOWED`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -30446,7 +30491,16 @@
                       "success": false,
                       "error": {
                         "code": "COMPANY_CREATE_NOT_ALLOWED",
-                        "message": "You do not have the permission to create companies"
+                        "message": "The user jane@acme.com does not have the permission to create companies"
+                      }
+                    }
+                  },
+                  "api-user-not-in-team": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "API_USER_NOT_IN_TEAM",
+                        "message": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect"
                       }
                     }
                   },
@@ -31475,7 +31529,7 @@
       },
       "delete": {
         "summary": "Delete Company",
-        "description": "Deletes a lemlist company. Refuses by default when contacts are still attached — pass `force=true` to detach them (the `companyId` field is unset on each contact) before deleting the company.\n\n**No CRM-side propagation:** only the lemlist record is removed. Designed for the contact-to-company remapping workflow: after reassigning the contacts of a duplicate company to the canonical one (via `POST /contacts/{idOrEmail}`), call this endpoint to drop the now-empty duplicate.\n\n**Permission:** the API key's user must have the \"Delete companies\" permission, otherwise the request fails with `403 COMPANY_DELETE_NOT_ALLOWED`.",
+        "description": "Deletes a lemlist company. Refuses by default when contacts are still attached — pass `force=true` to detach them (the `companyId` field is unset on each contact) before deleting the company.\n\n**No CRM-side propagation:** only the lemlist record is removed. Designed for the contact-to-company remapping workflow: after reassigning the contacts of a duplicate company to the canonical one (via `POST /contacts/{idOrEmail}`), call this endpoint to drop the now-empty duplicate.\n\n**Permission:** the API key's user must have the \"Delete companies\" permission, otherwise the request fails with `403 COMPANY_DELETE_NOT_ALLOWED`; when that user is no longer in the team, with `403 API_USER_NOT_IN_TEAM`.",
         "tags": [
           "Companies"
         ],
@@ -31593,7 +31647,7 @@
             }
           },
           "403": {
-            "description": "The API key's user does not have the \"Delete companies\" permission (`COMPANY_DELETE_NOT_ALLOWED`).",
+            "description": "The API key's user does not have the \"Delete companies\" permission (`COMPANY_DELETE_NOT_ALLOWED`). The message names that user by email; when they are no longer in the team, the code is `API_USER_NOT_IN_TEAM`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -31615,11 +31669,24 @@
                     }
                   }
                 },
-                "example": {
-                  "success": false,
-                  "error": {
-                    "code": "COMPANY_DELETE_NOT_ALLOWED",
-                    "message": "You do not have the permission to delete companies"
+                "examples": {
+                  "delete-not-allowed": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "COMPANY_DELETE_NOT_ALLOWED",
+                        "message": "The user jane@acme.com does not have the permission to delete companies"
+                      }
+                    }
+                  },
+                  "api-user-not-in-team": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "API_USER_NOT_IN_TEAM",
+                        "message": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect"
+                      }
+                    }
                   }
                 }
               }
