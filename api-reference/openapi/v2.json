@@ -5499,7 +5499,7 @@
           },
           "in": {
             "type": "array",
-            "description": "Values to include. For `externalSignalFieldMapping` and `externalSignalCustomFieldMapping`, an array of mapping objects (see `WatchListExternalSignalMapping`); the JSON-serialized form returned when reading an agent is also accepted. For the Warm Intros filters: `targetCrmListIds` takes company CRM list ids (up to 50) and the agent then delivers only people working at the companies of those lists, the other filters still applying; `minOverlapMonths` takes one integer between 3 and 120, as a string (6 when absent); `includeCurrentCompanies` takes `true` to also include the current colleagues of the introducers (only past colleagues when absent).",
+            "description": "Values to include. For `externalSignalFieldMapping` and `externalSignalCustomFieldMapping`, an array of mapping objects (see `WatchListExternalSignalMapping`); the JSON-serialized form returned when reading an agent is also accepted. For the Warm Intros filters: `targetCrmListIds` takes the ids of company CRM lists of the workspace (from `GET /companies/lists`, up to 50, any other id is rejected with `INVALID_FILTER_VALUE`) and the agent then delivers only people working at the companies of those lists, the other filters still applying; send it again on every update, as `filters` replaces the whole set; `minOverlapMonths` takes one integer between 3 and 120, as a string (6 when absent); `includeCurrentCompanies` takes `true` to also include the current colleagues of the introducers (only past colleagues when absent).",
             "items": {
               "oneOf": [
                 {
