@@ -2565,7 +2565,28 @@
           "fields": {
             "type": "object",
             "description": "Key/value attributes of the company, standard and custom (e.g., name, picture, industry, location, size, foundedOn). These values are always under `fields`, never at the top level of the object.",
+            "properties": {
+              "accountPenetration": {
+                "type": "number",
+                "readOnly": true,
+                "minimum": 0,
+                "maximum": 100,
+                "description": "Percentage of the company's eligible contacts already contacted, computed by lemlist and refreshed as contacts are reached. Read-only: it cannot be written through the API. `0` with an `accountPenetration.eligibleCount` above `0` means none has been contacted yet. A company with no eligible contact (`eligibleCount` `0`) has it absent, or `0` when it previously had eligible contacts. Absent with no `accountPenetration` object means not computed yet, which can also be a company with no eligible contact."
+              }
+            },
             "additionalProperties": true
+          },
+          "accountPenetration": {
+            "type": "object",
+            "readOnly": true,
+            "description": "Counts behind `fields.accountPenetration`. Absent until computed.",
+            "properties": {
+              "eligibleCount": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Number of the company's contacts eligible for account penetration. `0` means the company has no eligible contact: `fields.accountPenetration` is then absent or `0`, and does not mean none was contacted."
+              }
+            }
           },
           "createdBy": {
             "type": "string",
