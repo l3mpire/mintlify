@@ -10234,6 +10234,10 @@
                     "type": "string",
                     "description": "IANA timezone for the campaign schedule (e.g. `America/New_York`). Defaults to `Europe/Paris` if omitted."
                   },
+                  "emoji": {
+                    "type": "string",
+                    "description": "Emoji shown next to the campaign name (e.g. `🚀`). A random emoji is assigned when omitted. An empty or whitespace-only string, `null`, or a value containing `<` or `>` returns a `400` error."
+                  },
                   "autoReview": {
                     "type": "boolean",
                     "description": "Automatically launch (review) leads as soon as they are added to the campaign, instead of requiring manual review. Defaults to `false`."
@@ -10259,6 +10263,7 @@
               "example": {
                 "name": "My new campaign",
                 "timezone": "America/New_York",
+                "emoji": "🚀",
                 "autoReview": true,
                 "autoReviewConditions": [
                   "deliverable",
@@ -10541,6 +10546,10 @@
                   "missingChannels": {
                     "summary": "Campaign channels not covered",
                     "value": "The provided senders do not cover the following campaign channels: linkedin, sms"
+                  },
+                  "invalidEmoji": {
+                    "summary": "Invalid emoji",
+                    "value": "emoji must be a non-empty string without \"<\" or \">\" characters"
                   }
                 }
               }
@@ -10567,6 +10576,10 @@
                   "name": {
                     "type": "string",
                     "description": "The campaign name"
+                  },
+                  "emoji": {
+                    "type": "string",
+                    "description": "Emoji shown next to the campaign name (e.g. `🚀`). It can be changed but not removed: an empty or whitespace-only string or `null` returns a `400` error, as does a value containing `<` or `>`."
                   },
                   "stopOnEmailReplied": {
                     "deprecated": true,
@@ -10804,6 +10817,7 @@
               },
               "example": {
                 "name": "New campaign name",
+                "emoji": "🎯",
                 "stopOnEmailReplied": true,
                 "stopOnMeetingBooked": true,
                 "stopOnLinkClicked": false,
