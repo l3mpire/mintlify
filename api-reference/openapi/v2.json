@@ -12837,7 +12837,7 @@
               "text/csv": {
                 "schema": {
                   "type": "string",
-                  "example": "emailStatus,email,firstName,lastName,picture,phone,linkedinUrl,timezone,companyName,companyDomain,icebreaker,customField,lastState,status,_id\ndeliverable,john@example.com,John,Doe,,,https://www.linkedin.com/in/johndoe,Europe/Paris,Acme Inc,acme.com,Saw your post on outbound,value one,emailsReplied,done,lea_6xvnr7DQXKOZ78obX\nrisky,jane@example.com,Jane,Smith,,,https://www.linkedin.com/in/janesmith,America/New_York,Example Corp,example.com,Congrats on the new role,value two,emailsInterested,interested,lea_Z5FryxKh6L8IfW7Ln\ndeliverable,alex@example.com,Alex,Johnson,,,https://www.linkedin.com/in/alexjohnson,Europe/London,Acme Inc,acme.com,Loved your talk,value three,emailsSent,done,lea_0KRgNBYxpRqsT9UQk"
+                  "example": "emailStatus,email,firstName,lastName,picture,phone,linkedinUrl,timezone,companyName,companyDomain,icebreaker,customField,lastState,status,_id,hubspotId\ndeliverable,john@example.com,John,Doe,,,https://www.linkedin.com/in/johndoe,Europe/Paris,Acme Inc,acme.com,Saw your post on outbound,value one,emailsReplied,done,lea_6xvnr7DQXKOZ78obX,12345678901\nrisky,jane@example.com,Jane,Smith,,,https://www.linkedin.com/in/janesmith,America/New_York,Example Corp,example.com,Congrats on the new role,value two,emailsInterested,interested,lea_Z5FryxKh6L8IfW7Ln,\ndeliverable,alex@example.com,Alex,Johnson,,,https://www.linkedin.com/in/alexjohnson,Europe/London,Acme Inc,acme.com,Loved your talk,value three,emailsSent,done,lea_0KRgNBYxpRqsT9UQk,11111111111"
                 }
               },
               "application/json": {
@@ -12896,6 +12896,22 @@
                       },
                       "_id": {
                         "type": "string"
+                      },
+                      "salesforceId": {
+                        "type": "string",
+                        "description": "Salesforce id of the lead: its Lead id, or its Contact id when synced as a Contact. Only on leads synced with Salesforce."
+                      },
+                      "pipedriveId": {
+                        "type": "string",
+                        "description": "Pipedrive id of the lead. Only on leads synced with Pipedrive."
+                      },
+                      "hubspotId": {
+                        "type": "string",
+                        "description": "HubSpot id of the lead. Only on leads synced with HubSpot."
+                      },
+                      "attioId": {
+                        "type": "string",
+                        "description": "Attio id of the lead. Only on leads synced with Attio."
                       }
                     }
                   }
