@@ -6444,12 +6444,14 @@
               "adPlatforms",
               "adFormats",
               "adTargetCountries",
-              "adSearchTerms"
+              "adSearchTerms",
+              "allowUnknownIndustry",
+              "includeRelatedIndustries"
             ]
           },
           "in": {
             "type": "array",
-            "description": "Values to include. For `externalSignalFieldMapping` and `externalSignalCustomFieldMapping`, an array of mapping objects (see `WatchListExternalSignalMapping`); the JSON-serialized form returned when reading an agent is also accepted.",
+            "description": "Values to include. For `externalSignalFieldMapping` and `externalSignalCustomFieldMapping`, an array of mapping objects (see `WatchListExternalSignalMapping`); the JSON-serialized form returned when reading an agent is also accepted. For the industry match settings of the Rodz signal agents, which apply only when `companyIndustries` includes an industry: `allowUnknownIndustry` takes `true` to also match companies whose industry is not published (skipped when absent); `includeRelatedIndustries` takes `false` to match only the selected industries (broader or narrower related LinkedIn industries also match when absent).",
             "items": {
               "oneOf": [
                 {
