@@ -1,9 +1,14 @@
 ---
 openapi: post /campaigns/{campaignId}/start
-description: Starts or resumes a paused campaign.
+description: Resumes a paused campaign.
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Campaign" objectPath="campaign" />
 
-If the campaign is already running, it simply does nothing.
+This route resumes a paused campaign. It does not launch a new one: a campaign created through the
+API counts as running even while its `status` reads `draft`. To launch leads, use
+[Launch Lead](/api-reference/endpoints/leads/launch-lead), or set `autoReview` before adding them.
+
+A campaign that counts as running is refused with `400`, and so is an archived campaign:
+[unarchive it](/api-reference/endpoints/campaigns/unarchive-campaign) first.

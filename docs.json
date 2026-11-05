@@ -146,6 +146,8 @@
                   "api-reference/endpoints/campaigns/get-campaign-statutes",
                   "api-reference/endpoints/campaigns/start-campaign",
                   "api-reference/endpoints/campaigns/pause-campaign",
+                  "api-reference/endpoints/campaigns/archive-campaign",
+                  "api-reference/endpoints/campaigns/unarchive-campaign",
                   "api-reference/endpoints/campaigns/skip-step-for-everyone",
                   "api-reference/endpoints/campaigns/skip-step-for-leads",
                   "api-reference/endpoints/campaigns/add-abm-campaign-leads",

@@ -3098,7 +3098,8 @@
               "linkedinVisit",
               "delay",
               "task",
-              "api"
+              "api",
+              "enrichment"
             ]
           },
           "order": {
@@ -3157,6 +3158,36 @@
             "type": "string",
             "description": "Applies to `sendToAnotherCampaign` steps only. What happens to the lead in the source campaign once it has been moved. Absent when the step carries no value, which behaves as `continue`.",
             "enum": ["continue", "pause", "stop"]
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the task the step creates. On `manual` and `phone` steps, and on a channel step when one was set"
+          },
+          "manual": {
+            "type": "boolean",
+            "description": "`true` on a channel step held behind a task: the campaign sends the step once the task is marked done. `manual` and `phone` steps are always tasks, whatever this field says"
+          },
+          "priority": {
+            "type": "integer",
+            "enum": [
+              0,
+              1,
+              2
+            ],
+            "description": "Priority of the task the step creates: `0` low, `1` medium, `2` high. Absent when none was set"
+          },
+          "workflowIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "find_email_01",
+                "find_phone_01",
+                "verify_01",
+                "linkedin_01"
+              ]
+            },
+            "description": "On `enrichment` steps only. What the step looks up for each lead that reaches it"
           }
         }
       },
@@ -11320,6 +11351,193 @@
         }
       }
     },
+    "/campaigns/{campaignId}/archive": {
+      "parameters": [
+        {
+          "name": "campaignId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the campaign",
+          "example": "cam_A1B2C3D4E5F6G7H8I9",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Archive Campaign",
+        "description": "Archives a campaign. A running campaign is paused first. An archived campaign cannot be started until it is unarchived. Archiving a campaign that is already archived changes nothing.",
+        "tags": [
+          "Campaigns"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "application/json"
+              }
+            },
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string"
+                    },
+                    "archived": {
+                      "type": "boolean",
+                      "description": "`true` once the campaign is archived"
+                    },
+                    "state": {
+                      "type": "string",
+                      "description": "The campaign state. Archiving pauses a running campaign, so it reads `paused`. Absent on a campaign that has none yet"
+                    }
+                  }
+                },
+                "example": {
+                  "_id": "cam_A1B2C3D4E5F6G7H8I9",
+                  "archived": true,
+                  "state": "paused"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The user the API key acts as cannot see this campaign",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "You can't archive campaigns that don't exist."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "The user the API key acts as does not hold the `createCampaign` permission, which archiving and unarchiving require",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "You are not allowed to createCampaign"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Possible errors: `Campaign not found` / `Campaign deleted`",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Campaign not found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      }
+    },
+    "/campaigns/{campaignId}/unarchive": {
+      "parameters": [
+        {
+          "name": "campaignId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the campaign",
+          "example": "cam_A1B2C3D4E5F6G7H8I9",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Unarchive Campaign",
+        "description": "Restores an archived campaign. Sending does not resume on its own: start the campaign again with `POST /campaigns/{campaignId}/start`. Unarchiving a campaign that is not archived changes nothing.",
+        "tags": [
+          "Campaigns"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "application/json"
+              }
+            },
+            "description": "Success. `archived` is removed from the campaign, not set to `false`, so the response does not carry it",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string",
+                      "description": "The campaign state, unchanged by this call: a campaign archived while running reads `paused`. Absent on a campaign that has none yet"
+                    }
+                  }
+                },
+                "example": {
+                  "_id": "cam_A1B2C3D4E5F6G7H8I9",
+                  "state": "paused"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The user the API key acts as cannot see this campaign",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "You can't archive campaigns that don't exist."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "The user the API key acts as does not hold the `createCampaign` permission, which archiving and unarchiving require",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "You are not allowed to createCampaign"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Possible errors: `Campaign not found` / `Campaign deleted`",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Campaign not found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      }
+    },
     "/campaigns/{campaignId}/steps/{stepId}/skip": {
       "parameters": [
         {
@@ -12193,10 +12411,12 @@
             }
           },
           "400": {
-            "description": "Bad team",
+            "description": "Possible errors: `You can't start campaigns that are already running.` - the campaign counts as running, a new campaign included, or is archived / `You can not start a campaign while your subscription has an issue` / other reasons the campaign cannot start",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "example": {
+                  "error": "You can't start campaigns that are already running."
+                }
               }
             }
           },
@@ -13443,6 +13663,36 @@
                                 }
                               ]
                             },
+                            "title": {
+                              "type": "string",
+                              "description": "Title of the task the step creates. On `manual` and `phone` steps, and on a channel step when one was set"
+                            },
+                            "manual": {
+                              "type": "boolean",
+                              "description": "`true` on a channel step held behind a task: the campaign sends the step once the task is marked done. `manual` and `phone` steps are always tasks, whatever this field says"
+                            },
+                            "priority": {
+                              "type": "integer",
+                              "enum": [
+                                0,
+                                1,
+                                2
+                              ],
+                              "description": "Priority of the task the step creates: `0` low, `1` medium, `2` high. Absent when none was set"
+                            },
+                            "workflowIds": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": [
+                                  "find_email_01",
+                                  "find_phone_01",
+                                  "verify_01",
+                                  "linkedin_01"
+                                ]
+                              },
+                              "description": "On `enrichment` steps only. What the step looks up for each lead that reaches it"
+                            },
                             "emailTemplateBId": {
                               "type": "string",
                               "description": "Email template ID of variant B (present when an A/B test exists on the step)"
@@ -13680,6 +13930,36 @@
                     },
                     "message": {
                       "type": "string"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "Title of the task the step creates. On `manual` and `phone` steps, and on a channel step when one was set"
+                    },
+                    "manual": {
+                      "type": "boolean",
+                      "description": "`true` on a channel step held behind a task: the campaign sends the step once the task is marked done. `manual` and `phone` steps are always tasks, whatever this field says"
+                    },
+                    "priority": {
+                      "type": "integer",
+                      "enum": [
+                        0,
+                        1,
+                        2
+                      ],
+                      "description": "Priority of the task the step creates: `0` low, `1` medium, `2` high. Absent when none was set"
+                    },
+                    "workflowIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "find_email_01",
+                          "find_phone_01",
+                          "verify_01",
+                          "linkedin_01"
+                        ]
+                      },
+                      "description": "On `enrichment` steps only. What the step looks up for each lead that reaches it"
                     }
                   }
                 },
@@ -13694,10 +13974,12 @@
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / Error from createStep",
+            "description": "Possible errors: Bad team / `Invalid request body` - a field the step type does not take, such as `manual` on a `linkedinVisit` step, or an invalid value, such as an unknown `workflowIds` entry / `workflowIds is required` - a required field is missing / `invalid-parameters` - a `title` over 100 characters / other errors from createStep",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "example": {
+                  "error": "Invalid request body"
+                }
               }
             }
           },
@@ -13711,6 +13993,17 @@
           },
           "405": {
             "description": "Method not allowed"
+          },
+          "402": {
+            "description": "`upper-plan-required` - the step needs a higher plan or an add-on. An `enrichment` step needs the Multichannel Expert plan or above.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Upgrade your plan to use this feature",
+                  "code": "upper-plan-required"
+                }
+              }
+            }
           },
           "409": {
             "description": "`campaign-reroute-in-progress` - a previous step change on this campaign is still being applied to its leads; nothing was written, retry in a minute. `SEQUENCE_STEP_INSERT_ON_SEQUENCE_IN_USE` / `SEQUENCE_STEP_ADD_ON_LOCKED_SEQUENCE` - the campaign holds lead tasks while none of its leads is launched: the step can only be appended to a sequence leads still reach.",
@@ -13751,7 +14044,8 @@
                       "sendToAnotherCampaign",
                       "conditional",
                       "whatsappMessage",
-                      "sms"
+                      "sms",
+                      "enrichment"
                     ]
                   },
                   "index": {
@@ -13785,7 +14079,20 @@
                   },
                   "title": {
                     "type": "string",
-                    "description": "Title or label for manual steps"
+                    "description": "Title of the task the step creates. Required on `manual` steps, optional on `phone` steps and on a channel step with `manual: true`. Maximum 100 characters"
+                  },
+                  "manual": {
+                    "type": "boolean",
+                    "description": "Holds a channel step behind a task: `true` creates a task, named by `title` and ranked by `priority`, and the campaign sends the step once the task is marked done. A `linkedinVoiceNote` step also needs its recording, see [Manual steps](/api-reference/endpoints/sequences/add-step-to-sequence#manual-steps). Accepted on `email`, `linkedinInvite`, `linkedinSend`, `linkedinInMail`, `linkedinVoiceNote`, `whatsappMessage` and `sms` steps. Rejected with `400` on every other type, `manual` and `phone` steps included: they are always tasks"
+                  },
+                  "priority": {
+                    "type": "integer",
+                    "enum": [
+                      0,
+                      1,
+                      2
+                    ],
+                    "description": "Priority of the task the step creates: `0` low, `1` medium, `2` high. Omitted, the task has no priority. Accepted on `manual` and `phone` steps and on the channel steps that take `manual`, where it applies once the step is manual"
                   },
                   "method": {
                     "type": "string",
@@ -13888,6 +14195,20 @@
                       "manual",
                       "ai"
                     ]
+                  },
+                  "workflowIds": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "find_email_01",
+                        "find_phone_01",
+                        "verify_01",
+                        "linkedin_01"
+                      ]
+                    },
+                    "description": "Required on `enrichment` steps, with at least one value. What the step looks up for each lead that reaches it: `find_email_01` (the email address, 5 credits per email found), `find_phone_01` (the phone number, 20 credits per phone number found), `verify_01` (the deliverability of the email, 1 credit per email verified), `linkedin_01` (the LinkedIn profile, 1 credit per profile enriched). A lookup is charged only when it returns data. With both `find_email_01` and `verify_01`, only one runs for a lead: `verify_01` if it has a correctly formatted email, `find_email_01` otherwise. An unknown value or an empty array is rejected with `400`. `enrichment` steps need the Multichannel Expert plan or above"
                   }
                 }
               },
@@ -13997,6 +14318,26 @@
                     "message": "Hi {{firstName}}, following up on our conversation...",
                     "delay": 1
                   }
+                },
+                "Manual LinkedIn Send": {
+                  "value": {
+                    "type": "linkedinSend",
+                    "message": "Thanks for connecting, {{firstName}}!",
+                    "manual": true,
+                    "title": "Personalize the intro message",
+                    "priority": 2,
+                    "delay": 1
+                  }
+                },
+                "Enrichment Step": {
+                  "value": {
+                    "type": "enrichment",
+                    "workflowIds": [
+                      "find_email_01",
+                      "verify_01"
+                    ],
+                    "delay": 0
+                  }
                 }
               }
             }
@@ -14067,6 +14408,36 @@
                     },
                     "message": {
                       "type": "string"
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "Title of the task the step creates. On `manual` and `phone` steps, and on a channel step when one was set"
+                    },
+                    "manual": {
+                      "type": "boolean",
+                      "description": "`true` on a channel step held behind a task: the campaign sends the step once the task is marked done. `manual` and `phone` steps are always tasks, whatever this field says"
+                    },
+                    "priority": {
+                      "type": "integer",
+                      "enum": [
+                        0,
+                        1,
+                        2
+                      ],
+                      "description": "Priority of the task the step creates: `0` low, `1` medium, `2` high. Absent when none was set"
+                    },
+                    "workflowIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "find_email_01",
+                          "find_phone_01",
+                          "verify_01",
+                          "linkedin_01"
+                        ]
+                      },
+                      "description": "On `enrichment` steps only. What the step looks up for each lead that reaches it"
                     }
                   }
                 },
@@ -14081,10 +14452,12 @@
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / Error from updateStep",
+            "description": "Possible errors: Bad team / `Invalid request body` - a field the step type does not take, such as `manual` on a `linkedinVisit` step / `invalid-parameters` - a `title` over 100 characters / other errors from updateStep",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "example": {
+                  "error": "Invalid request body"
+                }
               }
             }
           },
@@ -14152,7 +14525,8 @@
                       "sendToAnotherCampaign",
                       "conditional",
                       "whatsappMessage",
-                      "sms"
+                      "sms",
+                      "enrichment"
                     ]
                   },
                   "delay": {
@@ -14182,7 +14556,20 @@
                   },
                   "title": {
                     "type": "string",
-                    "description": "Title or label for manual steps"
+                    "description": "Title of the task the step creates, on `manual` and `phone` steps and on a channel step with `manual: true`. Maximum 100 characters"
+                  },
+                  "manual": {
+                    "type": "boolean",
+                    "description": "`true` holds a channel step behind a task: the campaign sends the step once the task is marked done. A `linkedinVoiceNote` step also needs its recording, see [Manual steps](/api-reference/endpoints/sequences/add-step-to-sequence#manual-steps). `false` switches it back to automatic sending. The switch applies to the tasks created afterwards. Accepted on `email`, `linkedinInvite`, `linkedinSend`, `linkedinInMail`, `linkedinVoiceNote`, `whatsappMessage` and `sms` steps. Rejected with `400` on every other type, `manual` and `phone` steps included: they are always tasks"
+                  },
+                  "priority": {
+                    "type": "integer",
+                    "enum": [
+                      0,
+                      1,
+                      2
+                    ],
+                    "description": "Priority of the task the step creates: `0` low, `1` medium, `2` high. Omitted, the task has no priority. Accepted on `manual` and `phone` steps and on the channel steps that take `manual`, where it applies once the step is manual. A priority cannot be removed once set: `null` is rejected with `400`"
                   },
                   "method": {
                     "type": "string",
@@ -14384,6 +14771,20 @@
                     "type": "whatsappMessage",
                     "message": "Hi {{firstName}}, just checking in to see if you received my previous messages.",
                     "delay": 2
+                  }
+                },
+                "Turn a Step into a Task": {
+                  "value": {
+                    "type": "email",
+                    "manual": true,
+                    "title": "Review the follow-up",
+                    "priority": 1
+                  }
+                },
+                "Switch a Step Back to Automatic Sending": {
+                  "value": {
+                    "type": "email",
+                    "manual": false
                   }
                 }
               }
@@ -25015,7 +25416,7 @@
                   },
                   "done": {
                     "type": "boolean",
-                    "description": "Mark task as completed"
+                    "description": "Mark task as completed. On a campaign step with `manual: true`, the campaign then sends the step. To close the task without sending, use [Ignore Tasks](/api-reference/endpoints/tasks/ignore-tasks)"
                   },
                   "images": {
                     "type": "array",
