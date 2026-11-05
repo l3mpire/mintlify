@@ -334,6 +334,7 @@
                 "group": "Activities",
                 "expanded": false,
                 "pages": [
+                  "api-reference/endpoints/activities/get-many-activities-v2",
                   "api-reference/endpoints/activities/get-many-activities",
                   "api-reference/endpoints/activities/delete-activity-recording-transcript"
                 ]
