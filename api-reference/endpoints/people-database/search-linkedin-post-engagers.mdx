@@ -8,7 +8,7 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <SnippetObjectReference objectName="People" objectPath="people-database" />
 
 <Warning>
-This endpoint is paid. Each call debits 50 credits once the post has been read, even when nobody engaged with it and the search returns no one. A `200` always means credits were debited, and no error code debits credits.
+This endpoint is paid. Each call debits 50 credits once the post has been read, even when nobody engaged with it and the search returns no one. A `200` means credits were debited, unless it carries `peopleSearchFailed` (see below). No error code debits credits.
 
 Never call it again on the same post to get the next pages or to refine the filters. Pass the `search` id of the response as `fromSearchId` to [Search People database](/api-reference/endpoints/people-database/search-people-database), which does not bill the post again. It debits no credits, but it counts in your 24-hour People Database search quota, like any search.
 </Warning>
@@ -20,7 +20,7 @@ The search covers at most 1000 people, commenters first. `isCapped` is `true` wh
 </Note>
 
 <Note>
-If `peopleSearchFailed` is `true`, the credits were debited and `slugs` are valid, but the People Database search failed and `people` is absent. Run [Search People database](/api-reference/endpoints/people-database/search-people-database) yourself with the returned `filters`.
+If `peopleSearchFailed` is `true`, the People Database search failed after the post was read: the 50 credits were refunded, `slugs` and `filters` are valid, `search` and `people` are absent. Run [Search People database](/api-reference/endpoints/people-database/search-people-database) yourself with the returned `filters`, which debits no credits but counts in your 24-hour quota, or call this endpoint again, which is a new paid call.
 </Note>
 
 ```bash
