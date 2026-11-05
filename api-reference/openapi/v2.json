@@ -32076,9 +32076,301 @@
         "parameters": []
       }
     },
-    "/activities": {
+    "/v2/activities": {
       "get": {
         "summary": "Get Many Activities",
+        "description": "Same filters and same activities as GET /activities with `version=v2`, without the nested `lead`. The response is streamed: chunked transfer encoding, no `Content-Length` header.",
+        "tags": [
+          "Activities"
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Filter by activity type. Accepts any value from the `ActivityType` enum — mind the exact spelling (email types are plural `emails*`, invites are `linkedinInvite*`). An unknown type returns 400.",
+            "example": "emailsReplied",
+            "schema": {
+              "$ref": "#/components/schemas/ActivityType"
+            }
+          },
+          {
+            "name": "campaignId",
+            "in": "query",
+            "required": false,
+            "description": "Filter by campaign ID",
+            "example": "cam_123",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isFirst",
+            "in": "query",
+            "required": false,
+            "description": "Filter for first activity",
+            "example": "true",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of records to skip. Note: This is not traditional cursor-based pagination. To retrieve all activities, increment offset by the limit value on each request (e.g., offset=0, then offset=100, then offset=200, etc.).",
+            "example": "0",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Number of activities to retrieve. Default: 100. Maximum: 100",
+            "example": "2",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "leadId",
+            "in": "query",
+            "required": false,
+            "description": "Filter by lead ID",
+            "example": "lea_123",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "minDate",
+            "in": "query",
+            "required": false,
+            "description": "Filter activities by `createdAt >= minDate`. Accepts either a Unix timestamp in seconds (e.g. `1715385600`) or an ISO 8601 datetime (e.g. `2026-05-11T00:00:00Z`). `minDate` is the primary name; `startDate` is accepted as an alias and `minDate` takes precedence when both are provided.",
+            "example": "2026-05-01T00:00:00Z",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "maxDate",
+            "in": "query",
+            "required": false,
+            "description": "Filter activities by `createdAt <= maxDate`. Accepts either a Unix timestamp in seconds (e.g. `1715385600`) or an ISO 8601 datetime (e.g. `2026-05-11T00:00:00Z`). Must be strictly greater than `minDate` when both are provided. `maxDate` is the primary name; `endDate` is accepted as an alias and `maxDate` takes precedence when both are provided.",
+            "example": "2026-05-31T23:59:59Z",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": false,
+            "description": "Alias for `minDate`, provided for consistency with sibling endpoints (e.g. `/campaigns/{campaignId}/stats`). Accepts either a Unix timestamp in seconds or an ISO 8601 datetime. Ignored when `minDate` is also provided.",
+            "example": "2026-05-01T00:00:00Z",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": false,
+            "description": "Alias for `maxDate`, provided for consistency with sibling endpoints (e.g. `/campaigns/{campaignId}/stats`). Accepts either a Unix timestamp in seconds or an ISO 8601 datetime. Ignored when `maxDate` is also provided.",
+            "example": "2026-05-31T23:59:59Z",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Activity"
+                  }
+                },
+                "example": [
+                  {
+                    "_id": "act_swS5pvlQ7d6xEpsHr",
+                    "type": "manualDone",
+                    "userId": "usr_wJw0J9gjXtJPGdI4I",
+                    "userName": "Jane Smith",
+                    "bot": false,
+                    "createdAt": "2025-10-28T08:07:38.375Z",
+                    "leadFirstName": "John",
+                    "leadLastName": "Doe",
+                    "leadEmail": "john@example.com",
+                    "leadCompanyName": "Acme Inc",
+                    "leadId": "lea_vLTo24hvWWCi8lNj8",
+                    "contactId": "ctc_vD880seE2YWmQV3Oy",
+                    "campaignId": "cam_qfym84CAqoHwHzdIf",
+                    "teamId": "tea_FWac0goCB82yXtftJ",
+                    "opportunityId": "opp_uBVpNSiIzEJbPWazp",
+                    "metaData": {
+                      "teamId": "tea_FWac0goCB82yXtftJ",
+                      "campaignId": "cam_qfym84CAqoHwHzdIf",
+                      "leadId": "lea_vLTo24hvWWCi8lNj8",
+                      "type": "manualDone"
+                    },
+                    "campaignName": "Example campaign",
+                    "sequenceTested": "B"
+                  },
+                  {
+                    "_id": "act_3rvKu2ysrfR0epooV",
+                    "teamId": "tea_FWac0goCB82yXtftJ",
+                    "companyId": "cpn_ngDxExp5oEFZaHAgU",
+                    "type": "annotated",
+                    "createdAt": "2025-10-28T04:25:00.653Z",
+                    "note": "could help our GTM team be more productive",
+                    "sendUserId": "usr_QjJ6ejwY9bUSrcHjH",
+                    "userId": "usr_QjJ6ejwY9bUSrcHjH"
+                  },
+                  {
+                    "_id": "act_xnLzeL2vBLIkRHhgI",
+                    "type": "manualNotInterested",
+                    "teamId": "tea_FWac0goCB82yXtftJ",
+                    "userName": "api",
+                    "isFirst": false,
+                    "bot": false,
+                    "createdAt": "2025-10-28T02:14:34.834Z",
+                    "name": "Example campaign",
+                    "leadFirstName": "John",
+                    "leadLastName": "Doe",
+                    "leadEmail": "john@example.com",
+                    "leadCompanyName": "Acme Inc",
+                    "leadId": "lea_vLTo24hvWWCi8lNj8",
+                    "contactId": "ctc_vD880seE2YWmQV3Oy",
+                    "campaignId": "cam_qfym84CAqoHwHzdIf",
+                    "metaData": {
+                      "teamId": "tea_FWac0goCB82yXtftJ",
+                      "campaignId": "cam_qfym84CAqoHwHzdIf",
+                      "leadId": "lea_vLTo24hvWWCi8lNj8",
+                      "type": "manualNotInterested"
+                    },
+                    "campaignName": "Example campaign",
+                    "sequenceTested": "B"
+                  },
+                  {
+                    "_id": "act_qT5ItxECAS0WjyZhv",
+                    "type": "paused",
+                    "userName": "api",
+                    "bot": false,
+                    "createdAt": "2025-10-28T01:54:56.099Z",
+                    "name": "Example campaign",
+                    "leadFirstName": "John",
+                    "leadLastName": "Doe",
+                    "leadEmail": "john@example.com",
+                    "leadCompanyName": "Acme Inc",
+                    "leadId": "lea_vLTo24hvWWCi8lNj8",
+                    "contactId": "ctc_vD880seE2YWmQV3Oy",
+                    "campaignId": "cam_qfym84CAqoHwHzdIf",
+                    "teamId": "tea_FWac0goCB82yXtftJ",
+                    "metaData": {
+                      "teamId": "tea_FWac0goCB82yXtftJ",
+                      "campaignId": "cam_qfym84CAqoHwHzdIf",
+                      "leadId": "lea_vLTo24hvWWCi8lNj8",
+                      "type": "paused"
+                    },
+                    "campaignName": "Example campaign",
+                    "sequenceTested": "B"
+                  },
+                  {
+                    "_id": "act_18F1D40ew1FtJIK2l",
+                    "type": "emailsOpened",
+                    "isFirst": false,
+                    "stopped": false,
+                    "createdAt": "2025-10-27T20:20:59.696Z",
+                    "bot": false,
+                    "teamId": "tea_FWac0goCB82yXtftJ",
+                    "leadId": "lea_vg6CPIUQa4mKESZIi",
+                    "campaignId": "cam_kz4eIPQLv6uiHWvwA",
+                    "sequenceId": "seq_FAVdoDTj3XUzx9Wh6",
+                    "sequenceStep": 1,
+                    "emailTemplateId": "etp_7d6xHawbWRqmO0o6f",
+                    "createdBy": "usr_ytokSo8ADaRHbqIxu",
+                    "sendUserId": "usr_ytokSo8ADaRHbqIxu",
+                    "name": "Example campaign B",
+                    "leadFirstName": "Sam",
+                    "leadLastName": "Taylor",
+                    "leadEmail": "sam@example.com",
+                    "leadCompanyName": "Example Corp",
+                    "contactId": "ctc_ioVxXb7EX3pr12oDG",
+                    "relatedSentAt": "2020-12-07T11:49:14.830Z",
+                    "metaData": {
+                      "teamId": "tea_FWac0goCB82yXtftJ",
+                      "campaignId": "cam_kz4eIPQLv6uiHWvwA",
+                      "leadId": "lea_vg6CPIUQa4mKESZIi",
+                      "type": "emailsOpened",
+                      "createdBy": "usr_ytokSo8ADaRHbqIxu",
+                      "taskId": "tsk_1cdVp7EeYpn5ozjQ1"
+                    },
+                    "campaignName": "Example campaign B",
+                    "sequenceTested": "A",
+                    "emailTemplateName": "Blank"
+                  },
+                  {
+                    "_id": "act_EYcTmkAQYwbPZXTsK",
+                    "type": "emailsOpened",
+                    "isFirst": false,
+                    "stopped": false,
+                    "createdAt": "2025-10-27T20:17:24.119Z",
+                    "bot": false,
+                    "teamId": "tea_FWac0goCB82yXtftJ",
+                    "leadId": "lea_vg6CPIUQa4mKESZIi",
+                    "campaignId": "cam_kz4eIPQLv6uiHWvwA",
+                    "sequenceId": "seq_FAVdoDTj3XUzx9Wh6",
+                    "sequenceStep": 1,
+                    "emailTemplateId": "etp_7d6xHawbWRqmO0o6f",
+                    "createdBy": "usr_ytokSo8ADaRHbqIxu",
+                    "sendUserId": "usr_ytokSo8ADaRHbqIxu",
+                    "name": "Example campaign B",
+                    "leadFirstName": "Sam",
+                    "leadLastName": "Taylor",
+                    "leadEmail": "sam@example.com",
+                    "leadCompanyName": "Example Corp",
+                    "contactId": "ctc_ioVxXb7EX3pr12oDG",
+                    "relatedSentAt": "2020-12-07T11:49:14.830Z",
+                    "metaData": {
+                      "teamId": "tea_FWac0goCB82yXtftJ",
+                      "campaignId": "cam_kz4eIPQLv6uiHWvwA",
+                      "leadId": "lea_vg6CPIUQa4mKESZIi",
+                      "type": "emailsOpened",
+                      "createdBy": "usr_ytokSo8ADaRHbqIxu",
+                      "taskId": "tsk_1cdVp7EeYpn5ozjQ1"
+                    },
+                    "campaignName": "Example campaign B",
+                    "sequenceTested": "A",
+                    "emailTemplateName": "Blank"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "description": "Bad team",
+            "content": {
+              "text/plain": {
+                "example": "Bad team"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/activities": {
+      "get": {
+        "summary": "Get Many Activities (legacy)",
+        "deprecated": true,
         "description": "With `version=v2`, each activity nests its lead under `lead`: the v2 lead object of GET /leads/{email}, `createdAt` included.",
         "tags": [
           "Activities"
