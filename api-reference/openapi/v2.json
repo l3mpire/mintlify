@@ -1090,6 +1090,725 @@
           }
         }
       },
+      "CampaignSettings": {
+        "type": "object",
+        "description": "All the settings of a campaign.",
+        "required": [
+          "campaignId",
+          "timezone",
+          "senderStrategy",
+          "general",
+          "senders",
+          "automation",
+          "tracking",
+          "onReplied",
+          "onLinkClicked",
+          "onMeetingBooked",
+          "aiFeatures",
+          "schedule"
+        ],
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "The campaign ID."
+          },
+          "timezone": {
+            "type": "string",
+            "nullable": true,
+            "description": "The campaign timezone, `null` when not set."
+          },
+          "senderStrategy": {
+            "type": "string",
+            "pattern": "^(random|contactOwner|leadImporter|customField:.+)$",
+            "description": "How the campaign picks the sender of each lead: `random` (the sender pool), `contactOwner`, `leadImporter` or `customField:<fieldName>`."
+          },
+          "general": {
+            "type": "object",
+            "description": "Labels, sequence and unsubscribe link.",
+            "properties": {
+              "labels": {
+                "type": "array",
+                "description": "The labels of the campaign.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "sequenceId": {
+                "type": "string",
+                "description": "The ID of the campaign sequence."
+              },
+              "sequenceSharing": {
+                "type": "boolean",
+                "description": "Whether the sequence has a public share link."
+              },
+              "unsubscribeMode": {
+                "type": "string",
+                "enum": [
+                  "variable",
+                  "contact"
+                ],
+                "description": "`variable`: the unsubscribe link of the email. `contact`: the whole contact."
+              },
+              "addUnsubscribeLink": {
+                "type": "boolean",
+                "description": "Whether emails end with an unsubscribe link."
+              },
+              "unsubscribeLinkText": {
+                "type": "string",
+                "description": "The text of the unsubscribe link."
+              }
+            },
+            "required": [
+              "labels",
+              "sequenceId",
+              "sequenceSharing",
+              "unsubscribeMode",
+              "addUnsubscribeLink",
+              "unsubscribeLinkText"
+            ]
+          },
+          "senders": {
+            "type": "object",
+            "description": "Sender matching.",
+            "required": [
+              "espMatching",
+              "espRouting"
+            ],
+            "properties": {
+              "espMatching": {
+                "type": "boolean",
+                "description": "Whether a lead gets a sender of the same email provider. The team value when the campaign does not set it."
+              },
+              "espRouting": {
+                "type": "object",
+                "nullable": true,
+                "description": "The sender provider used for each lead provider. `null` when ESP matching is off.",
+                "properties": {
+                  "gmail": {
+                    "type": "string",
+                    "enum": [
+                      "any",
+                      "gmail",
+                      "outlook",
+                      "other"
+                    ]
+                  },
+                  "outlook": {
+                    "type": "string",
+                    "enum": [
+                      "any",
+                      "gmail",
+                      "outlook",
+                      "other"
+                    ]
+                  },
+                  "other": {
+                    "type": "string",
+                    "enum": [
+                      "any",
+                      "gmail",
+                      "outlook",
+                      "other"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "automation": {
+            "type": "object",
+            "description": "Auto-review.",
+            "required": [
+              "autoReview",
+              "autoReviewConditions"
+            ],
+            "properties": {
+              "autoReview": {
+                "type": "boolean",
+                "description": "Whether auto-review (auto-launch) is enabled."
+              },
+              "autoReviewConditions": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "deliverable",
+                    "risky",
+                    "unknown",
+                    "undeliverable",
+                    "unverified"
+                  ]
+                },
+                "description": "Email verification statuses that let auto-review launch a lead. A campaign that never set them launches its `unverified` leads."
+              }
+            }
+          },
+          "tracking": {
+            "type": "object",
+            "description": "Open, click and reply tracking.",
+            "properties": {
+              "trackOpens": {
+                "type": "boolean",
+                "description": "Whether email open tracking is enabled."
+              },
+              "trackClicks": {
+                "type": "boolean",
+                "description": "Whether link click tracking is enabled."
+              },
+              "trackReplies": {
+                "type": "boolean",
+                "description": "Whether reply tracking is enabled."
+              }
+            },
+            "required": [
+              "trackOpens",
+              "trackClicks",
+              "trackReplies"
+            ]
+          },
+          "onReplied": {
+            "type": "object",
+            "description": "What happens when a lead replies.",
+            "properties": {
+              "createNewTask": {
+                "type": "boolean",
+                "description": "Create a task when a lead replies."
+              },
+              "campaignProgress": {
+                "type": "string",
+                "enum": [
+                  "continue",
+                  "pause",
+                  "stop"
+                ],
+                "description": "What happens to the lead on reply."
+              },
+              "propagateProgressToCompany": {
+                "type": "boolean",
+                "description": "Apply the same action to the other leads of the same company."
+              },
+              "disableOutOfOffice": {
+                "type": "boolean",
+                "description": "Whether out-of-office detection is disabled."
+              }
+            },
+            "required": [
+              "createNewTask",
+              "campaignProgress",
+              "propagateProgressToCompany",
+              "disableOutOfOffice"
+            ]
+          },
+          "onLinkClicked": {
+            "type": "object",
+            "description": "What happens when a lead clicks a tracked link.",
+            "properties": {
+              "createNewTask": {
+                "type": "boolean",
+                "description": "Create a task when a lead clicks a link."
+              },
+              "campaignProgress": {
+                "type": "string",
+                "enum": [
+                  "continue",
+                  "pause",
+                  "stop"
+                ],
+                "description": "What happens to the lead on a link click."
+              },
+              "propagateProgressToCompany": {
+                "type": "boolean",
+                "description": "Apply the same action to the other leads of the same company."
+              },
+              "specificLinks": {
+                "type": "array",
+                "maxItems": 50,
+                "items": {
+                  "type": "string"
+                },
+                "description": "Only these link URLs trigger the action. Empty: all links do."
+              }
+            },
+            "required": [
+              "createNewTask",
+              "campaignProgress",
+              "propagateProgressToCompany",
+              "specificLinks"
+            ]
+          },
+          "onMeetingBooked": {
+            "type": "object",
+            "description": "What happens when a lead books a meeting.",
+            "properties": {
+              "campaignProgress": {
+                "type": "string",
+                "enum": [
+                  "continue",
+                  "pause",
+                  "stop"
+                ],
+                "description": "What happens to the lead when a meeting is booked."
+              },
+              "propagateProgressToCompany": {
+                "type": "boolean",
+                "description": "Apply the same action to the other leads of the same company."
+              }
+            },
+            "required": [
+              "campaignProgress",
+              "propagateProgressToCompany"
+            ]
+          },
+          "aiFeatures": {
+            "type": "object",
+            "description": "AI reply handling.",
+            "properties": {
+              "scoreReplies": {
+                "type": "boolean",
+                "description": "Whether AI reply scoring is enabled."
+              },
+              "onInterestedReply": {
+                "type": "object",
+                "description": "AI action when a reply is interested.",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether this AI action is enabled."
+                  },
+                  "pauseAllCampaignsForLead": {
+                    "type": "boolean",
+                    "description": "Pause all the campaigns of the lead."
+                  },
+                  "pauseCampaignForCompany": {
+                    "type": "boolean",
+                    "description": "Pause this campaign for the leads of the same company."
+                  },
+                  "pauseAllCampaignsForCompany": {
+                    "type": "boolean",
+                    "description": "Pause all the campaigns of the leads of the same company."
+                  }
+                },
+                "required": [
+                  "enabled",
+                  "pauseAllCampaignsForLead",
+                  "pauseCampaignForCompany",
+                  "pauseAllCampaignsForCompany"
+                ]
+              },
+              "onNotInterestedReply": {
+                "type": "object",
+                "description": "AI action when a reply is not interested.",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether this AI action is enabled."
+                  },
+                  "pauseAllCampaignsForLead": {
+                    "type": "boolean",
+                    "description": "Pause all the campaigns of the lead."
+                  },
+                  "pauseCampaignForCompany": {
+                    "type": "boolean",
+                    "description": "Pause this campaign for the leads of the same company."
+                  },
+                  "pauseAllCampaignsForCompany": {
+                    "type": "boolean",
+                    "description": "Pause all the campaigns of the leads of the same company."
+                  }
+                },
+                "required": [
+                  "enabled",
+                  "pauseAllCampaignsForLead",
+                  "pauseCampaignForCompany",
+                  "pauseAllCampaignsForCompany"
+                ]
+              }
+            },
+            "required": [
+              "scoreReplies",
+              "onInterestedReply",
+              "onNotInterestedReply"
+            ]
+          },
+          "schedule": {
+            "type": "object",
+            "description": "Sending schedule options. Read and change the schedules themselves with the [Schedules](/api-reference/endpoints/schedules/get-campaign-schedules) endpoints.",
+            "required": [
+              "isTimezoneBasedSchedule",
+              "timezoneBasedScheduleId",
+              "scheduleIds",
+              "holidayCountries"
+            ],
+            "properties": {
+              "isTimezoneBasedSchedule": {
+                "type": "boolean",
+                "description": "Whether each lead gets the schedule of their own timezone."
+              },
+              "timezoneBasedScheduleId": {
+                "type": "string",
+                "nullable": true,
+                "description": "The schedule used when `isTimezoneBasedSchedule` is on, `null` when none."
+              },
+              "scheduleIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "The schedules of the campaign."
+              },
+              "holidayCountries": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "FR",
+                    "GB"
+                  ]
+                },
+                "description": "Countries whose public holidays pause the sending."
+              },
+              "sendingPattern": {
+                "type": "object",
+                "description": "How the daily sending splits between new leads and leads already in the sequence.",
+                "properties": {
+                  "newLeadsPriorityRatio": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Share of the daily sending kept for new leads, from 0 to 1."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "CampaignSettingsUpdate": {
+        "type": "object",
+        "description": "The settings to change. Send at least one section. An omitted section or field keeps its value. An unknown or read-only field answers `400`.",
+        "minProperties": 1,
+        "additionalProperties": false,
+        "properties": {
+          "senderStrategy": {
+            "type": "string",
+            "pattern": "^(random|contactOwner|leadImporter|customField:.+)$",
+            "description": "How the campaign picks the sender of each lead: `random` (the sender pool), `contactOwner`, `leadImporter` or `customField:<fieldName>`."
+          },
+          "general": {
+            "type": "object",
+            "description": "Sequence sharing and unsubscribe link.",
+            "properties": {
+              "sequenceSharing": {
+                "type": "boolean",
+                "description": "Whether the sequence has a public share link."
+              },
+              "unsubscribeMode": {
+                "type": "string",
+                "enum": [
+                  "variable",
+                  "contact"
+                ],
+                "description": "`variable`: the unsubscribe link of the email. `contact`: the whole contact."
+              },
+              "addUnsubscribeLink": {
+                "type": "boolean",
+                "description": "Whether emails end with an unsubscribe link."
+              },
+              "unsubscribeLinkText": {
+                "type": "string",
+                "nullable": true,
+                "description": "The text of the unsubscribe link. `null` or a blank text resets it to the default."
+              }
+            },
+            "additionalProperties": false
+          },
+          "senders": {
+            "type": "object",
+            "description": "Sender matching.",
+            "properties": {
+              "espMatching": {
+                "type": "boolean",
+                "description": "Give each lead a sender of the same email provider. `true` needs at least one active mailbox in the team."
+              }
+            },
+            "additionalProperties": false
+          },
+          "automation": {
+            "type": "object",
+            "description": "Auto-review.",
+            "properties": {
+              "autoReview": {
+                "type": "boolean",
+                "description": "Auto-review (auto-launch). `true` needs a custom tracking domain on the team, or open and click tracking off."
+              },
+              "autoReviewConditions": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "deliverable",
+                    "risky",
+                    "unknown",
+                    "undeliverable",
+                    "unverified"
+                  ]
+                },
+                "description": "Email verification statuses that let auto-review launch a lead. A campaign that never set them launches its `unverified` leads."
+              }
+            },
+            "additionalProperties": false
+          },
+          "tracking": {
+            "type": "object",
+            "description": "Open, click and reply tracking.",
+            "properties": {
+              "trackOpens": {
+                "type": "boolean",
+                "description": "Whether email open tracking is enabled."
+              },
+              "trackClicks": {
+                "type": "boolean",
+                "description": "Whether link click tracking is enabled."
+              },
+              "trackReplies": {
+                "type": "boolean",
+                "description": "Whether reply tracking is enabled."
+              }
+            },
+            "additionalProperties": false
+          },
+          "onReplied": {
+            "type": "object",
+            "description": "What happens when a lead replies.",
+            "properties": {
+              "createNewTask": {
+                "type": "boolean",
+                "description": "Create a task when a lead replies."
+              },
+              "campaignProgress": {
+                "type": "string",
+                "enum": [
+                  "continue",
+                  "pause",
+                  "stop"
+                ],
+                "description": "What happens to the lead on reply."
+              },
+              "propagateProgressToCompany": {
+                "type": "boolean",
+                "description": "Apply the same action to the other leads of the same company."
+              },
+              "disableOutOfOffice": {
+                "type": "boolean",
+                "description": "Whether out-of-office detection is disabled."
+              }
+            },
+            "additionalProperties": false
+          },
+          "onLinkClicked": {
+            "type": "object",
+            "description": "What happens when a lead clicks a tracked link.",
+            "properties": {
+              "createNewTask": {
+                "type": "boolean",
+                "description": "Create a task when a lead clicks a link."
+              },
+              "campaignProgress": {
+                "type": "string",
+                "enum": [
+                  "continue",
+                  "pause",
+                  "stop"
+                ],
+                "description": "What happens to the lead on a link click."
+              },
+              "propagateProgressToCompany": {
+                "type": "boolean",
+                "description": "Apply the same action to the other leads of the same company."
+              },
+              "specificLinks": {
+                "type": "array",
+                "maxItems": 50,
+                "items": {
+                  "type": "string"
+                },
+                "description": "Only these link URLs trigger the action. Empty: all links do."
+              }
+            },
+            "additionalProperties": false
+          },
+          "onMeetingBooked": {
+            "type": "object",
+            "description": "What happens when a lead books a meeting.",
+            "properties": {
+              "campaignProgress": {
+                "type": "string",
+                "enum": [
+                  "continue",
+                  "pause",
+                  "stop"
+                ],
+                "description": "What happens to the lead when a meeting is booked."
+              },
+              "propagateProgressToCompany": {
+                "type": "boolean",
+                "description": "Apply the same action to the other leads of the same company."
+              }
+            },
+            "additionalProperties": false
+          },
+          "aiFeatures": {
+            "type": "object",
+            "description": "AI reply handling.",
+            "properties": {
+              "scoreReplies": {
+                "type": "boolean",
+                "description": "Whether AI reply scoring is enabled."
+              },
+              "onInterestedReply": {
+                "type": "object",
+                "description": "AI action when a reply is interested.",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether this AI action is enabled."
+                  },
+                  "pauseAllCampaignsForLead": {
+                    "type": "boolean",
+                    "description": "Pause all the campaigns of the lead."
+                  },
+                  "pauseCampaignForCompany": {
+                    "type": "boolean",
+                    "description": "Pause this campaign for the leads of the same company."
+                  },
+                  "pauseAllCampaignsForCompany": {
+                    "type": "boolean",
+                    "description": "Pause all the campaigns of the leads of the same company."
+                  }
+                },
+                "additionalProperties": false
+              },
+              "onNotInterestedReply": {
+                "type": "object",
+                "description": "AI action when a reply is not interested.",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "Whether this AI action is enabled."
+                  },
+                  "pauseAllCampaignsForLead": {
+                    "type": "boolean",
+                    "description": "Pause all the campaigns of the lead."
+                  },
+                  "pauseCampaignForCompany": {
+                    "type": "boolean",
+                    "description": "Pause this campaign for the leads of the same company."
+                  },
+                  "pauseAllCampaignsForCompany": {
+                    "type": "boolean",
+                    "description": "Pause all the campaigns of the leads of the same company."
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          },
+          "schedule": {
+            "type": "object",
+            "description": "Sending schedule options. Change the schedules themselves with the [Schedules](/api-reference/endpoints/schedules/get-campaign-schedules) endpoints.",
+            "properties": {
+              "isTimezoneBasedSchedule": {
+                "type": "boolean",
+                "description": "Give each lead the schedule of their own timezone. `true` creates the timezone schedule when it is missing."
+              },
+              "holidayCountries": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "US",
+                    "FR",
+                    "GB"
+                  ]
+                },
+                "description": "Countries whose public holidays pause the sending."
+              },
+              "sendingPattern": {
+                "type": "object",
+                "description": "How the daily sending splits between new leads and leads already in the sequence.",
+                "additionalProperties": false,
+                "properties": {
+                  "newLeadsPriorityRatio": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Share of the daily sending kept for new leads, from 0 to 1."
+                  }
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "CampaignSettingsError": {
+        "type": "object",
+        "description": "Error of the campaign settings endpoints.",
+        "required": [
+          "error",
+          "code"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Human-readable error message."
+          },
+          "code": {
+            "type": "string",
+            "description": "Machine-readable error code."
+          },
+          "details": {
+            "type": "object",
+            "description": "Only on `CAMPAIGN_SETTINGS_INVALID_INPUT`.",
+            "properties": {
+              "issues": {
+                "type": "array",
+                "maxItems": 20,
+                "description": "Every refused field of the body, so that you can fix them all in one retry.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "field": {
+                      "type": "string",
+                      "description": "The dotted path of the refused field, e.g. `onReplied.campaignProgress`. Empty for the whole body."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "The issue code, e.g. `invalid_value`, `unrecognized_keys`, or `CAMPAIGN_SETTINGS_READ_ONLY_FIELD` for a field that GET returns but PATCH does not take."
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "What the field accepts."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "Lead": {
         "type": "object",
         "description": "A contact added to a campaign for outreach. Not to be confused with a contact which is a record in lemlist, but not necessarily added to a campaign.",
@@ -1846,7 +2565,28 @@
           "fields": {
             "type": "object",
             "description": "Key/value attributes of the company, standard and custom (e.g., name, picture, industry, location, size, foundedOn). These values are always under `fields`, never at the top level of the object.",
+            "properties": {
+              "accountPenetration": {
+                "type": "number",
+                "readOnly": true,
+                "minimum": 0,
+                "maximum": 100,
+                "description": "Percentage of the company's eligible contacts already contacted, computed by lemlist and refreshed as contacts are reached. Read-only: it cannot be written through the API. `0` with an `accountPenetration.eligibleCount` above `0` means none has been contacted yet. A company with no eligible contact (`eligibleCount` `0`) has it absent, or `0` when it previously had eligible contacts. Absent with no `accountPenetration` object means not computed yet, which can also be a company with no eligible contact."
+              }
+            },
             "additionalProperties": true
+          },
+          "accountPenetration": {
+            "type": "object",
+            "readOnly": true,
+            "description": "Counts behind `fields.accountPenetration`. Absent until computed.",
+            "properties": {
+              "eligibleCount": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Number of the company's contacts eligible for account penetration. `0` means the company has no eligible contact: `fields.accountPenetration` is then absent or `0`, and does not mean none was contacted."
+              }
+            }
           },
           "createdBy": {
             "type": "string",
@@ -2748,6 +3488,122 @@
               "phone"
             ],
             "description": "The channel type of the problem. Absent when the problem is not about one channel type."
+          }
+        }
+      },
+      "DynamicSenderExclusionChannel": {
+        "type": "object",
+        "description": "One channel to exclude.",
+        "required": [
+          "type"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "email",
+              "whatsapp",
+              "phone",
+              "linkedin",
+              "other"
+            ],
+            "description": "The channel type. `linkedin` is the LinkedIn profile. `other` is the manual tasks, the API calls and the steps without an account."
+          },
+          "id": {
+            "type": "string",
+            "description": "The account: the mailbox ID for `email`, the WhatsApp account ID for `whatsapp`, the phone number for `phone`, as [List Senders](/api-reference/endpoints/senders/list-senders) returns them. Required for these 3 types. Not allowed for `linkedin` and `other`."
+          }
+        }
+      },
+      "DynamicSenderExclusion": {
+        "type": "object",
+        "description": "One excluded sender.",
+        "required": [
+          "userId"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "A team member."
+          },
+          "channels": {
+            "type": "array",
+            "minItems": 1,
+            "description": "The channels to exclude. Without `channels`, the sender is excluded on every channel, also on the accounts that they connect later.",
+            "items": {
+              "$ref": "#/components/schemas/DynamicSenderExclusionChannel"
+            }
+          }
+        }
+      },
+      "TeamDynamicSenderExclusions": {
+        "type": "object",
+        "description": "The team exclusion list. Each campaign with a dynamic sender strategy and no list of its own uses it.",
+        "required": [
+          "senders"
+        ],
+        "properties": {
+          "senders": {
+            "type": "array",
+            "description": "The excluded senders. A user who left the team or a deleted account does not show.",
+            "items": {
+              "$ref": "#/components/schemas/DynamicSenderExclusion"
+            }
+          }
+        }
+      },
+      "CampaignDynamicSenderExclusions": {
+        "type": "object",
+        "description": "The exclusion list in force on a campaign.",
+        "required": [
+          "campaignId",
+          "senderStrategy",
+          "source",
+          "senders"
+        ],
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "description": "The campaign ID."
+          },
+          "senderStrategy": {
+            "type": "string",
+            "description": "The sender strategy of the campaign. The list applies only to a dynamic strategy: `contactOwner`, `leadImporter` or `customField:<fieldName>`."
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "campaign",
+              "team"
+            ],
+            "description": "`campaign`: the campaign has its own list. `team`: the campaign uses the team list."
+          },
+          "senders": {
+            "type": "array",
+            "description": "The excluded senders. A user who left the team or a deleted account does not show.",
+            "items": {
+              "$ref": "#/components/schemas/DynamicSenderExclusion"
+            }
+          }
+        }
+      },
+      "DynamicSenderExclusionError": {
+        "type": "object",
+        "description": "Error of the dynamic sender exclusion endpoints.",
+        "required": [
+          "error",
+          "code"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Human-readable error message."
+          },
+          "code": {
+            "type": "string",
+            "description": "Machine-readable error code."
           }
         }
       },
@@ -4768,7 +5624,8 @@
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
               "githubStargazer",
-              "linkedinProfileViews"
+              "linkedinProfileViews",
+              "companyRunningAds"
             ]
           },
           "status": {
@@ -5275,6 +6132,74 @@
                 "type": "string",
                 "description": "[promotion] Promotion start date"
               },
+              "adPlatform": {
+                "type": "string",
+                "description": "[companyRunningAds] Platform of the company's most recent ad",
+                "enum": [
+                  "linkedin",
+                  "facebook",
+                  "google",
+                  "tiktok",
+                  "apple"
+                ]
+              },
+              "adHeadline": {
+                "type": "string",
+                "description": "[companyRunningAds] Ad headline (truncated to 256 characters)"
+              },
+              "adFormat": {
+                "type": "string",
+                "description": "[companyRunningAds] Ad format",
+                "enum": [
+                  "image",
+                  "video",
+                  "text",
+                  "carousel",
+                  "dynamic_product",
+                  "document",
+                  "message",
+                  "event",
+                  "article",
+                  "spotlight",
+                  "follow",
+                  "job",
+                  "engagement"
+                ]
+              },
+              "adDestinationUrl": {
+                "type": "string",
+                "description": "[companyRunningAds] Landing page the ad links to (http(s) only, absent otherwise)"
+              },
+              "adTargetCountries": {
+                "type": "string",
+                "description": "[companyRunningAds] Countries the ad targets, ISO alpha-2 codes joined by `, ` (e.g. `FR, DE`)"
+              },
+              "adImpressions": {
+                "type": "string",
+                "description": "[companyRunningAds] Impression range reported by the provider (e.g. `10k-20k`, `< 1k`). Often absent while the ad is still running"
+              },
+              "adStartDate": {
+                "type": "string",
+                "format": "date-time",
+                "description": "[companyRunningAds] Ad start date (UTC midnight)"
+              },
+              "adEndDate": {
+                "type": "string",
+                "format": "date-time",
+                "description": "[companyRunningAds] Ad end date (UTC midnight). Absent while the ad is still running"
+              },
+              "adUrl": {
+                "type": "string",
+                "description": "[companyRunningAds] Link to the ad in the platform's ad library (http(s) only)"
+              },
+              "adImageUrl": {
+                "type": "string",
+                "description": "[companyRunningAds] Creative preview URL. Absent for non-image ads"
+              },
+              "adsCount": {
+                "type": "integer",
+                "description": "[companyRunningAds] Number of ads delivered for the company in this signal"
+              },
               "externalSignalCustomFields": {
                 "type": "object",
                 "description": "[externalSignalContact/externalSignalCompany] Custom fields map",
@@ -5373,7 +6298,8 @@
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
               "githubStargazer",
-              "linkedinProfileViews"
+              "linkedinProfileViews",
+              "companyRunningAds"
             ]
           },
           "status": {
@@ -5541,12 +6467,18 @@
               "timeframe",
               "githubRepoUrls",
               "githubEventTypes",
-              "linkedinProfileViewsUserIds"
+              "linkedinProfileViewsUserIds",
+              "adPlatforms",
+              "adFormats",
+              "adTargetCountries",
+              "adSearchTerms",
+              "allowUnknownIndustry",
+              "includeRelatedIndustries"
             ]
           },
           "in": {
             "type": "array",
-            "description": "Values to include. For `externalSignalFieldMapping` and `externalSignalCustomFieldMapping`, an array of mapping objects (see `WatchListExternalSignalMapping`); the JSON-serialized form returned when reading an agent is also accepted. For `githubEventTypes` (required on `githubStargazer` agents), one or more of `star`, `fork`, `issue`, `pull_request`, `comment`.",
+            "description": "Values to include. For `externalSignalFieldMapping` and `externalSignalCustomFieldMapping`, an array of mapping objects (see `WatchListExternalSignalMapping`); the JSON-serialized form returned when reading an agent is also accepted. For the industry match settings of the Rodz signal agents, which apply only when `companyIndustries` includes an industry: `allowUnknownIndustry` takes `true` to also match companies whose industry is not published (skipped when absent); `includeRelatedIndustries` takes `false` to match only the selected industries (broader or narrower related LinkedIn industries also match when absent). For `githubEventTypes` (required on `githubStargazer` agents), one or more of `star`, `fork`, `issue`, `pull_request`, `comment`.",
             "items": {
               "oneOf": [
                 {
@@ -5854,7 +6786,8 @@
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
               "githubStargazer",
-              "linkedinProfileViews"
+              "linkedinProfileViews",
+              "companyRunningAds"
             ]
           },
           "entity": {
@@ -5952,6 +6885,10 @@
           "max": {
             "type": "number",
             "description": "Maximum value (numeric filters)"
+          },
+          "requiresQuery": {
+            "type": "boolean",
+            "description": "When true, `GET /watchlist/filter-values` needs a `query` for this filter: it runs a keyword search and has no full-list mode. Depends on the signal `type`, not only on the filter — e.g. `companyIndustries` is `requiresQuery: true` on `companyRunningAds` (Pubrio vertical names) and absent on the other company types."
           }
         }
       },
@@ -5990,7 +6927,8 @@
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
               "githubStargazer",
-              "linkedinProfileViews"
+              "linkedinProfileViews",
+              "companyRunningAds"
             ]
           },
           "title": {
@@ -8593,6 +9531,246 @@
         }
       }
     },
+    "/team/dynamic-sender-exclusions": {
+      "get": {
+        "summary": "Get Team Sender Exclusions",
+        "tags": [
+          "Senders"
+        ],
+        "description": "Returns the team exclusion list of the dynamic sender strategies. Requires the Email Pro plan.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "application/json"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/TeamDynamicSenderExclusions"
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "senders": [
+                      {
+                        "userId": "usr_T2wWj3GOt0hXms721",
+                        "channels": [
+                          {
+                            "type": "email",
+                            "id": "usm_oZOkr8H1oFjgvDI6J"
+                          },
+                          {
+                            "type": "linkedin"
+                          }
+                        ]
+                      },
+                      {
+                        "userId": "usr_ll2LqAVvLk75ER9fv"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect, or the API key is not linked to a user",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "The endpoint requires at least the Email Pro plan",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DynamicSenderExclusionError"
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Replace Team Sender Exclusions",
+        "tags": [
+          "Senders"
+        ],
+        "description": "Replaces the team exclusion list of the dynamic sender strategies. Requires the Email Pro plan.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "senders"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "senders": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/DynamicSenderExclusion"
+                    },
+                    "description": "The new list. An empty list excludes nobody."
+                  }
+                }
+              },
+              "example": {
+                "senders": [
+                  {
+                    "userId": "usr_T2wWj3GOt0hXms721",
+                    "channels": [
+                      {
+                        "type": "email",
+                        "id": "usm_oZOkr8H1oFjgvDI6J"
+                      },
+                      {
+                        "type": "linkedin"
+                      }
+                    ]
+                  },
+                  {
+                    "userId": "usr_ll2LqAVvLk75ER9fv"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "application/json"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/TeamDynamicSenderExclusions"
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "senders": [
+                      {
+                        "userId": "usr_T2wWj3GOt0hXms721",
+                        "channels": [
+                          {
+                            "type": "email",
+                            "id": "usm_oZOkr8H1oFjgvDI6J"
+                          },
+                          {
+                            "type": "linkedin"
+                          }
+                        ]
+                      },
+                      {
+                        "userId": "usr_ll2LqAVvLk75ER9fv"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The body is not valid. `CAMPAIGN_DYNAMIC_SENDER_INVALID_INPUT`: the body does not match the schema, or a sender appears more than once. `CAMPAIGN_DYNAMIC_SENDER_NOT_TEAM_MEMBER`: a user is not a team member. `CAMPAIGN_DYNAMIC_SENDER_UNKNOWN_CHANNEL`: an account does not belong to its user. Nothing is written.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DynamicSenderExclusionError"
+                },
+                "example": {
+                  "error": "A channel does not belong to the sender. Take the channel id from the team senders list: the mailbox id, the WhatsApp account id or the phone number",
+                  "code": "CAMPAIGN_DYNAMIC_SENDER_UNKNOWN_CHANNEL"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect, or the API key is not linked to a user",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "The endpoint requires at least the Email Pro plan",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "403": {
+            "description": "The user of the API key cannot edit the team sending settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DynamicSenderExclusionError"
+                },
+                "example": {
+                  "error": "You are not allowed to edit the team sending settings. Ask a team admin",
+                  "code": "CAMPAIGN_DYNAMIC_SENDER_NOT_ALLOWED"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DynamicSenderExclusionError"
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/users/{userId}": {
       "parameters": [
         {
@@ -9085,6 +10263,10 @@
                     "type": "string",
                     "description": "IANA timezone for the campaign schedule (e.g. `America/New_York`). Defaults to `Europe/Paris` if omitted."
                   },
+                  "emoji": {
+                    "type": "string",
+                    "description": "Emoji shown next to the campaign name (e.g. `🚀`). A random emoji is assigned when omitted. An empty or whitespace-only string, `null`, or a value containing `<` or `>` returns a `400` error."
+                  },
                   "autoReview": {
                     "type": "boolean",
                     "description": "Automatically launch (review) leads as soon as they are added to the campaign, instead of requiring manual review. Defaults to `false`."
@@ -9110,6 +10292,7 @@
               "example": {
                 "name": "My new campaign",
                 "timezone": "America/New_York",
+                "emoji": "🚀",
                 "autoReview": true,
                 "autoReviewConditions": [
                   "deliverable",
@@ -9392,6 +10575,10 @@
                   "missingChannels": {
                     "summary": "Campaign channels not covered",
                     "value": "The provided senders do not cover the following campaign channels: linkedin, sms"
+                  },
+                  "invalidEmoji": {
+                    "summary": "Invalid emoji",
+                    "value": "emoji must be a non-empty string without \"<\" or \">\" characters"
                   }
                 }
               }
@@ -9419,55 +10606,72 @@
                     "type": "string",
                     "description": "The campaign name"
                   },
+                  "emoji": {
+                    "type": "string",
+                    "description": "Emoji shown next to the campaign name (e.g. `🚀`). It can be changed but not removed: an empty or whitespace-only string or `null` returns a `400` error, as does a value containing `<` or `>`."
+                  },
                   "stopOnEmailReplied": {
+                    "deprecated": true,
                     "type": "boolean",
                     "description": "Stop the campaign when a lead replies by email"
                   },
                   "stopOnMeetingBooked": {
+                    "deprecated": true,
                     "type": "boolean",
                     "description": "Stop the campaign when a meeting is booked"
                   },
                   "stopOnLinkClicked": {
+                    "deprecated": true,
                     "type": "boolean",
                     "description": "Stop the campaign when a link is clicked"
                   },
                   "leadsPausedByInterest": {
+                    "deprecated": true,
                     "type": "boolean",
                     "description": "Pause leads based on interest"
                   },
                   "opportunityReplied": {
+                    "deprecated": true,
                     "type": "boolean",
                     "description": "Create an opportunity when a lead replies"
                   },
                   "opportunityClicked": {
+                    "deprecated": true,
                     "type": "boolean",
                     "description": "Create an opportunity when a lead clicks a link"
                   },
                   "autoLeadInterest": {
+                    "deprecated": true,
                     "type": "boolean",
                     "description": "Automatically detect lead interest"
                   },
                   "disableTrackOpen": {
+                    "deprecated": true,
                     "type": "boolean",
                     "description": "Disable tracking of email opens"
                   },
                   "disableTrackClick": {
+                    "deprecated": true,
                     "type": "boolean",
                     "description": "Disable tracking of link clicks"
                   },
                   "disableTrackReply": {
+                    "deprecated": true,
                     "type": "boolean",
                     "description": "Disable tracking of email replies"
                   },
                   "disableOutOfOffice": {
+                    "deprecated": true,
                     "type": "boolean",
                     "description": "Disable out-of-office detection"
                   },
                   "sequenceSharing": {
+                    "deprecated": true,
                     "type": "boolean",
                     "description": "Enable sequence sharing for the campaign"
                   },
                   "stopOnLinkClickedFilter": {
+                    "deprecated": true,
                     "type": "string",
                     "description": "Filter for which link clicks should stop the campaign"
                   },
@@ -9479,10 +10683,12 @@
                     "description": "Array of user IDs (usr_xxx format) to assign as campaign senders. Cannot be used on campaigns with a dynamic sender strategy (contactOwner, leadImporter, customField). Each sender is validated against the campaign's sending channels (email, LinkedIn, SMS, WhatsApp): senders without capabilities for at least one channel are excluded, and every channel that a lead can reach in the sequence must be covered by at least one sender. Replaces the sender pool, with the first account of each channel type for each sender. To add a sender without a replacement, pick an account or an alias, use the [Senders](/api-reference/endpoints/senders/add-campaign-senders) endpoints."
                   },
                   "autoReview": {
+                    "deprecated": true,
                     "type": "boolean",
                     "description": "Automatically launch (review) leads as soon as they are added to the campaign, instead of requiring manual review."
                   },
                   "autoReviewConditions": {
+                    "deprecated": true,
                     "type": "array",
                     "items": {
                       "type": "string",
@@ -9496,6 +10702,7 @@
                     "description": "Email deliverability statuses for which a lead is auto-launched when `autoReview` is enabled. Only leads whose email verification matches one of these statuses are launched automatically. Invalid values are rejected with a `400` error."
                   },
                   "aiFeatures": {
+                    "deprecated": true,
                     "type": "object",
                     "description": "AI reply-handling settings. Provide only the flags to change; omitted flags keep their current value.",
                     "properties": {
@@ -9550,6 +10757,7 @@
                     }
                   },
                   "tracking": {
+                    "deprecated": true,
                     "type": "object",
                     "description": "Open / click / reply tracking toggles.",
                     "properties": {
@@ -9568,6 +10776,7 @@
                     }
                   },
                   "onReplied": {
+                    "deprecated": true,
                     "type": "object",
                     "description": "Behavior when a lead replies.",
                     "properties": {
@@ -9591,6 +10800,7 @@
                     }
                   },
                   "onLinkClicked": {
+                    "deprecated": true,
                     "type": "object",
                     "description": "Behavior when a lead clicks a tracked link.",
                     "properties": {
@@ -9617,6 +10827,7 @@
                     }
                   },
                   "onMeetingBooked": {
+                    "deprecated": true,
                     "type": "object",
                     "description": "Behavior when a meeting is booked.",
                     "properties": {
@@ -9635,6 +10846,7 @@
               },
               "example": {
                 "name": "New campaign name",
+                "emoji": "🎯",
                 "stopOnEmailReplied": true,
                 "stopOnMeetingBooked": true,
                 "stopOnLinkClicked": false,
@@ -9656,6 +10868,407 @@
                   "deliverable",
                   "risky"
                 ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/campaigns/{campaignId}/settings": {
+      "parameters": [
+        {
+          "name": "campaignId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the campaign",
+          "example": "cam_hNtZRPpyNP6HRp4PV",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Get Campaign Settings",
+        "tags": [
+          "Campaigns"
+        ],
+        "description": "Returns all the settings of a campaign. Requires the Email Pro plan.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "application/json"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSettings"
+                },
+                "example": {
+                  "campaignId": "cam_hNtZRPpyNP6HRp4PV",
+                  "timezone": "Europe/Paris",
+                  "senderStrategy": "random",
+                  "general": {
+                    "labels": [
+                      {
+                        "id": "lab_aHYwTgdfZU1GpO47A",
+                        "name": "Outbound"
+                      }
+                    ],
+                    "sequenceId": "seq_4LUxRGgCy7MGaQq0c",
+                    "sequenceSharing": false,
+                    "unsubscribeMode": "contact",
+                    "addUnsubscribeLink": true,
+                    "unsubscribeLinkText": "Unsubscribe"
+                  },
+                  "senders": {
+                    "espMatching": true,
+                    "espRouting": {
+                      "gmail": "gmail",
+                      "outlook": "outlook",
+                      "other": "other"
+                    }
+                  },
+                  "automation": {
+                    "autoReview": false,
+                    "autoReviewConditions": [
+                      "unverified"
+                    ]
+                  },
+                  "tracking": {
+                    "trackOpens": true,
+                    "trackClicks": true,
+                    "trackReplies": true
+                  },
+                  "onReplied": {
+                    "createNewTask": false,
+                    "campaignProgress": "stop",
+                    "propagateProgressToCompany": false,
+                    "disableOutOfOffice": false
+                  },
+                  "onLinkClicked": {
+                    "createNewTask": false,
+                    "campaignProgress": "continue",
+                    "propagateProgressToCompany": false,
+                    "specificLinks": []
+                  },
+                  "onMeetingBooked": {
+                    "campaignProgress": "stop",
+                    "propagateProgressToCompany": true
+                  },
+                  "aiFeatures": {
+                    "scoreReplies": true,
+                    "onInterestedReply": {
+                      "enabled": true,
+                      "pauseAllCampaignsForLead": true,
+                      "pauseCampaignForCompany": false,
+                      "pauseAllCampaignsForCompany": false
+                    },
+                    "onNotInterestedReply": {
+                      "enabled": false,
+                      "pauseAllCampaignsForLead": false,
+                      "pauseCampaignForCompany": false,
+                      "pauseAllCampaignsForCompany": false
+                    }
+                  },
+                  "schedule": {
+                    "isTimezoneBasedSchedule": false,
+                    "timezoneBasedScheduleId": null,
+                    "scheduleIds": [
+                      "skd_NHanXKczmWCI0tl1m"
+                    ],
+                    "holidayCountries": [
+                      "FR"
+                    ],
+                    "sendingPattern": {
+                      "newLeadsPriorityRatio": 0.5
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The campaign ID is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSettingsError"
+                },
+                "example": {
+                  "error": "Wrong param campaign id",
+                  "code": "WRONG_PARAM_CAMPAIGN_ID"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "The endpoint requires at least the Email Pro plan",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "404": {
+            "description": "Campaign not found, or hidden from the user of the API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSettingsError"
+                },
+                "example": {
+                  "error": "Campaign not found",
+                  "code": "CAMPAIGN_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSettingsError"
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Campaign Settings",
+        "tags": [
+          "Campaigns"
+        ],
+        "description": "Changes the settings of a campaign, then returns all its settings. Requires the Email Pro plan.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CampaignSettingsUpdate"
+              },
+              "example": {
+                "tracking": {
+                  "trackOpens": false,
+                  "trackClicks": false
+                },
+                "automation": {
+                  "autoReview": true,
+                  "autoReviewConditions": [
+                    "deliverable"
+                  ]
+                },
+                "onReplied": {
+                  "campaignProgress": "pause"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "application/json"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSettings"
+                },
+                "example": {
+                  "campaignId": "cam_hNtZRPpyNP6HRp4PV",
+                  "timezone": "Europe/Paris",
+                  "senderStrategy": "random",
+                  "general": {
+                    "labels": [
+                      {
+                        "id": "lab_aHYwTgdfZU1GpO47A",
+                        "name": "Outbound"
+                      }
+                    ],
+                    "sequenceId": "seq_4LUxRGgCy7MGaQq0c",
+                    "sequenceSharing": false,
+                    "unsubscribeMode": "contact",
+                    "addUnsubscribeLink": true,
+                    "unsubscribeLinkText": "Unsubscribe"
+                  },
+                  "senders": {
+                    "espMatching": true,
+                    "espRouting": {
+                      "gmail": "gmail",
+                      "outlook": "outlook",
+                      "other": "other"
+                    }
+                  },
+                  "automation": {
+                    "autoReview": true,
+                    "autoReviewConditions": [
+                      "deliverable"
+                    ]
+                  },
+                  "tracking": {
+                    "trackOpens": false,
+                    "trackClicks": false,
+                    "trackReplies": true
+                  },
+                  "onReplied": {
+                    "createNewTask": false,
+                    "campaignProgress": "pause",
+                    "propagateProgressToCompany": false,
+                    "disableOutOfOffice": false
+                  },
+                  "onLinkClicked": {
+                    "createNewTask": false,
+                    "campaignProgress": "continue",
+                    "propagateProgressToCompany": false,
+                    "specificLinks": []
+                  },
+                  "onMeetingBooked": {
+                    "campaignProgress": "stop",
+                    "propagateProgressToCompany": true
+                  },
+                  "aiFeatures": {
+                    "scoreReplies": true,
+                    "onInterestedReply": {
+                      "enabled": true,
+                      "pauseAllCampaignsForLead": true,
+                      "pauseCampaignForCompany": false,
+                      "pauseAllCampaignsForCompany": false
+                    },
+                    "onNotInterestedReply": {
+                      "enabled": false,
+                      "pauseAllCampaignsForLead": false,
+                      "pauseCampaignForCompany": false,
+                      "pauseAllCampaignsForCompany": false
+                    }
+                  },
+                  "schedule": {
+                    "isTimezoneBasedSchedule": false,
+                    "timezoneBasedScheduleId": null,
+                    "scheduleIds": [
+                      "skd_NHanXKczmWCI0tl1m"
+                    ],
+                    "holidayCountries": [
+                      "FR"
+                    ],
+                    "sendingPattern": {
+                      "newLeadsPriorityRatio": 0.5
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The body is not valid: an unknown field, a read-only field, a wrong value or an empty body. `details.issues` lists every refused field. Also `CAMPAIGN_INVALID_SENDER_STRATEGY` and `WRONG_PARAM_CAMPAIGN_ID`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSettingsError"
+                },
+                "example": {
+                  "error": "Invalid campaign settings",
+                  "code": "CAMPAIGN_SETTINGS_INVALID_INPUT",
+                  "details": {
+                    "issues": [
+                      {
+                        "field": "general.labels",
+                        "code": "CAMPAIGN_SETTINGS_READ_ONLY_FIELD",
+                        "message": "Read-only: returned by GET, not writable with PATCH"
+                      },
+                      {
+                        "field": "onReplied.campaignProgress",
+                        "code": "invalid_value",
+                        "message": "Invalid option: expected one of \"continue\"|\"pause\"|\"stop\""
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "The endpoint requires at least the Email Pro plan",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "404": {
+            "description": "Campaign not found, or hidden from the user of the API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSettingsError"
+                },
+                "example": {
+                  "error": "Campaign not found",
+                  "code": "CAMPAIGN_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSettingsError"
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The campaign cannot take the change. `CAMPAIGN_SETTINGS_ESP_MATCHING_UNAVAILABLE`: ESP matching needs at least one active mailbox in the team. `CAMPAIGN_SETTINGS_AUTO_REVIEW_REQUIRES_CTD`: auto-review needs a custom tracking domain, or open and click tracking off. `CAMPAIGN_AI_DISCONTINUED`: the campaign is an AI campaign that is no longer supported. Nothing is written.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignSettingsError"
+                },
+                "example": {
+                  "error": "Auto-review needs a custom tracking domain. Set one up, or send tracking: { trackOpens: false, trackClicks: false } in the same request",
+                  "code": "CAMPAIGN_SETTINGS_AUTO_REVIEW_REQUIRES_CTD"
+                }
               }
             }
           }
@@ -11251,7 +12864,7 @@
               "text/csv": {
                 "schema": {
                   "type": "string",
-                  "example": "emailStatus,email,firstName,lastName,picture,phone,linkedinUrl,timezone,companyName,companyDomain,icebreaker,customField,lastState,status,_id\ndeliverable,john@example.com,John,Doe,,,https://www.linkedin.com/in/johndoe,Europe/Paris,Acme Inc,acme.com,Saw your post on outbound,value one,emailsReplied,done,lea_6xvnr7DQXKOZ78obX\nrisky,jane@example.com,Jane,Smith,,,https://www.linkedin.com/in/janesmith,America/New_York,Example Corp,example.com,Congrats on the new role,value two,emailsInterested,interested,lea_Z5FryxKh6L8IfW7Ln\ndeliverable,alex@example.com,Alex,Johnson,,,https://www.linkedin.com/in/alexjohnson,Europe/London,Acme Inc,acme.com,Loved your talk,value three,emailsSent,done,lea_0KRgNBYxpRqsT9UQk"
+                  "example": "emailStatus,email,firstName,lastName,picture,phone,linkedinUrl,timezone,companyName,companyDomain,icebreaker,customField,lastState,status,_id,hubspotId\ndeliverable,john@example.com,John,Doe,,,https://www.linkedin.com/in/johndoe,Europe/Paris,Acme Inc,acme.com,Saw your post on outbound,value one,emailsReplied,done,lea_6xvnr7DQXKOZ78obX,12345678901\nrisky,jane@example.com,Jane,Smith,,,https://www.linkedin.com/in/janesmith,America/New_York,Example Corp,example.com,Congrats on the new role,value two,emailsInterested,interested,lea_Z5FryxKh6L8IfW7Ln,\ndeliverable,alex@example.com,Alex,Johnson,,,https://www.linkedin.com/in/alexjohnson,Europe/London,Acme Inc,acme.com,Loved your talk,value three,emailsSent,done,lea_0KRgNBYxpRqsT9UQk,11111111111"
                 }
               },
               "application/json": {
@@ -11310,6 +12923,22 @@
                       },
                       "_id": {
                         "type": "string"
+                      },
+                      "salesforceId": {
+                        "type": "string",
+                        "description": "Salesforce id of the lead: its Lead id, or its Contact id when synced as a Contact. Only on leads synced with Salesforce."
+                      },
+                      "pipedriveId": {
+                        "type": "string",
+                        "description": "Pipedrive id of the lead. Only on leads synced with Pipedrive."
+                      },
+                      "hubspotId": {
+                        "type": "string",
+                        "description": "HubSpot id of the lead. Only on leads synced with HubSpot."
+                      },
+                      "attioId": {
+                        "type": "string",
+                        "description": "Attio id of the lead. Only on leads synced with Attio."
                       }
                     }
                   }
@@ -16034,6 +17663,307 @@
         "parameters": []
       }
     },
+    "/campaigns/{campaignId}/dynamic-sender-exclusions": {
+      "parameters": [
+        {
+          "name": "campaignId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the campaign",
+          "example": "cam_hNtZRPpyNP6HRp4PV",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Get Campaign Sender Exclusions",
+        "tags": [
+          "Senders"
+        ],
+        "description": "Returns the exclusion list in force on a campaign: its own list, else the team list. Requires the Email Pro plan.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "application/json"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/CampaignDynamicSenderExclusions"
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "campaignId": "cam_hNtZRPpyNP6HRp4PV",
+                    "senderStrategy": "contactOwner",
+                    "source": "campaign",
+                    "senders": [
+                      {
+                        "userId": "usr_T2wWj3GOt0hXms721",
+                        "channels": [
+                          {
+                            "type": "email",
+                            "id": "usm_oZOkr8H1oFjgvDI6J"
+                          },
+                          {
+                            "type": "linkedin"
+                          }
+                        ]
+                      },
+                      {
+                        "userId": "usr_ll2LqAVvLk75ER9fv"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The campaign ID is not valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DynamicSenderExclusionError"
+                },
+                "example": {
+                  "error": "Wrong param campaign id",
+                  "code": "WRONG_PARAM_CAMPAIGN_ID"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect, or the API key is not linked to a user",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "The endpoint requires at least the Email Pro plan",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "404": {
+            "description": "Campaign not found, or hidden from the user of the API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DynamicSenderExclusionError"
+                },
+                "example": {
+                  "error": "Campaign not found",
+                  "code": "CAMPAIGN_DYNAMIC_SENDER_CAMPAIGN_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DynamicSenderExclusionError"
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Replace Campaign Sender Exclusions",
+        "tags": [
+          "Senders"
+        ],
+        "description": "Replaces the exclusion list of a campaign, or removes it so that the campaign uses the team list again. Requires the Email Pro plan.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "senders"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "senders": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/DynamicSenderExclusion"
+                    },
+                    "nullable": true,
+                    "description": "The new campaign list. An empty list excludes nobody on this campaign. `null` removes the campaign list: the campaign uses the team list again."
+                  }
+                }
+              },
+              "example": {
+                "senders": [
+                  {
+                    "userId": "usr_T2wWj3GOt0hXms721",
+                    "channels": [
+                      {
+                        "type": "email",
+                        "id": "usm_oZOkr8H1oFjgvDI6J"
+                      },
+                      {
+                        "type": "linkedin"
+                      }
+                    ]
+                  },
+                  {
+                    "userId": "usr_ll2LqAVvLk75ER9fv"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "application/json"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/CampaignDynamicSenderExclusions"
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "campaignId": "cam_hNtZRPpyNP6HRp4PV",
+                    "senderStrategy": "contactOwner",
+                    "source": "campaign",
+                    "senders": [
+                      {
+                        "userId": "usr_T2wWj3GOt0hXms721",
+                        "channels": [
+                          {
+                            "type": "email",
+                            "id": "usm_oZOkr8H1oFjgvDI6J"
+                          },
+                          {
+                            "type": "linkedin"
+                          }
+                        ]
+                      },
+                      {
+                        "userId": "usr_ll2LqAVvLk75ER9fv"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The body is not valid. `CAMPAIGN_DYNAMIC_SENDER_INVALID_INPUT`: the body does not match the schema, or a sender appears more than once. `CAMPAIGN_DYNAMIC_SENDER_NOT_TEAM_MEMBER`: a user is not a team member. `CAMPAIGN_DYNAMIC_SENDER_UNKNOWN_CHANNEL`: an account does not belong to its user. Nothing is written.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DynamicSenderExclusionError"
+                },
+                "example": {
+                  "error": "A channel does not belong to the sender. Take the channel id from the team senders list: the mailbox id, the WhatsApp account id or the phone number",
+                  "code": "CAMPAIGN_DYNAMIC_SENDER_UNKNOWN_CHANNEL"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect, or the API key is not linked to a user",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "402": {
+            "description": "The endpoint requires at least the Email Pro plan",
+            "content": {
+              "text/plain": {
+                "example": "route is available starting emailPro plan"
+              }
+            }
+          },
+          "404": {
+            "description": "Campaign not found, or hidden from the user of the API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DynamicSenderExclusionError"
+                },
+                "example": {
+                  "error": "Campaign not found",
+                  "code": "CAMPAIGN_DYNAMIC_SENDER_CAMPAIGN_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DynamicSenderExclusionError"
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The campaign does not use a dynamic sender strategy: its sender pool applies, not the exclusions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DynamicSenderExclusionError"
+                },
+                "example": {
+                  "error": "The campaign does not use a dynamic sender strategy: its sender pool applies, not the exclusions. Set a dynamic strategy first",
+                  "code": "CAMPAIGN_DYNAMIC_SENDER_STATIC_STRATEGY"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/campaigns/{campaignId}/schedules/": {
       "parameters": [
         {
@@ -16885,7 +18815,7 @@
             }
           },
           "403": {
-            "description": "Possible errors: User linked to this API key is blocked (plain text) / The lead brings a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission (JSON body) / The lead brings a contact not yet in lemlist and the API key's user does not have the \"Create contacts\" permission (JSON body); nothing is written.",
+            "description": "Possible errors: User linked to this API key is blocked (plain text) / The lead brings a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission (JSON body) / The lead brings a contact not yet in lemlist and the API key's user does not have the \"Create contacts\" permission (JSON body); nothing is written. A permission error names the API key's user by email, or says that user is no longer in the team.",
             "content": {
               "text/plain": {
                 "example": "User linked to this API key is blocked"
@@ -16894,12 +18824,17 @@
                 "examples": {
                   "company-create-not-allowed": {
                     "value": {
-                      "error": "You do not have the permission to create companies"
+                      "error": "The user jane@acme.com does not have the permission to create companies"
                     }
                   },
                   "contact-create-not-allowed": {
                     "value": {
-                      "error": "You do not have the permission to create contacts"
+                      "error": "The user jane@acme.com does not have the permission to create contacts"
+                    }
+                  },
+                  "api-user-not-in-team": {
+                    "value": {
+                      "error": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect"
                     }
                   }
                 }
@@ -17200,15 +19135,18 @@
             "description": "Unauthorized"
           },
           "403": {
-            "description": "Possible errors: The update brings a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission / The lead has no linked contact, the update would create one and the API key's user does not have the \"Create contacts\" permission; nothing is written.",
+            "description": "Possible errors: The update brings a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission / The lead has no linked contact, the update would create one and the API key's user does not have the \"Create contacts\" permission; nothing is written. A permission error names the API key's user by email, or says that user is no longer in the team.",
             "content": {
               "text/plain": {
                 "examples": {
                   "company-create-not-allowed": {
-                    "value": "You do not have the permission to create companies"
+                    "value": "The user jane@acme.com does not have the permission to create companies"
                   },
                   "contact-create-not-allowed": {
-                    "value": "You do not have the permission to create contacts"
+                    "value": "The user jane@acme.com does not have the permission to create contacts"
+                  },
+                  "api-user-not-in-team": {
+                    "value": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect"
                   }
                 }
               }
@@ -18763,18 +20701,23 @@
             "description": "Unauthorized"
           },
           "403": {
-            "description": "Possible errors: The write would create a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`) / The lead has no linked contact, the write would create one and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); nothing is written.",
+            "description": "Possible errors: The write would create a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`) / The lead has no linked contact, the write would create one and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); nothing is written. A permission error names the API key's user by email; when that user is no longer in the team, the code is `API_USER_NOT_IN_TEAM`.",
             "content": {
               "application/json": {
                 "examples": {
                   "company-create-not-allowed": {
                     "value": {
-                      "error": "You do not have the permission to create companies [COMPANY_CREATE_NOT_ALLOWED]"
+                      "error": "The user jane@acme.com does not have the permission to create companies [COMPANY_CREATE_NOT_ALLOWED]"
                     }
                   },
                   "contact-create-not-allowed": {
                     "value": {
-                      "error": "You do not have the permission to create contacts [CONTACT_CREATE_NOT_ALLOWED]"
+                      "error": "The user jane@acme.com does not have the permission to create contacts [CONTACT_CREATE_NOT_ALLOWED]"
+                    }
+                  },
+                  "api-user-not-in-team": {
+                    "value": {
+                      "error": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect [API_USER_NOT_IN_TEAM]"
                     }
                   }
                 }
@@ -18929,18 +20872,23 @@
             "description": "Unauthorized"
           },
           "403": {
-            "description": "Possible errors: The write would create a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`) / The lead has no linked contact, the write would create one and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); nothing is written.",
+            "description": "Possible errors: The write would create a company not yet in lemlist and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`) / The lead has no linked contact, the write would create one and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); nothing is written. A permission error names the API key's user by email; when that user is no longer in the team, the code is `API_USER_NOT_IN_TEAM`.",
             "content": {
               "application/json": {
                 "examples": {
                   "company-create-not-allowed": {
                     "value": {
-                      "error": "You do not have the permission to create companies [COMPANY_CREATE_NOT_ALLOWED]"
+                      "error": "The user jane@acme.com does not have the permission to create companies [COMPANY_CREATE_NOT_ALLOWED]"
                     }
                   },
                   "contact-create-not-allowed": {
                     "value": {
-                      "error": "You do not have the permission to create contacts [CONTACT_CREATE_NOT_ALLOWED]"
+                      "error": "The user jane@acme.com does not have the permission to create contacts [CONTACT_CREATE_NOT_ALLOWED]"
+                    }
+                  },
+                  "api-user-not-in-team": {
+                    "value": {
+                      "error": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect [API_USER_NOT_IN_TEAM]"
                     }
                   }
                 }
@@ -19070,18 +21018,23 @@
             "description": "Unauthorized"
           },
           "403": {
-            "description": "Possible errors: The lead has no linked contact, its stored company is not yet in lemlist and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`) / The lead has no linked contact, the write would create one and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); nothing is written.",
+            "description": "Possible errors: The lead has no linked contact, its stored company is not yet in lemlist and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`) / The lead has no linked contact, the write would create one and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); nothing is written. A permission error names the API key's user by email; when that user is no longer in the team, the code is `API_USER_NOT_IN_TEAM`.",
             "content": {
               "application/json": {
                 "examples": {
                   "company-create-not-allowed": {
                     "value": {
-                      "error": "You do not have the permission to create companies [COMPANY_CREATE_NOT_ALLOWED]"
+                      "error": "The user jane@acme.com does not have the permission to create companies [COMPANY_CREATE_NOT_ALLOWED]"
                     }
                   },
                   "contact-create-not-allowed": {
                     "value": {
-                      "error": "You do not have the permission to create contacts [CONTACT_CREATE_NOT_ALLOWED]"
+                      "error": "The user jane@acme.com does not have the permission to create contacts [CONTACT_CREATE_NOT_ALLOWED]"
+                    }
+                  },
+                  "api-user-not-in-team": {
+                    "value": {
+                      "error": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect [API_USER_NOT_IN_TEAM]"
                     }
                   }
                 }
@@ -19605,7 +21558,7 @@
       ],
       "post": {
         "summary": "Import Leads from CRM",
-        "description": "Links a campaign to a filter of your connected CRM and imports its records as leads.\n\n**Recurring:** the campaign stays linked to the filter, and the records the filter picks up later are imported automatically.\n\n**New link only:** the campaign must not be linked to a CRM filter yet. Changing or unlinking a campaign's CRM filter is done in the lemlist app.\n\nThe filter is checked in your CRM before anything is saved. The import runs in the background: leads appear over the next minutes, not in the response.\n\n**Credits:** the enrichments requested in `enrichFeature` run on every imported lead, now and later, and are charged to the user of the API key.",
+        "description": "Links a campaign to a filter of your connected CRM and imports its records as leads.\n\n**Recurring:** the campaign stays linked to the filter, and the records the filter picks up later are imported automatically.\n\n**New link only:** the campaign must not be linked to a CRM filter yet. Changing or unlinking a campaign's CRM filter is done in the lemlist app.\n\nThe filter is checked in your CRM before anything is saved. The import runs in the background: leads appear over the next minutes, not in the response.\n\n**Import pending:** on a paused, archived or CRM-sync-paused campaign, the filter is linked but no lead is imported until that is lifted; the first import then starts about an hour later. The response says so with `importPending: true` and a `reason`.\n\n**Credits:** the enrichments requested in `enrichFeature` run on every imported lead, now and later, and are charged to the user of the API key.",
         "tags": [
           "Leads"
         ],
@@ -19692,7 +21645,7 @@
         },
         "responses": {
           "200": {
-            "description": "The campaign is linked to the filter; the import runs in the background.",
+            "description": "The campaign is linked to the filter; the import runs in the background, or waits until `reason` is lifted when `importPending` is `true`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -19700,17 +21653,32 @@
                   "properties": {
                     "ok": {
                       "type": "boolean"
+                    },
+                    "importPending": {
+                      "type": "boolean",
+                      "description": "Present and `true` when no lead is imported yet: the campaign is in a state the import waits on, named by `reason`."
+                    },
+                    "reason": {
+                      "type": "string",
+                      "enum": [
+                        "campaign_paused",
+                        "campaign_archived",
+                        "campaign_crm_sync_paused"
+                      ],
+                      "description": "Present with `importPending`. `campaign_paused`: resume the campaign. `campaign_archived`: unarchive then resume it. `campaign_crm_sync_paused`: fix the cause shown in the campaign's import history in lemlist. The first import starts about an hour after that."
                     }
                   }
                 },
                 "example": {
-                  "ok": true
+                  "ok": true,
+                  "importPending": true,
+                  "reason": "campaign_paused"
                 }
               }
             }
           },
           "400": {
-            "description": "The request was refused; `error` explains why (e.g. `This campaign already imports from a CRM filter: ...`, `CRM filter not found: ...`, `CRM not connected: ...`, `User not in team`, `Bad params`, `Unsupported enrichment features`, `Upgrade your plan to use this feature`, or a credit refusal for the requested enrichments).",
+            "description": "The request was refused; `error` explains why (e.g. `This campaign already imports from the CRM filter \"...\": ...`, which also says when no lead is imported because the campaign is paused, archived or its CRM sync paused, `CRM filter not found: ...`, `CRM not connected: ...`, `User not in team`, `Bad params`, `Unsupported enrichment features`, `Upgrade your plan to use this feature`, or a credit refusal for the requested enrichments).",
             "content": {
               "application/json": {
                 "schema": {
@@ -19722,7 +21690,7 @@
                   }
                 },
                 "example": {
-                  "error": "This campaign already imports from a CRM filter: change or unlink it in lemlist"
+                  "error": "This campaign already imports from the CRM filter \"Q4 prospects\": change or unlink it in lemlist"
                 }
               }
             }
@@ -25659,7 +27627,7 @@
       },
       "post": {
         "summary": "Add and update contact",
-        "description": "Creates a new contact or updates an existing one (upsert). If a contact with the same email, LinkedIn URL, or Sales Navigator URL already exists, it is updated as the `updateStrategy` query parameter says (by default, sent values replace stored ones and empty values are ignored). You can target an existing contact directly by providing `contactId`, bypassing email/LinkedIn matching. You can optionally link the contact to a company by providing `companyId`, `companyDomain`, or `companyLinkedinUrl`.\n\n**Permission:** creating a contact requires the \"Create contacts\" permission on the API key's user, otherwise the request fails with `403 CONTACT_CREATE_NOT_ALLOWED`. Updating an existing contact does not.",
+        "description": "Creates a new contact or updates an existing one (upsert). If a contact with the same email, LinkedIn URL, or Sales Navigator URL already exists, it is updated as the `updateStrategy` query parameter says (by default, sent values replace stored ones and empty values are ignored). You can target an existing contact directly by providing `contactId`, bypassing email/LinkedIn matching. You can optionally link the contact to a company by providing `companyId`, `companyDomain`, or `companyLinkedinUrl`.\n\n**Permission:** creating a contact requires the \"Create contacts\" permission on the API key's user, otherwise the request fails with `403 CONTACT_CREATE_NOT_ALLOWED`; when that user is no longer in the team, with `403 API_USER_NOT_IN_TEAM`. Updating an existing contact does not.",
         "tags": [
           "Contacts"
         ],
@@ -26072,7 +28040,7 @@
             }
           },
           "403": {
-            "description": "The request would create a contact and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); updating an existing contact is not affected. Or the API key does not belong to a team admin, and the body carries `crmId` (`CRM_ID_UPDATE_NOT_ALLOWED`).",
+            "description": "The request would create a contact and the API key's user does not have the \"Create contacts\" permission (`CONTACT_CREATE_NOT_ALLOWED`); updating an existing contact is not affected. The message names the API key's user by email; when that user is no longer in the team, the code is `API_USER_NOT_IN_TEAM`. Or the API key does not belong to a team admin, and the body carries `crmId` (`CRM_ID_UPDATE_NOT_ALLOWED`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -26084,7 +28052,16 @@
                       "success": false,
                       "error": {
                         "code": "CONTACT_CREATE_NOT_ALLOWED",
-                        "message": "You do not have the permission to create contacts"
+                        "message": "The user jane@acme.com does not have the permission to create contacts"
+                      }
+                    }
+                  },
+                  "api-user-not-in-team": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "API_USER_NOT_IN_TEAM",
+                        "message": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect"
                       }
                     }
                   },
@@ -26283,7 +28260,7 @@
         },
         "responses": {
           "200": {
-            "description": "Merge run — **`success: true` does not mean complete.** The contacts fold one at a time and the run stops at the first failure, so ALWAYS check `remainingIds`: the contacts listed there were NOT merged and still exist. Fix the cause (typically an enrichment in progress) and call again with the survivor and the remaining ids.",
+            "description": "Merge run — **`success: true` does not mean complete.** The contacts fold one at a time and the run stops at the first failure, so ALWAYS check `remainingIds`: the contacts listed there were NOT merged and still exist. Fix the cause and call again with the survivor and the remaining ids.",
             "content": {
               "application/json": {
                 "schema": {
@@ -26391,20 +28368,6 @@
                   "error": {
                     "code": "ENTITY_MERGE_ENTITY_NOT_FOUND",
                     "message": "One of the records was not found"
-                  }
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "A contact is being enriched and cannot be merged yet (`ENTITY_MERGE_ENRICHMENT_IN_PROGRESS`); retry once it finishes.",
-            "content": {
-              "application/json": {
-                "example": {
-                  "success": false,
-                  "error": {
-                    "code": "ENTITY_MERGE_ENRICHMENT_IN_PROGRESS",
-                    "message": "A record is being enriched, retry once it finishes"
                   }
                 }
               }
@@ -26733,7 +28696,7 @@
       ],
       "delete": {
         "summary": "Delete Contact",
-        "description": "Deletes a lemlist contact resolved by its id (`ctc_xxx`) or email. Cascades to the contact's leads, opportunities, list associations, inbox conversations and activities. **No CRM-side propagation** — only the lemlist record is removed. Fails with `409 CONTACT_DELETE_BLOCKED` when the contact cannot be deleted right now — for example while an enrichment is still running (retry once it finishes); the response `error.message` states the specific reason.\n\n**Permission:** the API key's user must have the \"Delete contacts\" permission, otherwise the request fails with `403 CONTACT_DELETE_NOT_ALLOWED`.",
+        "description": "Deletes a lemlist contact resolved by its id (`ctc_xxx`) or email. Cascades to the contact's leads, opportunities, list associations, inbox conversations and activities. **No CRM-side propagation** — only the lemlist record is removed. Fails with `409 CONTACT_DELETE_BLOCKED` when the contact cannot be deleted right now — for example while an enrichment is still running (retry once it finishes); the response `error.message` states the specific reason.\n\n**Permission:** the API key's user must have the \"Delete contacts\" permission, otherwise the request fails with `403 CONTACT_DELETE_NOT_ALLOWED`; when that user is no longer in the team, with `403 API_USER_NOT_IN_TEAM`.",
         "tags": [
           "Contacts"
         ],
@@ -26774,7 +28737,7 @@
             }
           },
           "403": {
-            "description": "The API key's user does not have the \"Delete contacts\" permission (`CONTACT_DELETE_NOT_ALLOWED`).",
+            "description": "The API key's user does not have the \"Delete contacts\" permission (`CONTACT_DELETE_NOT_ALLOWED`). The message names that user by email; when they are no longer in the team, the code is `API_USER_NOT_IN_TEAM`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -26796,11 +28759,24 @@
                     }
                   }
                 },
-                "example": {
-                  "success": false,
-                  "error": {
-                    "code": "CONTACT_DELETE_NOT_ALLOWED",
-                    "message": "You do not have the permission to delete contacts"
+                "examples": {
+                  "delete-not-allowed": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "CONTACT_DELETE_NOT_ALLOWED",
+                        "message": "The user jane@acme.com does not have the permission to delete contacts"
+                      }
+                    }
+                  },
+                  "api-user-not-in-team": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "API_USER_NOT_IN_TEAM",
+                        "message": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect"
+                      }
+                    }
                   }
                 }
               }
@@ -28327,7 +30303,7 @@
       },
       "post": {
         "summary": "Add and update company",
-        "description": "Creates a new company or updates an existing one (upsert). If a company with the same domain, LinkedIn URL, or Sales Navigator URL already exists, it is updated as the `updateStrategy` query parameter says (by default, sent values replace stored ones and empty values are ignored). You can target an existing company directly by providing `companyId`, bypassing domain/LinkedIn matching, in which case `name` and the identifiers become optional. Without `companyId`, `name` is required together with at least one identifier: `domain`, `linkedinUrl` or `linkedinUrlSalesNav`.\n\n**Permission:** creating a company requires the \"Create companies\" permission on the API key's user, otherwise the request fails with `403 COMPANY_CREATE_NOT_ALLOWED`. Updating an existing company does not.",
+        "description": "Creates a new company or updates an existing one (upsert). If a company with the same domain, LinkedIn URL, or Sales Navigator URL already exists, it is updated as the `updateStrategy` query parameter says (by default, sent values replace stored ones and empty values are ignored). You can target an existing company directly by providing `companyId`, bypassing domain/LinkedIn matching, in which case `name` and the identifiers become optional. Without `companyId`, `name` is required together with at least one identifier: `domain`, `linkedinUrl` or `linkedinUrlSalesNav`.\n\n**Permission:** creating a company requires the \"Create companies\" permission on the API key's user, otherwise the request fails with `403 COMPANY_CREATE_NOT_ALLOWED`; when that user is no longer in the team, with `403 API_USER_NOT_IN_TEAM`. Updating an existing company does not.",
         "tags": [
           "Companies"
         ],
@@ -28663,7 +30639,7 @@
             }
           },
           "403": {
-            "description": "The request would create a company and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`); updating an existing company is not affected. Or the API key does not belong to a team admin, and the body carries `crmId` (`CRM_ID_UPDATE_NOT_ALLOWED`).",
+            "description": "The request would create a company and the API key's user does not have the \"Create companies\" permission (`COMPANY_CREATE_NOT_ALLOWED`); updating an existing company is not affected. The message names the API key's user by email; when that user is no longer in the team, the code is `API_USER_NOT_IN_TEAM`. Or the API key does not belong to a team admin, and the body carries `crmId` (`CRM_ID_UPDATE_NOT_ALLOWED`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -28675,7 +30651,16 @@
                       "success": false,
                       "error": {
                         "code": "COMPANY_CREATE_NOT_ALLOWED",
-                        "message": "You do not have the permission to create companies"
+                        "message": "The user jane@acme.com does not have the permission to create companies"
+                      }
+                    }
+                  },
+                  "api-user-not-in-team": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "API_USER_NOT_IN_TEAM",
+                        "message": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect"
                       }
                     }
                   },
@@ -29302,20 +31287,6 @@
                 }
               }
             }
-          },
-          "409": {
-            "description": "A company is being enriched and cannot be merged yet (`ENTITY_MERGE_ENRICHMENT_IN_PROGRESS`); retry once it finishes.",
-            "content": {
-              "application/json": {
-                "example": {
-                  "success": false,
-                  "error": {
-                    "code": "ENTITY_MERGE_ENRICHMENT_IN_PROGRESS",
-                    "message": "A record is being enriched, retry once it finishes"
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -29718,7 +31689,7 @@
       },
       "delete": {
         "summary": "Delete Company",
-        "description": "Deletes a lemlist company. Refuses by default when contacts are still attached — pass `force=true` to detach them (the `companyId` field is unset on each contact) before deleting the company.\n\n**No CRM-side propagation:** only the lemlist record is removed. Designed for the contact-to-company remapping workflow: after reassigning the contacts of a duplicate company to the canonical one (via `POST /contacts/{idOrEmail}`), call this endpoint to drop the now-empty duplicate.\n\n**Permission:** the API key's user must have the \"Delete companies\" permission, otherwise the request fails with `403 COMPANY_DELETE_NOT_ALLOWED`.",
+        "description": "Deletes a lemlist company. Refuses by default when contacts are still attached — pass `force=true` to detach them (the `companyId` field is unset on each contact) before deleting the company.\n\n**No CRM-side propagation:** only the lemlist record is removed. Designed for the contact-to-company remapping workflow: after reassigning the contacts of a duplicate company to the canonical one (via `POST /contacts/{idOrEmail}`), call this endpoint to drop the now-empty duplicate.\n\n**Permission:** the API key's user must have the \"Delete companies\" permission, otherwise the request fails with `403 COMPANY_DELETE_NOT_ALLOWED`; when that user is no longer in the team, with `403 API_USER_NOT_IN_TEAM`.",
         "tags": [
           "Companies"
         ],
@@ -29836,7 +31807,7 @@
             }
           },
           "403": {
-            "description": "The API key's user does not have the \"Delete companies\" permission (`COMPANY_DELETE_NOT_ALLOWED`).",
+            "description": "The API key's user does not have the \"Delete companies\" permission (`COMPANY_DELETE_NOT_ALLOWED`). The message names that user by email; when they are no longer in the team, the code is `API_USER_NOT_IN_TEAM`.",
             "content": {
               "application/json": {
                 "schema": {
@@ -29858,11 +31829,24 @@
                     }
                   }
                 },
-                "example": {
-                  "success": false,
-                  "error": {
-                    "code": "COMPANY_DELETE_NOT_ALLOWED",
-                    "message": "You do not have the permission to delete companies"
+                "examples": {
+                  "delete-not-allowed": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "COMPANY_DELETE_NOT_ALLOWED",
+                        "message": "The user jane@acme.com does not have the permission to delete companies"
+                      }
+                    }
+                  },
+                  "api-user-not-in-team": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "API_USER_NOT_IN_TEAM",
+                        "message": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect"
+                      }
+                    }
                   }
                 }
               }
@@ -36240,6 +38224,224 @@
         }
       }
     },
+    "/users/{userId}/signature": {
+      "get": {
+        "summary": "Get User Signature",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the team member whose signatures to read (usr_xxx). Any member of your team is allowed, including yourself",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The HTML and plain-text signatures of the team member, an empty string when unset",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "description": "ID of the team member (usr_xxx)"
+                        },
+                        "signature": {
+                          "type": "string",
+                          "description": "HTML signature, inserted by {{signature}} in emails sent as HTML; empty when unset"
+                        },
+                        "plainTextSignature": {
+                          "type": "string",
+                          "description": "Plain-text signature, inserted by {{plainTextSignature}} in emails sent as plain text and in lemwarm; empty when unset"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "userId": "usr_Tq8Wm3Zk6RbP2NxYv",
+                    "signature": "<p>Best regards,<br>John Doe<br>Acme Inc</p>",
+                    "plainTextSignature": "Best regards,\nJohn Doe\nAcme Inc"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed userId (`WRONG_PARAM_USER_ID`)",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Wrong param user id",
+                  "code": "WRONG_PARAM_USER_ID"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The API key does not resolve a user"
+          },
+          "404": {
+            "description": "The user is not a member of the team",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This user is not a member of your team",
+                  "code": "SIGNATURE_USER_NOT_IN_TEAM"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method other than GET"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Internal error",
+                  "code": "INTERNAL_ERROR"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update User Signature",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the team member whose signatures to update (usr_xxx). Any member of your team is allowed, including yourself",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The signatures to change. Provide `signature` and/or `plainTextSignature`: an omitted one keeps its stored value, and at least one is required. Unknown fields are refused, and an invalid body fails the whole update, so nothing is written. The HTML signature is sanitized on save, so link images by URL instead of embedding them; an empty string clears it.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "properties": {
+                  "signature": {
+                    "type": "string",
+                    "maxLength": 100000,
+                    "description": "HTML signature, inserted by {{signature}} in emails sent as HTML. Sanitized on save; an empty string clears it"
+                  },
+                  "plainTextSignature": {
+                    "type": "string",
+                    "maxLength": 50000,
+                    "description": "Plain-text signature, inserted by {{plainTextSignature}} in emails sent as plain text and in lemwarm. Line breaks are kept and HTML is converted to text; an empty string clears it"
+                  }
+                }
+              },
+              "example": {
+                "signature": "<p>Best regards,<br>John Doe<br>Acme Inc</p>",
+                "plainTextSignature": "Best regards,\nJohn Doe\nAcme Inc"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Both signatures of the team member after the update, as stored: the HTML one comes back sanitized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "description": "ID of the team member (usr_xxx)"
+                        },
+                        "signature": {
+                          "type": "string",
+                          "description": "HTML signature as stored after sanitizing; empty when unset"
+                        },
+                        "plainTextSignature": {
+                          "type": "string",
+                          "description": "Plain-text signature as stored; empty when unset"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "userId": "usr_Tq8Wm3Zk6RbP2NxYv",
+                    "signature": "<p>Best regards,<br>John Doe<br>Acme Inc</p>",
+                    "plainTextSignature": "Best regards,\nJohn Doe\nAcme Inc"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body - unknown field, wrong type, `signature` over 100,000 characters, a `plainTextSignature` over 50,000 characters or one that passes 50,000 once its angle brackets are escaped (`SIGNATURE_INVALID_INPUT`, `SIGNATURE_PLAIN_TEXT_TOO_LONG_ESCAPED`), or neither field provided (`SIGNATURE_NOTHING_TO_UPDATE`); also a malformed userId (`WRONG_PARAM_USER_ID`)",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Send only signature (HTML, at most 100,000 characters) and/or plainTextSignature (at most 50,000 characters), as strings",
+                  "code": "SIGNATURE_INVALID_INPUT"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The API key does not resolve a user"
+          },
+          "404": {
+            "description": "The user is not a member of the team",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This user is not a member of your team",
+                  "code": "SIGNATURE_USER_NOT_IN_TEAM"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method other than GET or PATCH"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Internal error",
+                  "code": "INTERNAL_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/campaigns/{campaignId}/duplicate": {
       "parameters": [
         {
@@ -38336,7 +40538,8 @@
                       "outagesAndSecurityBreaches",
                       "lawsuitsAndLegalIssues",
                       "githubStargazer",
-                      "linkedinProfileViews"
+                      "linkedinProfileViews",
+                      "companyRunningAds"
                     ]
                   },
                   "filters": {
@@ -38468,7 +40671,7 @@
             }
           },
           "400": {
-            "description": "Validation error - invalid body, filters, or activate prerequisites. `WATCH_LIST_API_INVALID_CAMPAIGN_ID` when `campaignId` is malformed or sent without signalProcessingType = push_to_campaign. `WATCH_LIST_API_INVALID_FILTERS` when a filter is rejected: `details.invalidFilters` lists each one, and a refused external-signal mapping (`externalSignalFieldMapping`, `externalSignalCustomFieldMapping`) carries a `message` saying what to fix. A `linkedinProfileViewsUserIds` value that is not a team member with a connected LinkedIn account is rejected there too, as `INVALID_FILTER_VALUE`.",
+            "description": "Validation error - invalid body, filters, or activate prerequisites. `WATCH_LIST_API_INVALID_CAMPAIGN_ID` when `campaignId` is malformed or sent without signalProcessingType = push_to_campaign. `WATCH_LIST_API_INVALID_FILTERS` when a filter is rejected: `details.invalidFilters` lists each one, and a refused external-signal mapping (`externalSignalFieldMapping`, `externalSignalCustomFieldMapping`) carries a `message` saying what to fix. A `linkedinProfileViewsUserIds` value that is not a team member with a connected LinkedIn account is rejected there too, as `INVALID_FILTER_VALUE`. Autocomplete values are validated against the taxonomy of the signal type (`companyIndustries` on `companyRunningAds`: Pubrio vertical names): a value with no match is listed with reason `INVALID_FILTER_VALUE`.",
             "content": {
               "text/plain": {
                 "example": "activate requires both segmentType and signalProcessingType"
@@ -38544,6 +40747,17 @@
             "content": {
               "text/plain": {
                 "example": "Monitoring limit exceeded"
+              }
+            }
+          },
+          "503": {
+            "description": "The taxonomy backend used to validate autocomplete filter values (`companyIndustries`, locations…) is temporarily unavailable — `WATCH_LIST_API_TAXONOMY_UNAVAILABLE`. Retry shortly.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "The search taxonomy backend is temporarily unavailable — retry shortly",
+                  "code": "WATCH_LIST_API_TAXONOMY_UNAVAILABLE"
+                }
               }
             }
           },
@@ -38629,7 +40843,7 @@
             }
           },
           "400": {
-            "description": "Validation error - invalid body or filters. `WATCH_LIST_API_INVALID_FILTERS` lists each rejected filter in `details.invalidFilters`; on a `linkedinProfileViews` agent, a `linkedinProfileViewsUserIds` value added that is not a team member with a connected LinkedIn account is rejected there as `INVALID_FILTER_VALUE`.",
+            "description": "Validation error - invalid body or filters. `WATCH_LIST_API_INVALID_FILTERS` lists each rejected filter in `details.invalidFilters`; on a `linkedinProfileViews` agent, a `linkedinProfileViewsUserIds` value added that is not a team member with a connected LinkedIn account is rejected there as `INVALID_FILTER_VALUE`. Autocomplete values are validated against the taxonomy of the agent's signal type (`companyIndustries` on `companyRunningAds`: Pubrio vertical names).",
             "content": {
               "text/plain": {
                 "example": "name must be a non-empty string"
@@ -38673,6 +40887,17 @@
             "content": {
               "text/plain": {
                 "example": "Monitoring limit exceeded"
+              }
+            }
+          },
+          "503": {
+            "description": "The taxonomy backend used to validate autocomplete filter values (`companyIndustries`, locations…) is temporarily unavailable — `WATCH_LIST_API_TAXONOMY_UNAVAILABLE`. Retry shortly.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "The search taxonomy backend is temporarily unavailable — retry shortly",
+                  "code": "WATCH_LIST_API_TAXONOMY_UNAVAILABLE"
+                }
               }
             }
           },
@@ -39028,7 +41253,8 @@
                 "outagesAndSecurityBreaches",
                 "lawsuitsAndLegalIssues",
                 "githubStargazer",
-                "linkedinProfileViews"
+                "linkedinProfileViews",
+                "companyRunningAds"
               ]
             },
             "example": "companyIsHiring"
@@ -39184,16 +41410,30 @@
                 "crmListIds",
                 "minJobCount",
                 "timeframe",
-                "linkedinProfileViewsUserIds"
+                "linkedinProfileViewsUserIds",
+                "adPlatforms",
+                "adFormats",
+                "adTargetCountries",
+                "adSearchTerms"
               ]
             },
             "example": "companyIndustries"
           },
           {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Signal type the filter is resolved for. Some filters change vocabulary per type: `companyIndustries` with `type=companyRunningAds` returns Pubrio vertical names (keyword search, `query` required, at most 25 matches); without `type` the filter resolves against the default taxonomy.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "companyRunningAds"
+          },
+          {
             "name": "query",
             "in": "query",
             "required": false,
-            "description": "Search text (required for autocomplete filters). 1-100 characters.",
+            "description": "Search text, 1-100 characters. Required when [`GET /watchlist/filters`](/api-reference/endpoints/watch-list/get-filters) returns `requiresQuery: true` for the filter on that `type` — `companyIndustries` on `companyRunningAds` included: a missing or blank `query` is a `400 WATCH_LIST_API_INVALID_QUERY`. Static (select) filters ignore it.",
             "schema": {
               "type": "string",
               "minLength": 1,
@@ -39214,10 +41454,16 @@
             }
           },
           "400": {
-            "description": "Validation error - invalid filterId or query",
+            "description": "Validation error - invalid filterId, type or query. `WATCH_LIST_API_INVALID_QUERY` also when `query` is missing for a filter that requires one on the given `type`.",
             "content": {
               "text/plain": {
                 "example": "filterId is not a supported watch list autocomplete filter"
+              },
+              "application/json": {
+                "example": {
+                  "error": "query must be a non-empty string of at most 100 characters",
+                  "code": "WATCH_LIST_API_INVALID_QUERY"
+                }
               }
             }
           },

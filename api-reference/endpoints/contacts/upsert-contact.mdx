@@ -23,7 +23,7 @@ At least one identifier is required:
 
 If a contact with the same `email`, `linkedinUrl`, or `linkedinUrlSalesNav` already exists, the endpoint updates it instead of creating a duplicate.
 
-Creating a contact requires the "Create contacts" permission on the API key's user, otherwise the request fails with `403 CONTACT_CREATE_NOT_ALLOWED` and nothing is written. Updating an existing contact does not require it.
+Creating a contact requires the "Create contacts" permission on the API key's user, otherwise the request fails with `403 CONTACT_CREATE_NOT_ALLOWED` and nothing is written. Updating an existing contact does not require it. The error names that user (`The user jane@acme.com does not have the permission to create contacts`); when the API key's user is no longer in the team, it fails with `403 API_USER_NOT_IN_TEAM` instead.
 
 When `contactId` is provided, the contact is matched by its ID directly — `email` and `linkedinUrl` are not required and are not used for matching (they are stored as data if provided).
 
