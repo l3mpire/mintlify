@@ -1,0 +1,40 @@
+---
+openapi: put /team/exclusion-lists
+description: Replaces the lists that the team rules of engagement exclude from every campaign.
+---
+
+<Note>
+Only a team admin can change the setting: the user of the API key must be an
+admin of the team. Else the request answers `403`.
+</Note>
+
+Replaces the whole setting with the body. To add or remove one list, first
+[get the setting](/api-reference/endpoints/team/get-team-exclusion-lists), then
+send the complete new `listIds`. The effect of the rule on the leads is
+described there.
+
+<Warning>
+Switching the rule off or removing a list does not resume the leads that the
+rule paused. Resume them yourself.
+</Warning>
+
+## Validation
+
+- At most 20 lists. A duplicated ID is kept once.
+- Each ID is a contact list or a company list of the team (`clt_xxx`). Static,
+  filter and CRM lists are accepted. A legacy dynamic list, which reads its
+  members from its saved filters, is refused.
+- The body takes `enabled` and `listIds` only. Another key is refused.
+- A refused request writes nothing.
+
+A list created a few seconds ago can be refused. Send the request again.
+
+## No change
+
+A body with the same `enabled` and the same set of lists writes nothing and
+returns the current setting. A new order of the lists is not a change.
+
+After a change, `updatedAt` and `updatedBy` give the date and the user of the
+API key. A change to `{ "enabled": false, "listIds": [] }` removes them.
+
+Sending can take up to 30 seconds to apply a change.

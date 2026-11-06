@@ -13,6 +13,10 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 </Note>
 
 <Note>
+  A contact in one of the [team exclusion lists](/api-reference/endpoints/team/get-team-exclusion-lists), or a contact whose company is in one of them, is refused with `400` (`{"error": "Lead excluded by the team's rules of engagement"}`) while the rule is on. The lead is not created.
+</Note>
+
+<Note>
   The lead is imported as the API key's user. When its company is not in lemlist yet, that user needs the "Create companies" permission, otherwise the request fails with `403` (`{"error": "The user jane@acme.com does not have the permission to create companies"}`) and nothing is written. A company already in lemlist is linked as usual.
 
   Likewise, when its contact is not in lemlist yet, that user needs the "Create contacts" permission, otherwise the request fails with `403` (`{"error": "The user jane@acme.com does not have the permission to create contacts"}`) and nothing is written, company included. A contact already in lemlist is updated as usual.
