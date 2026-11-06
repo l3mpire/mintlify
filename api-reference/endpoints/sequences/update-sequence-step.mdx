@@ -10,7 +10,8 @@ Use this endpoint to:
 
 - Edit the message content or subject of the step
 - Change the delay before this step executes
-- Update the title (for manual steps)
+- Update the title and the priority of the task the step creates
+- Switch a channel step between automatic sending and a manual task
 - Change method/URL (for API steps)
 - Adjust delay logic for conditional steps
 
@@ -42,19 +43,53 @@ A refusal carries a `code` in the body next to the message, so a rejected edit c
 from a transport failure.
 
 
+## Manual steps
+
+`manual` switches a channel step between automatic sending and sending once a task is marked done,
+as described in [Add Step](/api-reference/endpoints/sequences/add-step-to-sequence#manual-steps). It
+takes the same step types, and `type` must be the step's own. A switch, like a new `title` or
+`priority`, applies to the tasks created afterwards: a lead whose task for this step already exists
+keeps it as it is.
+
+```json
+{
+    "type": "email",
+    "manual": true,
+    "title": "Review the follow-up",
+    "priority": 1
+}
+```
+
+Send `"manual": false` to switch the step back to automatic sending:
+
+```json
+{
+    "type": "email",
+    "manual": false
+}
+```
+
+A priority cannot be removed once set: `null` is rejected with `400 Invalid request body`.
+
+## Enrichment steps
+
+The workflows of an `enrichment` step cannot be edited here. A valid `workflowIds` is accepted but
+ignored: the call answers `200` and the step keeps its workflows. To change them before leads enter the
+campaign, delete the step and add a new one.
+
 ## Supported Step Types
 
 | Type | Editable Fields | Description |
 | --- | --- | --- |
-| `email` | `subject`, `message`, `delay` | Sends an email to the lead |
-| `manual` | `title`, `message`, `delay` | Manual task to be performed by the user |
-| `phone` | `message`, `delay` | Reminder to make a phone call |
+| `email` | `subject`, `message`, `delay`, `manual`, `title`, `priority` | Sends an email to the lead |
+| `manual` | `title`, `message`, `delay`, `priority` | Manual task to be performed by the user |
+| `phone` | `message`, `delay`, `title`, `priority` | Reminder to make a phone call |
 | `api` | `method`, `url`, `delay` | Makes an API call |
 | `linkedinVisit` | `delay` | Simulates a profile visit on LinkedIn |
-| `linkedinInvite` | `message`, `altMessage`, `images`, `videos`, `delay` | Sends a LinkedIn invite with message |
-| `linkedinSend` | `message`, `altMessage`, `altMessagePremium`, `images`, `videos`, `delay` | Sends a LinkedIn message |
-| `linkedinInMail` | `subject`, `message`, `delay` | Sends a LinkedIn InMail, from a Premium or Sales Navigator sender only |
-| `linkedinVoiceNote` | `message`, `altMessage`, `delay`, `recordMode` | Sends a LinkedIn voice note. Audio is either recorded manually or AI-generated from a text template, depending on `recordMode` |
+| `linkedinInvite` | `message`, `altMessage`, `images`, `videos`, `delay`, `manual`, `title`, `priority` | Sends a LinkedIn invite with message |
+| `linkedinSend` | `message`, `altMessage`, `altMessagePremium`, `images`, `videos`, `delay`, `manual`, `title`, `priority` | Sends a LinkedIn message |
+| `linkedinInMail` | `subject`, `message`, `delay`, `manual`, `title`, `priority` | Sends a LinkedIn InMail, from a Premium or Sales Navigator sender only |
+| `linkedinVoiceNote` | `message`, `altMessage`, `delay`, `recordMode`, `manual`, `title`, `priority` | Sends a LinkedIn voice note. Audio is either recorded manually or AI-generated from a text template, depending on `recordMode` |
 | `linkedinFollow` | `delay` | Follows the lead on LinkedIn |
 | `linkedinLikeLastPost` | `delay` | Likes the lead's most recent LinkedIn post |
 | `linkedinCommentLastPost` | `delay` | Posts an AI-generated comment on the lead's most recent LinkedIn post |
@@ -62,8 +97,9 @@ from a transport failure.
 | `linkedinWithdrawInvitation` | `delay` | Withdraws a pending LinkedIn invite |
 | `sendToAnotherCampaign` | `campaignId` | Sends the lead to another campaign |
 | `conditional` | `conditionKey`, `delayType`, `delay`, `customField`, `customOperator`, `customValue` | Triggers the next step based on lead behavior |
-| `whatsappMessage` | `message`, `delay` | Sends a WhatsApp message |
-| `sms` | `message`, `delay` | Sends an SMS to the lead |
+| `whatsappMessage` | `message`, `delay`, `manual`, `title`, `priority` | Sends a WhatsApp message |
+| `sms` | `message`, `delay`, `manual`, `title`, `priority` | Sends an SMS to the lead |
+| `enrichment` | `delay` | Enriches the lead. See [Enrichment steps](#enrichment-steps) above |
 
 ## Request Body
 
@@ -75,7 +111,9 @@ Only include the fields you want to update. Required fields are not enforced her
 | `message` | string | `email`, `linkedin*`, `manual`, `phone`, `whatsappMessage`, `sms` | Message text. Pass an empty string to clear it (ignored on `manual` and `phone` steps) |
 | `altMessage` | string | `linkedinInvite`, `linkedinSend`, `linkedinVoiceNote` | The premium invitation note on an invite, the out-of-network note on the other two. Pass an empty string to clear it. See [LinkedIn invitation notes](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-invitation-notes) on Add Step |
 | `altMessagePremium` | string | `linkedinSend` | The premium variant of the out-of-network note. Pass an empty string to clear it. See [LinkedIn invitation notes](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-invitation-notes) on Add Step |
-| `title` | string | `manual` | Title for manual task. Maximum 400 characters |
+| `title` | string | `manual`, `phone`, a channel step with `manual: true` | Title of the task the step creates. Maximum 100 characters |
+| `manual` | boolean | `email`, `linkedinInvite`, `linkedinSend`, `linkedinInMail`, `linkedinVoiceNote`, `whatsappMessage`, `sms` | `true` turns the step into a task, `false` switches it back to automatic sending. See [Manual steps](#manual-steps) above |
+| `priority` | integer | `manual`, `phone`, a channel step with `manual: true` | Priority of the task the step creates: `0` low, `1` medium, `2` high |
 | `method` | string | `api` | One of `GET`, `POST`, `PUT`, `DELETE`, `PATCH` |
 | `url` | string | `api` | Valid HTTP/HTTPS URL |
 | `delay` | integer | all except `sendToAnotherCampaign` | Delay before this step, in days. Must be between 0 and 1500 |

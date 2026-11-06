@@ -98,21 +98,118 @@ or Founder here, CTO there, everyone else in Else" — use the
 [condition branch endpoints](/api-reference/endpoints/sequences/list-condition-branches).
 </Note>
 
+## Manual steps
+
+A step that takes `manual` sends automatically by default. With `manual: true` it creates a task
+first, and the campaign sends the step on its schedule once that task is marked done, in lemlist or
+with [Update Task](/api-reference/endpoints/tasks/update-task). To close the task without sending,
+use [Ignore Tasks](/api-reference/endpoints/tasks/ignore-tasks): the lead moves on to the next step.
+
+<Warning>
+Marking the task done sends the step. Someone who sends the message by hand and then marks the task
+done sends it twice.
+</Warning>
+
+To adapt the message for one lead before marking the task done, use
+[Personalize Step for Lead](/api-reference/endpoints/leads/personalize-step-for-lead), which does not cover voice notes: the `message` of Update Task
+does not change what the campaign sends.
+
+A `linkedinVoiceNote` step needs its recording, unless its `recordMode` is `ai`. Attach it with
+[Upload Audio](/api-reference/endpoints/leads/upload-audio-for-voice-message-step) or on the task in lemlist before marking the task done: without one, nothing
+is sent, the step fails for that lead, and its following LinkedIn steps are skipped.
+
+`title` names the task and `priority` ranks it: `0` low, `1` medium, `2` high. Omitted, the task has
+no priority.
+
+```json
+{
+    "type": "linkedinSend",
+    "message": "Thanks for connecting, {{firstName}}!",
+    "manual": true,
+    "title": "Personalize the intro message",
+    "priority": 2
+}
+```
+
+| Step type | `manual` | `title`, `priority` |
+| --- | --- | --- |
+| `email`, `linkedinInvite`, `linkedinSend`, `linkedinInMail`, `linkedinVoiceNote`, `whatsappMessage`, `sms` | Accepted | Accepted, and applied once the step is manual |
+| `manual`, `phone` | Rejected: they are always tasks | Accepted. `title` is required on `manual` |
+| Every other type | Rejected | Rejected |
+
+A rejected field answers `400 Invalid request body`. To switch an existing step, see
+[Update Sequence Step](/api-reference/endpoints/sequences/update-sequence-step#manual-steps).
+
+## Enrichment steps
+
+An `enrichment` step enriches each lead that reaches it. `workflowIds` lists what it looks up, with
+at least one value:
+
+| Value | Looks up | Credits |
+| --- | --- | --- |
+| `find_email_01` | The lead's email address | 5 per email found |
+| `find_phone_01` | The lead's phone number | 20 per phone number found |
+| `verify_01` | The deliverability of the lead's email | 1 per email verified |
+| `linkedin_01` | The lead's LinkedIn profile | 1 per profile enriched |
+
+```json
+{
+    "type": "enrichment",
+    "workflowIds": ["find_email_01", "verify_01"],
+    "delay": 0
+}
+```
+
+Credits are charged per lookup that returns data: one that finds nothing costs 0. The price of the
+lookups that run is reserved when the step executes for a lead, and released for those that find
+nothing.
+
+What runs depends on the lead:
+
+- A lead with nothing left to look up skips the step at no cost: with `find_phone_01` alone, a lead
+  whose contact already has a phone number.
+- Otherwise the step's workflows run together, so data the contact already holds can be charged
+  again.
+- `find_email_01` searches again on a lead that already has an email, so a step with it rarely skips
+  a lead.
+- With both `find_email_01` and `verify_01`, only one runs: `verify_01` on a lead with a correctly
+  formatted email, even one known as undeliverable, `find_email_01` otherwise. In the example above,
+  a lead with a correctly formatted email costs at most 1 credit, and any other lead at most 5.
+- When one workflow has work to do, a lead missing what another needs fails the step, and no credits
+  are charged: with `verify_01` and `find_phone_01`, a lead with neither an email nor a phone number.
+
+A lead that fails the step still moves on in the sequence, without the data.
+
+When the team's credits do not cover the price of the lookups that run, the lead waits on the step
+and the team gets a notification.
+Adding credits resumes the step. The wait is limited: after repeated attempts, the step fails for
+that lead, who moves on in the sequence.
+
+A missing `workflowIds` answers `400 workflowIds is required`, an empty array or an unknown value
+answers `400 Invalid request body`. `workflowIds` is set when the step is created:
+[Update Sequence Step](/api-reference/endpoints/sequences/update-sequence-step#enrichment-steps)
+does not change it.
+
+<Note>
+`enrichment` steps need the Multichannel Expert plan or above. Below it, the call answers
+`402 upper-plan-required`.
+</Note>
+
 ## Step Types and Required Fields
 
 The table below summarizes the required and optional fields for each step type. Note that all step requests must include a common `type` field.
 
 | Step Type | Required Fields | Optional Fields |
 | --- | --- | --- |
-| `email` | `message` | `subject`, `index`, `delay` |
-| `manual` | `title` | `message`, `index`, `delay` |
-| `phone` | - | `message`, `index`, `delay` |
+| `email` | `message` | `subject`, `index`, `delay`, `manual`, `title`, `priority` |
+| `manual` | `title` | `message`, `index`, `delay`, `priority` |
+| `phone` | - | `message`, `index`, `delay`, `title`, `priority` |
 | `api` | `method`, `url` | `index`, `delay` |
 | `linkedinVisit` | - | `index`, `delay` |
-| `linkedinInvite` | - | `message`, `altMessage`, `images`, `videos`, `index`, `delay` |
-| `linkedinSend` | `message` | `altMessage`, `altMessagePremium`, `images`, `videos`, `index`, `delay` |
-| `linkedinInMail` | `subject`, `message` | `index`, `delay` |
-| `linkedinVoiceNote` | - | `message`, `altMessage`, `index`, `delay`, `recordMode` |
+| `linkedinInvite` | - | `message`, `altMessage`, `images`, `videos`, `index`, `delay`, `manual`, `title`, `priority` |
+| `linkedinSend` | `message` | `altMessage`, `altMessagePremium`, `images`, `videos`, `index`, `delay`, `manual`, `title`, `priority` |
+| `linkedinInMail` | `subject`, `message` | `index`, `delay`, `manual`, `title`, `priority` |
+| `linkedinVoiceNote` | - | `message`, `altMessage`, `index`, `delay`, `recordMode`, `manual`, `title`, `priority` |
 | `linkedinFollow` | - | `index`, `delay` |
 | `linkedinLikeLastPost` | - | `index`, `delay` |
 | `linkedinCommentLastPost` | - | `index`, `delay` |
@@ -120,8 +217,9 @@ The table below summarizes the required and optional fields for each step type. 
 | `linkedinWithdrawInvitation` | - | `index`, `delay` |
 | `sendToAnotherCampaign` | `campaignId` | `leadAction`, `index` |
 | `conditional` | `conditionKey`, `delayType` (and `delay` when `delayType` is `within`) | `index` |
-| `whatsappMessage` | `message` | `index`, `delay` |
-| `sms` | `message` | `index`, `delay` |
+| `whatsappMessage` | `message` | `index`, `delay`, `manual`, `title`, `priority` |
+| `sms` | `message` | `index`, `delay`, `manual`, `title`, `priority` |
+| `enrichment` | `workflowIds` | `index`, `delay` |
 
 <Note>
 In conditional steps, if the `delayType` is not `"within"`, the `delay` field is not required.
@@ -137,21 +235,23 @@ does not render HTML. The step takes no `altMessage`, `images` or `videos`.
 </Note>
 
 <Note>
-`linkedinVoiceNote` steps are created as skeletons via the API: the audio payload itself is not accepted here and must be added afterwards from the lemlist UI. The `recordMode` field controls how the audio is sourced — with `manual` (default), a user records the note themselves; with `ai`, a user provides a text template that lemlist converts to audio at send time.
+`linkedinVoiceNote` steps are created as skeletons via the API: the audio payload itself is not accepted here and must be added afterwards, from the lemlist UI or for one lead with [Upload Audio](/api-reference/endpoints/leads/upload-audio-for-voice-message-step). The `recordMode` field controls how the audio is sourced — with `manual` (default), a user records the note themselves; with `ai`, a user provides a text template that lemlist converts to audio at send time.
 </Note>
 
 ## All Request Body Fields
 
 | Field | Description |
 | --- | --- |
-| `type` (String, Required) | The type of step to create. Allowed values: `email`, `manual`, `phone`, `api`, `linkedinVisit`, `linkedinInvite`, `linkedinSend`, `linkedinInMail`, `linkedinVoiceNote`, `linkedinFollow`, `linkedinLikeLastPost`, `linkedinCommentLastPost`, `linkedinEndorse`, `linkedinWithdrawInvitation`, `sendToAnotherCampaign`, `conditional`, `whatsappMessage`, `sms` |
+| `type` (String, Required) | The type of step to create. Allowed values: `email`, `manual`, `phone`, `api`, `linkedinVisit`, `linkedinInvite`, `linkedinSend`, `linkedinInMail`, `linkedinVoiceNote`, `linkedinFollow`, `linkedinLikeLastPost`, `linkedinCommentLastPost`, `linkedinEndorse`, `linkedinWithdrawInvitation`, `sendToAnotherCampaign`, `conditional`, `whatsappMessage`, `sms`, `enrichment` |
 | `index` (Integer, Optional) | The position within the sequence to insert the new step. Must be an integer ≥ -1. If omitted or if the index is greater than the number of steps, the new step is added to the end |
 | `delay` (Integer, Optional) | The delay (in days) before executing the step. Must be between 0 and 1500. Defaults to 0 for the first step and to 1 for subsequent steps (except for certain conditional configurations) |
 | `subject` (String, Conditional) | For `email` and `linkedinInMail` steps. Required on `linkedinInMail`, where it is the InMail subject: a blank one is saved but blocks the campaign launch. On `email`, the email subject. Omit it or send an empty string on a follow-up so the email replies in the thread of the previous one. If no email has been sent to the lead in this campaign yet, it goes out with an empty subject. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
 | `message` (String, Conditional) | Content of the email or message. Used for `email`, `linkedinInvite`, `linkedinSend`, `linkedinInMail`, `whatsappMessage`, and `sms` step types, the AI script of a `linkedinVoiceNote` step in `ai` record mode, or the note of `manual` and `phone` step types. Required for `linkedinSend`, `linkedinInMail`, `whatsappMessage`, and `sms` |
 | `altMessage` (String, Conditional) | For `linkedinInvite`, `linkedinSend` and `linkedinVoiceNote` steps only. The premium invitation note on an invite, the out-of-network note on the other two. See [LinkedIn invitation notes](#linkedin-invitation-notes) below |
 | `altMessagePremium` (String, Conditional) | For `linkedinSend` steps only. The premium variant of the out-of-network note. See [LinkedIn invitation notes](#linkedin-invitation-notes) below |
-| `title` (String, Conditional) | A title or label used in `manual` steps. Maximum 400 characters |
+| `title` (String, Conditional) | The title of the task the step creates. Required on `manual` steps, optional on `phone` steps and on a channel step with `manual: true`. Maximum 100 characters |
+| `manual` (Boolean, Optional) | For `email`, `linkedinInvite`, `linkedinSend`, `linkedinInMail`, `linkedinVoiceNote`, `whatsappMessage` and `sms` steps only. `true` creates a task, and the campaign sends the step once the task is marked done. See [Manual steps](#manual-steps) above |
+| `priority` (Integer, Optional) | The priority of the task the step creates: `0` low, `1` medium, `2` high. For `manual` and `phone` steps, and for the channel steps that take `manual` |
 | `method` (String, Conditional) | The HTTP method to use for API steps. Allowed values: `GET`, `POST`, `PUT`, `DELETE`, `PATCH` |
 | `url` (String, Conditional) | The URL of the API endpoint to call. Must be a valid URL (starting with `http://` or `https://`) |
 | `conditionKey` (String, Conditional) | For conditional steps only. Defines the condition key. Allowed values: `hasEmailAddress`, `hasLinkedinUrl`, `hasPhoneNumber`, `customLeadInfo`, `hasScore`, `emailsOpened`, `emailsClicked`, `emailsUnsubscribed`, `meetingBooked`, `linkedinInviteAccepted`, `linkedinOpened`, `aircallDone`, `linkedinNetworkCheck`, `hasWhatsappAccount` |
@@ -166,6 +266,7 @@ does not render HTML. The step takes no `altMessage`, `images` or `videos`.
 | `skillName` (String, Optional) | For `linkedinEndorse` steps only. Name of the LinkedIn skill to endorse on the lead's profile |
 | `endorseAnyFallback` (Boolean, Optional) | For `linkedinEndorse` steps only. When `true` and the named skill is not on the lead's profile, lemlist falls back to endorsing any available skill |
 | `recordMode` (String, Optional) | For `linkedinVoiceNote` steps only. Determines how the audio is sourced. Allowed values: `manual` (user records the audio after step creation; default), `ai` (audio is generated from a text template provided in the lemlist UI) |
+| `workflowIds` (Array of strings, Conditional) | Required on `enrichment` steps, which are the only ones taking it. What the step looks up for each lead. Allowed values: `find_email_01`, `find_phone_01`, `verify_01`, `linkedin_01`. See [Enrichment steps](#enrichment-steps) above |
 
 ## What happens to the transferred lead
 

@@ -12,9 +12,9 @@ All fields are optional except `id`:
 
 - **Assignment**: Change the assigned team member with `assignedTo`
 - **Schedule**: Update the `dueDate` 
-- **Details**: Modify `title` or `message` content
+- **Details**: Modify `title` or `message` content. On a campaign step with `manual: true`, `message` does not change what the campaign sends: use [Personalize Step for Lead](/api-reference/endpoints/leads/personalize-step-for-lead)
 - **Priority**: Set priority level (0=low, 1=medium, 2=high, ""=none)
-- **Status**: Mark as complete with `done: true`
+- **Status**: Mark as complete with `done: true`. On a campaign step with `manual: true`, the campaign then sends the step: see [Manual steps](/api-reference/endpoints/sequences/add-step-to-sequence#manual-steps)
 - **LinkedIn media** (LinkedIn tasks only): Replace attached files via `images` and `videos`. Pass an empty array to clear them. See the [LinkedIn task attachments](/api-reference/endpoints/tasks/create-task#linkedin-task-attachments) section on Create Task for size, MIME, and count limits
 
 <Note>
