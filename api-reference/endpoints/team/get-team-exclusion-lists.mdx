@@ -1,0 +1,30 @@
+---
+openapi: get /team/exclusion-lists
+description: Returns the lists that the team rules of engagement exclude from every campaign.
+---
+
+A team admin selects contact lists and company lists. When the rule is on
+(`enabled: true`), a contact in one of these lists, or a contact whose company
+is in one of them, is blocked from every campaign of the team:
+
+- lemlist does not add it as a new lead. A lead already in the campaign stays.
+  [Create Lead in Campaign](/api-reference/endpoints/leads/create-lead-in-campaign)
+  answers `400` with `{ "error": "Lead excluded by the team's rules of engagement" }`.
+- lemlist does not launch it from the review.
+- A lead already in a sequence is paused at its next step, not when the list
+  changes. The lead then has `isPaused: true` and `isExcluded: true`, and a
+  resume is refused while the contact stays excluded.
+
+lemlist reads the lists when each check runs. A new contact of a listed company
+is thus blocked too.
+
+- A team that never saved the setting returns
+  `{ "data": { "enabled": false, "listIds": [] } }`.
+- `enabled: false` keeps the lists: the rule is off until an admin turns it on
+  again.
+- A deleted list is removed from the setting.
+
+<Warning>
+These endpoints need an API key linked to a user. A key not linked to a user
+gets a `401`.
+</Warning>

@@ -265,6 +265,10 @@
             "type": "boolean",
             "description": "Whether the lead is paused"
           },
+          "isExcluded": {
+            "type": "boolean",
+            "description": "`true` when the team rules of engagement paused the lead: its contact is in a [team exclusion list](/api-reference/endpoints/team/get-team-exclusion-lists), or its company is. Such a lead also has `isPaused: true`, and a resume is refused while the contact stays excluded. Only on a lead in a campaign."
+          },
           "state": {
             "type": "string",
             "description": "Current state of the lead (e.g., scanned, contacted)"
@@ -1863,6 +1867,14 @@
           "campaignName": {
             "type": "string",
             "description": "Campaign name the lead belongs to"
+          },
+          "isPaused": {
+            "type": "boolean",
+            "description": "Whether the lead is paused in the campaign"
+          },
+          "isExcluded": {
+            "type": "boolean",
+            "description": "`true` when the team rules of engagement paused the lead: its contact is in a [team exclusion list](/api-reference/endpoints/team/get-team-exclusion-lists), or its company is. Such a lead also has `isPaused: true`, and a resume is refused while the contact stays excluded. Only on a lead in a campaign."
           },
           "isUnsubscribed": {
             "type": "boolean",
@@ -3623,6 +3635,55 @@
       "DynamicSenderExclusionError": {
         "type": "object",
         "description": "Error of the dynamic sender exclusion endpoints.",
+        "required": [
+          "error",
+          "code"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Human-readable error message."
+          },
+          "code": {
+            "type": "string",
+            "description": "Machine-readable error code."
+          }
+        }
+      },
+      "TeamExclusionLists": {
+        "type": "object",
+        "description": "The exclusion lists of the team rules of engagement. A team that never saved the setting reads `{ \"enabled\": false, \"listIds\": [] }`.",
+        "required": [
+          "enabled",
+          "listIds"
+        ],
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "`true` when the rule blocks the contacts of the lists. `false` when the rule is off: the lists stay saved."
+          },
+          "listIds": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "type": "string"
+            },
+            "description": "The excluded contact lists and company lists. A deleted list is removed from the setting."
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the setting last changed. Absent before the first change, and after a change to `{ \"enabled\": false, \"listIds\": [] }`."
+          },
+          "updatedBy": {
+            "type": "string",
+            "description": "The user who last changed the setting. On the API, the user of the API key. Absent when `updatedAt` is absent."
+          }
+        }
+      },
+      "TeamExclusionListsError": {
+        "type": "object",
+        "description": "Error of the team exclusion lists endpoints.",
         "required": [
           "error",
           "code"
@@ -9795,6 +9856,221 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DynamicSenderExclusionError"
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/team/exclusion-lists": {
+      "get": {
+        "summary": "Get Team Exclusion Lists",
+        "tags": [
+          "Team"
+        ],
+        "description": "Returns the exclusion lists of the team rules of engagement. A contact in one of these lists, or a contact whose company is in one of them, is blocked from every campaign of the team. Any team member can read the setting.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "application/json"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/TeamExclusionLists"
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "enabled": true,
+                    "listIds": [
+                      "clt_lS06ZJWpPrXiPVxH4",
+                      "clt_RBcgcmDyoyhRnKskF"
+                    ],
+                    "updatedAt": "2026-11-06T17:30:00.000Z",
+                    "updatedBy": "usr_zkz7uUZClL2iGfeiZ"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect, or the API key is not linked to a user",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamExclusionListsError"
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Replace Team Exclusion Lists",
+        "tags": [
+          "Team"
+        ],
+        "description": "Replaces the exclusion lists of the team rules of engagement. Only a team admin can do it. Send at most 20 lists: static, filter and CRM lists, contact lists and company lists mixed. A legacy dynamic list is refused. When the rule is on, lemlist does not add a new lead whose contact or company is in a list, does not launch such a lead, and pauses such a lead at its next step (`isExcluded: true` on the lead). Switching the rule off or removing a list does not resume the leads that the rule paused.",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "enabled",
+                  "listIds"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "`true` blocks the contacts of the lists from every campaign of the team. `false` switches the rule off and keeps the lists."
+                  },
+                  "listIds": {
+                    "type": "array",
+                    "maxItems": 20,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^clt_[a-zA-Z0-9]{17}$"
+                    },
+                    "description": "The complete new set of excluded lists, contact lists and company lists mixed. The lists that you do not send are removed. A duplicated ID is kept once. An empty list excludes nobody."
+                  }
+                }
+              },
+              "example": {
+                "enabled": true,
+                "listIds": [
+                  "clt_lS06ZJWpPrXiPVxH4",
+                  "clt_RBcgcmDyoyhRnKskF"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "application/json"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/TeamExclusionLists"
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "enabled": true,
+                    "listIds": [
+                      "clt_lS06ZJWpPrXiPVxH4",
+                      "clt_RBcgcmDyoyhRnKskF"
+                    ],
+                    "updatedAt": "2026-11-06T17:30:00.000Z",
+                    "updatedBy": "usr_zkz7uUZClL2iGfeiZ"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The body is not valid. `RULES_OF_ENGAGEMENT_EXCLUSION_LISTS_INVALID_INPUT`: the body does not match the schema (an unknown key, a list ID in a wrong format, or more than 20 list IDs). `RULES_OF_ENGAGEMENT_EXCLUSION_LISTS_LIST_NOT_FOUND`: a list is not a list of the team. `RULES_OF_ENGAGEMENT_EXCLUSION_LISTS_LEGACY_DYNAMIC_LIST`: a list is a legacy dynamic list, which reads its members from its saved filters. Nothing is written.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamExclusionListsError"
+                },
+                "examples": {
+                  "invalid-input": {
+                    "value": {
+                      "error": "Invalid input: the body must be { enabled: boolean, listIds: string[] }, with at most 20 list ids (clt_xxx)",
+                      "code": "RULES_OF_ENGAGEMENT_EXCLUSION_LISTS_INVALID_INPUT"
+                    }
+                  },
+                  "list-not-found": {
+                    "value": {
+                      "error": "A list does not exist in the team. Take the list id from the contact lists or the company lists",
+                      "code": "RULES_OF_ENGAGEMENT_EXCLUSION_LISTS_LIST_NOT_FOUND"
+                    }
+                  },
+                  "legacy-dynamic-list": {
+                    "value": {
+                      "error": "A legacy dynamic list (read from saved filters) cannot be an exclusion list. Use a static, filter or CRM list",
+                      "code": "RULES_OF_ENGAGEMENT_EXCLUSION_LISTS_LEGACY_DYNAMIC_LIST"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect, or the API key is not linked to a user",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "403": {
+            "description": "The user of the API key is not an admin of the team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamExclusionListsError"
+                },
+                "example": {
+                  "error": "Only a team admin can change the exclusion lists. Ask a team admin",
+                  "code": "RULES_OF_ENGAGEMENT_EXCLUSION_LISTS_NOT_ADMIN"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamExclusionListsError"
                 },
                 "example": {
                   "error": "Route bad method",
@@ -18643,6 +18919,10 @@
                         "type": "boolean",
                         "description": "Indicates if the lead is paused"
                       },
+                      "isExcluded": {
+                        "type": "boolean",
+                        "description": "`true` when the team rules of engagement paused the lead: its contact is in a [team exclusion list](/api-reference/endpoints/team/get-team-exclusion-lists), or its company is. Such a lead also has `isPaused: true`, and a resume is refused while the contact stays excluded. Only on a lead in a campaign."
+                      },
                       "campaignId": {
                         "type": "string",
                         "description": "ID of the campaign the lead is associated with"
@@ -18678,6 +18958,7 @@
                       "email": "support@lemlist.com",
                       "_id": "lea_fiDpiGV585wy3Oii2",
                       "isPaused": false,
+                      "isExcluded": false,
                       "campaignId": "cam_bSn8EORHQxbWPjHvu",
                       "contactId": "ctc_xW8Ou6C03Csv8vatp",
                       "emailStatus": "deliverable"
@@ -18691,6 +18972,7 @@
                         "createdAt": "2025-10-27T09:12:45.000Z",
                         "updatedAt": "2025-10-28T00:40:39.230Z",
                         "isPaused": false,
+                        "isExcluded": false,
                         "state": "scanned",
                         "status": "review",
                         "personalized": false,
@@ -18794,6 +19076,7 @@
                     "createdAt": "2025-10-27T09:12:45.000Z",
                     "updatedAt": "2025-10-28T00:40:39.230Z",
                     "isPaused": false,
+                    "isExcluded": false,
                     "state": "scanned",
                     "status": "review",
                     "personalized": false,
@@ -19135,6 +19418,10 @@
                       "type": "boolean",
                       "description": "Whether the lead is paused in the campaign"
                     },
+                    "isExcluded": {
+                      "type": "boolean",
+                      "description": "`true` when the team rules of engagement paused the lead: its contact is in a [team exclusion list](/api-reference/endpoints/team/get-team-exclusion-lists), or its company is. Such a lead also has `isPaused: true`, and a resume is refused while the contact stays excluded. Only on a lead in a campaign."
+                    },
                     "contactId": {
                       "type": "string",
                       "description": "Associated contact ID"
@@ -19205,16 +19492,26 @@
                   "email": "support@lemlist.com",
                   "_id": "lea_fiDpiGV585wy3Oii2",
                   "isPaused": false,
+                  "isExcluded": false,
                   "contactId": "ctc_xW8Ou6C03Csv8vatp"
                 }
               }
             }
           },
           "400": {
-            "description": "Possible errors: No API key provided / Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile / Email address is in the graveyard / Lead already in the campaign / No valid fields to add / Invalid updateStrategy value",
+            "description": "Possible errors: No API key provided / Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile / Email address is in the graveyard / Lead already in the campaign / No valid fields to add / Invalid updateStrategy value (plain text) / The contact, or its company, is in a team exclusion list (JSON body, see Get Team Exclusion Lists); the lead is not created",
             "content": {
               "text/plain": {
                 "example": "No API key provided"
+              },
+              "application/json": {
+                "examples": {
+                  "lead-excluded": {
+                    "value": {
+                      "error": "Lead excluded by the team's rules of engagement"
+                    }
+                  }
+                }
               }
             }
           },
@@ -19309,6 +19606,10 @@
                     "isPaused": {
                       "type": "boolean"
                     },
+                    "isExcluded": {
+                      "type": "boolean",
+                      "description": "`true` when the team rules of engagement paused the lead: its contact is in a [team exclusion list](/api-reference/endpoints/team/get-team-exclusion-lists), or its company is. Such a lead also has `isPaused: true`, and a resume is refused while the contact stays excluded. Only on a lead in a campaign."
+                    },
                     "campaignId": {
                       "type": "string"
                     }
@@ -19320,6 +19621,7 @@
                   "lastName": "Doe",
                   "_id": "lea_8xJSc7sV7ggpiVnXe",
                   "isPaused": false,
+                  "isExcluded": false,
                   "campaignId": "cam_A1B2C3D4E5F6G7H8I9"
                 }
               }
@@ -19455,6 +19757,10 @@
                       "type": "boolean",
                       "description": "Whether the lead is paused in the campaign"
                     },
+                    "isExcluded": {
+                      "type": "boolean",
+                      "description": "`true` when the team rules of engagement paused the lead: its contact is in a [team exclusion list](/api-reference/endpoints/team/get-team-exclusion-lists), or its company is. Such a lead also has `isPaused: true`, and a resume is refused while the contact stays excluded. Only on a lead in a campaign."
+                    },
                     "contactId": {
                       "type": "string",
                       "description": "Associated contact ID"
@@ -19514,6 +19820,7 @@
                       "preferredContactMethod": "email",
                       "_id": "lea_A1B2C3D4E5F6G7H8I9",
                       "isPaused": false,
+                      "isExcluded": false,
                       "contactId": "ctc_A1B2C3D4E5F6G7H8I9",
                       "emailStatus": "deliverable"
                     }
@@ -19533,6 +19840,7 @@
                       "preferredContactMethod": "email",
                       "_id": "lea_A1B2C3D4E5F6G7H8I9",
                       "isPaused": false,
+                      "isExcluded": false,
                       "contactId": "ctc_A1B2C3D4E5F6G7H8I9",
                       "emailStatus": "deliverable",
                       "warnings": [
@@ -19677,6 +19985,10 @@
                     "isPaused": {
                       "type": "boolean"
                     },
+                    "isExcluded": {
+                      "type": "boolean",
+                      "description": "`true` when the team rules of engagement paused the lead: its contact is in a [team exclusion list](/api-reference/endpoints/team/get-team-exclusion-lists), or its company is. Such a lead also has `isPaused: true`, and a resume is refused while the contact stays excluded. Only on a lead in a campaign."
+                    },
                     "campaignId": {
                       "type": "string"
                     },
@@ -19703,6 +20015,7 @@
                   "Company name": "John Doe",
                   "_id": "lea_fiDpiGV585wy3Oii2",
                   "isPaused": false,
+                  "isExcluded": false,
                   "campaignId": "cam_bSn8EORHQxbWPjHvu",
                   "contactId": "ctc_xW8Ou6C03Csv8vatp",
                   "emailStatus": "deliverable"
@@ -19778,6 +20091,10 @@
                     "isPaused": {
                       "type": "boolean"
                     },
+                    "isExcluded": {
+                      "type": "boolean",
+                      "description": "`true` when the team rules of engagement paused the lead: its contact is in a [team exclusion list](/api-reference/endpoints/team/get-team-exclusion-lists), or its company is. Such a lead also has `isPaused: true`, and a resume is refused while the contact stays excluded. Only on a lead in a campaign."
+                    },
                     "campaignId": {
                       "type": "string"
                     },
@@ -19790,6 +20107,7 @@
                   "email": "alex.doe@example.com",
                   "_id": "lea_8RmJYElD9S5Jp2kyv",
                   "isPaused": false,
+                  "isExcluded": false,
                   "campaignId": "cam_8qJ1qAE5tekBYkJac",
                   "contactId": "ctc_joap8q9YGlV45Ypc6"
                 }
@@ -19880,6 +20198,10 @@
                       "isPaused": {
                         "type": "boolean"
                       },
+                      "isExcluded": {
+                        "type": "boolean",
+                        "description": "`true` when the team rules of engagement paused the lead: its contact is in a [team exclusion list](/api-reference/endpoints/team/get-team-exclusion-lists), or its company is. Such a lead also has `isPaused: true`, and a resume is refused while the contact stays excluded. Only on a lead in a campaign."
+                      },
                       "campaignId": {
                         "type": "string"
                       },
@@ -19908,6 +20230,7 @@
                     "Company name": "John Doe",
                     "_id": "lea_fiDpiGV585wy3Oii2",
                     "isPaused": false,
+                    "isExcluded": false,
                     "campaignId": "cam_bSn8EORHQxbWPjHvu",
                     "contactId": "ctc_xW8Ou6C03Csv8vatp",
                     "emailStatus": "deliverable"
@@ -20008,6 +20331,10 @@
                       "isPaused": {
                         "type": "boolean"
                       },
+                      "isExcluded": {
+                        "type": "boolean",
+                        "description": "`true` when the team rules of engagement paused the lead: its contact is in a [team exclusion list](/api-reference/endpoints/team/get-team-exclusion-lists), or its company is. Such a lead also has `isPaused: true`, and a resume is refused while the contact stays excluded. Only on a lead in a campaign."
+                      },
                       "campaignId": {
                         "type": "string"
                       },
@@ -20036,6 +20363,7 @@
                     "Company name": "John Doe",
                     "_id": "lea_fiDpiGV585wy3Oii2",
                     "isPaused": true,
+                    "isExcluded": false,
                     "campaignId": "cam_bSn8EORHQxbWPjHvu",
                     "contactId": "ctc_xW8Ou6C03Csv8vatp",
                     "emailStatus": "deliverable"
@@ -20230,6 +20558,10 @@
                       "isPaused": {
                         "type": "boolean"
                       },
+                      "isExcluded": {
+                        "type": "boolean",
+                        "description": "`true` when the team rules of engagement paused the lead: its contact is in a [team exclusion list](/api-reference/endpoints/team/get-team-exclusion-lists), or its company is. Such a lead also has `isPaused: true`, and a resume is refused while the contact stays excluded. Only on a lead in a campaign."
+                      },
                       "campaignId": {
                         "type": "string"
                       },
@@ -20258,6 +20590,7 @@
                     "Company name": "John Doe",
                     "_id": "lea_fiDpiGV585wy3Oii2",
                     "isPaused": false,
+                    "isExcluded": false,
                     "campaignId": "cam_bSn8EORHQxbWPjHvu",
                     "contactId": "ctc_xW8Ou6C03Csv8vatp",
                     "emailStatus": "deliverable"
@@ -20347,6 +20680,10 @@
                       "isPaused": {
                         "type": "boolean"
                       },
+                      "isExcluded": {
+                        "type": "boolean",
+                        "description": "`true` when the team rules of engagement paused the lead: its contact is in a [team exclusion list](/api-reference/endpoints/team/get-team-exclusion-lists), or its company is. Such a lead also has `isPaused: true`, and a resume is refused while the contact stays excluded. Only on a lead in a campaign."
+                      },
                       "campaignId": {
                         "type": "string"
                       },
@@ -20375,6 +20712,7 @@
                     "Company name": "John Doe",
                     "_id": "lea_fiDpiGV585wy3Oii2",
                     "isPaused": false,
+                    "isExcluded": false,
                     "campaignId": "cam_bSn8EORHQxbWPjHvu",
                     "contactId": "ctc_xW8Ou6C03Csv8vatp",
                     "emailStatus": "deliverable"
@@ -20471,6 +20809,10 @@
                     "isPaused": {
                       "type": "boolean"
                     },
+                    "isExcluded": {
+                      "type": "boolean",
+                      "description": "`true` when the team rules of engagement paused the lead: its contact is in a [team exclusion list](/api-reference/endpoints/team/get-team-exclusion-lists), or its company is. Such a lead also has `isPaused: true`, and a resume is refused while the contact stays excluded. Only on a lead in a campaign."
+                    },
                     "campaignId": {
                       "type": "string"
                     },
@@ -20497,6 +20839,7 @@
                   "Company name": "John Doe",
                   "_id": "lea_fiDpiGV585wy3Oii2",
                   "isPaused": false,
+                  "isExcluded": false,
                   "campaignId": "cam_bSn8EORHQxbWPjHvu",
                   "contactId": "ctc_xW8Ou6C03Csv8vatp",
                   "emailStatus": "deliverable"
@@ -20592,6 +20935,10 @@
                     "isPaused": {
                       "type": "boolean"
                     },
+                    "isExcluded": {
+                      "type": "boolean",
+                      "description": "`true` when the team rules of engagement paused the lead: its contact is in a [team exclusion list](/api-reference/endpoints/team/get-team-exclusion-lists), or its company is. Such a lead also has `isPaused: true`, and a resume is refused while the contact stays excluded. Only on a lead in a campaign."
+                    },
                     "campaignId": {
                       "type": "string"
                     },
@@ -20618,6 +20965,7 @@
                   "Company name": "John Doe",
                   "_id": "lea_fiDpiGV585wy3Oii2",
                   "isPaused": false,
+                  "isExcluded": false,
                   "campaignId": "cam_bSn8EORHQxbWPjHvu",
                   "contactId": "ctc_xW8Ou6C03Csv8vatp",
                   "emailStatus": "deliverable"
@@ -32708,6 +33056,7 @@
                     "lead": {
                       "_id": "lea_fiDpiGV585wy3Oii2",
                       "isPaused": false,
+                      "isExcluded": false,
                       "state": "manualNotInterested",
                       "personalized": false,
                       "source": "api",
@@ -32765,6 +33114,7 @@
                     "lead": {
                       "_id": "lea_fiDpiGV585wy3Oii2",
                       "isPaused": false,
+                      "isExcluded": false,
                       "state": "manualNotInterested",
                       "personalized": false,
                       "source": "api",
@@ -32811,6 +33161,7 @@
                     "lead": {
                       "_id": "lea_fiDpiGV585wy3Oii2",
                       "isPaused": false,
+                      "isExcluded": false,
                       "state": "manualNotInterested",
                       "personalized": false,
                       "source": "api",
@@ -32866,6 +33217,7 @@
                     "lead": {
                       "_id": "lea_wj47uWhDbbN6Qq6oT",
                       "isPaused": false,
+                      "isExcluded": false,
                       "state": "emailsUnsubscribed",
                       "personalized": false,
                       "source": "manually",
@@ -32916,6 +33268,7 @@
                     "lead": {
                       "_id": "lea_wj47uWhDbbN6Qq6oT",
                       "isPaused": false,
+                      "isExcluded": false,
                       "state": "emailsUnsubscribed",
                       "personalized": false,
                       "source": "manually",
