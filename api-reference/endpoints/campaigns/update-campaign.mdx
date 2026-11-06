@@ -13,4 +13,6 @@ instead: it covers all the settings, and refuses an unknown or invalid field
 instead of ignoring it.
 </Warning>
 
+`emoji` is a campaign field, not a setting: the deprecation above does not apply to it. It can be changed but not removed.
+
 `sendUserIds` replaces the sender pool and keeps the first account of each channel type for each sender. To add a sender without a replacement, or to pick a mailbox, a WhatsApp account or an alias, use the [Senders](/api-reference/endpoints/senders/get-campaign-senders) endpoints.

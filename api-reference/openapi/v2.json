@@ -2565,7 +2565,28 @@
           "fields": {
             "type": "object",
             "description": "Key/value attributes of the company, standard and custom (e.g., name, picture, industry, location, size, foundedOn). These values are always under `fields`, never at the top level of the object.",
+            "properties": {
+              "accountPenetration": {
+                "type": "number",
+                "readOnly": true,
+                "minimum": 0,
+                "maximum": 100,
+                "description": "Percentage of the company's eligible contacts already contacted, computed by lemlist and refreshed as contacts are reached. Read-only: it cannot be written through the API. `0` with an `accountPenetration.eligibleCount` above `0` means none has been contacted yet. A company with no eligible contact (`eligibleCount` `0`) has it absent, or `0` when it previously had eligible contacts. Absent with no `accountPenetration` object means not computed yet, which can also be a company with no eligible contact."
+              }
+            },
             "additionalProperties": true
+          },
+          "accountPenetration": {
+            "type": "object",
+            "readOnly": true,
+            "description": "Counts behind `fields.accountPenetration`. Absent until computed.",
+            "properties": {
+              "eligibleCount": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Number of the company's contacts eligible for account penetration. `0` means the company has no eligible contact: `fields.accountPenetration` is then absent or `0`, and does not mean none was contacted."
+              }
+            }
           },
           "createdBy": {
             "type": "string",
@@ -5603,7 +5624,8 @@
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
               "githubStargazer",
-              "linkedinProfileViews"
+              "linkedinProfileViews",
+              "companyRunningAds"
             ]
           },
           "status": {
@@ -6110,12 +6132,106 @@
                 "type": "string",
                 "description": "[promotion] Promotion start date"
               },
+              "adPlatform": {
+                "type": "string",
+                "description": "[companyRunningAds] Platform of the company's most recent ad",
+                "enum": [
+                  "linkedin",
+                  "facebook",
+                  "google",
+                  "tiktok",
+                  "apple"
+                ]
+              },
+              "adHeadline": {
+                "type": "string",
+                "description": "[companyRunningAds] Ad headline (truncated to 256 characters)"
+              },
+              "adFormat": {
+                "type": "string",
+                "description": "[companyRunningAds] Ad format",
+                "enum": [
+                  "image",
+                  "video",
+                  "text",
+                  "carousel",
+                  "dynamic_product",
+                  "document",
+                  "message",
+                  "event",
+                  "article",
+                  "spotlight",
+                  "follow",
+                  "job",
+                  "engagement"
+                ]
+              },
+              "adDestinationUrl": {
+                "type": "string",
+                "description": "[companyRunningAds] Landing page the ad links to (http(s) only, absent otherwise)"
+              },
+              "adTargetCountries": {
+                "type": "string",
+                "description": "[companyRunningAds] Countries the ad targets, ISO alpha-2 codes joined by `, ` (e.g. `FR, DE`)"
+              },
+              "adImpressions": {
+                "type": "string",
+                "description": "[companyRunningAds] Impression range reported by the provider (e.g. `10k-20k`, `< 1k`). Often absent while the ad is still running"
+              },
+              "adStartDate": {
+                "type": "string",
+                "format": "date-time",
+                "description": "[companyRunningAds] Ad start date (UTC midnight)"
+              },
+              "adEndDate": {
+                "type": "string",
+                "format": "date-time",
+                "description": "[companyRunningAds] Ad end date (UTC midnight). Absent while the ad is still running"
+              },
+              "adUrl": {
+                "type": "string",
+                "description": "[companyRunningAds] Link to the ad in the platform's ad library (http(s) only)"
+              },
+              "adImageUrl": {
+                "type": "string",
+                "description": "[companyRunningAds] Creative preview URL. Absent for non-image ads"
+              },
+              "adsCount": {
+                "type": "integer",
+                "description": "[companyRunningAds] Number of ads delivered for the company in this signal"
+              },
               "externalSignalCustomFields": {
                 "type": "object",
                 "description": "[externalSignalContact/externalSignalCompany] Custom fields map",
                 "additionalProperties": {
                   "type": "string"
                 }
+              },
+              "githubActionType": {
+                "type": "string",
+                "description": "[githubStargazer] GitHub action that produced the signal",
+                "enum": ["star", "fork", "issue", "pull_request", "comment"]
+              },
+              "githubActionTitle": {
+                "type": "string",
+                "description": "[githubStargazer] Title of the issue or pull request (for a comment, the title of the issue it was posted on; absent for a star or a fork)"
+              },
+              "githubActionUrl": {
+                "type": "string",
+                "description": "[githubStargazer] URL of the fork, issue, pull request or comment (absent for a star)"
+              },
+              "githubEventAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "[githubStargazer] When the action happened on GitHub (the latest one when the same person repeats the same action on the same repository)"
+              },
+              "githubRepoUrl": {
+                "type": "string",
+                "description": "[githubStargazer] Monitored repository the action happened on"
+              },
+              "githubProfileUrl": {
+                "type": "string",
+                "description": "[githubStargazer] GitHub profile URL of the person who acted"
               }
             }
           }
@@ -6182,7 +6298,8 @@
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
               "githubStargazer",
-              "linkedinProfileViews"
+              "linkedinProfileViews",
+              "companyRunningAds"
             ]
           },
           "status": {
@@ -6351,14 +6468,21 @@
               "minJobCount",
               "timeframe",
               "githubRepoUrls",
+              "githubEventTypes",
               "linkedinProfileViewsUserIds",
+              "adPlatforms",
+              "adFormats",
+              "adTargetCountries",
+              "adSearchTerms",
+              "allowUnknownIndustry",
+              "includeRelatedIndustries",
               "minOverlapMonths",
               "includeCurrentCompanies"
             ]
           },
           "in": {
             "type": "array",
-            "description": "Values to include. For `externalSignalFieldMapping` and `externalSignalCustomFieldMapping`, an array of mapping objects (see `WatchListExternalSignalMapping`); the JSON-serialized form returned when reading an agent is also accepted. For the Warm Intros filters: `targetCrmListIds` takes the ids of company CRM lists of the workspace (from `GET /companies/lists`, up to 50 lists and 10,000 companies in total, any other id is rejected with `INVALID_FILTER_VALUE`) and the agent then delivers only people working at the companies of those lists, the other filters still applying; send it again on every update, as `filters` replaces the whole set; `minOverlapMonths` takes one integer between 3 and 120, as a string (6 when absent); `includeCurrentCompanies` takes `true` to also include the current colleagues of the introducers (only past colleagues when absent).",
+            "description": "Values to include. For `externalSignalFieldMapping` and `externalSignalCustomFieldMapping`, an array of mapping objects (see `WatchListExternalSignalMapping`); the JSON-serialized form returned when reading an agent is also accepted. For the industry match settings of the Rodz signal agents, which apply only when `companyIndustries` includes an industry: `allowUnknownIndustry` takes `true` to also match companies whose industry is not published (skipped when absent); `includeRelatedIndustries` takes `false` to match only the selected industries (broader or narrower related LinkedIn industries also match when absent). For `githubEventTypes` (required on `githubStargazer` agents), one or more of `star`, `fork`, `issue`, `pull_request`, `comment`. For the Warm Intros filters: `targetCrmListIds` takes the ids of company CRM lists of the workspace (from `GET /companies/lists`, up to 50 lists and 10,000 companies in total, any other id is rejected with `INVALID_FILTER_VALUE`) and the agent then delivers only people working at the companies of those lists, the other filters still applying; send it again on every update, as `filters` replaces the whole set; `minOverlapMonths` takes one integer between 3 and 120, as a string (6 when absent); `includeCurrentCompanies` takes `true` to also include the current colleagues of the introducers (only past colleagues when absent).",
             "items": {
               "oneOf": [
                 {
@@ -6666,7 +6790,8 @@
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
               "githubStargazer",
-              "linkedinProfileViews"
+              "linkedinProfileViews",
+              "companyRunningAds"
             ]
           },
           "entity": {
@@ -6764,6 +6889,10 @@
           "max": {
             "type": "number",
             "description": "Maximum value (numeric filters)"
+          },
+          "requiresQuery": {
+            "type": "boolean",
+            "description": "When true, `GET /watchlist/filter-values` needs a `query` for this filter: it runs a keyword search and has no full-list mode. Depends on the signal `type`, not only on the filter — e.g. `companyIndustries` is `requiresQuery: true` on `companyRunningAds` (Pubrio vertical names) and absent on the other company types."
           }
         }
       },
@@ -6802,7 +6931,8 @@
               "outagesAndSecurityBreaches",
               "lawsuitsAndLegalIssues",
               "githubStargazer",
-              "linkedinProfileViews"
+              "linkedinProfileViews",
+              "companyRunningAds"
             ]
           },
           "title": {
@@ -10137,6 +10267,10 @@
                     "type": "string",
                     "description": "IANA timezone for the campaign schedule (e.g. `America/New_York`). Defaults to `Europe/Paris` if omitted."
                   },
+                  "emoji": {
+                    "type": "string",
+                    "description": "Emoji shown next to the campaign name (e.g. `🚀`). A random emoji is assigned when omitted. An empty or whitespace-only string, `null`, or a value containing `<` or `>` returns a `400` error."
+                  },
                   "autoReview": {
                     "type": "boolean",
                     "description": "Automatically launch (review) leads as soon as they are added to the campaign, instead of requiring manual review. Defaults to `false`."
@@ -10162,6 +10296,7 @@
               "example": {
                 "name": "My new campaign",
                 "timezone": "America/New_York",
+                "emoji": "🚀",
                 "autoReview": true,
                 "autoReviewConditions": [
                   "deliverable",
@@ -10444,6 +10579,10 @@
                   "missingChannels": {
                     "summary": "Campaign channels not covered",
                     "value": "The provided senders do not cover the following campaign channels: linkedin, sms"
+                  },
+                  "invalidEmoji": {
+                    "summary": "Invalid emoji",
+                    "value": "emoji must be a non-empty string without \"<\" or \">\" characters"
                   }
                 }
               }
@@ -10470,6 +10609,10 @@
                   "name": {
                     "type": "string",
                     "description": "The campaign name"
+                  },
+                  "emoji": {
+                    "type": "string",
+                    "description": "Emoji shown next to the campaign name (e.g. `🚀`). It can be changed but not removed: an empty or whitespace-only string or `null` returns a `400` error, as does a value containing `<` or `>`."
                   },
                   "stopOnEmailReplied": {
                     "deprecated": true,
@@ -10707,6 +10850,7 @@
               },
               "example": {
                 "name": "New campaign name",
+                "emoji": "🎯",
                 "stopOnEmailReplied": true,
                 "stopOnMeetingBooked": true,
                 "stopOnLinkClicked": false,
@@ -12724,7 +12868,7 @@
               "text/csv": {
                 "schema": {
                   "type": "string",
-                  "example": "emailStatus,email,firstName,lastName,picture,phone,linkedinUrl,timezone,companyName,companyDomain,icebreaker,customField,lastState,status,_id\ndeliverable,john@example.com,John,Doe,,,https://www.linkedin.com/in/johndoe,Europe/Paris,Acme Inc,acme.com,Saw your post on outbound,value one,emailsReplied,done,lea_6xvnr7DQXKOZ78obX\nrisky,jane@example.com,Jane,Smith,,,https://www.linkedin.com/in/janesmith,America/New_York,Example Corp,example.com,Congrats on the new role,value two,emailsInterested,interested,lea_Z5FryxKh6L8IfW7Ln\ndeliverable,alex@example.com,Alex,Johnson,,,https://www.linkedin.com/in/alexjohnson,Europe/London,Acme Inc,acme.com,Loved your talk,value three,emailsSent,done,lea_0KRgNBYxpRqsT9UQk"
+                  "example": "emailStatus,email,firstName,lastName,picture,phone,linkedinUrl,timezone,companyName,companyDomain,icebreaker,customField,lastState,status,_id,hubspotId\ndeliverable,john@example.com,John,Doe,,,https://www.linkedin.com/in/johndoe,Europe/Paris,Acme Inc,acme.com,Saw your post on outbound,value one,emailsReplied,done,lea_6xvnr7DQXKOZ78obX,12345678901\nrisky,jane@example.com,Jane,Smith,,,https://www.linkedin.com/in/janesmith,America/New_York,Example Corp,example.com,Congrats on the new role,value two,emailsInterested,interested,lea_Z5FryxKh6L8IfW7Ln,\ndeliverable,alex@example.com,Alex,Johnson,,,https://www.linkedin.com/in/alexjohnson,Europe/London,Acme Inc,acme.com,Loved your talk,value three,emailsSent,done,lea_0KRgNBYxpRqsT9UQk,11111111111"
                 }
               },
               "application/json": {
@@ -12783,6 +12927,22 @@
                       },
                       "_id": {
                         "type": "string"
+                      },
+                      "salesforceId": {
+                        "type": "string",
+                        "description": "Salesforce id of the lead: its Lead id, or its Contact id when synced as a Contact. Only on leads synced with Salesforce."
+                      },
+                      "pipedriveId": {
+                        "type": "string",
+                        "description": "Pipedrive id of the lead. Only on leads synced with Pipedrive."
+                      },
+                      "hubspotId": {
+                        "type": "string",
+                        "description": "HubSpot id of the lead. Only on leads synced with HubSpot."
+                      },
+                      "attioId": {
+                        "type": "string",
+                        "description": "Attio id of the lead. Only on leads synced with Attio."
                       }
                     }
                   }
@@ -18507,6 +18667,11 @@
                   "contactOwner": {
                     "type": "string",
                     "description": "Contact owner (user ID or user login email)"
+                  },
+                  "crmId": {
+                    "type": "string",
+                    "description": "Closed beta: stored as a custom variable like any other key unless the CRM ID remap beta is enabled for your team. Id of the record of the connected CRM to link the lead's contact to: a HubSpot, Pipedrive or Zoho numeric id (send a Zoho id as a string: its 19 digits are too long for a JSON number), an Attio record id, or a Salesforce Contact (`003…`) or Lead (`00Q…`) id of 15 or 18 characters. Requires an admin API key. Never refuses the lead: a new contact is created already linked, a contact without a link is linked, a contact linked to another record keeps it, and an id that cannot be applied comes back in `warnings`. See the endpoint page.",
+                    "example": "123456789"
                   }
                 },
                 "additionalProperties": {
@@ -18573,15 +18738,35 @@
                       "type": "string",
                       "description": "Associated contact ID"
                     },
+                    "hubspotLeadId": {
+                      "type": "string",
+                      "description": "The HubSpot contact the lead's contact is linked to. Present only when it is linked."
+                    },
+                    "salesforceContactId": {
+                      "type": "string",
+                      "description": "The Salesforce Contact (`003…`) the lead's contact is linked to. Present only when it is linked."
+                    },
+                    "salesforceLeadId": {
+                      "type": "string",
+                      "description": "The Salesforce Lead (`00Q…`) the lead's contact is linked to. Present only when it is linked."
+                    },
+                    "pipedriveLeadId": {
+                      "type": "string",
+                      "description": "The Pipedrive person the lead's contact is linked to. Present only when it is linked."
+                    },
+                    "attioLeadId": {
+                      "type": "string",
+                      "description": "The Attio person record the lead's contact is linked to. Present only when it is linked."
+                    },
                     "warnings": {
                       "type": "array",
-                      "description": "Non-blocking notices, never a failure — the request went through. They tell you why the company part was skipped, when it was, and which values the update strategy kept. See `code`.",
+                      "description": "Non-blocking notices, never a failure — the request went through. They tell you why the company part was skipped, when it was, why the `crmId` was not applied, and which values the update strategy kept. See `code`.",
                       "items": {
                         "type": "object",
                         "properties": {
                           "code": {
                             "type": "string",
-                            "description": "**The company was NOT written**: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the write failed). The lead itself went through in every case.\n\n**The company domain was dropped**: `COMPANY_DOMAIN_IGNORED`, `companyDomain` is a personal email provider or a platform host shared by many companies (`gmail.com`, a `facebook.com` page, a bare `wordpress.com`). The lead and its company went through without it; `params.companyDomain` names it.\n\n**Values left unchanged**: `FIELDS_KEPT`, what the update strategy kept, named in `params.fields` (company fields prefixed with `company`)."
+                            "description": "**The company was NOT written**: `invalid-company-domain`, `invalid-company-linkedin-url`, `company-linkedin-url-not-company` (malformed identifier, or a personal profile URL), `company-duplicate-forbidden` (an identifier already belongs to another company), `company-update-failed` (the write failed). The lead itself went through in every case.\n\n**The company domain was dropped**: `COMPANY_DOMAIN_IGNORED`, `companyDomain` is a personal email provider or a platform host shared by many companies (`gmail.com`, a `facebook.com` page, a bare `wordpress.com`). The lead and its company went through without it; `params.companyDomain` names it.\n\n**The `crmId` was NOT applied** (closed beta): the lead went through, its contact not linked to that record. `CRM_ID_NOT_APPLIED`: the contact is linked to another record of your CRM and keeps it (`params.crmId`). `CRM_ID_ALREADY_LINKED`: another lemlist contact holds that record (`params.conflictingContactId`). `CRM_ID_UPDATE_NOT_ALLOWED`: the API key is not an admin's. `INVALID_CRM_ID`: not an id of your CRM. `NO_CRM_CONNECTED`. `CRM_ID_LEADS_NOT_SYNCED`: a Salesforce Lead id while your team does not sync Leads. `CRM_RECORD_NOT_FOUND`, `CRM_RECORD_MERGED` (`params.survivorId`), `CRM_RECORD_CONVERTED` (a converted Salesforce Lead, `params.convertedContactId`), `CRM_RECORD_UNREACHABLE` (the CRM did not answer).\n\n**Values left unchanged**: `FIELDS_KEPT`, what the update strategy kept, named in `params.fields` (company fields prefixed with `company`)."
                           },
                           "message": {
                             "type": "string"
@@ -18601,7 +18786,7 @@
                                 }
                               ]
                             },
-                            "description": "Details: the input echoed back, or `fields` for `FIELDS_KEPT`."
+                            "description": "Details: the input echoed back, `fields` for `FIELDS_KEPT`, or the ids a `crmId` warning names."
                           }
                         }
                       }
@@ -38068,6 +38253,224 @@
         }
       }
     },
+    "/users/{userId}/signature": {
+      "get": {
+        "summary": "Get User Signature",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the team member whose signatures to read (usr_xxx). Any member of your team is allowed, including yourself",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The HTML and plain-text signatures of the team member, an empty string when unset",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "description": "ID of the team member (usr_xxx)"
+                        },
+                        "signature": {
+                          "type": "string",
+                          "description": "HTML signature, inserted by {{signature}} in emails sent as HTML; empty when unset"
+                        },
+                        "plainTextSignature": {
+                          "type": "string",
+                          "description": "Plain-text signature, inserted by {{plainTextSignature}} in emails sent as plain text and in lemwarm; empty when unset"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "userId": "usr_Tq8Wm3Zk6RbP2NxYv",
+                    "signature": "<p>Best regards,<br>John Doe<br>Acme Inc</p>",
+                    "plainTextSignature": "Best regards,\nJohn Doe\nAcme Inc"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed userId (`WRONG_PARAM_USER_ID`)",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Wrong param user id",
+                  "code": "WRONG_PARAM_USER_ID"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The API key does not resolve a user"
+          },
+          "404": {
+            "description": "The user is not a member of the team",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This user is not a member of your team",
+                  "code": "SIGNATURE_USER_NOT_IN_TEAM"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method other than GET"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Internal error",
+                  "code": "INTERNAL_ERROR"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update User Signature",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the team member whose signatures to update (usr_xxx). Any member of your team is allowed, including yourself",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The signatures to change. Provide `signature` and/or `plainTextSignature`: an omitted one keeps its stored value, and at least one is required. Unknown fields are refused, and an invalid body fails the whole update, so nothing is written. The HTML signature is sanitized on save, so link images by URL instead of embedding them; an empty string clears it.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "properties": {
+                  "signature": {
+                    "type": "string",
+                    "maxLength": 100000,
+                    "description": "HTML signature, inserted by {{signature}} in emails sent as HTML. Sanitized on save; an empty string clears it"
+                  },
+                  "plainTextSignature": {
+                    "type": "string",
+                    "maxLength": 50000,
+                    "description": "Plain-text signature, inserted by {{plainTextSignature}} in emails sent as plain text and in lemwarm. Line breaks are kept and HTML is converted to text; an empty string clears it"
+                  }
+                }
+              },
+              "example": {
+                "signature": "<p>Best regards,<br>John Doe<br>Acme Inc</p>",
+                "plainTextSignature": "Best regards,\nJohn Doe\nAcme Inc"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Both signatures of the team member after the update, as stored: the HTML one comes back sanitized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "description": "ID of the team member (usr_xxx)"
+                        },
+                        "signature": {
+                          "type": "string",
+                          "description": "HTML signature as stored after sanitizing; empty when unset"
+                        },
+                        "plainTextSignature": {
+                          "type": "string",
+                          "description": "Plain-text signature as stored; empty when unset"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "userId": "usr_Tq8Wm3Zk6RbP2NxYv",
+                    "signature": "<p>Best regards,<br>John Doe<br>Acme Inc</p>",
+                    "plainTextSignature": "Best regards,\nJohn Doe\nAcme Inc"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body - unknown field, wrong type, `signature` over 100,000 characters, a `plainTextSignature` over 50,000 characters or one that passes 50,000 once its angle brackets are escaped (`SIGNATURE_INVALID_INPUT`, `SIGNATURE_PLAIN_TEXT_TOO_LONG_ESCAPED`), or neither field provided (`SIGNATURE_NOTHING_TO_UPDATE`); also a malformed userId (`WRONG_PARAM_USER_ID`)",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Send only signature (HTML, at most 100,000 characters) and/or plainTextSignature (at most 50,000 characters), as strings",
+                  "code": "SIGNATURE_INVALID_INPUT"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The API key does not resolve a user"
+          },
+          "404": {
+            "description": "The user is not a member of the team",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This user is not a member of your team",
+                  "code": "SIGNATURE_USER_NOT_IN_TEAM"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method other than GET or PATCH"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Internal error",
+                  "code": "INTERNAL_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/campaigns/{campaignId}/duplicate": {
       "parameters": [
         {
@@ -40164,7 +40567,8 @@
                       "outagesAndSecurityBreaches",
                       "lawsuitsAndLegalIssues",
                       "githubStargazer",
-                      "linkedinProfileViews"
+                      "linkedinProfileViews",
+                      "companyRunningAds"
                     ]
                   },
                   "filters": {
@@ -40296,7 +40700,7 @@
             }
           },
           "400": {
-            "description": "Validation error - invalid body, filters, or activate prerequisites. `WATCH_LIST_API_INVALID_CAMPAIGN_ID` when `campaignId` is malformed or sent without signalProcessingType = push_to_campaign. `WATCH_LIST_API_INVALID_FILTERS` when a filter is rejected: `details.invalidFilters` lists each one, and a refused external-signal mapping (`externalSignalFieldMapping`, `externalSignalCustomFieldMapping`) carries a `message` saying what to fix. A `linkedinProfileViewsUserIds` value that is not a team member with a connected LinkedIn account is rejected there too, as `INVALID_FILTER_VALUE`.",
+            "description": "Validation error - invalid body, filters, or activate prerequisites. `WATCH_LIST_API_INVALID_CAMPAIGN_ID` when `campaignId` is malformed or sent without signalProcessingType = push_to_campaign. `WATCH_LIST_API_INVALID_FILTERS` when a filter is rejected: `details.invalidFilters` lists each one, and a refused external-signal mapping (`externalSignalFieldMapping`, `externalSignalCustomFieldMapping`) carries a `message` saying what to fix. A `linkedinProfileViewsUserIds` value that is not a team member with a connected LinkedIn account is rejected there too, as `INVALID_FILTER_VALUE`. Autocomplete values are validated against the taxonomy of the signal type (`companyIndustries` on `companyRunningAds`: Pubrio vertical names): a value with no match is listed with reason `INVALID_FILTER_VALUE`.",
             "content": {
               "text/plain": {
                 "example": "activate requires both segmentType and signalProcessingType"
@@ -40372,6 +40776,17 @@
             "content": {
               "text/plain": {
                 "example": "Monitoring limit exceeded"
+              }
+            }
+          },
+          "503": {
+            "description": "The taxonomy backend used to validate autocomplete filter values (`companyIndustries`, locations…) is temporarily unavailable — `WATCH_LIST_API_TAXONOMY_UNAVAILABLE`. Retry shortly.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "The search taxonomy backend is temporarily unavailable — retry shortly",
+                  "code": "WATCH_LIST_API_TAXONOMY_UNAVAILABLE"
+                }
               }
             }
           },
@@ -40457,7 +40872,7 @@
             }
           },
           "400": {
-            "description": "Validation error - invalid body or filters. `WATCH_LIST_API_INVALID_FILTERS` lists each rejected filter in `details.invalidFilters`; on a `linkedinProfileViews` agent, a `linkedinProfileViewsUserIds` value added that is not a team member with a connected LinkedIn account is rejected there as `INVALID_FILTER_VALUE`.",
+            "description": "Validation error - invalid body or filters. `WATCH_LIST_API_INVALID_FILTERS` lists each rejected filter in `details.invalidFilters`; on a `linkedinProfileViews` agent, a `linkedinProfileViewsUserIds` value added that is not a team member with a connected LinkedIn account is rejected there as `INVALID_FILTER_VALUE`. Autocomplete values are validated against the taxonomy of the agent's signal type (`companyIndustries` on `companyRunningAds`: Pubrio vertical names).",
             "content": {
               "text/plain": {
                 "example": "name must be a non-empty string"
@@ -40501,6 +40916,17 @@
             "content": {
               "text/plain": {
                 "example": "Monitoring limit exceeded"
+              }
+            }
+          },
+          "503": {
+            "description": "The taxonomy backend used to validate autocomplete filter values (`companyIndustries`, locations…) is temporarily unavailable — `WATCH_LIST_API_TAXONOMY_UNAVAILABLE`. Retry shortly.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "The search taxonomy backend is temporarily unavailable — retry shortly",
+                  "code": "WATCH_LIST_API_TAXONOMY_UNAVAILABLE"
+                }
               }
             }
           },
@@ -40856,7 +41282,8 @@
                 "outagesAndSecurityBreaches",
                 "lawsuitsAndLegalIssues",
                 "githubStargazer",
-                "linkedinProfileViews"
+                "linkedinProfileViews",
+                "companyRunningAds"
               ]
             },
             "example": "companyIsHiring"
@@ -41012,16 +41439,30 @@
                 "crmListIds",
                 "minJobCount",
                 "timeframe",
-                "linkedinProfileViewsUserIds"
+                "linkedinProfileViewsUserIds",
+                "adPlatforms",
+                "adFormats",
+                "adTargetCountries",
+                "adSearchTerms"
               ]
             },
             "example": "companyIndustries"
           },
           {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Signal type the filter is resolved for. Some filters change vocabulary per type: `companyIndustries` with `type=companyRunningAds` returns Pubrio vertical names (keyword search, `query` required, at most 25 matches); without `type` the filter resolves against the default taxonomy.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "companyRunningAds"
+          },
+          {
             "name": "query",
             "in": "query",
             "required": false,
-            "description": "Search text (required for autocomplete filters). 1-100 characters.",
+            "description": "Search text, 1-100 characters. Required when [`GET /watchlist/filters`](/api-reference/endpoints/watch-list/get-filters) returns `requiresQuery: true` for the filter on that `type` — `companyIndustries` on `companyRunningAds` included: a missing or blank `query` is a `400 WATCH_LIST_API_INVALID_QUERY`. Static (select) filters ignore it.",
             "schema": {
               "type": "string",
               "minLength": 1,
@@ -41042,10 +41483,16 @@
             }
           },
           "400": {
-            "description": "Validation error - invalid filterId or query",
+            "description": "Validation error - invalid filterId, type or query. `WATCH_LIST_API_INVALID_QUERY` also when `query` is missing for a filter that requires one on the given `type`.",
             "content": {
               "text/plain": {
                 "example": "filterId is not a supported watch list autocomplete filter"
+              },
+              "application/json": {
+                "example": {
+                  "error": "query must be a non-empty string of at most 100 characters",
+                  "code": "WATCH_LIST_API_INVALID_QUERY"
+                }
               }
             }
           },
