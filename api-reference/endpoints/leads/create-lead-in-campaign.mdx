@@ -9,7 +9,7 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <SnippetObjectReference objectName="Lead" objectPath="lead" />
 
 <Note>
-  **This endpoint creates, it never updates.** A contact that already has a lead in this campaign is refused with `400 LEAD_ALREADY_IN_CAMPAIGN`, nothing written; use `PATCH /campaigns/{campaignId}/leads/{leadId}` instead. With `deduplicate=true`, a contact with a lead in another campaign is refused with `409 LEAD_ALREADY_IN_OTHER_CAMPAIGN`; only this parameter drives that check, not the campaign's "remove duplicates" setting. `POST /campaigns/{campaignId}/leads/{leadIdOrEmail}` behaves the same, with the email in the path.
+  **This endpoint creates, it never updates.** A contact that already has a lead in this campaign is refused with `400 LEAD_ALREADY_IN_CAMPAIGN` (**`409` from December 1, 2026**, same message), nothing written; use `PATCH /campaigns/{campaignId}/leads/{leadId}` instead. With `deduplicate=true`, a contact with a lead in another campaign is refused with `409 LEAD_ALREADY_IN_OTHER_CAMPAIGN`; only this parameter drives that check, not the campaign's "remove duplicates" setting. `POST /campaigns/{campaignId}/leads/{leadIdOrEmail}` behaves the same, with the email in the path.
 </Note>
 
 <Note>
