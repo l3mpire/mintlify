@@ -22132,7 +22132,7 @@
     "/database/people/linkedin-post-engagement": {
       "post": {
         "summary": "Search LinkedIn Post Engagers",
-        "description": "Finds the people who commented on or reacted to a LinkedIn post and returns them as People Database rows, in a single call.\n\nThe post is read first, then the engagers are searched in the People Database. Comments are collected before reactions, the post author is excluded and the slugs are deduplicated, for at most 1000 people. `filters` are applied to the engagers in the same search, for example to keep one country.\n\nThis endpoint is paid: each call debits 50 credits once the post has been read, even when the search finds nobody. A `200` always means credits were debited, and no error code debits credits.\n\nThe response carries a `search` id. To get the next pages or to refine the filters, send it as `fromSearchId` to `POST /database/people`. This debits no credits, but it counts in the 24-hour People Database search quota, like any search. Do not call this endpoint again on the same post for that, it would be billed again.",
+        "description": "Finds the people who commented on or reacted to a LinkedIn post and returns them as People Database rows, in a single call.\n\nThe post is read first, then the engagers are searched in the People Database. Comments are collected before reactions, the post author is excluded and the slugs are deduplicated, for at most 1000 people. `filters` are applied to the engagers in the same search, for example to keep one country.\n\nThis endpoint is paid: each call debits 50 credits once the post has been read, even when the search finds nobody. A `200` means credits were debited, unless it carries `peopleSearchFailed`: the People Database search failed after the post was read and the credits were refunded. No error code debits credits.\n\nThe response carries a `search` id. To get the next pages or to refine the filters, send it as `fromSearchId` to `POST /database/people`. This debits no credits, but it counts in the 24-hour People Database search quota, like any search. Do not call this endpoint again on the same post for that, it would be billed again.",
         "operationId": "searchLinkedInPostEngagers",
         "tags": [
           "People Database"
@@ -22201,7 +22201,7 @@
         },
         "responses": {
           "200": {
-            "description": "The post was read and 50 credits were debited",
+            "description": "The post was read and 50 credits were debited, unless `peopleSearchFailed` is present (refunded)",
             "content": {
               "application/json": {
                 "schema": {
@@ -22253,7 +22253,7 @@
                         },
                         "search": {
                           "type": "string",
-                          "description": "Id of the People Database search. Send it as `fromSearchId` to `POST /database/people` to get the next pages or refine the filters. This debits no credits, but it counts in the 24-hour People Database search quota, like any search. Absent when nobody engaged with the post."
+                          "description": "Id of the People Database search. Send it as `fromSearchId` to `POST /database/people` to get the next pages or refine the filters. This debits no credits, but it counts in the 24-hour People Database search quota, like any search. Absent when nobody engaged with the post or when the People Database search failed."
                         },
                         "people": {
                           "type": "object",
@@ -22285,7 +22285,7 @@
                           "enum": [
                             true
                           ],
-                          "description": "Present and `true` when the credits were debited and `slugs` exist, but the People Database search failed. Run `POST /database/people` yourself with `filters`."
+                          "description": "Present and `true` when the People Database search failed after the post was read: the 50 credits were refunded, `slugs` and `filters` are valid, `search` and `people` are absent. Run `POST /database/people` yourself with `filters` (no credits, but it counts in the 24-hour quota), or call this endpoint again, which is a new paid call."
                         }
                       }
                     }
