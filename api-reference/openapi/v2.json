@@ -18810,10 +18810,27 @@
             }
           },
           "400": {
-            "description": "Possible errors: No API key provided / Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile / Email address is in the graveyard / Lead already in the campaign / No valid fields to add / Invalid updateStrategy value",
+            "description": "Possible errors: No API key provided / Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile / Email address is in the graveyard / Lead already in the campaign (409 from December 1, 2026) / No valid fields to add / Invalid updateStrategy value",
             "content": {
               "text/plain": {
-                "example": "No API key provided"
+                "examples": {
+                  "lead-already-in-campaign": {
+                    "summary": "Lead already in the campaign (409 from December 1, 2026)",
+                    "value": "Lead already in the campaign"
+                  },
+                  "invalid-email": {
+                    "value": "Invalid email address"
+                  },
+                  "email-in-graveyard": {
+                    "value": "Email address is in the graveyard"
+                  },
+                  "body-not-object": {
+                    "value": "Body of your request must be an object"
+                  },
+                  "no-api-key": {
+                    "value": "No API key provided"
+                  }
+                }
               }
             }
           },
