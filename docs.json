@@ -382,16 +382,6 @@
                       "api-reference/endpoints/unsubscribes/resubscribe-contact",
                       "api-reference/endpoints/unsubscribes/export-unsubscribed-contacts"
                     ]
-                  },
-                  {
-                    "group": "Legacy",
-                    "pages": [
-                      "api-reference/endpoints/unsubscribes/add-unsubscribe-email-or-domain",
-                      "api-reference/endpoints/unsubscribes/get-unsubscribe-by-email",
-                      "api-reference/endpoints/unsubscribes/get-many-unsubscribes",
-                      "api-reference/endpoints/unsubscribes/delete-unsubscribe-email",
-                      "api-reference/endpoints/unsubscribes/export-unsubscribes"
-                    ]
                   }
                 ]
               },
@@ -554,7 +544,6 @@
               "api-reference/objects-definitions/campaign-settings",
               "api-reference/objects-definitions/lead",
               "api-reference/objects-definitions/activity",
-              "api-reference/objects-definitions/unsubscribe",
               "api-reference/objects-definitions/enrich",
               "api-reference/objects-definitions/task",
               "api-reference/objects-definitions/inbox-conversation",
@@ -704,6 +693,32 @@
       "tagId": "GTM-PRZ945S"
     }
   },
+  "redirects": [
+    {
+      "source": "/api-reference/endpoints/unsubscribes/add-unsubscribe-email-or-domain",
+      "destination": "/api-reference/endpoints/unsubscribes/unsubscribe-variable"
+    },
+    {
+      "source": "/api-reference/endpoints/unsubscribes/get-unsubscribe-by-email",
+      "destination": "/api-reference/endpoints/unsubscribes/get-unsubscribed-variable"
+    },
+    {
+      "source": "/api-reference/endpoints/unsubscribes/get-many-unsubscribes",
+      "destination": "/api-reference/endpoints/unsubscribes/list-unsubscribed-variables"
+    },
+    {
+      "source": "/api-reference/endpoints/unsubscribes/delete-unsubscribe-email",
+      "destination": "/api-reference/endpoints/unsubscribes/resubscribe-variable"
+    },
+    {
+      "source": "/api-reference/endpoints/unsubscribes/export-unsubscribes",
+      "destination": "/api-reference/endpoints/unsubscribes/export-unsubscribed-variables"
+    },
+    {
+      "source": "/api-reference/objects-definitions/unsubscribe",
+      "destination": "/api-reference/endpoints/unsubscribes/list-unsubscribed-variables"
+    }
+  ],
   "errors": {
     "404": {
       "redirect": false,
