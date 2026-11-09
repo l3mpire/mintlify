@@ -110,7 +110,9 @@
                 "pages": [
                   "api-reference/endpoints/team/get-team",
                   "api-reference/endpoints/team/get-team-senders",
-                  "api-reference/endpoints/team/get-team-credits"
+                  "api-reference/endpoints/team/get-team-credits",
+                  "api-reference/endpoints/team/get-team-exclusion-lists",
+                  "api-reference/endpoints/team/replace-team-exclusion-lists"
                 ]
               },
               {
