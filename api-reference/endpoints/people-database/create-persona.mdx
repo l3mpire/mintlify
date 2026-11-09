@@ -17,7 +17,3 @@ A filter of type `slider` (such as `currentCompanyFounded`) takes one or more `m
 <Note>
 The response contains only the created id. The stored `name` and `filters` are sanitized and plan-gated server-side, so echoing the request payload back would misreport what was persisted — call [List personas](/api-reference/endpoints/people-database/list-personas) to read the stored persona.
 </Note>
-
-<Warning>
-This endpoint is in closed beta. It answers `403` with the code `BETA_NOT_ENABLED` unless the personas beta is enabled for your team.
-</Warning>
