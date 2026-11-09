@@ -23344,7 +23344,7 @@
     "/database/personas": {
       "get": {
         "summary": "List Personas",
-        "description": "Lists the personas saved by your team. A persona is a named, reusable set of People Database filters; its id can then be referenced elsewhere in the API, for example through the `persona` filter of a Signal Agent.\n\nPersonas are team-shared: every member sees the same list. Results are sorted by creation date, most recent first, and capped at 200. The auto-generated persona lemlist derives from your AI business context is never returned; only the personas your team created are.\n\nThis endpoint is in closed beta and answers `403` unless the beta is enabled for your team.",
+        "description": "Lists the personas saved by your team. A persona is a named, reusable set of People Database filters; its id can then be referenced elsewhere in the API, for example through the `persona` filter of a Signal Agent.\n\nPersonas are team-shared: every member sees the same list. Results are sorted by creation date, most recent first, and capped at 200. The auto-generated persona lemlist derives from your AI business context is never returned; only the personas your team created are.",
         "operationId": "listPersonas",
         "tags": ["People Database"],
         "parameters": [
@@ -23416,20 +23416,6 @@
               }
             }
           },
-          "403": {
-            "description": "The personas beta is not enabled for your team",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PersonaError"
-                },
-                "example": {
-                  "error": "Beta is not enabled",
-                  "code": "BETA_NOT_ENABLED"
-                }
-              }
-            }
-          },
           "500": {
             "description": "Internal server error",
             "content": {
@@ -23448,7 +23434,7 @@
       },
       "post": {
         "summary": "Create Persona",
-        "description": "Creates a persona for your team from a name and a set of People Database filters.\n\nUse [Get Database Filters](/api-reference/endpoints/people-database/get-database-filters) to discover the valid `filterId` values. Filters carry no `type` property: it is derived from `filterId` server-side. Filters that require a plan your team does not have are dropped silently, so the persona is stored with the subset your plan allows.\n\nA `slider` filter (such as `currentCompanyFounded`) takes one or more `min|max` ranges in `in`, and its `out` must stay empty. An `out` value or a range in another format answers `400` with the code `PEOPLE_DATABASE_PERSONA_API_INVALID_SLIDER`.\n\nOnly the created id is returned. The stored `name` and `filters` are sanitized and plan-gated server-side, so echoing the request payload back would misreport what was persisted; call [List Personas](/api-reference/endpoints/people-database/list-personas) to read the stored persona.\n\nThis endpoint is in closed beta and answers `403` unless the beta is enabled for your team.",
+        "description": "Creates a persona for your team from a name and a set of People Database filters.\n\nUse [Get Database Filters](/api-reference/endpoints/people-database/get-database-filters) to discover the valid `filterId` values. Filters carry no `type` property: it is derived from `filterId` server-side. Filters that require a plan your team does not have are dropped silently, so the persona is stored with the subset your plan allows.\n\nA `slider` filter (such as `currentCompanyFounded`) takes one or more `min|max` ranges in `in`, and its `out` must stay empty. An `out` value or a range in another format answers `400` with the code `PEOPLE_DATABASE_PERSONA_API_INVALID_SLIDER`.\n\nOnly the created id is returned. The stored `name` and `filters` are sanitized and plan-gated server-side, so echoing the request payload back would misreport what was persisted; call [List Personas](/api-reference/endpoints/people-database/list-personas) to read the stored persona.",
         "operationId": "createPersona",
         "tags": ["People Database"],
         "requestBody": {
@@ -23565,20 +23551,6 @@
               }
             }
           },
-          "403": {
-            "description": "The personas beta is not enabled for your team",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PersonaError"
-                },
-                "example": {
-                  "error": "Beta is not enabled",
-                  "code": "BETA_NOT_ENABLED"
-                }
-              }
-            }
-          },
           "409": {
             "description": "A persona with this name already exists for your team",
             "content": {
@@ -23613,7 +23585,7 @@
     "/database/personas/{personaId}": {
       "delete": {
         "summary": "Delete Persona",
-        "description": "Permanently deletes one of your team's personas. There is no undo.\n\nAn unknown id, a persona belonging to another team, and the persona lemlist auto-generates from your AI business context all answer the same `404`: they are indistinguishable by design.\n\nThis endpoint is in closed beta and answers `403` unless the beta is enabled for your team.",
+        "description": "Permanently deletes one of your team's personas. There is no undo.\n\nAn unknown id, a persona belonging to another team, and the persona lemlist auto-generates from your AI business context all answer the same `404`: they are indistinguishable by design.",
         "operationId": "deletePersona",
         "tags": ["People Database"],
         "parameters": [
@@ -23665,20 +23637,6 @@
             "content": {
               "text/plain": {
                 "example": "The authentication you supplied is incorrect"
-              }
-            }
-          },
-          "403": {
-            "description": "The personas beta is not enabled for your team",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PersonaError"
-                },
-                "example": {
-                  "error": "Beta is not enabled",
-                  "code": "BETA_NOT_ENABLED"
-                }
               }
             }
           },
