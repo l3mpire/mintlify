@@ -195,6 +195,42 @@ does not change it.
 `402 upper-plan-required`.
 </Note>
 
+## End sequence steps
+
+An `endSequence` step ends the lead in the campaign when the lead reaches it, as stopping the lead
+from lemlist does. The lead's pending steps are dropped, on every branch and parallel track, and the
+lead gets a `stopped` activity. The step runs as soon as the lead reaches it: its `delay` is `0`,
+and any other value answers `400 Invalid request body`.
+
+`endLeadStatus` sets the status the lead shows once ended:
+
+| Value | Effect |
+| --- | --- |
+| `completed` | Ends the lead. The default when omitted |
+| `interested` | Ends the lead and marks it interested, as marking it from lemlist does: same activity, webhooks and CRM sync, and the campaign's settings for a marked lead apply |
+| `notInterested` | Ends the lead and marks it not interested, the same way |
+
+```json
+{
+    "type": "endSequence",
+    "endLeadStatus": "notInterested"
+}
+```
+
+Where the step can go:
+
+- **Never first.** Not as the first step of the campaign, nor of sequence B in an A/B test:
+  `400 end-sequence-first-step`. The first step of a condition branch is fine.
+- **Last of its sequence, while no lead has entered the campaign.** Nothing can follow it in the
+  main sequence, condition branch or parallel track that holds it: `400 end-sequence-not-last`.
+- **Anywhere but first, once leads have entered.** See [Running campaigns](#running-campaigns).
+
+A paused lead that reaches the step waits on it: resuming the lead ends it.
+
+<Note>
+The End sequence step is in beta. A team without access gets `403 end-sequence-not-allowed`.
+</Note>
+
 ## Step Types and Required Fields
 
 The table below summarizes the required and optional fields for each step type. Note that all step requests must include a common `type` field.
@@ -220,6 +256,7 @@ The table below summarizes the required and optional fields for each step type. 
 | `whatsappMessage` | `message` | `index`, `delay`, `manual`, `title`, `priority` |
 | `sms` | `message` | `index`, `delay`, `manual`, `title`, `priority` |
 | `enrichment` | `workflowIds` | `index`, `delay` |
+| `endSequence` | - | `endLeadStatus`, `index`, `delay` (`0` only) |
 
 <Note>
 In conditional steps, if the `delayType` is not `"within"`, the `delay` field is not required.
@@ -242,9 +279,9 @@ does not render HTML. The step takes no `altMessage`, `images` or `videos`.
 
 | Field | Description |
 | --- | --- |
-| `type` (String, Required) | The type of step to create. Allowed values: `email`, `manual`, `phone`, `api`, `linkedinVisit`, `linkedinInvite`, `linkedinSend`, `linkedinInMail`, `linkedinVoiceNote`, `linkedinFollow`, `linkedinLikeLastPost`, `linkedinCommentLastPost`, `linkedinEndorse`, `linkedinWithdrawInvitation`, `sendToAnotherCampaign`, `conditional`, `whatsappMessage`, `sms`, `enrichment` |
+| `type` (String, Required) | The type of step to create. Allowed values: `email`, `manual`, `phone`, `api`, `linkedinVisit`, `linkedinInvite`, `linkedinSend`, `linkedinInMail`, `linkedinVoiceNote`, `linkedinFollow`, `linkedinLikeLastPost`, `linkedinCommentLastPost`, `linkedinEndorse`, `linkedinWithdrawInvitation`, `sendToAnotherCampaign`, `conditional`, `whatsappMessage`, `sms`, `enrichment`, `endSequence` |
 | `index` (Integer, Optional) | The position within the sequence to insert the new step. Must be an integer ≥ -1. If omitted or if the index is greater than the number of steps, the new step is added to the end |
-| `delay` (Integer, Optional) | The delay (in days) before executing the step. Must be between 0 and 1500. Defaults to 0 for the first step and to 1 for subsequent steps (except for certain conditional configurations) |
+| `delay` (Integer, Optional) | The delay (in days) before executing the step. Must be between 0 and 1500. Defaults to 0 for the first step and to 1 for subsequent steps (except for certain conditional configurations). Must be `0` on `endSequence` steps |
 | `subject` (String, Conditional) | For `email` and `linkedinInMail` steps. Required on `linkedinInMail`, where it is the InMail subject: a blank one is saved but blocks the campaign launch. On `email`, the email subject. Omit it or send an empty string on a follow-up so the email replies in the thread of the previous one. If no email has been sent to the lead in this campaign yet, it goes out with an empty subject. Maximum 400 characters (applied to the raw template, including any Liquid syntax) |
 | `message` (String, Conditional) | Content of the email or message. Used for `email`, `linkedinInvite`, `linkedinSend`, `linkedinInMail`, `whatsappMessage`, and `sms` step types, the AI script of a `linkedinVoiceNote` step in `ai` record mode, or the note of `manual` and `phone` step types. Required for `linkedinSend`, `linkedinInMail`, `whatsappMessage`, and `sms` |
 | `altMessage` (String, Conditional) | For `linkedinInvite`, `linkedinSend` and `linkedinVoiceNote` steps only. The premium invitation note on an invite, the out-of-network note on the other two. See [LinkedIn invitation notes](#linkedin-invitation-notes) below |
@@ -261,6 +298,7 @@ does not render HTML. The step takes no `altMessage`, `images` or `videos`.
 | `customValue` (String, Conditional) | For `customLeadInfo` conditions only. The value the field is compared to. Required for `equal` and `contains`, and refused for `empty` and `notEmpty` |
 | `campaignId` (String, Conditional) | For steps of type `sendToAnotherCampaign` only. The target campaign ID to which a lead should be sent. The specified campaign must exist in the team and not be archived |
 | `leadAction` (String, Optional) | For steps of type `sendToAnotherCampaign` only. What happens to the lead in the **source** campaign once it has been moved. Allowed values: `continue` (keeps running the remaining steps), `pause`, `stop` (ends the source campaign for that lead). Omitted leaves the step without a value, which behaves as `continue`. See [What happens to the transferred lead](#what-happens-to-the-transferred-lead) below |
+| `endLeadStatus` (String, Optional) | For steps of type `endSequence` only. The status the lead shows once the step ends it. Allowed values: `completed` (default), `interested`, `notInterested`. See [End sequence steps](#end-sequence-steps) above |
 | `images` (Array of strings, Optional) | For `linkedinInvite` and `linkedinSend` steps only. Public HTTPS URLs of images to attach to the LinkedIn message. lemlist downloads each file and re-hosts it. See the [LinkedIn media constraints](#linkedin-media-constraints) below |
 | `videos` (Array of strings, Optional) | For `linkedinInvite` and `linkedinSend` steps only. Public HTTPS URLs of videos to attach to the LinkedIn message. lemlist downloads each file and re-hosts it. See the [LinkedIn media constraints](#linkedin-media-constraints) below |
 | `skillName` (String, Optional) | For `linkedinEndorse` steps only. Name of the LinkedIn skill to endorse on the lead's profile |
@@ -340,9 +378,12 @@ A campaign that leads have entered still accepts new steps. Where the step lands
 receives it:
 
 - **Appended after the last step** of a sequence leads finish on: the leads parked on that last
-  step move on to the new one.
+  step move on to the new one. An `endSequence` step is the exception: those leads already
+  finished, so it does not move them.
 - **Inserted before an existing step** (with `index`): the leads waiting on that step are moved
-  onto the new one and run it first. Leads already past that position never receive it.
+  onto the new one and run it first. Leads already past that position never receive it. For an
+  `endSequence` step, this means the leads waiting on that step are ended once the move applies,
+  and the steps after the End sequence step are no longer reached.
 
 The move is applied to the campaign's leads right after the response. While it runs, another
 structural change on the same campaign answers `409 campaign-reroute-in-progress`; nothing is

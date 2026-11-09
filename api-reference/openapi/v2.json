@@ -3062,7 +3062,8 @@
               "delay",
               "task",
               "api",
-              "enrichment"
+              "enrichment",
+              "endSequence"
             ]
           },
           "order": {
@@ -3121,6 +3122,11 @@
             "type": "string",
             "description": "Applies to `sendToAnotherCampaign` steps only. What happens to the lead in the source campaign once it has been moved. Absent when the step carries no value, which behaves as `continue`.",
             "enum": ["continue", "pause", "stop"]
+          },
+          "endLeadStatus": {
+            "type": "string",
+            "description": "Applies to `endSequence` steps only. The status the lead shows once the step ends it: `completed` ends it, `interested` and `notInterested` end it and mark its interest. Absent on a step stored without a value, which behaves as `completed`.",
+            "enum": ["completed", "interested", "notInterested"]
           },
           "title": {
             "type": "string",
@@ -13968,7 +13974,7 @@
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / `Invalid request body` - a field the step type does not take, such as `manual` on a `linkedinVisit` step, or an invalid value, such as an unknown `workflowIds` entry / `workflowIds is required` - a required field is missing / `invalid-parameters` - a `title` over 100 characters / other errors from createStep",
+            "description": "Possible errors: Bad team / `Invalid request body` - a field the step type does not take, such as `manual` on a `linkedinVisit` step, or an invalid value, such as an unknown `workflowIds` entry or a `delay` other than 0 on an `endSequence` step / `workflowIds is required` - a required field is missing / `invalid-parameters` - a `title` over 100 characters / `end-sequence-first-step` - an `endSequence` step as the first step of the campaign / `end-sequence-not-last` - an `endSequence` step with a step after it, on a campaign no lead has entered yet / other errors from createStep",
             "content": {
               "application/json": {
                 "example": {
@@ -14009,6 +14015,17 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "`end-sequence-not-allowed` - the `endSequence` step is in beta and the team does not have access to it.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "The End sequence step is not available yet",
+                  "code": "end-sequence-not-allowed"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -14039,7 +14056,8 @@
                       "conditional",
                       "whatsappMessage",
                       "sms",
-                      "enrichment"
+                      "enrichment",
+                      "endSequence"
                     ]
                   },
                   "index": {
@@ -14048,7 +14066,7 @@
                   },
                   "delay": {
                     "type": "integer",
-                    "description": "Delay in days before executing this step. Defaults to 0 for the first step and 1 for subsequent steps"
+                    "description": "Delay in days before executing this step. Defaults to 0 for the first step and 1 for subsequent steps. An `endSequence` step runs as soon as the lead reaches it: it takes `0` only, and defaults to it"
                   },
                   "subject": {
                     "type": "string",
@@ -14157,6 +14175,11 @@
                     "type": "string",
                     "description": "Applies to `sendToAnotherCampaign` steps only. What happens to the lead in the SOURCE campaign once it has been moved to the target one. `continue` keeps it running the remaining steps, `pause` pauses it, `stop` ends the source campaign for it. Omitted leaves the step without a value, which behaves as `continue`; a step added from the lemlist UI defaults to `stop`. A transfer that fails always pauses the lead, whatever this says.",
                     "enum": ["continue", "pause", "stop"]
+                  },
+                  "endLeadStatus": {
+                    "type": "string",
+                    "description": "Applies to `endSequence` steps only. The status the lead shows once the step ends it. `completed` ends the lead; `interested` and `notInterested` end it and mark its interest, as marking it from lemlist does. Omitted stores `completed`.",
+                    "enum": ["completed", "interested", "notInterested"]
                   },
                   "images": {
                     "type": "array",
@@ -14332,6 +14355,12 @@
                     ],
                     "delay": 0
                   }
+                },
+                "End Sequence Step": {
+                  "value": {
+                    "type": "endSequence",
+                    "endLeadStatus": "notInterested"
+                  }
                 }
               }
             }
@@ -14446,7 +14475,7 @@
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / `Invalid request body` - a field the step type does not take, such as `manual` on a `linkedinVisit` step / `invalid-parameters` - a `title` over 100 characters / other errors from updateStep",
+            "description": "Possible errors: Bad team / `Invalid request body` - a field the step type does not take, such as `manual` on a `linkedinVisit` step, or an invalid value, such as a `delay` other than 0 or an unknown `endLeadStatus` on an `endSequence` step / `invalid-parameters` - a `title` over 100 characters / other errors from updateStep",
             "content": {
               "application/json": {
                 "example": {
@@ -14520,12 +14549,13 @@
                       "conditional",
                       "whatsappMessage",
                       "sms",
-                      "enrichment"
+                      "enrichment",
+                      "endSequence"
                     ]
                   },
                   "delay": {
                     "type": "integer",
-                    "description": "Delay in days before executing this step"
+                    "description": "Delay in days before executing this step. An `endSequence` step takes `0` only, and keeps it: it runs as soon as the lead reaches it"
                   },
                   "subject": {
                     "type": "string",
@@ -14634,6 +14664,11 @@
                     "type": "string",
                     "description": "Applies to `sendToAnotherCampaign` steps only. What happens to the lead in the SOURCE campaign once it has been moved to the target one. `continue` keeps it running the remaining steps, `pause` pauses it, `stop` ends the source campaign for it. Omitted leaves the step without a value, which behaves as `continue`; a step added from the lemlist UI defaults to `stop`. A transfer that fails always pauses the lead, whatever this says.",
                     "enum": ["continue", "pause", "stop"]
+                  },
+                  "endLeadStatus": {
+                    "type": "string",
+                    "description": "Applies to `endSequence` steps only. The status the lead shows once the step ends it: `completed`, `interested` or `notInterested`. Read when a lead reaches the step: the change applies to every lead that reaches it afterwards, including a paused lead waiting on it.",
+                    "enum": ["completed", "interested", "notInterested"]
                   },
                   "images": {
                     "type": "array",
@@ -14820,7 +14855,7 @@
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / You cannot delete this step because the campaign is running",
+            "description": "Possible errors: Bad team / You cannot delete this step because the campaign is running / `end-sequence-first-step` - deleting the first step of the campaign would make an `endSequence` step its first step",
             "content": {
               "text/plain": {
                 "example": "Bad team"

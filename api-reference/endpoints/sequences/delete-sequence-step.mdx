@@ -16,3 +16,6 @@ until one is left, then delete the step here.
 </Warning>
 
 Deleting a condition step deletes the sequences behind its branches with it.
+
+An End sequence step can never be the first step of a campaign. Deleting the first step of the
+campaign when the second one is an `endSequence` step answers `400 end-sequence-first-step`.
