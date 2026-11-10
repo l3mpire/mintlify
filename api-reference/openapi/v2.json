@@ -34193,6 +34193,10 @@
                             "type": "integer",
                             "description": "Number of LinkedIn invitations sent"
                           },
+                          "invitationAccepted": {
+                            "type": "integer",
+                            "description": "Number of LinkedIn invitations accepted, counted on the step and variant that sent them"
+                          },
                           "sent": {
                             "type": "integer",
                             "description": "Number of messages sent"
@@ -34307,6 +34311,7 @@
                       "sequenceStep": 0,
                       "taskType": "linkedinSend",
                       "invited": 0,
+                      "invitationAccepted": 0,
                       "sent": 32,
                       "delivered": 32,
                       "opened": 15,
@@ -34321,6 +34326,7 @@
                       "sequenceId": "seq_rH5RD3fMkkt2gM3YC",
                       "sequenceStep": 1,
                       "invited": 0,
+                      "invitationAccepted": 0,
                       "sent": 20,
                       "delivered": 20,
                       "opened": 17,
@@ -34335,6 +34341,7 @@
                       "sequenceId": "seq_rH5RD3fMkkt2gM3YC",
                       "sequenceStep": 2,
                       "invited": 0,
+                      "invitationAccepted": 0,
                       "sent": 20,
                       "delivered": 20,
                       "opened": 15,
@@ -34620,6 +34627,10 @@
                                   "type": "integer",
                                   "description": "Number of LinkedIn invitations sent"
                                 },
+                                "invitationAccepted": {
+                                  "type": "integer",
+                                  "description": "Number of LinkedIn invitations accepted, counted on the step and variant that sent them"
+                                },
                                 "sent": {
                                   "type": "integer",
                                   "description": "Number of messages sent"
@@ -34757,6 +34768,7 @@
                           "sequenceStep": 0,
                           "taskType": "linkedinSend",
                           "invited": 0,
+                          "invitationAccepted": 0,
                           "sent": 32,
                           "delivered": 32,
                           "opened": 15,
