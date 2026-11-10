@@ -38389,7 +38389,7 @@
             "name": "userId",
             "in": "path",
             "required": true,
-            "description": "ID of the team member whose signatures to update (usr_xxx). Any member of your team is allowed, including yourself",
+            "description": "ID of the team member whose signatures to update (usr_xxx): yourself, or any other member of your team when the user the API key acts as is a team admin",
             "schema": {
               "type": "string"
             }
@@ -38473,6 +38473,17 @@
           },
           "401": {
             "description": "The API key does not resolve a user"
+          },
+          "403": {
+            "description": "The user is another member of your team and the user the API key acts as is not a team admin (`SIGNATURE_NOT_ALLOWED`)",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Only admins can edit a teammate's signature",
+                  "code": "SIGNATURE_NOT_ALLOWED"
+                }
+              }
+            }
           },
           "404": {
             "description": "The user is not a member of the team",

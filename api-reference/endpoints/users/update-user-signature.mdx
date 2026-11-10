@@ -4,7 +4,7 @@ description: Updates the HTML and plain-text email signatures of a team member.
 ---
 
 <Note>
-Any member of your team can be edited, including yourself: the only rule is that the user belongs to the team the API key belongs to. Send at least one of `signature` and `plainTextSignature`, and note that unknown fields are refused.
+You can always edit your own signatures. Editing another member of your team takes a team admin: the API key acts as the user who created it, so a key created by a non-admin answers `403` (`SIGNATURE_NOT_ALLOWED`) for anyone but that user. Send at least one of `signature` and `plainTextSignature`, and note that unknown fields are refused.
 </Note>
 
 ## How each signature is used
