@@ -5657,7 +5657,8 @@
               "lawsuitsAndLegalIssues",
               "githubStargazer",
               "linkedinProfileViews",
-              "companyRunningAds"
+              "companyRunningAds",
+              "marketExpansion"
             ]
           },
           "status": {
@@ -6232,6 +6233,47 @@
                 "type": "integer",
                 "description": "[companyRunningAds] Number of ads delivered for the company in this signal"
               },
+              "expansionTargetMarket": {
+                "type": "string",
+                "description": "[marketExpansion] Market the company is entering, ISO alpha-2 country code (e.g. `DE`)"
+              },
+              "expansionOriginMarket": {
+                "type": "string",
+                "description": "[marketExpansion] Company's home market, ISO alpha-2 country code. Absent when unknown"
+              },
+              "expansionStage": {
+                "type": "string",
+                "description": "[marketExpansion] Expansion stage on the target market",
+                "enum": [
+                  "exploring",
+                  "committing",
+                  "expanding",
+                  "scaling"
+                ]
+              },
+              "expansionScore": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100,
+                "description": "[marketExpansion] Expansion score, 0-100"
+              },
+              "expansionDirection": {
+                "type": "string",
+                "description": "[marketExpansion] Trajectory on the target market: `new`, `advancing`, `steady` or `retreating`. Absent when the provider reports no known value"
+              },
+              "expansionFreshness": {
+                "type": "string",
+                "description": "[marketExpansion] Recency of the evidence: `fresh`, `cooling`, `stale` or `cold`. Absent when the provider reports no known value"
+              },
+              "expansionSignalCount": {
+                "type": "integer",
+                "description": "[marketExpansion] Number of expansion signals behind the stage"
+              },
+              "expansionLastTransitionAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "[marketExpansion] Date of the last stage change"
+              },
               "externalSignalCustomFields": {
                 "type": "object",
                 "description": "[externalSignalContact/externalSignalCompany] Custom fields map",
@@ -6331,7 +6373,8 @@
               "lawsuitsAndLegalIssues",
               "githubStargazer",
               "linkedinProfileViews",
-              "companyRunningAds"
+              "companyRunningAds",
+              "marketExpansion"
             ]
           },
           "status": {
@@ -6506,6 +6549,10 @@
               "adFormats",
               "adTargetCountries",
               "adSearchTerms",
+              "targetMarkets",
+              "originMarkets",
+              "expansionStages",
+              "expansionSignalStrengths",
               "allowUnknownIndustry",
               "includeRelatedIndustries",
               "minOverlapMonths",
@@ -6823,7 +6870,8 @@
               "lawsuitsAndLegalIssues",
               "githubStargazer",
               "linkedinProfileViews",
-              "companyRunningAds"
+              "companyRunningAds",
+              "marketExpansion"
             ]
           },
           "entity": {
@@ -6924,7 +6972,7 @@
           },
           "requiresQuery": {
             "type": "boolean",
-            "description": "When true, `GET /watchlist/filter-values` needs a `query` for this filter: it runs a keyword search and has no full-list mode. Depends on the signal `type`, not only on the filter — e.g. `companyIndustries` is `requiresQuery: true` on `companyRunningAds` (Pubrio vertical names) and absent on the other company types."
+            "description": "When true, `GET /watchlist/filter-values` needs a `query` for this filter: it runs a keyword search and has no full-list mode. Depends on the signal `type`, not only on the filter — e.g. `companyIndustries` is `requiresQuery: true` on `companyRunningAds` and `marketExpansion` (Pubrio vertical names) and absent on the other company types."
           }
         }
       },
@@ -6964,7 +7012,8 @@
               "lawsuitsAndLegalIssues",
               "githubStargazer",
               "linkedinProfileViews",
-              "companyRunningAds"
+              "companyRunningAds",
+              "marketExpansion"
             ]
           },
           "title": {
@@ -40610,7 +40659,8 @@
                       "lawsuitsAndLegalIssues",
                       "githubStargazer",
                       "linkedinProfileViews",
-                      "companyRunningAds"
+                      "companyRunningAds",
+                      "marketExpansion"
                     ]
                   },
                   "filters": {
@@ -40742,7 +40792,7 @@
             }
           },
           "400": {
-            "description": "Validation error - invalid body, filters, or activate prerequisites. `WATCH_LIST_API_INVALID_CAMPAIGN_ID` when `campaignId` is malformed or sent without signalProcessingType = push_to_campaign. `WATCH_LIST_API_INVALID_FILTERS` when a filter is rejected: `details.invalidFilters` lists each one, and a refused external-signal mapping (`externalSignalFieldMapping`, `externalSignalCustomFieldMapping`) carries a `message` saying what to fix. A `linkedinProfileViewsUserIds` value that is not a team member with a connected LinkedIn account is rejected there too, as `INVALID_FILTER_VALUE`. Autocomplete values are validated against the taxonomy of the signal type (`companyIndustries` on `companyRunningAds`: Pubrio vertical names): a value with no match is listed with reason `INVALID_FILTER_VALUE`.",
+            "description": "Validation error - invalid body, filters, or activate prerequisites. `WATCH_LIST_API_INVALID_CAMPAIGN_ID` when `campaignId` is malformed or sent without signalProcessingType = push_to_campaign. `WATCH_LIST_API_INVALID_FILTERS` when a filter is rejected: `details.invalidFilters` lists each one, and a refused external-signal mapping (`externalSignalFieldMapping`, `externalSignalCustomFieldMapping`) carries a `message` saying what to fix. A `linkedinProfileViewsUserIds` value that is not a team member with a connected LinkedIn account is rejected there too, as `INVALID_FILTER_VALUE`. Autocomplete values are validated against the taxonomy of the signal type (`companyIndustries` on `companyRunningAds` and `marketExpansion`: Pubrio vertical names): a value with no match is listed with reason `INVALID_FILTER_VALUE`. On a `marketExpansion` agent, a missing `targetMarkets` is listed with reason `MISSING_REQUIRED_PROPERTY`, and `WATCH_LIST_PUBRIO_UNRESOLVABLE_LOCATION` is returned when the agent is activated while none of its `targetMarkets` (or none of its `originMarkets`) resolves to a country.",
             "content": {
               "text/plain": {
                 "example": "activate requires both segmentType and signalProcessingType"
@@ -40914,7 +40964,7 @@
             }
           },
           "400": {
-            "description": "Validation error - invalid body or filters. `WATCH_LIST_API_INVALID_FILTERS` lists each rejected filter in `details.invalidFilters`; on a `linkedinProfileViews` agent, a `linkedinProfileViewsUserIds` value added that is not a team member with a connected LinkedIn account is rejected there as `INVALID_FILTER_VALUE`. Autocomplete values are validated against the taxonomy of the agent's signal type (`companyIndustries` on `companyRunningAds`: Pubrio vertical names).",
+            "description": "Validation error - invalid body or filters. `WATCH_LIST_API_INVALID_FILTERS` lists each rejected filter in `details.invalidFilters`; on a `linkedinProfileViews` agent, a `linkedinProfileViewsUserIds` value added that is not a team member with a connected LinkedIn account is rejected there as `INVALID_FILTER_VALUE`. Autocomplete values are validated against the taxonomy of the agent's signal type (`companyIndustries` on `companyRunningAds` and `marketExpansion`: Pubrio vertical names). On a `marketExpansion` agent, a missing `targetMarkets` is listed with reason `MISSING_REQUIRED_PROPERTY`, and `WATCH_LIST_PUBRIO_UNRESOLVABLE_LOCATION` is returned when the agent is active (or activated) while none of its `targetMarkets` (or none of its `originMarkets`) resolves to a country.",
             "content": {
               "text/plain": {
                 "example": "name must be a non-empty string"
@@ -41325,7 +41375,8 @@
                 "lawsuitsAndLegalIssues",
                 "githubStargazer",
                 "linkedinProfileViews",
-                "companyRunningAds"
+                "companyRunningAds",
+                "marketExpansion"
               ]
             },
             "example": "companyIsHiring"
@@ -41485,7 +41536,11 @@
                 "adPlatforms",
                 "adFormats",
                 "adTargetCountries",
-                "adSearchTerms"
+                "adSearchTerms",
+                "targetMarkets",
+                "originMarkets",
+                "expansionStages",
+                "expansionSignalStrengths"
               ]
             },
             "example": "companyIndustries"
@@ -41494,7 +41549,7 @@
             "name": "type",
             "in": "query",
             "required": false,
-            "description": "Signal type the filter is resolved for. Some filters change vocabulary per type: `companyIndustries` with `type=companyRunningAds` returns Pubrio vertical names (keyword search, `query` required, at most 25 matches); without `type` the filter resolves against the default taxonomy.",
+            "description": "Signal type the filter is resolved for. Some filters change vocabulary per type: `companyIndustries` with `type=companyRunningAds` or `type=marketExpansion` returns Pubrio vertical names (keyword search, `query` required, at most 25 matches); without `type` the filter resolves against the default taxonomy.",
             "schema": {
               "type": "string"
             },
@@ -41504,7 +41559,7 @@
             "name": "query",
             "in": "query",
             "required": false,
-            "description": "Search text, 1-100 characters. Required when [`GET /watchlist/filters`](/api-reference/endpoints/watch-list/get-filters) returns `requiresQuery: true` for the filter on that `type` — `companyIndustries` on `companyRunningAds` included: a missing or blank `query` is a `400 WATCH_LIST_API_INVALID_QUERY`. Static (select) filters ignore it.",
+            "description": "Search text, 1-100 characters. Required when [`GET /watchlist/filters`](/api-reference/endpoints/watch-list/get-filters) returns `requiresQuery: true` for the filter on that `type` — `companyIndustries` on `companyRunningAds` and `marketExpansion` included: a missing or blank `query` is a `400 WATCH_LIST_API_INVALID_QUERY`. Static (select) filters ignore it.",
             "schema": {
               "type": "string",
               "minLength": 1,
