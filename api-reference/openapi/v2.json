@@ -5658,7 +5658,8 @@
               "githubStargazer",
               "linkedinProfileViews",
               "companyRunningAds",
-              "marketExpansion"
+              "marketExpansion",
+              "personBuyingIntent"
             ]
           },
           "status": {
@@ -6089,6 +6090,31 @@
                 "type": "string",
                 "description": "[linkedinProfileViews] Last name of the team member whose profile was viewed"
               },
+              "personBuyingIntentTopic": {
+                "type": "string",
+                "description": "[personBuyingIntent] Topic the person showed interest in"
+              },
+              "personBuyingIntentActivitySummary": {
+                "type": "string",
+                "description": "[personBuyingIntent] Summary of the activity that revealed the interest"
+              },
+              "personBuyingIntentActivityType": {
+                "type": "string",
+                "description": "[personBuyingIntent] Kind of intent the activity shows, such as `software_demand` or `evaluation`, when assessed"
+              },
+              "personBuyingIntentActivityDate": {
+                "type": "string",
+                "format": "date-time",
+                "description": "[personBuyingIntent] Date of the activity, the signal's `receivedAt`"
+              },
+              "personBuyingIntentBuyingStage": {
+                "type": "string",
+                "description": "[personBuyingIntent] Buying stage of the person, such as `awareness` or `consideration`, when assessed"
+              },
+              "personBuyingIntentSeniority": {
+                "type": "string",
+                "description": "[personBuyingIntent] Seniority of the person"
+              },
               "acquisitionType": {
                 "type": "string",
                 "description": "[mergersAcquisitions] Acquisition type"
@@ -6374,7 +6400,8 @@
               "githubStargazer",
               "linkedinProfileViews",
               "companyRunningAds",
-              "marketExpansion"
+              "marketExpansion",
+              "personBuyingIntent"
             ]
           },
           "status": {
@@ -6556,12 +6583,14 @@
               "allowUnknownIndustry",
               "includeRelatedIndustries",
               "minOverlapMonths",
-              "includeCurrentCompanies"
+              "includeCurrentCompanies",
+              "personIntentTopics",
+              "lookbackDays"
             ]
           },
           "in": {
             "type": "array",
-            "description": "Values to include. For `externalSignalFieldMapping` and `externalSignalCustomFieldMapping`, an array of mapping objects (see `WatchListExternalSignalMapping`); the JSON-serialized form returned when reading an agent is also accepted. For the industry match settings of the Rodz signal agents, which apply only when `companyIndustries` includes an industry: `allowUnknownIndustry` takes `true` to also match companies whose industry is not published (skipped when absent); `includeRelatedIndustries` takes `false` to match only the selected industries (broader or narrower related LinkedIn industries also match when absent). For `githubEventTypes` (required on `githubStargazer` agents), one or more of `star`, `fork`, `issue`, `pull_request`, `comment`. For the Warm Intros filters: `targetCrmListIds` takes the ids of company CRM lists of the workspace (from `GET /companies/lists`, up to 50 lists and 10,000 companies in total, any other id is rejected with `INVALID_FILTER_VALUE`) and the agent then delivers only people working at the companies of those lists, the other filters still applying; send it again on every update, as `filters` replaces the whole set; `minOverlapMonths` takes one integer between 3 and 120, as a string (6 when absent); `includeCurrentCompanies` takes `true` to also include the current colleagues of the introducers (only past colleagues when absent).",
+            "description": "Values to include. For `externalSignalFieldMapping` and `externalSignalCustomFieldMapping`, an array of mapping objects (see `WatchListExternalSignalMapping`); the JSON-serialized form returned when reading an agent is also accepted. For the industry match settings of the Rodz signal agents, which apply only when `companyIndustries` includes an industry: `allowUnknownIndustry` takes `true` to also match companies whose industry is not published (skipped when absent); `includeRelatedIndustries` takes `false` to match only the selected industries (broader or narrower related LinkedIn industries also match when absent). For `githubEventTypes` (required on `githubStargazer` agents), one or more of `star`, `fork`, `issue`, `pull_request`, `comment`. For the Warm Intros filters: `targetCrmListIds` takes the ids of company CRM lists of the workspace (from `GET /companies/lists`, up to 50 lists and 10,000 companies in total, any other id is rejected with `INVALID_FILTER_VALUE`) and the agent then delivers only people working at the companies of those lists, the other filters still applying; send it again on every update, as `filters` replaces the whole set; `minOverlapMonths` takes one integer between 3 and 120, as a string (6 when absent); `includeCurrentCompanies` takes `true` to also include the current colleagues of the introducers (only past colleagues when absent). For `personBuyingIntent` agents: `personIntentTopics` (required, up to 25) takes topic names returned by `GET /watchlist/filter-values?filterId=personIntentTopics`, any other name is rejected with `INVALID_FILTER_VALUE`; `companySizes` takes the six ranges `GET /watchlist/filter-values` returns with `type=personBuyingIntent`; `companyLocation` and `location` take country names; every filter of this type is an inclusion, and `personIntentTopics`, `title`, `companyLocation`, `location`, `companyIndustries` and `companySizes` take up to 25 values each; `maxIdentificationsPerDay` (required, 20 when absent) takes one integer; `lookbackDays` takes one integer between 1 and 30, as a string (30 when absent), the days of past activity delivered once, at the first activation, and a change made afterwards does not reach the running monitoring; send it again on every update, as `filters` replaces the whole set.",
             "items": {
               "oneOf": [
                 {
@@ -6871,7 +6900,8 @@
               "githubStargazer",
               "linkedinProfileViews",
               "companyRunningAds",
-              "marketExpansion"
+              "marketExpansion",
+              "personBuyingIntent"
             ]
           },
           "entity": {
@@ -6970,6 +7000,29 @@
             "type": "number",
             "description": "Maximum value (numeric filters)"
           },
+          "values": {
+            "type": "array",
+            "description": "Allowed values of a select filter, its full list",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": {
+            "type": "string",
+            "description": "How to fill the filter, when its values cannot be guessed from its name"
+          },
+          "maxValues": {
+            "type": "number",
+            "description": "Most values a side (`in` or `out`) takes, when the signal type bounds it; more are rejected with `INVALID_FILTER_VALUE`"
+          },
+          "maxValueLength": {
+            "type": "number",
+            "description": "Longest value accepted, in characters, when the signal type bounds it; a longer one is rejected with `INVALID_FILTER_VALUE`"
+          },
+          "integer": {
+            "type": "boolean",
+            "description": "When true, the signal type takes whole numbers only for this numeric filter; a decimal is rejected with `INVALID_FILTER_VALUE`"
+          },
           "requiresQuery": {
             "type": "boolean",
             "description": "When true, `GET /watchlist/filter-values` needs a `query` for this filter: it runs a keyword search and has no full-list mode. Depends on the signal `type`, not only on the filter — e.g. `companyIndustries` is `requiresQuery: true` on `companyRunningAds` and `marketExpansion` (Pubrio vertical names) and absent on the other company types."
@@ -7013,7 +7066,8 @@
               "githubStargazer",
               "linkedinProfileViews",
               "companyRunningAds",
-              "marketExpansion"
+              "marketExpansion",
+              "personBuyingIntent"
             ]
           },
           "title": {
@@ -40672,7 +40726,8 @@
                       "githubStargazer",
                       "linkedinProfileViews",
                       "companyRunningAds",
-                      "marketExpansion"
+                      "marketExpansion",
+                      "personBuyingIntent"
                     ]
                   },
                   "filters": {
@@ -41388,7 +41443,8 @@
                 "githubStargazer",
                 "linkedinProfileViews",
                 "companyRunningAds",
-                "marketExpansion"
+                "marketExpansion",
+                "personBuyingIntent"
               ]
             },
             "example": "companyIsHiring"
@@ -41491,7 +41547,7 @@
             "name": "filterId",
             "in": "query",
             "required": true,
-            "description": "Filter to resolve values for. `linkedinProfileViewsUserIds` takes no `query` and resolves to the ids of the team members whose LinkedIn account is connected to lemlist, the only ids a `linkedinProfileViews` Signal Agent accepts.",
+            "description": "Filter to resolve values for. `linkedinProfileViewsUserIds` takes no `query` and resolves to the ids of the team members whose LinkedIn account is connected to lemlist, the only ids a `linkedinProfileViews` Signal Agent accepts. `personIntentTopics` requires a `query` and returns up to 50 names of the B2B topic taxonomy, those starting with the query first: the only names a `personBuyingIntent` Signal Agent accepts, stored as returned.",
             "schema": {
               "type": "string",
               "enum": [
@@ -41542,7 +41598,9 @@
                 "targetMarkets",
                 "originMarkets",
                 "expansionStages",
-                "expansionSignalStrengths"
+                "expansionSignalStrengths",
+                "personIntentTopics",
+                "lookbackDays"
               ]
             },
             "example": "companyIndustries"
@@ -41551,7 +41609,7 @@
             "name": "type",
             "in": "query",
             "required": false,
-            "description": "Signal type the filter is resolved for. Some filters change vocabulary per type: `companyIndustries` with `type=companyRunningAds` or `type=marketExpansion` returns Pubrio vertical names (keyword search, `query` required, at most 25 matches); without `type` the filter resolves against the default taxonomy.",
+            "description": "Signal type the filter is resolved for. Some filters change vocabulary per type: `companyIndustries` with `type=companyRunningAds` or `type=marketExpansion` returns Pubrio vertical names (keyword search, `query` required, at most 25 matches); `companySizes` with `type=personBuyingIntent` returns the six employee ranges that type accepts (`1-10`, `11-50`, `51-200`, `201-1000`, `1001-5000`, `5001+`); without `type` the filter resolves against the default taxonomy.",
             "schema": {
               "type": "string"
             },
@@ -41561,10 +41619,10 @@
             "name": "query",
             "in": "query",
             "required": false,
-            "description": "Search text, 1-100 characters. Required when [`GET /watchlist/filters`](/api-reference/endpoints/watch-list/get-filters) returns `requiresQuery: true` for the filter on that `type` — `companyIndustries` on `companyRunningAds` and `marketExpansion` included: a missing or blank `query` is a `400 WATCH_LIST_API_INVALID_QUERY`. Static (select) filters ignore it.",
+            "description": "Search text, 3-100 characters. Required when [`GET /watchlist/filters`](/api-reference/endpoints/watch-list/get-filters) returns `requiresQuery: true` for the filter on that `type` — `companyIndustries` on `companyRunningAds` and `marketExpansion` included: a missing or blank `query` is a `400 WATCH_LIST_API_INVALID_QUERY`. Static (select) filters ignore it.",
             "schema": {
               "type": "string",
-              "minLength": 1,
+              "minLength": 3,
               "maxLength": 100
             },
             "example": "software"
@@ -41589,7 +41647,7 @@
               },
               "application/json": {
                 "example": {
-                  "error": "query must be a non-empty string of at most 100 characters",
+                  "error": "query must be a non-blank string of 3 to 100 characters",
                   "code": "WATCH_LIST_API_INVALID_QUERY"
                 }
               }

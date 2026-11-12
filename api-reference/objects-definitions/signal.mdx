@@ -10,3 +10,7 @@ For `companyRunningAds` signals, the `ad*` fields of `signalData` describe the c
 <Note>
 For `marketExpansion` signals, the `expansion*` fields of `signalData` describe the company's expansion into one target market. Company fields come from the resolved CRM company, contacts from the agent's persona sourcing.
 </Note>
+
+<Note>
+For `personBuyingIntent` signals, `contact` is the person who showed the interest and `company` their company. The `personBuyingIntent*` fields of `signalData` describe the activity behind the signal: the topic, a summary, the kind of intent and the buying stage when they were assessed, the person's seniority, and the date of the activity, which is also the signal's `receivedAt`.
+</Note>
