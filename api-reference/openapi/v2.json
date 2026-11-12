@@ -41435,7 +41435,7 @@
     "/watchlist/linkedin-profile-views/members": {
       "get": {
         "summary": "List LinkedIn profile views members",
-        "description": "Lists the members of your team whose LinkedIn profile views a `linkedinProfileViews` Signal Agent can track: the members whose LinkedIn account is connected to lemlist. Their `_id` are the only values the `linkedinProfileViewsUserIds` filter accepts; a member missing here must connect their LinkedIn account in lemlist first.\n\nThis endpoint is in closed beta and answers `403` unless the `linkedinProfileViews` beta is enabled for your team.",
+        "description": "Lists the members of your team whose LinkedIn profile views a `linkedinProfileViews` Signal Agent can track: the members whose LinkedIn account is connected to lemlist. Their `_id` are the only values the `linkedinProfileViewsUserIds` filter accepts; a member missing here must connect their LinkedIn account in lemlist first.",
         "operationId": "listLinkedinProfileViewsMembers",
         "tags": [
           "Signal Agents"
@@ -41466,16 +41466,6 @@
             "content": {
               "text/plain": {
                 "example": "Unauthorized"
-              }
-            }
-          },
-          "403": {
-            "description": "The linkedinProfileViews beta is not enabled for your team",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "Beta is not enabled"
-                }
               }
             }
           },
