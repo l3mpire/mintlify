@@ -10118,6 +10118,16 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "folderId",
+            "in": "query",
+            "required": false,
+            "description": "Filter campaigns by campaign folder. A cfo_ folder ID lists that folder; root lists campaigns that sit in no folder. Applies to version=v2; a call without version ignores the parameter.",
+            "example": "cfo_QG9E94KvTmC7KWqzs",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
