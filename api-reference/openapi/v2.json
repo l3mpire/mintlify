@@ -43564,6 +43564,9 @@
           },
           "422": {
             "description": "The team has no AI Context set up, so there is nothing to judge fit against. In the lemlist app, open Settings > AI Context Center. Per-account problems — no website or LinkedIn URL, no credits, daily limit reached — are not this: they come back inside `errors`."
+          },
+          "503": {
+            "description": "The daily run limits could not be checked (a temporary internal outage), so no account was started and nothing was charged. Retry in a few minutes."
           }
         }
       },
