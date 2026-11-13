@@ -38867,7 +38867,7 @@
                               },
                               "crmField": {
                                 "type": "string",
-                                "description": "Corresponding CRM field name (crm_synced fields only)"
+                                "description": "Name of the CRM field this field is mapped to, on any field the CRM field mapping includes"
                               },
                               "options": {
                                 "type": "array",
@@ -38960,7 +38960,7 @@
                               },
                               "crmField": {
                                 "type": "string",
-                                "description": "Corresponding CRM field name (crm_synced fields only)"
+                                "description": "Name of the CRM field this field is mapped to, on any field the CRM field mapping includes"
                               },
                               "options": {
                                 "type": "array",
@@ -39638,7 +39638,7 @@
                       "properties": {
                         "code": {
                           "type": "string",
-                          "description": "Error code: `INVALID_ENTITY_PARAM`, `INVALID_TYPE_PARAM`, `INVALID_LABEL`, `INVALID_NAME`, `OPTIONS_NOT_ALLOWED`, `INVALID_OPTIONS`, `OPTION_NOT_FOUND`, `OPTION_ALREADY_EXISTS`, `FIELD_NAME_RESERVED`, `CONTACT_FIELD_COMPANY_PREFIXED`, `TYPE_CHANGE_NOT_ALLOWED`, `INVALID_CRM_PICKLIST`; with `crmPicklist`, `CRM_SYNC_PICKLIST_OBJECT_TYPE_INVALID`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_NOT_FOUND`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_NOT_SINGLE_SELECT`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_NOT_MAPPABLE`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_READ_ONLY`."
+                          "description": "Error code: `INVALID_ENTITY_PARAM`, `INVALID_TYPE_PARAM`, `INVALID_LABEL`, `INVALID_NAME`, `OPTIONS_KEY_NOT_WRITABLE`, `OPTIONS_NOT_ALLOWED`, `INVALID_OPTIONS`, `OPTION_NOT_FOUND`, `OPTION_ALREADY_EXISTS`, `FIELD_NAME_RESERVED`, `CONTACT_FIELD_COMPANY_PREFIXED`, `TYPE_CHANGE_NOT_ALLOWED`, `INVALID_CRM_PICKLIST`; with `crmPicklist`, `CRM_SYNC_PICKLIST_OBJECT_TYPE_INVALID`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_NOT_FOUND`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_NOT_SINGLE_SELECT`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_NOT_MAPPABLE`, `CRM_SYNC_PICKLIST_CRM_PROPERTY_READ_ONLY`."
                         },
                         "message": {
                           "type": "string"
@@ -39695,6 +39695,16 @@
                       "error": {
                         "code": "OPTIONS_NOT_ALLOWED",
                         "message": "Option operations (upsertOptions, renameOptions, removeOptions) apply to a select field only"
+                      }
+                    }
+                  },
+                  "options-key-not-writable": {
+                    "summary": "`options` sent: the key the listing returns, not an operation",
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "OPTIONS_KEY_NOT_WRITABLE",
+                        "message": "options is read-only: write a select field's options with upsertOptions (add), renameOptions or removeOptions"
                       }
                     }
                   },
