@@ -1000,6 +1000,10 @@
               "type": "string"
             }
           },
+          "folderId": {
+            "type": "string",
+            "description": "Campaign folder ID (`cfo_xxx`). Absent when the campaign sits in no folder."
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time",
