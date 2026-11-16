@@ -38717,6 +38717,10 @@
                         "type": "string"
                       }
                     },
+                    "folderId": {
+                      "type": "string",
+                      "description": "Campaign folder ID (`cfo_xxx`), or `root` when the campaign sits in no folder."
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time"
@@ -38747,6 +38751,7 @@
                   "name": "My duplicated campaign",
                   "sequenceId": "seq_A1B2C3D4E5F6G7H8I9",
                   "labels": [],
+                  "folderId": "cfo_QG9E94KvTmC7KWqzs",
                   "createdAt": "2024-01-15T10:30:00.000Z",
                   "createdBy": "usr_A1B2C3D4E5F6G7H8I9",
                   "status": "draft",
