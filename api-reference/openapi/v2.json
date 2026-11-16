@@ -1002,7 +1002,7 @@
           },
           "folderId": {
             "type": "string",
-            "description": "Campaign folder ID (`cfo_xxx`). Absent when the campaign sits in no folder."
+            "description": "Campaign folder ID (`cfo_xxx`), or `root` when the campaign sits in no folder."
           },
           "createdAt": {
             "type": "string",
@@ -10127,7 +10127,7 @@
             "name": "folderId",
             "in": "query",
             "required": false,
-            "description": "Filter campaigns by campaign folder. A cfo_ folder ID lists that folder; root lists campaigns that sit in no folder. Applies to version=v2; a call without version ignores the parameter.",
+            "description": "Filter campaigns by campaign folder. Pass a `cfo_` folder ID to list that folder, or `root` to list the campaigns that sit in no folder. Applies to version=v2; a call without version ignores the parameter.",
             "example": "cfo_QG9E94KvTmC7KWqzs",
             "schema": {
               "type": "string"
@@ -10173,6 +10173,7 @@
                     "_id": "cam_k3gu2sa4KIfhRK34M",
                     "name": "Sales Outreach 2025",
                     "labels": [],
+                    "folderId": "root",
                     "createdAt": "2025-02-05T09:00:07.541Z",
                     "createdBy": "usr_UEvrOEP0CTAYEoFR4",
                     "status": "running",
@@ -10188,6 +10189,7 @@
                     "labels": [
                       "CRM"
                     ],
+                    "folderId": "root",
                     "createdAt": "2023-01-27T14:58:52.482Z",
                     "createdBy": "usr_i52PiQtbq8SucjVTM",
                     "status": "running",
@@ -10201,6 +10203,7 @@
                     "_id": "cam_yZXeC6q3SXs3ha1FI",
                     "name": "Customer Onboarding",
                     "labels": [],
+                    "folderId": "root",
                     "createdAt": "2022-06-14T13:32:57.880Z",
                     "createdBy": "usr_i52PiQtbq8SucjVTM",
                     "status": "running"
