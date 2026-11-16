@@ -10160,6 +10160,7 @@
                     "emoji": "🚀",
                     "timezone": "Europe/Paris",
                     "labels": [],
+                    "folderId": "cfo_QG9E94KvTmC7KWqzs",
                     "createdAt": "2025-02-20T14:45:54.230Z",
                     "createdBy": "usr_zdTCrNFyXblc4mrYK",
                     "status": "running",
@@ -10497,6 +10498,7 @@
                   "name": "Product Launch Campaign",
                   "createdAt": "2025-10-27T07:01:04.058Z",
                   "status": "draft",
+                  "folderId": "cfo_7fdQ2Xb1LmNpR4sT",
                   "creator": {
                     "userId": "usr_ahfFktBBHUIxbVG5P",
                     "userEmail": "support@lemlist.com"
