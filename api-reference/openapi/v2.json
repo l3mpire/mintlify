@@ -19315,13 +19315,17 @@
             }
           },
           "400": {
-            "description": "Possible errors: No API key provided / Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile / Email address is in the graveyard / Lead already in the campaign (409 from December 1, 2026) / No valid fields to add / Invalid updateStrategy value",
+            "description": "Possible errors: No API key provided / Bad team / Body of your request must be an object / Invalid email address / Invalid LinkedIn URL / LinkedIn URL is not a personal profile / Email address is in the graveyard / Lead already in the campaign (409 from December 1, 2026) / No valid fields to add / Invalid updateStrategy value / The lead's contact doesn't belong to the ABM campaign's company (ABM campaign, contact of another company or of none) / You can't add more than 199 leads to an ABM campaign (JSON body `{\"error\": ...}`)",
             "content": {
               "text/plain": {
                 "examples": {
                   "lead-already-in-campaign": {
                     "summary": "Lead already in the campaign (409 from December 1, 2026)",
                     "value": "Lead already in the campaign"
+                  },
+                  "lead-not-in-abm-company": {
+                    "summary": "ABM campaign: the contact belongs to another company, or to none",
+                    "value": "The lead's contact doesn't belong to the ABM campaign's company"
                   },
                   "invalid-email": {
                     "value": "Invalid email address"
