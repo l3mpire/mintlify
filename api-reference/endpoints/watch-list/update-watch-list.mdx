@@ -9,5 +9,7 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <Note>
 The signal `type` is immutable — it cannot be changed after creation. When you send `filters`, they replace the existing ones and are validated against the agent's signal type.
 
+On a signal type that accepts `crmListIds.in`, send it back as you read it: the monitored CRM lists change through [Monitor CRM Lists with a Signal Agent](/api-reference/endpoints/watch-list/associate-crm-lists) only, and any other value is rejected with a 400 `INVALID_FILTER_VALUE`. On an agent monitoring all companies, `crmListIds.out` takes the company lists of your team to exclude. A side the signal type does not accept (`properties` in [List allowed filters](/api-reference/endpoints/watch-list/get-filters)) is ignored.
+
 Use `activate` to change the run status: `activate: false` pauses the agent immediately, `activate: true` activates a draft or reactivates a paused one (which re-runs billing and external watcher setup). A draft cannot be paused. Omit `activate` to leave the status unchanged.
 </Note>
