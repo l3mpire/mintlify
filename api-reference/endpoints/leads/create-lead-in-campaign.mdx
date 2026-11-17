@@ -41,7 +41,7 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 Send `crmId` with the id of a record in your connected CRM to link the lead's contact to that record. lemlist links it without searching the CRM, then runs a first sync that follows your field mapping (the CRM wins conflicts by default). The response's `hubspotLeadId`, `salesforceContactId`, `salesforceLeadId`, `pipedriveLeadId` or `attioLeadId` shows the record the contact is linked to.
 
 <Warning>
-`crmId` is in closed beta. Unless the CRM ID remap beta is enabled for your team, it is stored as a custom variable like any other key. It also requires an **admin** API key.
+`crmId` is reserved for this link: it is never stored as a custom variable. It requires an **admin** API key. Among the lead endpoints, only this one reads it as a link: [Update Lead](/api-reference/endpoints/leads/update-lead), [Add Lead Variables](/api-reference/endpoints/leads/add-lead-variables) and [Update Lead Variables](/api-reference/endpoints/leads/update-lead-variables) store `crmId` as a variable like any other key.
 </Warning>
 
 The id takes the formats of [Upsert Contact](/api-reference/endpoints/contacts/upsert-contact#linking-to-a-crm-record): a HubSpot, Pipedrive or Zoho numeric id (send a Zoho id as a string), an Attio record id, or a Salesforce Contact (`003…`) or Lead (`00Q…`) id.
