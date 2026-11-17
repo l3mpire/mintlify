@@ -1,0 +1,8 @@
+---
+openapi: get /user/sending-settings
+description: Retrieves the daily email limit of your email accounts, or of every team member's with `scope=team`.
+---
+
+<Note>
+This endpoint uses the API key to identify the user. Without `scope`, only the authenticated user's email accounts are returned.
+</Note>
