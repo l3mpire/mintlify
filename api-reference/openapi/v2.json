@@ -1000,6 +1000,10 @@
               "type": "string"
             }
           },
+          "folderId": {
+            "type": "string",
+            "description": "Campaign folder ID (`cfo_xxx`), or `root` when the campaign sits in no folder."
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time",
@@ -10118,6 +10122,16 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "folderId",
+            "in": "query",
+            "required": false,
+            "description": "Filter campaigns by campaign folder. Pass a `cfo_` folder ID to list that folder, or `root` to list the campaigns that sit in no folder. Applies to version=v2; a call without version ignores the parameter.",
+            "example": "cfo_QG9E94KvTmC7KWqzs",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -10146,6 +10160,7 @@
                     "emoji": "🚀",
                     "timezone": "Europe/Paris",
                     "labels": [],
+                    "folderId": "cfo_QG9E94KvTmC7KWqzs",
                     "createdAt": "2025-02-20T14:45:54.230Z",
                     "createdBy": "usr_zdTCrNFyXblc4mrYK",
                     "status": "running",
@@ -10158,6 +10173,7 @@
                     "_id": "cam_k3gu2sa4KIfhRK34M",
                     "name": "Sales Outreach 2025",
                     "labels": [],
+                    "folderId": "root",
                     "createdAt": "2025-02-05T09:00:07.541Z",
                     "createdBy": "usr_UEvrOEP0CTAYEoFR4",
                     "status": "running",
@@ -10173,6 +10189,7 @@
                     "labels": [
                       "CRM"
                     ],
+                    "folderId": "root",
                     "createdAt": "2023-01-27T14:58:52.482Z",
                     "createdBy": "usr_i52PiQtbq8SucjVTM",
                     "status": "running",
@@ -10186,6 +10203,7 @@
                     "_id": "cam_yZXeC6q3SXs3ha1FI",
                     "name": "Customer Onboarding",
                     "labels": [],
+                    "folderId": "root",
                     "createdAt": "2022-06-14T13:32:57.880Z",
                     "createdBy": "usr_i52PiQtbq8SucjVTM",
                     "status": "running"
@@ -10483,6 +10501,7 @@
                   "name": "Product Launch Campaign",
                   "createdAt": "2025-10-27T07:01:04.058Z",
                   "status": "draft",
+                  "folderId": "cfo_7fdQ2Xb1LmNpR4sT",
                   "creator": {
                     "userId": "usr_ahfFktBBHUIxbVG5P",
                     "userEmail": "support@lemlist.com"
@@ -38698,6 +38717,10 @@
                         "type": "string"
                       }
                     },
+                    "folderId": {
+                      "type": "string",
+                      "description": "Campaign folder ID (`cfo_xxx`), or `root` when the campaign sits in no folder."
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time"
@@ -38728,6 +38751,7 @@
                   "name": "My duplicated campaign",
                   "sequenceId": "seq_A1B2C3D4E5F6G7H8I9",
                   "labels": [],
+                  "folderId": "cfo_QG9E94KvTmC7KWqzs",
                   "createdAt": "2024-01-15T10:30:00.000Z",
                   "createdBy": "usr_A1B2C3D4E5F6G7H8I9",
                   "status": "draft",
