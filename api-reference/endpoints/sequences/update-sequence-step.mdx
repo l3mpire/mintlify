@@ -77,6 +77,19 @@ The workflows of an `enrichment` step cannot be edited here. A valid `workflowId
 ignored: the call answers `200` and the step keeps its workflows. To change them before leads enter the
 campaign, delete the step and add a new one.
 
+## End sequence steps
+
+`endLeadStatus` is the only setting of an `endSequence` step. It is read when a lead reaches the
+step: a change applies to every lead that reaches it afterwards, including a paused lead waiting on
+it. The step's `delay` stays `0`: any other value answers `400 Invalid request body`.
+
+```json
+{
+    "type": "endSequence",
+    "endLeadStatus": "interested"
+}
+```
+
 ## Supported Step Types
 
 | Type | Editable Fields | Description |
@@ -100,6 +113,7 @@ campaign, delete the step and add a new one.
 | `whatsappMessage` | `message`, `delay`, `manual`, `title`, `priority` | Sends a WhatsApp message |
 | `sms` | `message`, `delay`, `manual`, `title`, `priority` | Sends an SMS to the lead |
 | `enrichment` | `delay` | Enriches the lead. See [Enrichment steps](#enrichment-steps) above |
+| `endSequence` | `endLeadStatus` | Ends the lead in the campaign. See [End sequence steps](#end-sequence-steps) above |
 
 ## Request Body
 
@@ -116,7 +130,7 @@ Only include the fields you want to update. Required fields are not enforced her
 | `priority` | integer | `manual`, `phone`, a channel step with `manual: true` | Priority of the task the step creates: `0` low, `1` medium, `2` high |
 | `method` | string | `api` | One of `GET`, `POST`, `PUT`, `DELETE`, `PATCH` |
 | `url` | string | `api` | Valid HTTP/HTTPS URL |
-| `delay` | integer | all except `sendToAnotherCampaign` | Delay before this step, in days. Must be between 0 and 1500 |
+| `delay` | integer | all except `sendToAnotherCampaign` and `endSequence` | Delay before this step, in days. Must be between 0 and 1500 |
 | `delayType` | string | `conditional` | One of `within`, `waitUntil` |
 | `conditionKey` | string | `conditional` | See supported condition keys below |
 | `customField` | string | `conditional` keyed `customLeadInfo` | The field to test. A bare name reads as a lead variable (`jobTitle` becomes `variables.jobTitle`); prefix with `fields.` for a contact field; a company field is written `company.<field>` (`companyName` is stored as `company.name`) |
@@ -124,6 +138,7 @@ Only include the fields you want to update. Required fields are not enforced her
 | `customValue` | string | `conditional` keyed `customLeadInfo` | The value the field is compared to. Required for `equal` and `contains`, refused for `empty` and `notEmpty` |
 | `campaignId` | string | `sendToAnotherCampaign` | ID of destination campaign |
 | `leadAction` | string | `sendToAnotherCampaign` | What happens to the lead in the source campaign once it has been moved. One of `continue`, `pause`, `stop`. See [What happens to the transferred lead](/api-reference/endpoints/sequences/add-step-to-sequence#what-happens-to-the-transferred-lead) on Add Step |
+| `endLeadStatus` | string | `endSequence` | The status the lead shows once the step ends it. One of `completed`, `interested`, `notInterested`. See [End sequence steps](/api-reference/endpoints/sequences/add-step-to-sequence#end-sequence-steps) on Add Step |
 | `images` | array of strings | `linkedinInvite`, `linkedinSend` | Public HTTPS URLs of images to attach. Replaces the step's current images — pass `[]` to clear them. See the [LinkedIn media constraints](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-media-constraints) on Add Step |
 | `videos` | array of strings | `linkedinInvite`, `linkedinSend` | Public HTTPS URLs of videos to attach. Replaces the step's current videos — pass `[]` to clear them. See the [LinkedIn media constraints](/api-reference/endpoints/sequences/add-step-to-sequence#linkedin-media-constraints) on Add Step |
 | `skillName` | string | `linkedinEndorse` | Name of the LinkedIn skill to endorse on the lead's profile |
