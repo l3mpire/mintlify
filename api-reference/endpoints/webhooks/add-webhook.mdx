@@ -205,7 +205,7 @@ The payload of both is the same shape [Get Contact Sourcing Run](/api-reference/
 
 | Event | Description |
 | ----- | ----------- |
-| `signalRegistered` | New signal detected by a Signal Agent |
+| `signalRegistered` | New signal detected by a Signal Agent. A re-triggered Hiring Campaign, External Signal or Custom Signals signal is sent again with the same `_id`, its updated data and a new `receivedAt` |
 
 ### Deliverability hub
 
