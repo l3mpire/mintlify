@@ -38199,6 +38199,251 @@
         }
       }
     },
+    "/user/sending-settings": {
+      "get": {
+        "summary": "Get Sending Settings",
+        "description": "Returns the daily email limit of email accounts, plus the BCC address of the authenticated user.\n\nWithout `scope`, only the email accounts of the authenticated user are returned. With `scope=team`, every email account of the current team members is returned, each with its owner `userId`.",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "description": "Set to `team` to list the email accounts of every current team member instead of the authenticated user's only.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "team"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Email accounts with their daily email limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "emailAccounts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Email account identifier"
+                          },
+                          "email": {
+                            "type": "string",
+                            "description": "Email address"
+                          },
+                          "dailyEmailLimit": {
+                            "type": "integer",
+                            "description": "Maximum number of emails sent per day from this account"
+                          },
+                          "userId": {
+                            "type": "string",
+                            "description": "Owner of the email account. Only returned with `scope=team`."
+                          }
+                        }
+                      }
+                    },
+                    "bcc": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "BCC address of the authenticated user, `null` when not set"
+                    }
+                  }
+                },
+                "example": {
+                  "emailAccounts": [
+                    {
+                      "id": "usm_A1B2C3D4E5F6G7H8I9",
+                      "email": "john@company.com",
+                      "dailyEmailLimit": 80,
+                      "userId": "usr_A1B2C3D4E5F6G7H8I9"
+                    }
+                  ],
+                  "bcc": null
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible errors: No user found for this api key / scope must be \"team\" when provided",
+            "content": {
+              "text/plain": {
+                "example": "scope must be \"team\" when provided"
+              }
+            }
+          },
+          "405": {
+            "description": "Only GET and PATCH methods are supported",
+            "content": {
+              "text/plain": {
+                "example": "Bad method"
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Sending Settings",
+        "description": "Sets the daily email limit of up to 100 team email accounts in one call. Each account is processed independently: one failure does not abort the others, and the response reports every account's outcome.\n\n**Permission:** requires the right to edit the team's sending limits. On a free trial, a limit above the trial maximum is capped to it.",
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "emailAccounts"
+                ],
+                "properties": {
+                  "emailAccounts": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 100,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "dailyEmailLimit"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Email account identifier, from `GET /user/sending-settings`"
+                        },
+                        "dailyEmailLimit": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "description": "Maximum number of emails sent per day from this account. `0` pauses sending."
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "emailAccounts": [
+                  {
+                    "id": "usm_A1B2C3D4E5F6G7H8I9",
+                    "dailyEmailLimit": 50
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Outcome of every email account update",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "integer",
+                      "description": "Number of email accounts processed"
+                    },
+                    "succeeded": {
+                      "type": "integer",
+                      "description": "Number of email accounts updated"
+                    },
+                    "failed": {
+                      "type": "integer",
+                      "description": "Number of email accounts not updated"
+                    },
+                    "emailAccounts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Email account identifier"
+                          },
+                          "success": {
+                            "type": "boolean",
+                            "description": "Whether the limit was applied"
+                          },
+                          "dailyEmailLimit": {
+                            "type": "integer",
+                            "description": "Limit actually applied, after the trial cap. Only on success."
+                          },
+                          "error": {
+                            "type": "string",
+                            "description": "Why the limit was not applied. Only on failure."
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "total": 2,
+                  "succeeded": 1,
+                  "failed": 1,
+                  "emailAccounts": [
+                    {
+                      "id": "usm_A1B2C3D4E5F6G7H8I9",
+                      "success": true,
+                      "dailyEmailLimit": 50
+                    },
+                    {
+                      "id": "usm_Z9Y8X7W6V5U4T3S2R1",
+                      "success": false,
+                      "error": "Mailbox not found in this team"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible errors: No user found for this api key / emailAccounts must be a non-empty array / emailAccounts is limited to 100 items per call",
+            "content": {
+              "text/plain": {
+                "example": "emailAccounts must be a non-empty array"
+              }
+            }
+          },
+          "402": {
+            "description": "The team has no lemlist plan",
+            "content": {
+              "text/plain": {
+                "example": "You cannot change the limit. Choose a plan first."
+              }
+            }
+          },
+          "403": {
+            "description": "The user cannot edit the team's sending limits",
+            "content": {
+              "text/plain": {
+                "example": "You cannot edit sending limits for this team"
+              }
+            }
+          },
+          "405": {
+            "description": "Only GET and PATCH methods are supported",
+            "content": {
+              "text/plain": {
+                "example": "Bad method"
+              }
+            }
+          }
+        }
+      }
+    },
     "/users/{userId}/linkedin-limits": {
       "patch": {
         "summary": "Update User LinkedIn Limits",
