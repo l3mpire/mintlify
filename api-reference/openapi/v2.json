@@ -8780,7 +8780,7 @@
           },
           "sort": {
             "type": "object",
-            "description": "The sort saved in lemlist, absent when the view uses the page default",
+            "description": "The sort saved in lemlist, absent when the view uses the page default. A sort saved from the lemlist extension may name a field that is not a column.",
             "properties": {
               "field": {
                 "type": "string",
@@ -8940,6 +8940,79 @@
           "code": {
             "type": "string",
             "description": "Machine-readable error code, stable across releases"
+          }
+        }
+      },
+      "ViewSort": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "field",
+          "order"
+        ],
+        "description": "Task views only: the sort, on one column. Without it, the view uses the page default sort (due date).",
+        "properties": {
+          "field": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 400,
+            "description": "A column [Get View Fields](/api-reference/endpoints/views/get-view-fields) lists with `sortable: true` (`columns[].field`)",
+            "example": "createdAt"
+          },
+          "order": {
+            "type": "integer",
+            "enum": [
+              1,
+              -1
+            ],
+            "description": "`1` ascending, `-1` descending",
+            "example": 1
+          }
+        }
+      },
+      "ViewColumnInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "field"
+        ],
+        "description": "One visible column of a view.",
+        "properties": {
+          "field": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 400,
+            "description": "A column from [Get View Fields](/api-reference/endpoints/views/get-view-fields) (`columns[].field`)",
+            "example": "contact.fields.industry"
+          },
+          "locked": {
+            "type": "boolean",
+            "description": "Pinned to the left of the table"
+          }
+        }
+      },
+      "ViewColumn": {
+        "type": "object",
+        "description": "A column a view of the list can show.",
+        "required": [
+          "field",
+          "label",
+          "sortable"
+        ],
+        "properties": {
+          "field": {
+            "type": "string",
+            "description": "Column id, sent as `sort.field` and `columns[].field`",
+            "example": "createdAt"
+          },
+          "label": {
+            "type": "string",
+            "description": "Column header",
+            "example": "Due date"
+          },
+          "sortable": {
+            "type": "boolean",
+            "description": "Whether a `sort` can take this column"
           }
         }
       }
@@ -46273,7 +46346,7 @@
       },
       "post": {
         "summary": "Create View",
-        "description": "Creates a view on one list for the API key's user and pins it on their tabs.\n\nEach condition is checked against [Get View Fields](/api-reference/endpoints/views/get-view-fields): an unknown field, an operator the field does not offer or a value it does not accept answers `400` with `ENTITY_VIEW_INVALID_FILTER`, and the message names the field and what it takes. Without `filters`, the view shows every record.\n\n`visibility: \"everyone\"` shares the view with the team and needs the \"Create views for the team\" permission. A scope (the user's private views, the team's shared views) holds up to 200 views.\n\nThe API does not set the sort or the columns: the view opens with the page's default sort and the user's columns, both editable in lemlist.",
+        "description": "Creates a view on one list for the API key's user and pins it on their tabs.\n\nEach condition is checked against [Get View Fields](/api-reference/endpoints/views/get-view-fields): an unknown field, an operator the field does not offer or a value it does not accept answers `400` with `ENTITY_VIEW_INVALID_FILTER`, and the message names the field and what it takes. Without `filters`, the view shows every record.\n\n`visibility: \"everyone\"` shares the view with the team and needs the \"Create views for the team\" permission. A scope (the user's private views, the team's shared views) holds up to 200 views.\n\nOn a task view, `sort` and `columns` take the columns [Get View Fields](/api-reference/endpoints/views/get-view-fields) lists: a sort on a column that is not `sortable`, or a column the Tasks page does not offer, answers `400` with `ENTITY_VIEW_INVALID_SORT` or `ENTITY_VIEW_INVALID_COLUMNS`, and the message names the column and why. Contact and company views do not take them yet. Without them, the view uses the page's default sort (due date) and the user's own columns.",
         "operationId": "createView",
         "tags": [
           "Views"
@@ -46308,39 +46381,100 @@
                   },
                   "filters": {
                     "$ref": "#/components/schemas/ViewFiltersInput"
+                  },
+                  "sort": {
+                    "$ref": "#/components/schemas/ViewSort"
+                  },
+                  "columns": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 200,
+                    "description": "Task views only: the visible columns, in order. A column left out is hidden, except the two the Tasks page always shows (task type and title, associated record).",
+                    "items": {
+                      "$ref": "#/components/schemas/ViewColumnInput"
+                    }
                   }
                 }
               },
-              "example": {
-                "entity": "contact",
-                "name": "Hot leads in Paris",
-                "icon": "far fa-fire",
-                "visibility": "me",
-                "filters": {
-                  "connector": "and",
-                  "conditions": [
-                    {
-                      "property": "ownerId",
-                      "operator": "is_any_of",
-                      "value": [
-                        "__me__"
+              "examples": {
+                "contact": {
+                  "summary": "A contact view",
+                  "value": {
+                    "entity": "contact",
+                    "name": "Hot leads in Paris",
+                    "icon": "far fa-fire",
+                    "visibility": "me",
+                    "filters": {
+                      "connector": "and",
+                      "conditions": [
+                        {
+                          "property": "ownerId",
+                          "operator": "is_any_of",
+                          "value": [
+                            "__me__"
+                          ]
+                        },
+                        {
+                          "property": "contactScore",
+                          "operator": "gte",
+                          "value": 5
+                        },
+                        {
+                          "property": "createdAt",
+                          "operator": "is_relative",
+                          "value": {
+                            "mode": "last",
+                            "amount": 30,
+                            "unit": "day"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "task": {
+                  "summary": "A task view with its sort and columns",
+                  "value": {
+                    "entity": "task",
+                    "name": "My calls",
+                    "filters": {
+                      "conditions": [
+                        {
+                          "property": "owner",
+                          "operator": "is_any_of",
+                          "value": [
+                            "__me__"
+                          ]
+                        },
+                        {
+                          "property": "type",
+                          "operator": "is_any_of",
+                          "value": [
+                            "aircall"
+                          ]
+                        }
                       ]
                     },
-                    {
-                      "property": "contactScore",
-                      "operator": "gte",
-                      "value": 5
+                    "sort": {
+                      "field": "createdAt",
+                      "order": 1
                     },
-                    {
-                      "property": "createdAt",
-                      "operator": "is_relative",
-                      "value": {
-                        "mode": "last",
-                        "amount": 30,
-                        "unit": "day"
+                    "columns": [
+                      {
+                        "field": "typeAndTitle",
+                        "locked": true
+                      },
+                      {
+                        "field": "createdAt"
+                      },
+                      {
+                        "field": "associatedRecord"
+                      },
+                      {
+                        "field": "contact.fields.industry"
                       }
-                    }
-                  ]
+                    ]
+                  }
                 }
               }
             }
@@ -46364,7 +46498,7 @@
             }
           },
           "400": {
-            "description": "Invalid body: an unknown key, a value out of bounds, an unsafe or empty name, or an invalid filter",
+            "description": "Invalid body: an unknown key, a value out of bounds, an unsafe or empty name, an invalid filter, sort or column",
             "content": {
               "application/json": {
                 "schema": {
@@ -46393,6 +46527,18 @@
                     "value": {
                       "error": "Invalid filter on \"contactScore\": operator must be one of eq, neq, gt, lt, gte, lte, is_between, is_empty, is_not_empty",
                       "code": "ENTITY_VIEW_INVALID_FILTER"
+                    }
+                  },
+                  "ENTITY_VIEW_INVALID_SORT": {
+                    "value": {
+                      "error": "Invalid sort on \"dueDate\": unknown column, see get_view_fields",
+                      "code": "ENTITY_VIEW_INVALID_SORT"
+                    }
+                  },
+                  "ENTITY_VIEW_INVALID_COLUMNS": {
+                    "value": {
+                      "error": "Invalid column \"contact.fields.title\": unknown column, see get_view_fields",
+                      "code": "ENTITY_VIEW_INVALID_COLUMNS"
                     }
                   }
                 }
@@ -46451,7 +46597,7 @@
     "/views/fields": {
       "get": {
         "summary": "Get View Fields",
-        "description": "Lists the fields a view of that list can filter on: the filters the page offers, the team's custom fields included, each with its type and operators. Fields the page only offers with a connected CRM are left out when the team has none.\n\n`options` lists the values a field accepts when the page lists them (statuses, picklist values): send an option's `value`, not its `label`. On a user, list or campaign field, `options` holds only the special values (such as `__me__`, the user viewing the list) and the field also takes record ids.",
+        "description": "Lists the fields a view of that list can filter on: the filters the page offers, the team's custom fields included, each with its type and operators. Fields the page only offers with a connected CRM are left out when the team has none.\n\n`options` lists the values a field accepts when the page lists them (statuses, picklist values): send an option's `value`, not its `label`. On a user, list or campaign field, `options` holds only the special values (such as `__me__`, the user viewing the list) and the field also takes record ids.\n\n`columns` lists the columns a task view can show, in the order of the Tasks page column picker: the base columns, then the contact, company and custom field columns. `sortable` flags the ones a `sort` can take. It is empty for contacts and companies, whose views do not take sort or columns yet.",
         "operationId": "getViewFields",
         "tags": [
           "Views"
@@ -46479,7 +46625,8 @@
                     "data": {
                       "type": "object",
                       "required": [
-                        "fields"
+                        "fields",
+                        "columns"
                       ],
                       "properties": {
                         "fields": {
@@ -46487,58 +46634,133 @@
                           "items": {
                             "$ref": "#/components/schemas/ViewField"
                           }
+                        },
+                        "columns": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/ViewColumn"
+                          }
                         }
                       }
                     }
                   }
                 },
-                "example": {
-                  "data": {
-                    "fields": [
-                      {
-                        "id": "ownerId",
-                        "label": "Contact owner",
-                        "type": "enum",
-                        "operators": [
-                          "is",
-                          "is_not",
-                          "is_any_of",
-                          "is_none_of",
-                          "is_empty",
-                          "is_not_empty"
+                "examples": {
+                  "contact": {
+                    "summary": "Contacts list",
+                    "value": {
+                      "data": {
+                        "fields": [
+                          {
+                            "id": "ownerId",
+                            "label": "Contact owner",
+                            "type": "enum",
+                            "operators": [
+                              "is",
+                              "is_not",
+                              "is_any_of",
+                              "is_none_of",
+                              "is_empty",
+                              "is_not_empty"
+                            ],
+                            "options": [
+                              {
+                                "value": "__me__",
+                                "label": "My contacts"
+                              },
+                              {
+                                "value": "__teammates__",
+                                "label": "Teammates' contacts"
+                              },
+                              {
+                                "value": "__unassigned__",
+                                "label": "Unassigned"
+                              }
+                            ]
+                          },
+                          {
+                            "id": "contactScore",
+                            "label": "Contact score",
+                            "type": "number",
+                            "operators": [
+                              "eq",
+                              "neq",
+                              "gt",
+                              "lt",
+                              "gte",
+                              "lte",
+                              "is_between",
+                              "is_empty",
+                              "is_not_empty"
+                            ]
+                          }
                         ],
-                        "options": [
+                        "columns": []
+                      }
+                    }
+                  },
+                  "task": {
+                    "summary": "Tasks list",
+                    "value": {
+                      "data": {
+                        "fields": [
                           {
-                            "value": "__me__",
-                            "label": "My contacts"
+                            "id": "type",
+                            "label": "Task type",
+                            "type": "enum",
+                            "operators": [
+                              "is",
+                              "is_not",
+                              "is_any_of",
+                              "is_none_of",
+                              "is_empty",
+                              "is_not_empty"
+                            ],
+                            "options": [
+                              {
+                                "value": "aircall",
+                                "label": "Call"
+                              },
+                              {
+                                "value": "email",
+                                "label": "Email"
+                              },
+                              {
+                                "value": "linkedin",
+                                "label": "LinkedIn"
+                              }
+                            ]
+                          }
+                        ],
+                        "columns": [
+                          {
+                            "field": "typeAndTitle",
+                            "label": "Task type and title",
+                            "sortable": false
                           },
                           {
-                            "value": "__teammates__",
-                            "label": "Teammates' contacts"
+                            "field": "createdAt",
+                            "label": "Due date",
+                            "sortable": true
                           },
                           {
-                            "value": "__unassigned__",
-                            "label": "Unassigned"
+                            "field": "assignedTo",
+                            "label": "Owner",
+                            "sortable": true
+                          },
+                          {
+                            "field": "readBy",
+                            "label": "Read status",
+                            "sortable": false
+                          },
+                          {
+                            "field": "contact.fields.industry",
+                            "label": "Industry",
+                            "sortable": false
                           }
                         ]
-                      },
-                      {
-                        "id": "contactScore",
-                        "label": "Contact score",
-                        "type": "number",
-                        "operators": [
-                          "eq",
-                          "neq",
-                          "gt",
-                          "lt",
-                          "gte",
-                          "lte",
-                          "is_between",
-                          "is_empty",
-                          "is_not_empty"
-                        ]
                       }
-                    ]
+                    }
                   }
                 }
               }
@@ -46734,7 +46956,7 @@
       ],
       "patch": {
         "summary": "Update View",
-        "description": "Renames a view, changes its icon or its visibility, or replaces its filters. Omitted fields keep their value.\n\n`filters` replace all the current filters, checked as on create; the sort and the columns saved in lemlist are kept.\n\nDefault views (`isDefault: true`) are read-only: copy one with [Duplicate View](/api-reference/endpoints/views/duplicate-view) to change it. Editing a view shared with the team, or sharing one, needs the \"Create views for the team\" permission.",
+        "description": "Renames a view, changes its icon or its visibility, or replaces its filters, sort or columns. Omitted fields keep their value.\n\n`filters`, `sort` and `columns` each replace the current ones when sent, checked as on create. A sort saved from the lemlist extension may name a field that is not a column: [List Views](/api-reference/endpoints/views/list-views) returns it as is, `sort` left out keeps it, and sending it back answers `400`.\n\nDefault views (`isDefault: true`) are read-only: copy one with [Duplicate View](/api-reference/endpoints/views/duplicate-view) to change it. Editing a view shared with the team, or sharing one, needs the \"Create views for the team\" permission.",
         "operationId": "updateView",
         "tags": [
           "Views"
@@ -46768,6 +46990,18 @@
                   },
                   "filters": {
                     "$ref": "#/components/schemas/ViewFiltersInput"
+                  },
+                  "sort": {
+                    "$ref": "#/components/schemas/ViewSort"
+                  },
+                  "columns": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 200,
+                    "description": "Task views only: the visible columns, in order. A column left out is hidden, except the two the Tasks page always shows (task type and title, associated record).",
+                    "items": {
+                      "$ref": "#/components/schemas/ViewColumnInput"
+                    }
                   }
                 }
               },
@@ -46805,7 +47039,7 @@
             }
           },
           "400": {
-            "description": "Invalid body: an unknown key, a value out of bounds, an unsafe or empty name, or an invalid filter",
+            "description": "Invalid body: an unknown key, a value out of bounds, an unsafe or empty name, an invalid filter, sort or column",
             "content": {
               "application/json": {
                 "schema": {
@@ -46834,6 +47068,18 @@
                     "value": {
                       "error": "Invalid filter on \"contactScore\": operator must be one of eq, neq, gt, lt, gte, lte, is_between, is_empty, is_not_empty",
                       "code": "ENTITY_VIEW_INVALID_FILTER"
+                    }
+                  },
+                  "ENTITY_VIEW_INVALID_SORT": {
+                    "value": {
+                      "error": "Invalid sort on \"dueDate\": unknown column, see get_view_fields",
+                      "code": "ENTITY_VIEW_INVALID_SORT"
+                    }
+                  },
+                  "ENTITY_VIEW_INVALID_COLUMNS": {
+                    "value": {
+                      "error": "Invalid column \"contact.fields.title\": unknown column, see get_view_fields",
+                      "code": "ENTITY_VIEW_INVALID_COLUMNS"
                     }
                   }
                 }
