@@ -1806,7 +1806,7 @@
               "endDate": {
                 "type": "object",
                 "nullable": true,
-                "description": "When the campaign stops sending. The date must be in the future unless unchanged. `null` removes it. Requires the end date beta to be enabled on the team.",
+                "description": "When the campaign stops sending. The date must be in the future unless unchanged. `null` removes it.",
                 "additionalProperties": false,
                 "required": [
                   "date",
@@ -12087,20 +12087,6 @@
             "content": {
               "text/plain": {
                 "example": "The authentication you supplied is incorrect"
-              }
-            }
-          },
-          "403": {
-            "description": "`CAMPAIGN_SETTINGS_END_DATE_NOT_ENABLED`: the end date beta is not enabled on the team. `schedule.endDate` is refused.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CampaignSettingsError"
-                },
-                "example": {
-                  "error": "The campaign end date is not enabled for this team",
-                  "code": "CAMPAIGN_SETTINGS_END_DATE_NOT_ENABLED"
-                }
               }
             }
           },
