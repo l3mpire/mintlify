@@ -1,0 +1,55 @@
+---
+openapi: get /v2/activities
+description: Retrieves the history of all campaign activities and steps performed (optionally filtered by activity type and campaign).
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Activity" objectPath="activity" />
+
+This endpoint retrieves the history of all campaign activities and steps performed.
+
+<Note>
+  The response is streamed: chunked transfer encoding, no `Content-Length` header.
+</Note>
+
+## Filtering by date
+
+Activities can be filtered on their `createdAt` field using either of two
+naming conventions:
+
+- `minDate` / `maxDate` (primary)
+- `startDate` / `endDate` (aliases, kept consistent with sibling endpoints
+  such as `/campaigns/{campaignId}/stats`)
+
+Both pairs accept either a Unix timestamp in seconds (e.g. `1715385600`) or
+an ISO 8601 datetime (e.g. `2026-05-11T00:00:00Z`).
+
+When both names are provided, the primary one wins: `minDate` takes
+precedence over `startDate`, and `maxDate` over `endDate`. `maxDate` must
+be strictly greater than `minDate` when both are set.
+
+## Response
+
+The response can include `sequenceStep` and `totalSequenceStep` fields, which are zero-indexed (starting at 0).
+
+Activities created from a campaign step also carry `journeyDepth`: how deep
+the step sits on the lead's own path, zero-indexed. It is the step the lead
+reached before it, plus one. A skipped step counts. A step added to the
+sequence after the lead passed that point does not, so two leads can show a
+different `journeyDepth` for the same step.
+
+<Note>
+  `journeyDepth` is present on activities created from now on. Activities
+  recorded earlier do not have it: read `totalSequenceStep` for them.
+</Note>
+
+Activities also carry `stepId`, the stable identifier of the step that produced
+them. Unlike `sequenceStep` — a position that shifts when a sequence's steps are
+reordered — `stepId` always points at the same step, so prefer it when you store
+a reference. `sequenceStep` keeps being returned exactly as before.
+
+<Note>
+  `stepId` is present on every activity created from now on. Activities recorded
+  earlier gain it progressively as historical records are backfilled, so treat it
+  as optional when you read back through history.
+</Note>
