@@ -13,6 +13,10 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 </Note>
 
 <Note>
+  **ABM campaigns** target a single company. They only take that company's contacts: a lead whose contact belongs to another company, or to none, is refused with `400` (`The lead's contact doesn't belong to the ABM campaign's company`), nothing written. They hold at most 199 leads; past that, the request fails with `400 CAMPAIGN_LEADS_LIMIT_REACHED` (`{"error": "You can't add more than 199 leads to an ABM campaign"}`).
+</Note>
+
+<Note>
   The lead is imported as the API key's user. When its company is not in lemlist yet, that user needs the "Create companies" permission, otherwise the request fails with `403` (`{"error": "The user jane@acme.com does not have the permission to create companies"}`) and nothing is written. A company already in lemlist is linked as usual.
 
   Likewise, when its contact is not in lemlist yet, that user needs the "Create contacts" permission, otherwise the request fails with `403` (`{"error": "The user jane@acme.com does not have the permission to create contacts"}`) and nothing is written, company included. A contact already in lemlist is updated as usual.
