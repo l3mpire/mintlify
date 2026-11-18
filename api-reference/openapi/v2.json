@@ -3128,6 +3128,10 @@
             "type": "string",
             "description": "Message content"
           },
+          "plainText": {
+            "type": "boolean",
+            "description": "Present and true when the email step is sent as plain text: `body` then holds raw text with line breaks, not HTML. Absent on an HTML step. Read-only: the create and update requests do not accept it."
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time",
@@ -14404,6 +14408,10 @@
                               "type": "string",
                               "description": "The message content for the step (plain text for LinkedIn, HTML for email)"
                             },
+                            "plainText": {
+                              "type": "boolean",
+                              "description": "Present and true when the email step is sent as plain text: `message` then holds raw text with line breaks, not HTML. Absent on an HTML step. Read-only: the step body does not accept it."
+                            },
                             "subject": {
                               "type": "string",
                               "description": "The email subject line (only for email steps)"
@@ -15199,6 +15207,10 @@
                     },
                     "message": {
                       "type": "string"
+                    },
+                    "plainText": {
+                      "type": "boolean",
+                      "description": "Present and true when the email step is sent as plain text: `message` then holds raw text with line breaks, not HTML. Absent on an HTML step. Read-only: the step body does not accept it."
                     },
                     "title": {
                       "type": "string",
