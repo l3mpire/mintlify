@@ -2781,6 +2781,20 @@
             "type": "boolean",
             "example": true
           },
+          "recordingUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "A signed link to download the recording (MP3), valid 24 hours: read the call again for a fresh one. `null` until the recording is stored in lemlist.",
+            "example": "https://storage.example.com/CA1234/recording.mp3?X-Amz-Expires=86400&X-Amz-Signature=…"
+          },
+          "transcriptUrl": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "A signed link to download the transcript, valid 24 hours: a JSON `{ text, utterances }`. `null` without a transcript.",
+            "example": "https://storage.example.com/CA1234/transcription.json?X-Amz-Expires=86400&X-Amz-Signature=…"
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time",
@@ -34022,6 +34036,8 @@
                     "provider": "trellus",
                     "hasRecording": false,
                     "hasTranscript": true,
+                    "recordingUrl": null,
+                    "transcriptUrl": "https://storage.example.com/api-tea_1-trellus-123/transcription.json?X-Amz-Expires=86400&X-Amz-Signature=…",
                     "createdAt": "2026-10-21T09:30:00.000Z"
                   }
                 }
@@ -34363,6 +34379,8 @@
                     "provider": "trellus",
                     "hasRecording": true,
                     "hasTranscript": true,
+                    "recordingUrl": "https://storage.example.com/api-tea_1-trellus-123/recording.mp3?X-Amz-Expires=86400&X-Amz-Signature=…",
+                    "transcriptUrl": "https://storage.example.com/api-tea_1-trellus-123/transcription.json?X-Amz-Expires=86400&X-Amz-Signature=…",
                     "createdAt": "2026-10-21T09:30:00.000Z"
                   }
                 }
@@ -34572,6 +34590,8 @@
                     "provider": "trellus",
                     "hasRecording": false,
                     "hasTranscript": true,
+                    "recordingUrl": null,
+                    "transcriptUrl": "https://storage.example.com/api-tea_1-trellus-123/transcription.json?X-Amz-Expires=86400&X-Amz-Signature=…",
                     "createdAt": "2026-10-21T09:30:00.000Z"
                   }
                 }
