@@ -1,0 +1,11 @@
+---
+openapi: patch /views/{viewId}
+description: Renames a view, changes its icon or visibility, or replaces its filters.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="View" objectPath="view" />
+
+<Note>
+`filters` replace all the current filters. Default views are read-only: copy one with [Duplicate View](/api-reference/endpoints/views/duplicate-view) to change it.
+</Note>

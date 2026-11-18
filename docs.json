@@ -333,6 +333,19 @@
                 ]
               },
               {
+                "group": "Views",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/views/list-views",
+                  "api-reference/endpoints/views/get-view-fields",
+                  "api-reference/endpoints/views/create-view",
+                  "api-reference/endpoints/views/update-view",
+                  "api-reference/endpoints/views/duplicate-view",
+                  "api-reference/endpoints/views/delete-view",
+                  "api-reference/endpoints/views/set-view-tabs"
+                ]
+              },
+              {
                 "group": "Activities",
                 "expanded": false,
                 "pages": [
@@ -549,6 +562,7 @@
               "api-reference/objects-definitions/inbox-conversation",
               "api-reference/objects-definitions/inbox-message",
               "api-reference/objects-definitions/contact",
+              "api-reference/objects-definitions/view",
               "api-reference/objects-definitions/self-recovery-config",
               "api-reference/objects-definitions/self-recovery-case",
               {
