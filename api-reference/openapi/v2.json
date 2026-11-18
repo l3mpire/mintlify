@@ -14791,17 +14791,6 @@
                 }
               }
             }
-          },
-          "403": {
-            "description": "`end-sequence-not-allowed` - the `endSequence` step is in beta and the team does not have access to it.",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "The End sequence step is not available yet",
-                  "code": "end-sequence-not-allowed"
-                }
-              }
-            }
           }
         },
         "requestBody": {
