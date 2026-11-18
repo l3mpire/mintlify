@@ -1,0 +1,7 @@
+---
+openapi: get /views/fields
+description: Lists the fields a view of that list can filter on, with their operators and accepted values.
+---
+<Note>
+Call it before [Create View](/api-reference/endpoints/views/create-view) or [Update View](/api-reference/endpoints/views/update-view): a condition on a field, an operator or a value it does not list answers `400` with `ENTITY_VIEW_INVALID_FILTER`.
+</Note>
