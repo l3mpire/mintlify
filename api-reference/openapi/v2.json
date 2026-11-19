@@ -5466,7 +5466,7 @@
         "properties": {
           "mailboxId": {
             "type": "string",
-            "description": "The user mailbox id. Use it as `userMailboxId` to resume warmup with [Start lemwarm](/api-reference/endpoints/lemwarm/start-lemwarm).",
+            "description": "The user mailbox id. Use it as `userMailboxId` to resume warmup with [Start lemwarm](/api-reference/endpoints/warmup/start-warmup).",
             "example": "usm_ssaV1cwVs8iEW9IYO"
           },
           "userId": {
@@ -30822,9 +30822,337 @@
         }
       }
     },
+    "/warmup/errors": {
+      "get": {
+        "summary": "Get warmup errors",
+        "description": "Lists the mailboxes of your team that lemwarm keeps out of warmup, with the cause and the fix for each one. Paused mailboxes come first, then warnings (temporary locks), newest first. Healthy or manually paused mailboxes are not returned.",
+        "tags": [
+          "warmup"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/WarmupErrorsResponse"
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "errors": [
+                      {
+                        "mailboxId": "usm_e3nWbHTjBRBthLk19",
+                        "userId": "usr_8bQDChdW5vNy5XtIx",
+                        "email": "john@example.com",
+                        "state": "paused",
+                        "since": "2025-04-09T13:34:43.998Z",
+                        "key": "ERR_REP_10001",
+                        "code": "ERR_REP_10001",
+                        "family": "reputation",
+                        "action": "resume",
+                        "title": "Low sender reputation on john@example.com",
+                        "whatHappened": "Several warmup emails bounced because recipient email providers rated the reputation of this mailbox too low. lemwarm paused warmup to protect your domain.",
+                        "whatToCheck": "Your recent sending volume, bounce rate and content on this mailbox. Lower the warmup volume before resuming."
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "405": {
+            "description": "`ROUTE_BAD_METHOD` - only GET is allowed"
+          }
+        }
+      }
+    },
+    "/warmup/{userMailboxId}/start": {
+      "parameters": [
+        {
+          "name": "userMailboxId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the user mailbox",
+          "example": "usm_lKTsGYwbCoEhsp1Iz",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Start warmup",
+        "tags": [
+          "warmup"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "ok": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible errors: Bad team / Error from warmupToggle (invalid-usermailbox, invalid-sender, mailbox-deleted, emailWarmedByAnotherAccount, billing-error, etc.)",
+            "content": {
+              "text/plain": {
+                "example": "Bad team"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      }
+    },
+    "/warmup/{userMailboxId}/pause": {
+      "parameters": [
+        {
+          "name": "userMailboxId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the user mailbox",
+          "example": "usm_lKTsGYwbCoEhsp1Iz",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Pause warmup",
+        "tags": [
+          "warmup"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "ok": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible errors: Bad team / Error from warmupToggle",
+            "content": {
+              "text/plain": {
+                "example": "Bad team"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      }
+    },
+    "/warmup/{userMailboxId}/settings": {
+      "parameters": [
+        {
+          "name": "userMailboxId",
+          "in": "path",
+          "required": true,
+          "description": "The unique identifier of the user mailbox",
+          "example": "usm_lKTsGYwbCoEhsp1Iz",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Get warmup settings",
+        "tags": [
+          "warmup"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LemwarmSettings"
+                },
+                "example": {
+                  "warmEmailRampup": 5,
+                  "warmEmailMax": 5,
+                  "activeAt": "2025-04-10T07:38:31.530Z",
+                  "deliverability": {
+                    "score": 70,
+                    "lastAt": "2025-04-09T13:34:43.998Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible errors: Bad team / Error retrieving settings",
+            "content": {
+              "text/plain": {
+                "example": "Bad team"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update warmup settings",
+        "tags": [
+          "warmup"
+        ],
+        "parameters": [],
+        "requestBody": {
+          "description": "Provide only the fields you want to change; omitted fields keep their current value. At least one field is required.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "minProperties": 1,
+                "properties": {
+                  "warmEmailMax": {
+                    "type": "integer",
+                    "description": "Maximum number of warmup emails per day (0-40; the server enforces 1-40 unless the team has the lemwarm0limit beta)"
+                  },
+                  "warmEmailRampup": {
+                    "type": "integer",
+                    "description": "Daily increase in the warmup email count (0-40; the server enforces 1-40 unless the team has the lemwarm0limit beta)"
+                  },
+                  "internalCommunicationPercent": {
+                    "type": "integer",
+                    "description": "Percentage of warmup emails sent to internal participants (0-100)"
+                  },
+                  "answerPercentage": {
+                    "type": "integer",
+                    "description": "Percentage of warmup emails that should be answered (0-100)"
+                  },
+                  "warmUsePlaintext": {
+                    "type": "boolean",
+                    "description": "Whether warmup emails are sent as plain text"
+                  },
+                  "warmDailyVarianceEnabled": {
+                    "type": "boolean",
+                    "description": "Whether to apply a random daily variance to the warmup email target (spreads volume day-to-day instead of a flat number)"
+                  }
+                }
+              },
+              "example": {
+                "warmEmailMax": 30,
+                "warmEmailRampup": 5,
+                "warmDailyVarianceEnabled": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "ok": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Possible errors: Bad team / A provided field has the wrong type / Error updating settings",
+            "content": {
+              "text/plain": {
+                "example": "Bad team"
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          }
+        }
+      }
+    },
     "/lemwarm/errors": {
       "get": {
         "summary": "Get warmup errors",
+        "deprecated": true,
         "description": "Lists the mailboxes of your team that lemwarm keeps out of warmup, with the cause and the fix for each one. Paused mailboxes come first, then warnings (temporary locks), newest first. Healthy or manually paused mailboxes are not returned.",
         "tags": [
           "lemwarm"
@@ -30895,6 +31223,7 @@
       ],
       "post": {
         "summary": "Start lemwarm",
+        "deprecated": true,
         "tags": [
           "lemwarm"
         ],
@@ -30955,6 +31284,7 @@
       ],
       "post": {
         "summary": "Pause lemwarm",
+        "deprecated": true,
         "tags": [
           "lemwarm"
         ],
@@ -31015,6 +31345,7 @@
       ],
       "get": {
         "summary": "Get lemwarm Settings",
+        "deprecated": true,
         "tags": [
           "lemwarm"
         ],
@@ -31062,6 +31393,7 @@
       },
       "patch": {
         "summary": "Update lemwarm Settings",
+        "deprecated": true,
         "tags": [
           "lemwarm"
         ],

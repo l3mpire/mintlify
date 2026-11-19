@@ -1,6 +1,6 @@
 ---
-openapi: get /lemwarm/errors
-description: Lists the mailboxes lemwarm keeps out of warmup, with the cause and the fix for each one.
+openapi: get /warmup/errors
+description: Lists the mailboxes kept out of warmup, with the cause and the fix for each one.
 ---
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
@@ -9,5 +9,5 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <Note>
 Only mailboxes with a recorded cause are returned: a disconnected mailbox, a DNS lock, a pause triggered by bounces or send failures, or a temporary high spam-rate lock. Healthy mailboxes and mailboxes you paused yourself are not listed.
 
-Once the cause is fixed, resume warmup with [Start lemwarm](/api-reference/endpoints/lemwarm/start-lemwarm), using `mailboxId` as the `userMailboxId`.
+Once the cause is fixed, resume warmup with [Start warmup](/api-reference/endpoints/warmup/start-warmup), using `mailboxId` as the `userMailboxId`.
 </Note>

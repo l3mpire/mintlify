@@ -469,14 +469,14 @@
                 ]
               },
               {
-                "group": "lemwarm",
+                "group": "Warmup",
                 "expanded": false,
                 "pages": [
-                  "api-reference/endpoints/lemwarm/start-lemwarm",
-                  "api-reference/endpoints/lemwarm/pause-lemwarm",
-                  "api-reference/endpoints/lemwarm/get-lemwarm-settings",
-                  "api-reference/endpoints/lemwarm/update-lemwarm-settings",
-                  "api-reference/endpoints/lemwarm/get-warmup-errors"
+                  "api-reference/endpoints/warmup/start-warmup",
+                  "api-reference/endpoints/warmup/pause-warmup",
+                  "api-reference/endpoints/warmup/get-warmup-settings",
+                  "api-reference/endpoints/warmup/update-warmup-settings",
+                  "api-reference/endpoints/warmup/get-warmup-errors"
                 ]
               },
               {
@@ -711,6 +711,26 @@
     }
   },
   "redirects": [
+    {
+      "source": "/api-reference/endpoints/lemwarm/start-lemwarm",
+      "destination": "/api-reference/endpoints/warmup/start-warmup"
+    },
+    {
+      "source": "/api-reference/endpoints/lemwarm/pause-lemwarm",
+      "destination": "/api-reference/endpoints/warmup/pause-warmup"
+    },
+    {
+      "source": "/api-reference/endpoints/lemwarm/get-lemwarm-settings",
+      "destination": "/api-reference/endpoints/warmup/get-warmup-settings"
+    },
+    {
+      "source": "/api-reference/endpoints/lemwarm/update-lemwarm-settings",
+      "destination": "/api-reference/endpoints/warmup/update-warmup-settings"
+    },
+    {
+      "source": "/api-reference/endpoints/lemwarm/get-warmup-errors",
+      "destination": "/api-reference/endpoints/warmup/get-warmup-errors"
+    },
     {
       "source": "/api-reference/endpoints/unsubscribes/add-unsubscribe-email-or-domain",
       "destination": "/api-reference/endpoints/unsubscribes/unsubscribe-variable"
