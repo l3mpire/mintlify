@@ -1492,6 +1492,47 @@
                     "description": "Share of the daily sending kept for new leads, from 0 to 1."
                   }
                 }
+              },
+              "endDate": {
+                "type": "object",
+                "nullable": true,
+                "description": "When the campaign stops sending, `null` when not set. At the date, `complete` ends the leads still in the sequence, `pause` pauses them. Remove it by sending `null` with `PATCH`.",
+                "required": [
+                  "date",
+                  "time",
+                  "timezone",
+                  "action",
+                  "at"
+                ],
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Day of the end date, YYYY-MM-DD."
+                  },
+                  "time": {
+                    "type": "string",
+                    "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                    "description": "Time of the end date, HH:mm."
+                  },
+                  "timezone": {
+                    "type": "string",
+                    "description": "IANA timezone the date and time are read in, e.g. Europe/Paris."
+                  },
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "complete",
+                      "pause"
+                    ],
+                    "description": "What happens to the leads still in the sequence: `complete` ends them, `pause` pauses them."
+                  },
+                  "at": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "The cut-off instant, ISO 8601 UTC. Read-only."
+                  }
+                }
               }
             }
           }
@@ -1759,6 +1800,42 @@
                     "minimum": 0,
                     "maximum": 1,
                     "description": "Share of the daily sending kept for new leads, from 0 to 1."
+                  }
+                }
+              },
+              "endDate": {
+                "type": "object",
+                "nullable": true,
+                "description": "When the campaign stops sending. The date must be in the future unless unchanged. `null` removes it.",
+                "additionalProperties": false,
+                "required": [
+                  "date",
+                  "time",
+                  "timezone",
+                  "action"
+                ],
+                "properties": {
+                  "date": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Day of the end date, YYYY-MM-DD."
+                  },
+                  "time": {
+                    "type": "string",
+                    "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+                    "description": "Time of the end date, HH:mm."
+                  },
+                  "timezone": {
+                    "type": "string",
+                    "description": "IANA timezone the date and time are read in, e.g. Europe/Paris."
+                  },
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "complete",
+                      "pause"
+                    ],
+                    "description": "What happens to the leads still in the sequence: `complete` ends them, `pause` pauses them."
                   }
                 }
               }
@@ -3972,6 +4049,7 @@
               "resumed",
               "stopped",
               "campaignComplete",
+              "campaignEndDateReached",
               "customDomainErrors",
               "connectionIssue",
               "sendLimitReached",
@@ -11778,6 +11856,13 @@
                     ],
                     "sendingPattern": {
                       "newLeadsPriorityRatio": 0.5
+                    },
+                    "endDate": {
+                      "date": "2025-12-31",
+                      "time": "18:00",
+                      "timezone": "Europe/Paris",
+                      "action": "complete",
+                      "at": "2025-12-31T17:00:00.000Z"
                     }
                   }
                 }
@@ -11970,6 +12055,13 @@
                     ],
                     "sendingPattern": {
                       "newLeadsPriorityRatio": 0.5
+                    },
+                    "endDate": {
+                      "date": "2025-12-31",
+                      "time": "18:00",
+                      "timezone": "Europe/Paris",
+                      "action": "complete",
+                      "at": "2025-12-31T17:00:00.000Z"
                     }
                   }
                 }
@@ -11977,7 +12069,7 @@
             }
           },
           "400": {
-            "description": "The body is not valid: an unknown field, a read-only field, a wrong value or an empty body. `details.issues` lists every refused field. Also `CAMPAIGN_INVALID_SENDER_STRATEGY` and `WRONG_PARAM_CAMPAIGN_ID`.",
+            "description": "The body is not valid: an unknown field, a read-only field, a wrong value or an empty body. `details.issues` lists every refused field. Also `CAMPAIGN_INVALID_SENDER_STRATEGY`, `WRONG_PARAM_CAMPAIGN_ID` and `CAMPAIGN_SETTINGS_END_DATE_IN_PAST` (the end date must be in the future, unless left unchanged).",
             "content": {
               "application/json": {
                 "schema": {
@@ -20635,6 +20727,7 @@
       ],
       "post": {
         "summary": "Resume Paused Lead",
+        "description": "Resumes the lead. When the campaign has reached its end date, the lead is not resumed: it is returned with `isPaused: true` and no error.",
         "tags": [
           "Leads"
         ],
@@ -20930,6 +21023,28 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "409": {
+            "description": "`CAMPAIGN_LEAD_REVIEW_CAMPAIGN_END_DATE_PASSED`: the campaign has reached its end date.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "CAMPAIGN_LEAD_REVIEW_CAMPAIGN_END_DATE_PASSED",
+                  "message": "This campaign ended on Dec 31, 2025 at 6:00 PM GMT+1. Remove the end date or move it later to launch leads."
+                }
+              }
+            }
           },
           "404": {
             "description": "Lead or campaign not found. Possible `error` codes: `CAMPAIGN_LEAD_REVIEW_LEAD_NOT_FOUND`, `CAMPAIGN_LEAD_REVIEW_CAMPAIGN_NOT_FOUND`.",
@@ -36545,6 +36660,7 @@
                       "resumed",
                       "stopped",
                       "campaignComplete",
+                      "campaignEndDateReached",
                       "customDomainErrors",
                       "connectionIssue",
                       "sendLimitReached",

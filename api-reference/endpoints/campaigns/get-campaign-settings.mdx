@@ -12,8 +12,8 @@ This endpoint requires at least the **Email Pro** plan.
 
 The response is not wrapped in `data`.
 
-- `general.labels`, `general.sequenceId`, `senders.espRouting` and
-  `schedule.scheduleIds` are read-only.
+- `general.labels`, `general.sequenceId`, `senders.espRouting`,
+  `schedule.scheduleIds` and `schedule.endDate.at` are read-only.
 - `senders.espMatching` gives the team value when the campaign does not set it.
 - A campaign hidden from the user of the API key answers `404`. An API key not
   linked to a user acts as the first user of the team.
