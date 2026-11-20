@@ -1,0 +1,12 @@
+---
+openapi: get /v2/user-groups
+description: Lists your team's user groups, sorted by name.
+---
+
+Any member of the team can read the groups. The list is not paginated: a team holds at most 100 groups.
+
+## Error codes
+
+| Code | Cause |
+| ---- | ----- |
+| `USER_GROUPS_PLAN_REQUIRED` | Your team is not on the Enterprise plan. |
