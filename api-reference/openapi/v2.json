@@ -8441,7 +8441,7 @@
             "example": "gte"
           },
           "value": {
-            "description": "Shaped by the operator and the field type:\n\n- no value for `is_empty`, `is_not_empty`, `is_true`, `is_false`, `is_not_true`, `is_not_false`;\n- a list of 1 to 50 values for `is_any_of`, `is_none_of`, `contains_any_of`, `contains_all_of`, also accepted on a text field for `contains`, `does_not_contain`, `starts_with`, `ends_with` (matching any of them);\n- `{ \"from\", \"to\" }` for `is_between`, one side may be omitted;\n- `{ \"mode\", \"amount\", \"unit\" }` for `is_relative`, with `mode` among `this`, `last`, `next`, `past` and `unit` among `day`, `week`, `month`, `quarter`, `year`;\n- one value otherwise: a number on a number field, an ISO 8601 date (`YYYY-MM-DD`) or date-time with offset on a date field, a string on the others.\n\nA field listing `options` takes their `value`. A user, list or campaign field takes record ids: user ids from [Get Team](/api-reference/endpoints/team/get-team), list ids from [Get Contact Lists](/api-reference/endpoints/contacts/get-contact-lists) or [Get Company Lists](/api-reference/endpoints/companies/get-company-lists), campaign ids from [Get Many Campaigns](/api-reference/endpoints/campaigns/get-many-campaigns).",
+            "description": "Shaped by the operator and the field type:\n\n- no value for `is_empty`, `is_not_empty`, `is_true`, `is_false`, `is_not_true`, `is_not_false`;\n- a list of 1 to 50 values for `is_any_of`, `is_none_of`, `contains_any_of`, `contains_all_of`, also accepted on a text field for `contains`, `does_not_contain`, `starts_with`, `ends_with` (matching any of them);\n- `{ \"from\", \"to\" }` for `is_between`, one side may be omitted;\n- `{ \"mode\", \"amount\", \"unit\" }` for `is_relative`, with `mode` among `this`, `last`, `next`, `past`, `more_ago`, `more_ahead` and `unit` among `day`, `week`, `month`, `quarter`, `year`: `more_ago` matches the dates more than `amount` units ago and `more_ahead` the dates more than `amount` units from now, the limit day excluded, a missing date never matching;\n- one value otherwise: a number on a number field, an ISO 8601 date (`YYYY-MM-DD`) or date-time with offset on a date field, a string on the others.\n\nA field listing `options` takes their `value`. A user, list or campaign field takes record ids: user ids from [Get Team](/api-reference/endpoints/team/get-team), list ids from [Get Contact Lists](/api-reference/endpoints/contacts/get-contact-lists) or [Get Company Lists](/api-reference/endpoints/companies/get-company-lists), campaign ids from [Get Many Campaigns](/api-reference/endpoints/campaigns/get-many-campaigns).",
             "oneOf": [
               {
                 "type": "string",
@@ -8506,7 +8506,9 @@
                       "this",
                       "last",
                       "next",
-                      "past"
+                      "past",
+                      "more_ago",
+                      "more_ahead"
                     ]
                   },
                   "amount": {
