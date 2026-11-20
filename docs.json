@@ -469,6 +469,18 @@
                 ]
               },
               {
+                "group": "User Groups",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/user-groups/list-user-groups",
+                  "api-reference/endpoints/user-groups/get-user-group",
+                  "api-reference/endpoints/user-groups/create-user-group",
+                  "api-reference/endpoints/user-groups/update-user-group",
+                  "api-reference/endpoints/user-groups/edit-user-group-members",
+                  "api-reference/endpoints/user-groups/delete-user-group"
+                ]
+              },
+              {
                 "group": "Warmup",
                 "expanded": false,
                 "pages": [
