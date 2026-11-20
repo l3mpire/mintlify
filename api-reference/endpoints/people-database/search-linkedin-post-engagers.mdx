@@ -20,7 +20,7 @@ The search covers at most 1000 people, commenters first. `isCapped` is `true` wh
 </Note>
 
 <Note>
-If `peopleSearchFailed` is `true`, the People Database search failed after the post was read: the 50 credits were refunded, `slugs` and `filters` are valid, `search` and `people` are absent. Run [Search People database](/api-reference/endpoints/people-database/search-people-database) yourself with the returned `filters`, which debits no credits but counts in your 24-hour quota, or call this endpoint again, which is a new paid call.
+If `peopleSearchFailed` is `true`, the People Database search failed after the post was read: the 50 credits were refunded, `slugs` and `filters` are empty, `search` and `people` are absent. Call this endpoint again later: it is a new paid call.
 </Note>
 
 ```bash
