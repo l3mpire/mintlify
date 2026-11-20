@@ -1,0 +1,27 @@
+---
+openapi: "get /v2/contacts/filters"
+description: "Lists every field you can use in the advancedFilters tree of Search Contacts."
+---
+
+Each row tells you how a field can be addressed:
+
+- **`type`** decides the allowed **`operators`** — a `date` field takes `is_before`, an
+  `enum` field takes `is_any_of`, and so on.
+- **`queryParam`** is the bridge between the two tiers: when it is set, a flat query
+  parameter of that name addresses the field on
+  [Search Contacts](/api-reference/endpoints/contacts/get-many-contacts-v2); when it is
+  `null`, go through `advancedFilters`.
+- **`custom: true`** marks one of your team's custom fields. They are resolved per team,
+  so this response is the authoritative list for your account.
+- **`scope`** says whether the field belongs to the contact or to its company.
+- **`values`** is always `null`: the allowed values of owners, contact lists, statuses and
+  campaigns come from their own endpoints.
+
+Use `scope` to keep only the contact or the company fields, and `search` to match a field
+id or label. The list and the search read the same catalogue the search validates
+against, so every operator listed is one the search accepts.
+
+<Note>
+  This route answers `{ "data": [...], "total": n }` — `data`, where
+  [List Task Filters](/api-reference/endpoints/tasks/get-task-filters) answers `results`.
+</Note>

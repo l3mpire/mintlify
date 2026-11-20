@@ -2367,7 +2367,7 @@
       },
       "ContactListItem": {
         "type": "object",
-        "description": "A contact as the list (`GET /contacts` with filters or no parameter) returns it, with the main fields flattened. Properties with no value are omitted.",
+        "description": "A contact as the list of `GET /contacts` and `GET /v2/contacts` returns it, with the main fields flattened. Properties with no value are omitted.",
         "properties": {
           "_id": {
             "type": "string",
@@ -2414,6 +2414,10 @@
             "type": "string",
             "description": "ID of the user who owns this contact"
           },
+          "statusId": {
+            "type": "string",
+            "description": "ID of the contact's status, one of the team's contact statuses"
+          },
           "companyId": {
             "type": "string",
             "description": "ID of the company the contact is attached to (`cpn_xxx`)"
@@ -2444,7 +2448,9 @@
                 "enum": [
                   "hubspot",
                   "salesforce",
-                  "pipedrive"
+                  "pipedrive",
+                  "attio",
+                  "zoho"
                 ],
                 "description": "Active CRM provider for the team."
               },
@@ -2504,6 +2510,112 @@
             }
           }
         }
+      },
+      "ContactV2ListResponse": {
+        "type": "object",
+        "description": "Paginated response of `GET /v2/contacts`.",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactListItem"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of matching contacts"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Page size used"
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Rows skipped"
+          }
+        },
+        "required": [
+          "data",
+          "total",
+          "limit",
+          "offset"
+        ]
+      },
+      "ContactV2FiltersResponse": {
+        "type": "object",
+        "description": "Response of `GET /v2/contacts/filters`.",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactV2FilterDescriptor"
+            }
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "data",
+          "total"
+        ]
+      },
+      "ContactV2FilterDescriptor": {
+        "type": "object",
+        "description": "One field a contact search can filter on, from the same catalogue the search validates against.",
+        "properties": {
+          "field": {
+            "type": "string",
+            "description": "Property id to put in a condition's `property`, e.g. `jobTitle` or `cf_contact_budget`."
+          },
+          "label": {
+            "type": "string",
+            "description": "Human-readable field name."
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "company"
+            ],
+            "description": "Whether the field belongs to the contact or to its company."
+          },
+          "type": {
+            "type": "string",
+            "description": "Data type that decides the allowed `operators`: `text`, `number`, `date`, `enum`, `tags`, `boolean` or `relation`."
+          },
+          "custom": {
+            "type": "boolean",
+            "description": "`true` for one of your team's custom fields."
+          },
+          "operators": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Every `operator` this field accepts."
+          },
+          "queryParam": {
+            "type": "string",
+            "nullable": true,
+            "description": "The flat query parameter of `GET /v2/contacts` that addresses this field, `null` when only `advancedFilters` reaches it."
+          },
+          "values": {
+            "type": "object",
+            "nullable": true,
+            "description": "Always `null`: the values of owners, lists, statuses and campaigns come from their own endpoints."
+          }
+        },
+        "required": [
+          "field",
+          "label",
+          "scope",
+          "type",
+          "custom",
+          "operators",
+          "queryParam",
+          "values"
+        ]
       },
       "Company": {
         "type": "object",
@@ -28442,6 +28554,7 @@
     "/contacts": {
       "get": {
         "summary": "Get Many Contacts",
+        "deprecated": true,
         "description": "Retrieves contacts by IDs/emails or by CRM record ids, or searches/lists contacts by name, email, contact list, campaign membership, or company link.\n\nWhen using `idsOrEmails`, returns an array of matching contacts directly.\n\nWhen using `crmIds`, looks the contacts up by their record id in the connected CRM (HubSpot, Salesforce, or Pipedrive) and returns an array of the contacts found, each with the matched id under `crmSync.crmRecordId`. `idsOrEmails` takes precedence over `crmIds`; a lookup ignores the search filters and the pagination.\n\nWhen using `search`, `email`, `listId`, `notInAnyCampaign`, any of the `company*` filters, or no filter at all, returns a paginated response with `data`, `total`, `limit`, and `offset` fields. You can combine filters together to narrow results (e.g. `listId` with `search`, or `notInAnyCampaign` with `companyId`). Calling the endpoint without any filter returns all contacts of the team, paginated.\n\nA lookup returns full contacts (`Contact`); the list returns `ContactListItem` objects.\n\nThe `company*` filters (`companyId`, `companyDomain`, `companyLinkedinUrl`, `companySalesnavUrl`) are mutually exclusive: use only one at a time. `companyDomain` / `companyLinkedinUrl` / `companySalesnavUrl` are resolved to a `companyId` through the Companies collection; if no matching company exists, the endpoint returns an empty list with `total: 0` (not an error), which keeps automation flows simple.",
         "tags": [
           "Contacts"
@@ -31204,6 +31317,461 @@
           },
           "405": {
             "description": "`ROUTE_BAD_METHOD` - only GET is allowed"
+          }
+        }
+      }
+    },
+    "/v2/contacts": {
+      "get": {
+        "summary": "Search Contacts",
+        "description": "Searches your team's contacts in the index the Contacts page reads: the v1 search parameters for the common filters, an `advancedFilters` tree for everything else, and a sort. Answers `{ data, total, limit, offset }`, with the same row keys as the list of `GET /contacts`.",
+        "tags": [
+          "Contacts"
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Free-text search across the contact: name, email, phone, job title, location, industry, languages, skills, summary, LinkedIn URLs and the AI buying role. At least 2 characters, case-insensitive.",
+            "schema": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 200
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "description": "Exact email address, matched among all the contact's emails. Takes precedence over `search`.",
+            "schema": {
+              "type": "string",
+              "format": "email"
+            }
+          },
+          {
+            "name": "listId",
+            "in": "query",
+            "required": false,
+            "description": "Filter contacts by contact list ID (`clt_xxx` format). Can be combined with `search` or `email`, or used alone to list all contacts in a list. Get valid IDs from `GET /contacts/lists`.",
+            "example": "clt_abc123def456ghi78",
+            "schema": {
+              "type": "string",
+              "pattern": "^clt_[a-zA-Z0-9]+$"
+            }
+          },
+          {
+            "name": "notInAnyCampaign",
+            "in": "query",
+            "required": false,
+            "description": "When set to `true`, only returns contacts that are not part of any campaign (orphan contacts). Can be used alone or combined with other filters such as `search`, `email`, or `listId`.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "companyId",
+            "in": "query",
+            "required": false,
+            "description": "Filter contacts by attached company ID (`cpn_xxx` format). Mutually exclusive with `companyDomain`, `companyLinkedinUrl`, `companySalesnavUrl` and `withPrimaryCompany`.",
+            "example": "cpn_A1B2C3D4E5F6G7H8I",
+            "schema": {
+              "type": "string",
+              "pattern": "^cpn_[a-zA-Z0-9]+$"
+            }
+          },
+          {
+            "name": "companyDomain",
+            "in": "query",
+            "required": false,
+            "description": "Filter contacts by their company's website domain, resolved to a `companyId`. If no company matches, the response is an empty page (`total: 0`). Mutually exclusive with the other `company*` filters.",
+            "example": "acme.com",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "companyLinkedinUrl",
+            "in": "query",
+            "required": false,
+            "description": "Filter contacts by their company's LinkedIn URL, resolved to a `companyId`. If no company matches, the response is an empty page (`total: 0`). Mutually exclusive with the other `company*` filters.",
+            "example": "https://www.linkedin.com/company/acme",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "companySalesnavUrl",
+            "in": "query",
+            "required": false,
+            "description": "Filter contacts by their company's LinkedIn Sales Navigator URL, resolved to a `companyId`. If no company matches, the response is an empty page (`total: 0`). Mutually exclusive with the other `company*` filters.",
+            "example": "https://www.linkedin.com/sales/company/12345678",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "withPrimaryCompany",
+            "in": "query",
+            "required": false,
+            "description": "When set to `true`, only returns contacts linked to a company; when set to `false`, only returns contacts without a company. Omit for no filter. Mutually exclusive with the `company*` filters.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "fieldRejectionReason",
+            "in": "query",
+            "required": false,
+            "description": "Filter contacts to those carrying a field rejection with this reason — a value lemlist refused to write, prefixed by its origin (`enrichment_*` while enriching, `crm_sync_*` during CRM sync). Returns an empty page (`total: 0`) when no contact matches. Each row exposes the full detail under `fieldRejections[]`.",
+            "example": "enrichment_duplicate_linkedin_url",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "enrichment_duplicate_linkedin_url",
+                "enrichment_duplicate_linkedin_url_sales_nav",
+                "enrichment_duplicate_email",
+                "crm_sync_duplicate_linkedin_url",
+                "crm_sync_duplicate_linkedin_url_sales_nav",
+                "crm_sync_invalid_linkedin_url",
+                "crm_sync_invalid_url",
+                "crm_sync_invalid_email",
+                "crm_sync_invalid_phone",
+                "crm_sync_linkedin_url_not_contact",
+                "crm_sync_duplicate_contact_blocked",
+                "crm_sync_duplicate_company_blocked",
+                "crm_sync_company_data_rejected",
+                "crm_sync_unsub_state_protected",
+                "crm_sync_unsub_channel_empty",
+                "crm_sync_value_oscillating",
+                "crm_sync_owner_sync_loop",
+                "crm_sync_unmapped_user",
+                "crm_sync_value_incompatible",
+                "crm_sync_unknown_error"
+              ]
+            }
+          },
+          {
+            "name": "crmSyncStatus",
+            "in": "query",
+            "required": false,
+            "description": "Filter contacts by their CRM sync state against the team's active CRM provider. Requires a CRM (Hubspot, Salesforce, Pipedrive or Attio) to be connected — otherwise the request answers `400 NO_CRM_CONNECTED`. Values:\n- `synced` — the contact has a CRM record on the active CRM and no sync error.\n- `not_synced` — the contact has no CRM record on the active CRM.\n- `searching` — a CRM search (Search & connect, Create in CRM) is queued or running for the contact.\n- `not_found` — the last CRM search found no record for the contact.\n- `error` — at least one sync error is currently raised, whatever its reason.\n- A specific error reason (lowercase form), to filter by root cause, e.g. `invalid_email` or `contact_blocked_by_company`.\nThe `error`, `searching`, `not_found` and reason states read every CRM the contact was synced with, so an error left by a previous CRM counts as `error` and keeps the contact out of `synced`.",
+            "example": "error",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "synced",
+                "not_synced",
+                "error",
+                "searching",
+                "not_found",
+                "invalid_email",
+                "property_doesnt_exist",
+                "required_field_missing",
+                "unique_index_error_contact",
+                "contact_already_exists_with_name",
+                "contact_already_exists_with_linkedin_url",
+                "contact_already_exists_with_email",
+                "contact_blocked_by_company",
+                "contact_blocked_by_company_search",
+                "contact_blocked_by_company_without_name",
+                "contact_blocked_by_company_without_key",
+                "contact_blocked_by_company_already_synced"
+              ]
+            }
+          },
+          {
+            "name": "crmIds",
+            "in": "query",
+            "required": false,
+            "description": "Record ids of contacts in the team's active CRM (HubSpot, Salesforce, Pipedrive or Attio), 1 to 100 values; for Salesforce, the 18-character Contact or Lead id; for Attio, the record UUID. Each contact found carries the matched id under `crmSync.crmRecordId`; an id that matches no contact is left out. Cannot be combined with the other filters, `search` and the company filters included.",
+            "example": "123456789,987654321",
+            "schema": {
+              "type": "string"
+            },
+            "style": "form",
+            "explode": false
+          },
+          {
+            "name": "advancedFilters",
+            "in": "query",
+            "required": false,
+            "description": "A filter tree encoded as JSON, addressing any field returned by `GET /v2/contacts/filters`. A node is either a group (`connector` `and` / `or`, plus `children`) or a condition (`property`, `operator`, `value`). Max depth 5, max 50 conditions. An unknown property or an operator the field does not allow answers `400 INVALID_FILTER`.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "{\"type\":\"group\",\"id\":\"root\",\"connector\":\"and\",\"children\":[{\"type\":\"condition\",\"id\":\"c1\",\"property\":\"jobTitle\",\"operator\":\"contains\",\"value\":\"engineer\"}]}"
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": false,
+            "description": "Field the page is ordered by. Ties are broken by the contact id.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "createdAt",
+                "fullName",
+                "lastContactedDate",
+                "company.name"
+              ],
+              "default": "createdAt"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "required": false,
+            "description": "Sort direction.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of contacts to return (1–500). Defaults to 100. `limit + offset` must not exceed 10000.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of contacts to skip for pagination. Defaults to 0. `limit + offset` must not exceed 10000: narrow the filters or the search instead of walking deeper.",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactV2ListResponse"
+                },
+                "example": {
+                  "data": [
+                    {
+                      "_id": "ctc_A1B2C3D4E5F6G7H8I",
+                      "teamId": "tea_A1B2C3D4E5F6G7H8I",
+                      "fullName": "John Doe",
+                      "email": "john@example.com",
+                      "firstName": "John",
+                      "lastName": "Doe",
+                      "jobTitle": "Growth Engineer",
+                      "ownerId": "usr_A1B2C3D4E5F6G7H8I",
+                      "statusId": "nExampleStatus",
+                      "companyId": "cpn_A1B2C3D4E5F6G7H8I",
+                      "createdAt": "2026-01-12T09:00:00.000Z",
+                      "createdBy": "usr_A1B2C3D4E5F6G7H8I",
+                      "unsubscribed": false,
+                      "campaignCount": 2,
+                      "crmSync": {
+                        "provider": "hubspot",
+                        "crmRecordId": "123456789",
+                        "syncDisabled": false,
+                        "searching": false,
+                        "notFoundAt": null,
+                        "errors": []
+                      },
+                      "fieldRejections": []
+                    }
+                  ],
+                  "total": 1,
+                  "limit": 100,
+                  "offset": 0
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid parameter — a value of the wrong type, an unknown `sortBy`, a filter tree over 5 levels or 50 conditions, `crmIds` sent with another filter, an unknown filter property or operator (`INVALID_FILTER`), two company filters (`MULTIPLE_COMPANY_FILTERS`), a bad company id (`INVALID_COMPANY_ID`), an unknown field-rejection reason (`INVALID_FIELD_REJECTION_REASON`), an unknown CRM sync status (`INVALID_CRM_SYNC_STATUS`), `crmSyncStatus` with no CRM connected (`NO_CRM_CONNECTED`), or `limit + offset` past 10000 (`PAGE_WINDOW_TOO_LARGE`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "examples": {
+                  "invalid-parameter": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "INVALID_PARAMETER",
+                        "message": "sortBy: invalid value"
+                      }
+                    }
+                  },
+                  "window-too-large": {
+                    "value": {
+                      "success": false,
+                      "error": {
+                        "code": "PAGE_WINDOW_TOO_LARGE",
+                        "message": "limit + offset must be at most 10000"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect."
+          },
+          "403": {
+            "description": "The team's Contacts V2 search is not enabled — `CONTACT_SEARCH_BETA_NOT_ENABLED`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "CONTACT_SEARCH_BETA_NOT_ENABLED",
+                    "message": "Contacts V2 is not enabled on this team"
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          },
+          "500": {
+            "description": "The search failed, with any other error code. It is alerted on our side, not answered as a client error."
+          }
+        }
+      }
+    },
+    "/v2/contacts/filters": {
+      "get": {
+        "summary": "List Contact Filters",
+        "description": "Lists every field addressable by `advancedFilters` on `GET /v2/contacts`, with its type, its allowed operators and the flat query parameter that addresses it, when there is one. The team's custom fields are included.",
+        "tags": [
+          "Contacts"
+        ],
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "description": "Restricts the response to the contact fields or to the company fields.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "contact",
+                "company"
+              ]
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Keeps the fields whose id or label contains this text, case-insensitive.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactV2FiltersResponse"
+                },
+                "example": {
+                  "data": [
+                    {
+                      "field": "jobTitle",
+                      "label": "Job title",
+                      "scope": "contact",
+                      "type": "text",
+                      "custom": false,
+                      "operators": [
+                        "contains",
+                        "does_not_contain",
+                        "is",
+                        "is_not",
+                        "starts_with",
+                        "ends_with",
+                        "is_empty",
+                        "is_not_empty"
+                      ],
+                      "queryParam": null,
+                      "values": null
+                    },
+                    {
+                      "field": "company.domain",
+                      "label": "Company domain",
+                      "scope": "company",
+                      "type": "text",
+                      "custom": false,
+                      "operators": [
+                        "contains",
+                        "does_not_contain",
+                        "is",
+                        "is_not",
+                        "starts_with",
+                        "ends_with",
+                        "is_empty",
+                        "is_not_empty"
+                      ],
+                      "queryParam": "companyDomain",
+                      "values": null
+                    }
+                  ],
+                  "total": 42
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid parameter — an unknown `scope`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorEnvelope"
+                },
+                "example": {
+                  "success": false,
+                  "error": {
+                    "code": "INVALID_PARAMETER",
+                    "message": "scope: invalid value"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect."
+          },
+          "403": {
+            "description": "The team's Contacts V2 search is not enabled — `CONTACT_SEARCH_BETA_NOT_ENABLED`."
+          },
+          "405": {
+            "description": "Method not allowed"
+          },
+          "500": {
+            "description": "The filter list failed, with any other error code. It is alerted on our side, not answered as a client error."
           }
         }
       }
