@@ -1,0 +1,25 @@
+---
+openapi: get /team/rules-of-engagement
+description: Returns every rule of engagement of the team.
+---
+
+The rules of engagement are team rules that apply to every campaign of the
+team. A team admin sets them in Settings › Rules of engagement. The response
+holds one key per rule:
+
+| Rule | When `enabled: true` | Change it with |
+| --- | --- | --- |
+| `exclusionLists` | A contact in one of the `listIds` lists, or a contact whose company is in one of them, is blocked from every campaign of the team. | `PUT /team/exclusion-lists` |
+| `forcedUnsubscribeLink` | Every campaign email must hold `{{unsubscribeUrl}}`. An email without it is not sent. | [Set a Team Rule of Engagement](/api-reference/endpoints/team/set-team-rule-of-engagement) |
+
+- Every rule is always present. A rule that the team never set reads its
+  default: `{ "enabled": false }`, plus `"listIds": []` for `exclusionLists`.
+  `updatedAt` and `updatedBy` are then absent.
+- `forcedUnsubscribeLink` is available to the teams that have the feature
+  enabled. For another team, it reads `{ "enabled": false }`.
+- Any team member can read the rules.
+
+<Warning>
+These endpoints need an API key linked to a user. A key not linked to a user
+gets a `401`.
+</Warning>

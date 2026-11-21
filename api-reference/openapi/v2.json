@@ -848,6 +848,141 @@
           }
         }
       },
+      "TeamRulesOfEngagement": {
+        "type": "object",
+        "description": "Every rule of engagement of the team. Each rule is always present: a rule that the team never set reads its default.",
+        "required": [
+          "exclusionLists",
+          "forcedUnsubscribeLink"
+        ],
+        "properties": {
+          "exclusionLists": {
+            "type": "object",
+            "description": "The exclusion lists. A contact in one of the lists, or a contact whose company is in one of them, is blocked from every campaign of the team. Change them with `PUT /team/exclusion-lists`. Default: `{ \"enabled\": false, \"listIds\": [] }`.",
+            "required": [
+              "enabled",
+              "listIds"
+            ],
+            "properties": {
+              "enabled": {
+                "type": "boolean",
+                "description": "`true` when the rule blocks the contacts of the lists."
+              },
+              "listIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "The excluded contact lists and company lists."
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "When the setting last changed. Absent before the first change."
+              },
+              "updatedBy": {
+                "type": "string",
+                "description": "The user who last changed the setting. Absent when `updatedAt` is absent."
+              }
+            }
+          },
+          "forcedUnsubscribeLink": {
+            "$ref": "#/components/schemas/TeamForcedUnsubscribeLink"
+          }
+        }
+      },
+      "TeamForcedUnsubscribeLink": {
+        "type": "object",
+        "description": "The rule that forces an unsubscribe link in the campaign emails. Default: `{ \"enabled\": false }`. A team that does not have the feature enabled reads the default.",
+        "required": [
+          "enabled"
+        ],
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "`true` when every email step and every personalized email of the team's campaigns must hold `{{unsubscribeUrl}}` in its body."
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the setting last changed. Absent before the first change."
+          },
+          "updatedBy": {
+            "type": "string",
+            "description": "The user who last changed the setting. On the API, the user of the API key. Absent when `updatedAt` is absent."
+          }
+        }
+      },
+      "TeamForcedUnsubscribeLinkImpact": {
+        "type": "object",
+        "description": "What switching the rule on changes now, in the campaigns that are not deleted, archived or ended. When the change switches the rule off, every count is `0`.",
+        "required": [
+          "campaignCount",
+          "stepCount",
+          "draftCount"
+        ],
+        "properties": {
+          "campaignCount": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "The campaigns with at least one email step or personalized email that gets the link."
+          },
+          "stepCount": {
+            "type": "object",
+            "description": "The email step versions (A and B) without the link.",
+            "required": [
+              "value",
+              "isCapped"
+            ],
+            "properties": {
+              "value": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "isCapped": {
+                "type": "boolean",
+                "description": "`true` when the real count is `value` or more. `value: 0` with `isCapped: true` means that lemlist could not count in time."
+              }
+            }
+          },
+          "draftCount": {
+            "type": "object",
+            "description": "The personalized emails without the link.",
+            "required": [
+              "value",
+              "isCapped"
+            ],
+            "properties": {
+              "value": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "isCapped": {
+                "type": "boolean",
+                "description": "`true` when the real count is `value` or more. `value: 0` with `isCapped: true` means that lemlist could not count in time."
+              }
+            }
+          }
+        }
+      },
+      "TeamRulesOfEngagementError": {
+        "type": "object",
+        "description": "Error of the team rules of engagement endpoints.",
+        "required": [
+          "error",
+          "code"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Human-readable error message."
+          },
+          "code": {
+            "type": "string",
+            "description": "Machine-readable error code."
+          }
+        }
+      },
       "Credits": {
         "type": "object",
         "description": "Credits are the coins a team uses to enrich emails, LinkedIn URLs, etc. Each enrichment feature needs a certain amount of credits to run.",
@@ -10308,6 +10443,300 @@
           },
           "405": {
             "description": "Method not allowed"
+          }
+        }
+      }
+    },
+    "/team/rules-of-engagement": {
+      "get": {
+        "summary": "Get Team Rules of Engagement",
+        "tags": [
+          "Team"
+        ],
+        "description": "Returns every rule of engagement of the team. Each rule is always present: a rule that the team never set reads its default (`enabled: false`, and `listIds: []` for the exclusion lists). `forcedUnsubscribeLink` is available to the teams that have the feature enabled; for another team, it reads as off. Any team member can read the rules.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "application/json"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/TeamRulesOfEngagement"
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "exclusionLists": {
+                      "enabled": true,
+                      "listIds": [
+                        "clt_YWmBRSLxuN4CaMb4j",
+                        "clt_SAawqQqN0PRA2tpZf"
+                      ],
+                      "updatedAt": "2026-11-06T17:30:00.000Z",
+                      "updatedBy": "usr_rKWKWp38MLIr2ZESF"
+                    },
+                    "forcedUnsubscribeLink": {
+                      "enabled": true,
+                      "updatedAt": "2026-11-20T10:15:00.000Z",
+                      "updatedBy": "usr_7bXL44y0UtZI4xDSM"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect, or the API key is not linked to a user",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamRulesOfEngagementError"
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/team/rules-of-engagement/{rule}": {
+      "put": {
+        "summary": "Set a Team Rule of Engagement",
+        "tags": [
+          "Team"
+        ],
+        "description": "Switches one rule of engagement of the team on or off, in two calls. Without `confirmed: true`, nothing is written: a change answers `\"status\": \"awaiting_confirmation\"` with its `impact`. Send the same body with `confirmed: true` to write it. The user of the API key needs the \"Edit rules of engagement\" permission, which team admins have. When `forcedUnsubscribeLink` is on, every email step and every personalized email of the team's campaigns must hold `{{unsubscribeUrl}}`, and an email without it is not sent.",
+        "parameters": [
+          {
+            "name": "rule",
+            "in": "path",
+            "required": true,
+            "description": "The rule to set. The exclusion lists have their own route, `PUT /team/exclusion-lists`. Another value answers `404`.",
+            "example": "forcedUnsubscribeLink",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "forcedUnsubscribeLink"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "enabled"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "description": "`true` switches the rule on. `false` switches it off and removes no link."
+                  },
+                  "confirmed": {
+                    "type": "boolean",
+                    "description": "`true` writes the setting. Absent or `false`, the call writes nothing and answers the impact of the change."
+                  }
+                }
+              },
+              "examples": {
+                "preview": {
+                  "summary": "First call: preview the change",
+                  "value": {
+                    "enabled": true
+                  }
+                },
+                "confirm": {
+                  "summary": "Second call: write the change",
+                  "value": {
+                    "enabled": true,
+                    "confirmed": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success. Without `confirmed: true`, a change answers `status`, `data` (the setting that the confirmed call would write) and `impact`, and no change answers `data` only (the stored setting). With `confirmed: true`, the answer is `data`, the setting after the write.",
+            "headers": {
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "application/json"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "awaiting_confirmation"
+                      ],
+                      "description": "Present when the call changes the setting without `confirmed: true`: nothing is written."
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/TeamForcedUnsubscribeLink"
+                    },
+                    "impact": {
+                      "$ref": "#/components/schemas/TeamForcedUnsubscribeLinkImpact"
+                    }
+                  }
+                },
+                "examples": {
+                  "awaiting-confirmation": {
+                    "summary": "Without confirmed: the change waits for confirmation",
+                    "value": {
+                      "status": "awaiting_confirmation",
+                      "data": {
+                        "enabled": true,
+                        "updatedAt": "2026-11-20T10:15:00.000Z",
+                        "updatedBy": "usr_7bXL44y0UtZI4xDSM"
+                      },
+                      "impact": {
+                        "campaignCount": 12,
+                        "stepCount": {
+                          "value": 31,
+                          "isCapped": false
+                        },
+                        "draftCount": {
+                          "value": 140,
+                          "isCapped": false
+                        }
+                      }
+                    }
+                  },
+                  "written": {
+                    "summary": "With confirmed: true: the setting is written",
+                    "value": {
+                      "data": {
+                        "enabled": true,
+                        "updatedAt": "2026-11-20T10:15:00.000Z",
+                        "updatedBy": "usr_7bXL44y0UtZI4xDSM"
+                      }
+                    }
+                  },
+                  "no-change": {
+                    "summary": "Without confirmed: the body changes nothing",
+                    "value": {
+                      "data": {
+                        "enabled": true,
+                        "updatedAt": "2026-11-20T10:15:00.000Z",
+                        "updatedBy": "usr_7bXL44y0UtZI4xDSM"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The body is not valid: an unknown property, a missing `enabled`, or a wrong type. Nothing is written.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamRulesOfEngagementError"
+                },
+                "example": {
+                  "error": "Invalid input: the body must hold the parameters of the rule only, for example { enabled: boolean }",
+                  "code": "RULES_OF_ENGAGEMENT_CORE_INVALID_INPUT"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect, or the API key is not linked to a user",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "403": {
+            "description": "`RULES_OF_ENGAGEMENT_CORE_PERMISSION_DENIED`: the user of the API key does not have the \"Edit rules of engagement\" permission. `RULES_OF_ENGAGEMENT_CORE_BETA_NOT_ENABLED`: the rule is not enabled for the team, with or without `confirmed`. Nothing is written.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamRulesOfEngagementError"
+                },
+                "examples": {
+                  "permission-denied": {
+                    "value": {
+                      "error": "Changing a rule of engagement needs the \"Edit rules of engagement\" permission. Ask a team admin",
+                      "code": "RULES_OF_ENGAGEMENT_CORE_PERMISSION_DENIED"
+                    }
+                  },
+                  "beta-not-enabled": {
+                    "value": {
+                      "error": "This rule of engagement is not available for this team yet",
+                      "code": "RULES_OF_ENGAGEMENT_CORE_BETA_NOT_ENABLED"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The `rule` is not a rule that this route sets.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamRulesOfEngagementError"
+                },
+                "example": {
+                  "error": "Unknown rule. The rules this route writes are: forcedUnsubscribeLink. Change the exclusion lists with PUT /api/team/exclusion-lists or set_team_exclusion_lists",
+                  "code": "RULES_OF_ENGAGEMENT_CORE_RULE_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamRulesOfEngagementError"
+                },
+                "example": {
+                  "error": "Route bad method",
+                  "code": "ROUTE_BAD_METHOD"
+                }
+              }
+            }
           }
         }
       }
