@@ -1,0 +1,67 @@
+---
+openapi: put /team/rules-of-engagement/{rule}
+description: Switches one team rule of engagement on or off, in two calls.
+---
+
+<Note>
+The user of the API key needs the "Edit rules of engagement" permission. Team
+admins have it. Else the request answers `403`.
+</Note>
+
+## Two-step confirmation
+
+1. Send the new setting without `confirmed`. Nothing is written.
+   - When the body changes the setting, the answer has
+     `"status": "awaiting_confirmation"`, the setting after the change in
+     `data`, and its `impact`.
+   - When the body changes nothing, the answer is the stored setting in
+     `data`, without `status`.
+2. Send the same body with `"confirmed": true`. The setting is written, and
+   the answer is the setting after the write in `data`.
+
+A confirmed call that changes nothing writes nothing, and starts the background
+work of the rule again. Send it again after a failed call.
+
+## Impact
+
+`impact` counts what switching the rule on changes now:
+
+- `campaignCount`: the campaigns that get the link in at least one email.
+- `stepCount`: the email step versions (A and B) without the link.
+- `draftCount`: the personalized emails without the link.
+
+A count with `isCapped: true` is a lower bound. `value: 0` with
+`isCapped: true` means that lemlist could not count in time. When the body
+switches the rule off, every count is `0`.
+
+## forcedUnsubscribeLink
+
+When the rule is on:
+
+- The body of every email step, A and B versions, and of every personalized
+  email of the team's campaigns must hold `{{unsubscribeUrl}}`. A link in the
+  signature does not count.
+- A step or a personalized email saved without the link is refused.
+- An email without the link is not sent. Its lead waits until the email gets
+  the link or the rule is switched off.
+
+Switching the rule on adds the link, in the background, to the email steps and
+the personalized emails of every campaign that is not deleted, archived or
+ended. Paused campaigns and campaigns not launched yet are included.
+
+Switching the rule off removes no link.
+
+## Validation
+
+- The body takes `enabled` and `confirmed` only. Another property, or a wrong
+  type, answers `400`.
+- A `rule` other than `forcedUnsubscribeLink` answers `404`. To change the
+  exclusion lists, use `PUT /team/exclusion-lists`.
+- When the feature is not enabled for the team, the request answers `403`
+  `RULES_OF_ENGAGEMENT_CORE_BETA_NOT_ENABLED`, with or without `confirmed`.
+- A refused request writes nothing.
+
+<Warning>
+These endpoints need an API key linked to a user. A key not linked to a user
+gets a `401`.
+</Warning>
