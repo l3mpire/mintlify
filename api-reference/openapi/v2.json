@@ -23510,7 +23510,7 @@
                           "items": {
                             "type": "string"
                           },
-                          "description": "LinkedIn slugs of the engagers, post author excluded and deduplicated"
+                          "description": "LinkedIn slugs of the engagers, post author excluded and deduplicated. Empty when `peopleSearchFailed` is `true`."
                         },
                         "totals": {
                           "type": "object",
@@ -23535,7 +23535,7 @@
                           "items": {
                             "$ref": "#/components/schemas/PersonaFilter"
                           },
-                          "description": "Exact filters of the People Database search: `leadLinkedInSlug` plus the filters you passed. Empty when nobody engaged with the post."
+                          "description": "Exact filters of the People Database search: `leadLinkedInSlug` plus the filters you passed. Empty when nobody engaged with the post or when `peopleSearchFailed` is `true`."
                         },
                         "search": {
                           "type": "string",
@@ -23571,7 +23571,7 @@
                           "enum": [
                             true
                           ],
-                          "description": "Present and `true` when the People Database search failed after the post was read: the 50 credits were refunded, `slugs` and `filters` are valid, `search` and `people` are absent. Run `POST /database/people` yourself with `filters` (no credits, but it counts in the 24-hour quota), or call this endpoint again, which is a new paid call."
+                          "description": "Present and `true` when the People Database search failed after the post was read: the 50 credits were refunded, `slugs` and `filters` are empty, `search` and `people` are absent. Call this endpoint again later: it is a new paid call."
                         }
                       }
                     }
