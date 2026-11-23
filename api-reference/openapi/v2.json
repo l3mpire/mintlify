@@ -9232,7 +9232,7 @@
         }
       },
       "UserGroupPlanRequired": {
-        "description": "The team is not on the Enterprise plan. `code` is `USER_GROUPS_PLAN_REQUIRED`.",
+        "description": "The team is not on the Enterprise plan, or the user groups beta is not enabled for it. `code` is `USER_GROUPS_PLAN_REQUIRED`.",
         "content": {
           "application/json": {
             "schema": {
@@ -9246,7 +9246,7 @@
         }
       },
       "UserGroupForbidden": {
-        "description": "Forbidden. `code` is `USER_GROUPS_PLAN_REQUIRED` when the team is not on the Enterprise plan, `USER_NOT_AUTHORIZED` when the API key was created by a team member who is not an admin.",
+        "description": "Forbidden. `code` is `USER_GROUPS_PLAN_REQUIRED` when the team is not on the Enterprise plan or the user groups beta is not enabled for it, `USER_NOT_AUTHORIZED` when the API key was created by a team member who is not an admin.",
         "content": {
           "application/json": {
             "schema": {
