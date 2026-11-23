@@ -23,6 +23,10 @@
     {
       "name": "Enrichment Waterfalls",
       "description": "Control which data providers lemlist calls when enriching a contact, and in which order.\n\nA waterfall is an ordered list of providers for one enrichment `type` (`email` or `phone`). Providers are tried one after the other until one returns a result.\n\nEvery team has exactly one default waterfall per type (`isDefault: true`). While its `editor` is `lemlist` it follows the lemlist behaviour: providers you connected with your own API key are tried first, then internal providers in a random order. Once a team member edits its provider list, `editor` becomes that user's id and the list is followed as is; resetting it hands it back to `lemlist`.\n\nCustom waterfalls (`isDefault: false`) carry `conditions` on the contact being enriched, keyed by contact property; every key present must match. When a contact is enriched, lemlist runs a single waterfall: the custom waterfall of the requested type whose conditions match the contact, or the default waterfall when none does. If several match, the one with the most condition keys wins, then the most recently updated. Only that waterfall runs; when it finds nothing, the enrichment ends without falling back to another one."
+    },
+    {
+      "name": "User Groups",
+      "description": "Gather your team's users into groups (UK, FR, US…), so a manager filters Reports, Tasks and Campaigns by group in one click. Available on the Enterprise plan.\n\nAny member of the team reads the groups; only an admin creates, edits and deletes them. An API key acts on behalf of the team member who created it, so the write endpoints need a key created by an admin.\n\nA group name is unique in the team, whatever its case, and holds 1 to 60 characters. A group holds at most 1,000 members and a team at most 100 groups. A user can belong to several groups, and a user removed from the team leaves every group. Deleting a group also removes it from the Reports, Tasks and Campaigns filters saved on it."
     }
   ],
   "components": {
@@ -8193,6 +8197,145 @@
           }
         }
       },
+      "UserGroup": {
+        "type": "object",
+        "description": "A group of team members.",
+        "required": ["id", "name", "userIds"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Id of the group, starting with `ugr_`.",
+            "example": "ugr_ExAmPlE123456789a"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the group, unique in the team whatever its case.",
+            "example": "UK"
+          },
+          "userIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Ids of the team members in the group, each once.",
+            "example": ["usr_ExAmPlE123456789a", "usr_ExAmPlE123456789b"]
+          }
+        }
+      },
+      "UserGroupResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/UserGroup"
+          }
+        }
+      },
+      "UserGroupListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserGroup"
+            }
+          }
+        }
+      },
+      "UserGroupDeleteResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Id of the deleted group"
+              },
+              "deleted": {
+                "type": "boolean",
+                "enum": [true]
+              }
+            }
+          }
+        }
+      },
+      "UserGroupCreateRequest": {
+        "type": "object",
+        "required": ["name", "userIds"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "description": "Unique in the team, whatever its case. Trimmed, with its inner spaces collapsed."
+          },
+          "userIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 1000,
+            "description": "Ids of team members; `[]` for an empty group. A user listed twice is kept once."
+          }
+        }
+      },
+      "UserGroupUpdateRequest": {
+        "type": "object",
+        "description": "At least one of `name` and `userIds`. A field left out keeps its value.",
+        "minProperties": 1,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60,
+            "description": "Unique in the team, whatever its case. Trimmed, with its inner spaces collapsed."
+          },
+          "userIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 1000,
+            "description": "The whole member list, replacing the previous one; `[]` empties the group."
+          }
+        }
+      },
+      "UserGroupMembersRequest": {
+        "type": "object",
+        "description": "Each list is optional. A user cannot be in both.",
+        "properties": {
+          "addUserIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 1000,
+            "description": "Team members added to the group; one already in it stays once."
+          },
+          "removeUserIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 1000,
+            "description": "Users removed from the group; one not in it is ignored."
+          }
+        }
+      },
+      "UserGroupError": {
+        "type": "object",
+        "description": "Error envelope returned by the user group endpoints.",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Human-readable explanation of the failure"
+          },
+          "code": {
+            "type": "string",
+            "description": "Machine-readable error code, stable across releases"
+          }
+        }
+      },
       "Domain": {
         "type": "object",
         "description": "A domain the team bought or is transferring through lemlist.",
@@ -9146,6 +9289,76 @@
           "application/json": {
             "schema": {
               "$ref": "#/components/schemas/EnrichmentWaterfallError"
+            },
+            "example": {
+              "error": "Internal error",
+              "code": "INTERNAL_ERROR"
+            }
+          }
+        }
+      },
+      "UserGroupUnauthorized": {
+        "description": "Unauthorized - invalid or missing API key",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UserGroupError"
+            },
+            "example": {
+              "error": "Route unauthorized",
+              "code": "ROUTE_UNAUTHORIZED"
+            }
+          }
+        }
+      },
+      "UserGroupPlanRequired": {
+        "description": "The team is not on the Enterprise plan, or the user groups beta is not enabled for it. `code` is `USER_GROUPS_PLAN_REQUIRED`.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UserGroupError"
+            },
+            "example": {
+              "error": "User groups are available on the Enterprise plan",
+              "code": "USER_GROUPS_PLAN_REQUIRED"
+            }
+          }
+        }
+      },
+      "UserGroupForbidden": {
+        "description": "Forbidden. `code` is `USER_GROUPS_PLAN_REQUIRED` when the team is not on the Enterprise plan or the user groups beta is not enabled for it, `USER_NOT_AUTHORIZED` when the API key was created by a team member who is not an admin.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UserGroupError"
+            },
+            "example": {
+              "error": "User not authorized",
+              "code": "USER_NOT_AUTHORIZED"
+            }
+          }
+        }
+      },
+      "UserGroupNotFound": {
+        "description": "No group with this id in your team. `code` is `USER_GROUPS_NOT_FOUND`.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UserGroupError"
+            },
+            "example": {
+              "error": "This user group no longer exists",
+              "code": "USER_GROUPS_NOT_FOUND"
+            }
+          }
+        }
+      },
+      "UserGroupInternalError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UserGroupError"
             },
             "example": {
               "error": "Internal error",
@@ -45847,6 +46060,383 @@
           },
           "500": {
             "$ref": "#/components/responses/EnrichmentWaterfallInternalError"
+          }
+        }
+      }
+    },
+    "/v2/user-groups": {
+      "get": {
+        "summary": "List User Groups",
+        "description": "**Beta**: to use this endpoint now, contact your lemlist account manager.\n\nReturns every group of your team, sorted by name. Any member of the team can call it.\n\nThe list is not paginated: a team holds at most 100 groups.",
+        "operationId": "listUserGroups",
+        "tags": ["User Groups"],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroupListResponse"
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": "ugr_ExAmPlE987654321b",
+                      "name": "FR",
+                      "userIds": ["usr_ExAmPlE123456789c"]
+                    },
+                    {
+                      "id": "ugr_ExAmPlE123456789a",
+                      "name": "UK",
+                      "userIds": ["usr_ExAmPlE123456789a", "usr_ExAmPlE123456789b"]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UserGroupUnauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/UserGroupPlanRequired"
+          },
+          "500": {
+            "$ref": "#/components/responses/UserGroupInternalError"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create User Group",
+        "description": "**Beta**: to use this endpoint now, contact your lemlist account manager.\n\nCreates a group. Admins only.\n\nThe name is trimmed and its inner spaces collapsed, and a user listed twice is kept once. The group is returned as stored, with a `200` status.",
+        "operationId": "createUserGroup",
+        "tags": ["User Groups"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserGroupCreateRequest"
+              },
+              "example": {
+                "name": "UK",
+                "userIds": ["usr_ExAmPlE123456789a", "usr_ExAmPlE123456789b"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroupResponse"
+                },
+                "example": {
+                  "data": {
+                    "id": "ugr_ExAmPlE123456789a",
+                    "name": "UK",
+                    "userIds": ["usr_ExAmPlE123456789a", "usr_ExAmPlE123456789b"]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. `code` is one of `USER_GROUPS_INVALID_REQUEST`, `USER_NOT_IN_TEAM` (a user id is not a member of the team).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroupError"
+                },
+                "example": {
+                  "error": "Invalid request: name holds 1 to 60 characters once trimmed, userIds is an array of at most 1,000 user ids, a PATCH sends name or userIds, and no user is both added and removed",
+                  "code": "USER_GROUPS_INVALID_REQUEST"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UserGroupUnauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/UserGroupForbidden"
+          },
+          "409": {
+            "description": "Conflict. `code` is `USER_GROUPS_NAME_TAKEN` when the team already holds this name, whatever its case, `USER_GROUPS_LIMIT_REACHED` when the team already holds 100 groups.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroupError"
+                },
+                "example": {
+                  "error": "A user group already has this name",
+                  "code": "USER_GROUPS_NAME_TAKEN"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/UserGroupInternalError"
+          }
+        }
+      }
+    },
+    "/v2/user-groups/{userGroupId}": {
+      "parameters": [
+        {
+          "name": "userGroupId",
+          "in": "path",
+          "required": true,
+          "description": "Id of the group, as returned by the list endpoint. A malformed id answers `404`.",
+          "schema": {
+            "type": "string"
+          },
+          "example": "ugr_ExAmPlE123456789a"
+        }
+      ],
+      "get": {
+        "summary": "Get User Group",
+        "description": "**Beta**: to use this endpoint now, contact your lemlist account manager.\n\nReturns one group of your team. Any member of the team can call it.",
+        "operationId": "getUserGroup",
+        "tags": ["User Groups"],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroupResponse"
+                },
+                "example": {
+                  "data": {
+                    "id": "ugr_ExAmPlE123456789a",
+                    "name": "UK",
+                    "userIds": ["usr_ExAmPlE123456789a", "usr_ExAmPlE123456789b"]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UserGroupUnauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/UserGroupPlanRequired"
+          },
+          "404": {
+            "$ref": "#/components/responses/UserGroupNotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/UserGroupInternalError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update User Group",
+        "description": "**Beta**: to use this endpoint now, contact your lemlist account manager.\n\nRenames a group, replaces its whole member list, or both. Admins only.\n\nA field left out keeps its value; send at least one. To add or remove a few members without sending the whole list, use the members endpoint. The group is returned as stored.",
+        "operationId": "updateUserGroup",
+        "tags": ["User Groups"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserGroupUpdateRequest"
+              },
+              "example": {
+                "name": "United Kingdom"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroupResponse"
+                },
+                "example": {
+                  "data": {
+                    "id": "ugr_ExAmPlE123456789a",
+                    "name": "United Kingdom",
+                    "userIds": ["usr_ExAmPlE123456789a", "usr_ExAmPlE123456789b"]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. `code` is one of `USER_GROUPS_INVALID_REQUEST`, `USER_NOT_IN_TEAM` (a user id is not a member of the team).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroupError"
+                },
+                "example": {
+                  "error": "Invalid request: name holds 1 to 60 characters once trimmed, userIds is an array of at most 1,000 user ids, a PATCH sends name or userIds, and no user is both added and removed",
+                  "code": "USER_GROUPS_INVALID_REQUEST"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UserGroupUnauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/UserGroupForbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/UserGroupNotFound"
+          },
+          "409": {
+            "description": "Another group of the team holds this name, whatever its case. `code` is `USER_GROUPS_NAME_TAKEN`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroupError"
+                },
+                "example": {
+                  "error": "A user group already has this name",
+                  "code": "USER_GROUPS_NAME_TAKEN"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/UserGroupInternalError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete User Group",
+        "description": "**Beta**: to use this endpoint now, contact your lemlist account manager.\n\nDeletes a group for good. Admins only.\n\nThe group is also removed from the Reports, Tasks and Campaigns filters saved on it.",
+        "operationId": "deleteUserGroup",
+        "tags": ["User Groups"],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroupDeleteResponse"
+                },
+                "example": {
+                  "data": {
+                    "id": "ugr_ExAmPlE123456789a",
+                    "deleted": true
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UserGroupUnauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/UserGroupForbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/UserGroupNotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/UserGroupInternalError"
+          }
+        }
+      }
+    },
+    "/v2/user-groups/{userGroupId}/members": {
+      "parameters": [
+        {
+          "name": "userGroupId",
+          "in": "path",
+          "required": true,
+          "description": "Id of the group, as returned by the list endpoint. A malformed id answers `404`.",
+          "schema": {
+            "type": "string"
+          },
+          "example": "ugr_ExAmPlE123456789a"
+        }
+      ],
+      "post": {
+        "summary": "Edit User Group Members",
+        "description": "**Beta**: to use this endpoint now, contact your lemlist account manager.\n\nAdds and removes members without sending the whole list. Admins only.\n\nA user already in the group is not added twice, and a user not in it is ignored on removal. A user cannot be both added and removed. The group is returned as stored.",
+        "operationId": "editUserGroupMembers",
+        "tags": ["User Groups"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserGroupMembersRequest"
+              },
+              "example": {
+                "addUserIds": ["usr_ExAmPlE123456789c"],
+                "removeUserIds": ["usr_ExAmPlE123456789b"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroupResponse"
+                },
+                "example": {
+                  "data": {
+                    "id": "ugr_ExAmPlE123456789a",
+                    "name": "UK",
+                    "userIds": ["usr_ExAmPlE123456789a", "usr_ExAmPlE123456789c"]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error. `code` is one of `USER_GROUPS_INVALID_REQUEST`, `USER_NOT_IN_TEAM` (an added user is not a member of the team).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroupError"
+                },
+                "example": {
+                  "error": "This user is not a member of this team",
+                  "code": "USER_NOT_IN_TEAM"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UserGroupUnauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/UserGroupForbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/UserGroupNotFound"
+          },
+          "409": {
+            "description": "The group would hold more than 1,000 members. `code` is `USER_GROUPS_USERS_LIMIT_REACHED`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGroupError"
+                },
+                "example": {
+                  "error": "This user group has reached the maximum number of members",
+                  "code": "USER_GROUPS_USERS_LIMIT_REACHED"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/UserGroupInternalError"
           }
         }
       }
