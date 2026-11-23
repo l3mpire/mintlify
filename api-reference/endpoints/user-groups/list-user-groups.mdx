@@ -3,6 +3,11 @@ openapi: get /v2/user-groups
 description: Lists your team's user groups, sorted by name.
 ---
 
+<Warning>
+  User groups are in beta. To use these endpoints now, contact your lemlist
+  account manager.
+</Warning>
+
 Any member of the team can read the groups. The list is not paginated: a team holds at most 100 groups.
 
 ## Error codes

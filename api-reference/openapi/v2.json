@@ -45949,7 +45949,7 @@
     "/v2/user-groups": {
       "get": {
         "summary": "List User Groups",
-        "description": "Returns every group of your team, sorted by name. Any member of the team can call it.\n\nThe list is not paginated: a team holds at most 100 groups.",
+        "description": "**Beta**: to use this endpoint now, contact your lemlist account manager.\n\nReturns every group of your team, sorted by name. Any member of the team can call it.\n\nThe list is not paginated: a team holds at most 100 groups.",
         "operationId": "listUserGroups",
         "tags": ["User Groups"],
         "responses": {
@@ -45990,7 +45990,7 @@
       },
       "post": {
         "summary": "Create User Group",
-        "description": "Creates a group. Admins only.\n\nThe name is trimmed and its inner spaces collapsed, and a user listed twice is kept once. The group is returned as stored, with a `200` status.",
+        "description": "**Beta**: to use this endpoint now, contact your lemlist account manager.\n\nCreates a group. Admins only.\n\nThe name is trimmed and its inner spaces collapsed, and a user listed twice is kept once. The group is returned as stored, with a `200` status.",
         "operationId": "createUserGroup",
         "tags": ["User Groups"],
         "requestBody": {
@@ -46080,7 +46080,7 @@
       ],
       "get": {
         "summary": "Get User Group",
-        "description": "Returns one group of your team. Any member of the team can call it.",
+        "description": "**Beta**: to use this endpoint now, contact your lemlist account manager.\n\nReturns one group of your team. Any member of the team can call it.",
         "operationId": "getUserGroup",
         "tags": ["User Groups"],
         "responses": {
@@ -46117,7 +46117,7 @@
       },
       "patch": {
         "summary": "Update User Group",
-        "description": "Renames a group, replaces its whole member list, or both. Admins only.\n\nA field left out keeps its value; send at least one. To add or remove a few members without sending the whole list, use the members endpoint. The group is returned as stored.",
+        "description": "**Beta**: to use this endpoint now, contact your lemlist account manager.\n\nRenames a group, replaces its whole member list, or both. Admins only.\n\nA field left out keeps its value; send at least one. To add or remove a few members without sending the whole list, use the members endpoint. The group is returned as stored.",
         "operationId": "updateUserGroup",
         "tags": ["User Groups"],
         "requestBody": {
@@ -46195,7 +46195,7 @@
       },
       "delete": {
         "summary": "Delete User Group",
-        "description": "Deletes a group for good. Admins only.\n\nThe group is also removed from the Reports, Tasks and Campaigns filters saved on it.",
+        "description": "**Beta**: to use this endpoint now, contact your lemlist account manager.\n\nDeletes a group for good. Admins only.\n\nThe group is also removed from the Reports, Tasks and Campaigns filters saved on it.",
         "operationId": "deleteUserGroup",
         "tags": ["User Groups"],
         "responses": {
@@ -46245,7 +46245,7 @@
       ],
       "post": {
         "summary": "Edit User Group Members",
-        "description": "Adds and removes members without sending the whole list. Admins only.\n\nA user already in the group is not added twice, and a user not in it is ignored on removal. A user cannot be both added and removed. The group is returned as stored.",
+        "description": "**Beta**: to use this endpoint now, contact your lemlist account manager.\n\nAdds and removes members without sending the whole list. Admins only.\n\nA user already in the group is not added twice, and a user not in it is ignored on removal. A user cannot be both added and removed. The group is returned as stored.",
         "operationId": "editUserGroupMembers",
         "tags": ["User Groups"],
         "requestBody": {

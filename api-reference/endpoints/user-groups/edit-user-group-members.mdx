@@ -3,6 +3,11 @@ openapi: post /v2/user-groups/{userGroupId}/members
 description: Adds and removes members of a user group without sending the whole list.
 ---
 
+<Warning>
+  User groups are in beta. To use these endpoints now, contact your lemlist
+  account manager.
+</Warning>
+
 <Note>
   Admins only: the API key must have been created by an admin of the team.
 </Note>
