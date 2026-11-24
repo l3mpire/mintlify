@@ -24578,6 +24578,200 @@
         }
       }
     },
+    "/contacts/push-from-people-database": {
+      "post": {
+        "summary": "Push People database to contacts",
+        "description": "Pushes people from the People Database into your contacts, optionally adding them to a static contact list. Send `profileIds` to push a hand-picked selection, or `filters` to push every person a search matches. When both are sent, `profileIds` is used and `filters` is ignored.\n\n**Caps**: 1,000 `profileIds` per call; more are refused with a 400. A `filters` push reads at most the first 1,000 people the search matches, or 10,000 for teams in the extended-selection beta. Free-trial and freemium teams are capped lower, at one page (100 people), matching the search window their plan allows. When the search matches more people than the cap, the response carries `matchedTotal` and its `message` says so: narrow the search to push the rest.\n\n**Search quota**: a `filters` push spends one search of the team's 24h People Database search quota, whatever the number of people pushed, before any person is read. A `profileIds` push spends none. A request refused with a 400 or a 403 spends none either: the `notInCrm` filter, a dynamic `listId` and a refused enrichment are checked before the search is spent.\n\n**Duplicates**: people are matched and de-duplicated by LinkedIn profile, so pushing someone already in your contacts updates that contact rather than creating a second one.\n\n**Permission**: without the \"Create contacts\" permission on the API key's user, people not yet in your contacts are skipped; contacts that already exist are still updated.\n\n**Duration**: the call is synchronous and answers once every contact is written. A 10,000-person push can take up to about a minute, so set your HTTP client timeout accordingly.",
+        "operationId": "pushPeopleDatabaseToContacts",
+        "tags": ["People Database"],
+        "requestBody": {
+          "required": true,
+          "description": "The people to push: `profileIds` or `filters`, plus an optional enrichment and target list",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "profileIds": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 1000,
+                    "items": { "type": "string" },
+                    "description": "People Database people to push, 1 to 1,000 per call: the `_id` of each result of `POST /database/people`. Use it for a hand-picked selection; it spends no search. More than 1,000 ids are refused with a 400. Takes precedence over `filters` when both are sent."
+                  },
+                  "filters": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "$ref": "#/components/schemas/PersonaFilter" },
+                    "description": "A People Database search, with the same filter objects as `POST /database/people` (`filterId`, `in`, `out`). Every person the search matches is pushed, up to the cap described above, and the push spends one search of the 24h quota. Filter ids come from `GET /database/filters`. The `notInCrm` filter is refused with a 400: push the results of such a search with `profileIds` instead. Ignored when `profileIds` is sent."
+                  },
+                  "enrichFeatures": {
+                    "type": "array",
+                    "items": { "type": "string", "enum": ["find_email", "find_phone"] },
+                    "description": "Enrichments to request on the pushed contacts: `find_email`, `find_phone` or both. They cost credits for each contact enriched, see [lemlist API credits](/api-reference/objects-definitions/credits). Their results are not part of this response. Refused with a 403 `linkedin-not-linked` when the API key's user cannot spend enrichment credits, for example a free-trial user without a connected LinkedIn account."
+                  },
+                  "listId": {
+                    "type": "string",
+                    "pattern": "^clt_[a-zA-Z0-9]+$",
+                    "description": "Static contact list to add the pushed contacts to (`clt_xxx` format), from [Get contact lists](/api-reference/endpoints/contacts/get-contact-lists). Omit it to push into all contacts only. A dynamic list is refused with a 400.",
+                    "example": "clt_ExAmPlEA1b2C3d4E5"
+                  }
+                }
+              },
+              "examples": {
+                "Push a search": {
+                  "value": {
+                    "filters": [
+                      { "filterId": "currentTitle", "in": ["CTO"], "out": [] },
+                      { "filterId": "country", "in": ["France"], "out": [] }
+                    ],
+                    "listId": "clt_ExAmPlEA1b2C3d4E5"
+                  }
+                },
+                "Push a selection": {
+                  "value": {
+                    "profileIds": ["123456789", "987654321"],
+                    "enrichFeatures": ["find_email"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Push summary",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["message", "count", "insertedCount", "updatedCount", "unchangedCount"],
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Human-readable summary of the push. When the search matched more people than the cap, it says how many were pushed out of how many matched."
+                    },
+                    "count": {
+                      "type": "integer",
+                      "description": "Contacts written by the push: `insertedCount` + `updatedCount` + `unchangedCount`. It can be lower than the number of people sent: a profile that cannot be imported is skipped, and so is a person not yet in your contacts when the API key's user lacks the \"Create contacts\" permission."
+                    },
+                    "insertedCount": {
+                      "type": "integer",
+                      "description": "Contacts created"
+                    },
+                    "updatedCount": {
+                      "type": "integer",
+                      "description": "Existing contacts updated with the People Database data"
+                    },
+                    "unchangedCount": {
+                      "type": "integer",
+                      "description": "Existing contacts matched without any change"
+                    },
+                    "matchedTotal": {
+                      "type": "integer",
+                      "description": "On a `filters` push only: how many people the search matched. When it is larger than the cap, only the first people up to the cap were pushed; narrow the search to push the rest."
+                    }
+                  }
+                },
+                "examples": {
+                  "Selection push": {
+                    "value": {
+                      "message": "Pushed 250 contacts from the People Database",
+                      "count": 250,
+                      "insertedCount": 240,
+                      "updatedCount": 8,
+                      "unchangedCount": 2
+                    }
+                  },
+                  "Search push above the cap": {
+                    "value": {
+                      "message": "Pushed 1000 of 4520 matching people from the People Database (cap 1000); narrow the search to capture the rest",
+                      "count": 1000,
+                      "insertedCount": 990,
+                      "updatedCount": 6,
+                      "unchangedCount": 4,
+                      "matchedTotal": 4520
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No `profileIds` and no `filters`, more than 1,000 `profileIds`, `filters` the search refuses, the `notInCrm` filter, a dynamic `listId`, or a malformed field (an `enrichFeatures` value other than `find_email` or `find_phone`, a `listId` without the `clt_` prefix). A coded error carries its code in `error` and a human-readable `message`; the others carry the message in `error` only.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": { "type": "string" },
+                    "message": { "type": "string" }
+                  }
+                },
+                "examples": {
+                  "Missing profileIds and filters": {
+                    "value": { "error": "Provide a non-empty profileIds or filters array" }
+                  },
+                  "Too many profileIds": {
+                    "value": { "error": "max-number-of-selected-ids", "message": "You cannot add more than 1000 items" }
+                  },
+                  "Invalid filters": {
+                    "value": { "error": "SEARCH_FILTERS_INVALID", "message": "You have no valid filters with the current search mode" }
+                  },
+                  "notInCrm filter": {
+                    "value": {
+                      "error": "SELECT_ALL_WITH_CRM_FILTER_UNAVAILABLE",
+                      "message": "\"Select all\" is unavailable with the \"Not in CRM\" filter to avoid making too many requests to your CRM"
+                    }
+                  },
+                  "Dynamic list": {
+                    "value": { "error": "CRM_LIST_DYNAMIC_CONTACT", "message": "Cannot manually change the contacts of a dynamic list" }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The authentication you supplied is incorrect",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "403": {
+            "description": "`SEARCH_QUERY_LIMIT_REACHED` when the team's 24h People Database search quota is spent (a `filters` push only), or `linkedin-not-linked` when `enrichFeatures` is requested by a user who cannot spend enrichment credits",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": { "type": "string" },
+                    "message": { "type": "string" }
+                  }
+                },
+                "examples": {
+                  "Search quota spent": {
+                    "value": { "error": "SEARCH_QUERY_LIMIT_REACHED", "message": "Search is limited to 2000 queries every 24 hours." }
+                  },
+                  "Enrichment refused": {
+                    "value": { "error": "linkedin-not-linked", "message": "LinkedIn account not linked" }
+                  }
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/json": {
+                "example": { "error": "Method not allowed" }
+              }
+            }
+          }
+        }
+      }
+    },
     "/database/personas": {
       "get": {
         "summary": "List Personas",

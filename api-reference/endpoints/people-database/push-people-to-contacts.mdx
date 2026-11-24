@@ -1,0 +1,18 @@
+---
+openapi: "post /contacts/push-from-people-database"
+description: "Pushes People Database people into your contacts, from a hand-picked selection or a whole search."
+title: "Push People database to contacts"
+---
+<Note>
+  Send `profileIds` to push people you picked: the `_id` of each result of [Search People database](/api-reference/endpoints/people-database/search-people-database), up to 1,000 per call. Send `filters` to push every person a search matches: they take the same filter objects as the search, and their ids come from [GET Filters](/api-reference/endpoints/people-database/get-database-filters). When both are sent, `profileIds` wins.
+
+  A `filters` push reads at most 1,000 people, or 10,000 for teams in the extended-selection beta. Free-trial and freemium teams are capped at one page (100 people). When the search matches more, the response carries `matchedTotal`: narrow the search to push the rest. The `notInCrm` filter cannot be pushed as a search; push its results with `profileIds` instead.
+</Note>
+
+<Warning>
+  A `filters` push spends one search of your team's 24h search quota, whatever the number of people pushed. A `profileIds` push spends none. `enrichFeatures` costs credits for each contact enriched: see [lemlist API credits](/api-reference/objects-definitions/credits).
+</Warning>
+
+<Info>
+  The call is synchronous: it answers once every contact is written, which can take up to about a minute for 10,000 people. People are de-duplicated by LinkedIn profile, so pushing someone twice never creates a second contact.
+</Info>
