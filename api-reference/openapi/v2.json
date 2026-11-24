@@ -37179,7 +37179,7 @@
             "name": "campaignId",
             "in": "query",
             "required": false,
-            "description": "Webhook for specific campaign. It must be a live campaign the API key's user can see: an id that is not a campaign id answers 400, and a campaign that does not exist or was deleted answers 404 with its code. Without it the webhook fires on every campaign, which needs the \"View all campaigns\" permission: a user without it gets a 403.",
+            "description": "Webhook for specific campaign. It must be a live campaign the API key's user can see: an id that is not a campaign id answers 400, and a campaign that does not exist or was deleted answers 404 with its code.",
             "example": "cam_123",
             "schema": {
               "type": "string"
@@ -37381,7 +37381,7 @@
             "description": "Unauthorized"
           },
           "403": {
-            "description": "The API key's user does not have the \"Edit integrations\" permission, or creates a webhook with no `campaignId` without the \"View all campaigns\" permission. Nothing is created.",
+            "description": "The API key's user does not have the \"Edit integrations\" permission. Nothing is created or deleted.",
             "content": {
               "application/json": {
                 "schema": {
@@ -37392,17 +37392,8 @@
                     }
                   }
                 },
-                "examples": {
-                  "permissionDenied": {
-                    "value": {
-                      "error": "You do not have permission to edit webhooks"
-                    }
-                  },
-                  "campaignRequired": {
-                    "value": {
-                      "error": "Pick a campaign: a webhook on all campaigns needs the \"View all campaigns\" permission"
-                    }
-                  }
+                "example": {
+                  "error": "You do not have permission to edit webhooks"
                 }
               }
             }
