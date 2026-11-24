@@ -7264,6 +7264,27 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/WatchListSchema"
+          },
+          "warnings": {
+            "type": "array",
+            "description": "Non-blocking notices on the configuration, never a failure: the Signal Agent was written. Returned by [Create Signal Agent](/api-reference/endpoints/watch-list/create-watch-list) and [Update Signal Agent](/api-reference/endpoints/watch-list/update-watch-list), absent when there is none; [Monitor CRM Lists with a Signal Agent](/api-reference/endpoints/watch-list/associate-crm-lists) never returns it.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "`CLOSED_WON_LOOKALIKE_CRM_NOT_CONNECTED`: a `closedWonLookalike` agent on a team without a connected CRM. It stays on hold until a CRM is connected in Settings > Integrations, then resumes on its own."
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Human-readable explanation of the notice, to relay to the user."
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ]
+            }
           }
         }
       },
