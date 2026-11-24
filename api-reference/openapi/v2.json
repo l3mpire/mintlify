@@ -4072,7 +4072,11 @@
           },
           "campaignId": {
             "type": "string",
-            "description": "The ID of the campaign the webhook is associated with (if any)"
+            "description": "The ID of the campaign the webhook is associated with. Absent when the webhook fires on every campaign, or when `campaignHidden` is `true`."
+          },
+          "campaignHidden": {
+            "type": "boolean",
+            "description": "`true` when the webhook is bound to a campaign the API key's user cannot see (they lack the \"View all campaigns\" permission). Its `campaignId` is then left out."
           },
           "createdAt": {
             "type": "string",
@@ -37175,7 +37179,7 @@
             "name": "campaignId",
             "in": "query",
             "required": false,
-            "description": "Webhook for specific campaign",
+            "description": "Webhook for specific campaign. It must be a live campaign the API key's user can see. Without it the webhook fires on every campaign, which needs the \"View all campaigns\" permission: a user without it gets a 403.",
             "example": "cam_123",
             "schema": {
               "type": "string"
@@ -37364,7 +37368,7 @@
             "description": "Unauthorized"
           },
           "403": {
-            "description": "The API key's user does not have the \"Edit integrations\" permission. Nothing is created or deleted.",
+            "description": "The API key's user does not have the \"Edit integrations\" permission, or creates a webhook with no `campaignId` without the \"View all campaigns\" permission. Nothing is created.",
             "content": {
               "application/json": {
                 "schema": {
@@ -37375,8 +37379,17 @@
                     }
                   }
                 },
-                "example": {
-                  "error": "You do not have permission to edit webhooks"
+                "examples": {
+                  "permissionDenied": {
+                    "value": {
+                      "error": "You do not have permission to edit webhooks"
+                    }
+                  },
+                  "campaignRequired": {
+                    "value": {
+                      "error": "Pick a campaign: a webhook on all campaigns needs the \"View all campaigns\" permission"
+                    }
+                  }
                 }
               }
             }
