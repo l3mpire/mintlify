@@ -24698,7 +24698,7 @@
             }
           },
           "400": {
-            "description": "No `profileIds` and no `filters`, more than 1,000 `profileIds`, `filters` the search refuses, the `notInCrm` filter, a dynamic `listId`, or a malformed field (an `enrichFeatures` value other than `find_email` or `find_phone`, a `listId` without the `clt_` prefix). A coded error carries its code in `error` and a human-readable `message`; the others carry the message in `error` only.",
+            "description": "No `profileIds` and no `filters`, more than 1,000 `profileIds`, `filters` the search refuses, the `notInCrm` filter, a dynamic `listId`, or a malformed field (an `enrichFeatures` value other than `find_email` or `find_phone`, a `listId` without the `clt_` prefix). `filters` are checked strictly: a filter the API does not know answers `API_INVALID_FILTERS` instead of being ignored, so a mistyped `filterId` never pushes a wider search than you asked for. The same code answers a filter the leads search or the API does not offer, an `in` or `out` that is not an array of strings, and a beta filter your team has no access to. A coded error carries its code in `error` and a human-readable `message`; the others carry the message in `error` only.",
             "content": {
               "application/json": {
                 "schema": {
@@ -24717,6 +24717,9 @@
                   },
                   "Invalid filters": {
                     "value": { "error": "SEARCH_FILTERS_INVALID", "message": "You have no valid filters with the current search mode" }
+                  },
+                  "Unknown filter": {
+                    "value": { "error": "API_INVALID_FILTERS", "message": "Parameter filters is invalid" }
                   },
                   "notInCrm filter": {
                     "value": {
