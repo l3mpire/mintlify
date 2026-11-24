@@ -37179,7 +37179,7 @@
             "name": "campaignId",
             "in": "query",
             "required": false,
-            "description": "Webhook for specific campaign. It must be a live campaign the API key's user can see. Without it the webhook fires on every campaign, which needs the \"View all campaigns\" permission: a user without it gets a 403.",
+            "description": "Webhook for specific campaign. It must be a live campaign the API key's user can see: an id that is not a campaign id answers 400, and a campaign that does not exist or was deleted answers 404 with its code. Without it the webhook fires on every campaign, which needs the \"View all campaigns\" permission: a user without it gets a 403.",
             "example": "cam_123",
             "schema": {
               "type": "string"
@@ -37357,10 +37357,23 @@
             }
           },
           "400": {
-            "description": "Bad team",
+            "description": "Bad team, or a `campaignId` that is not a campaign id. Told apart by the media type of the body.",
             "content": {
               "text/plain": {
                 "example": "Bad team"
+              },
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "error": "Invalid campaign id"
+                }
               }
             }
           },
@@ -37395,10 +37408,46 @@
             }
           },
           "404": {
-            "description": "Webhook not found",
+            "description": "The `campaignId` names a campaign that does not exist in the workspace, or that was deleted. Every workspace answers this, whether or not it is on the `permissionsV2ViewAllCampaigns` beta. The `code` tells the two apart.",
             "content": {
-              "text/plain": {
-                "example": "Webhook not found"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "error",
+                    "code"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Human-readable message."
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "`CAMPAIGN_DELETED` or `CAMPAIGN_UNKNOWN`.",
+                      "enum": [
+                        "CAMPAIGN_DELETED",
+                        "CAMPAIGN_UNKNOWN"
+                      ]
+                    }
+                  }
+                },
+                "examples": {
+                  "campaignDeleted": {
+                    "summary": "The campaign was deleted",
+                    "value": {
+                      "error": "This campaign was deleted",
+                      "code": "CAMPAIGN_DELETED"
+                    }
+                  },
+                  "campaignUnknown": {
+                    "summary": "No campaign has this id",
+                    "value": {
+                      "error": "Campaign not found",
+                      "code": "CAMPAIGN_UNKNOWN"
+                    }
+                  }
+                }
               }
             }
           },
