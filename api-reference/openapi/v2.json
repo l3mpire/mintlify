@@ -5794,7 +5794,7 @@
           },
           "contact": {
             "type": "object",
-            "description": "Contact associated with this signal (if entity type is 'contact')",
+            "description": "Contact associated with this signal: the tracked contact, or on a company signal the person the signal is about (for example Warm Intros or Competitor Connections). Absent when the signal has no contact.",
             "properties": {
               "_id": {
                 "type": "string",
