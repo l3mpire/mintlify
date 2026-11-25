@@ -288,6 +288,8 @@
                 "pages": [
                   "api-reference/endpoints/contacts/upsert-contact",
                   "api-reference/endpoints/contacts/get-contact",
+                  "api-reference/endpoints/contacts/get-many-contacts-v2",
+                  "api-reference/endpoints/contacts/get-contact-filters",
                   "api-reference/endpoints/contacts/get-many-contacts",
                   "api-reference/endpoints/contacts/delete-contact",
                   "api-reference/endpoints/contacts/merge-contacts",
