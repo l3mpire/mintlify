@@ -8,6 +8,8 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 The API key's user must have the "Edit integrations" permission, otherwise the request fails with `403` and no webhook is created.
 
+A `campaignId` must name a live campaign the API key's user can see. An id that is not a campaign id answers `400`; a campaign that does not exist, or was deleted, answers `404` with `code: CAMPAIGN_UNKNOWN` or `CAMPAIGN_DELETED`. No webhook is created in either case, and both answers apply to every workspace.
+
 ## Limits and conflicts
 
 A workspace holds at most **200 webhooks**, and a `targetUrl` can only be registered once. Both limits answer `409`, with a JSON body whose `error` field tells them apart:
