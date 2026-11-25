@@ -98,11 +98,6 @@ Pagination is offset-based: `limit` (default 100, max 500) and `offset` (default
 - **No deep pages.** v1 still serves pages past 10 000 rows, which some integrations rely
   on; v2 refuses them, so narrow with a filter instead of walking deeper.
 
-## Availability
-
-v2 reads the Contacts V2 index. A team without it answers
-`403 CONTACT_SEARCH_BETA_NOT_ENABLED`; v1 keeps answering for every team.
-
 ## Examples
 
 <CodeGroup>

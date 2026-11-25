@@ -31633,23 +31633,6 @@
           "401": {
             "description": "The authentication you supplied is incorrect."
           },
-          "403": {
-            "description": "The team's Contacts V2 search is not enabled — `CONTACT_SEARCH_BETA_NOT_ENABLED`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiErrorEnvelope"
-                },
-                "example": {
-                  "success": false,
-                  "error": {
-                    "code": "CONTACT_SEARCH_BETA_NOT_ENABLED",
-                    "message": "Contacts V2 is not enabled on this team"
-                  }
-                }
-              }
-            }
-          },
           "405": {
             "description": "Method not allowed"
           },
@@ -31763,9 +31746,6 @@
           },
           "401": {
             "description": "The authentication you supplied is incorrect."
-          },
-          "403": {
-            "description": "The team's Contacts V2 search is not enabled — `CONTACT_SEARCH_BETA_NOT_ENABLED`."
           },
           "405": {
             "description": "Method not allowed"
