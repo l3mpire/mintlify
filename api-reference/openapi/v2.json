@@ -31727,6 +31727,26 @@
             }
           },
           {
+            "name": "linkedinUrl",
+            "in": "query",
+            "required": false,
+            "description": "Find the contact holding this LinkedIn profile URL, in any form copied from LinkedIn (protocol, `www.`, country subdomain, trailing slash and query string ignored), normalized the way `POST /contacts` stores it; a Sales Navigator URL sent here is matched against `linkedinUrlSalesNav`. A company page URL or an empty value is refused. No match returns an empty page (`total: 0`). Combines with the other filters with AND.",
+            "example": "https://www.linkedin.com/in/john-doe",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "linkedinUrlSalesNav",
+            "in": "query",
+            "required": false,
+            "description": "Find the contact holding this LinkedIn Sales Navigator URL, in any form copied from Sales Navigator (`/sales/lead/`, `/sales/people/` or `/sales/profile/`, with or without its `,NAME_SEARCH,…` suffix and query string), normalized the way `POST /contacts` stores it. A public profile URL or an empty value is refused. No match returns an empty page (`total: 0`). Combines with the other filters with AND.",
+            "example": "https://www.linkedin.com/sales/lead/ACwAABcDeFgHiJkLmNoPqRsTuVwXyZ012345678,NAME_SEARCH,a1b2",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "listId",
             "in": "query",
             "required": false,
@@ -31977,7 +31997,7 @@
             }
           },
           "400": {
-            "description": "Invalid parameter — a value of the wrong type, an unknown `sortBy`, a filter tree over 5 levels or 50 conditions, `crmIds` sent with another filter, an unknown filter property or operator (`INVALID_FILTER`), two company filters (`MULTIPLE_COMPANY_FILTERS`), a bad company id (`INVALID_COMPANY_ID`), an unknown field-rejection reason (`INVALID_FIELD_REJECTION_REASON`), an unknown CRM sync status (`INVALID_CRM_SYNC_STATUS`), `crmSyncStatus` with no CRM connected (`NO_CRM_CONNECTED`), or `limit + offset` past 10000 (`PAGE_WINDOW_TOO_LARGE`).",
+            "description": "Invalid parameter — a value of the wrong type, an unknown `sortBy`, a filter tree over 5 levels or 50 conditions, `crmIds` sent with another filter, an unknown filter property or operator (`INVALID_FILTER`), two company filters (`MULTIPLE_COMPANY_FILTERS`), a bad company id (`INVALID_COMPANY_ID`), a `linkedinUrl` that is not a LinkedIn profile URL or a `linkedinUrlSalesNav` that is not a Sales Navigator URL, or an empty one (`INVALID_LINKEDIN_URL`), an unknown field-rejection reason (`INVALID_FIELD_REJECTION_REASON`), an unknown CRM sync status (`INVALID_CRM_SYNC_STATUS`), `crmSyncStatus` with no CRM connected (`NO_CRM_CONNECTED`), or `limit + offset` past 10000 (`PAGE_WINDOW_TOO_LARGE`).",
             "content": {
               "application/json": {
                 "schema": {
