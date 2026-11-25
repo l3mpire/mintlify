@@ -3,10 +3,9 @@ openapi: get /v2/user-groups
 description: Lists your team's user groups, sorted by name.
 ---
 
-<Warning>
-  User groups are in beta. To use these endpoints now, contact your lemlist
-  account manager.
-</Warning>
+<Note>
+  This endpoint requires the **Enterprise** plan.
+</Note>
 
 Any member of the team can read the groups. The list is not paginated: a team holds at most 100 groups.
 
@@ -14,4 +13,4 @@ Any member of the team can read the groups. The list is not paginated: a team ho
 
 | Code | Cause |
 | ---- | ----- |
-| `USER_GROUPS_PLAN_REQUIRED` | Your team is not on the Enterprise plan, or the user groups beta is not enabled for it. |
+| `USER_GROUPS_PLAN_REQUIRED` | Your team is not on the Enterprise plan. |

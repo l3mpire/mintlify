@@ -3,13 +3,9 @@ openapi: post /v2/user-groups/{userGroupId}/members
 description: Adds and removes members of a user group without sending the whole list.
 ---
 
-<Warning>
-  User groups are in beta. To use these endpoints now, contact your lemlist
-  account manager.
-</Warning>
-
 <Note>
-  Admins only: the API key must have been created by an admin of the team.
+  This endpoint requires the **Enterprise** plan. Admins only: the API key must
+  have been created by an admin of the team.
 </Note>
 
 A user already in the group is not added twice, and a user not in it is ignored on removal. Both lists are optional. To replace the whole member list, use [Update User Group](/api-reference/endpoints/user-groups/update-user-group).
@@ -20,7 +16,7 @@ A user already in the group is not added twice, and a user not in it is ignored 
 | ---- | ----- |
 | `USER_GROUPS_INVALID_REQUEST` | A list is not an array of at most 1,000 user ids, or a user is both added and removed. |
 | `USER_NOT_IN_TEAM` | An added user is not a member of your team. |
-| `USER_GROUPS_PLAN_REQUIRED` | Your team is not on the Enterprise plan, or the user groups beta is not enabled for it. |
+| `USER_GROUPS_PLAN_REQUIRED` | Your team is not on the Enterprise plan. |
 | `USER_NOT_AUTHORIZED` | The API key was created by a team member who is not an admin. |
 | `USER_GROUPS_NOT_FOUND` | No group with this id in your team. |
 | `USER_GROUPS_USERS_LIMIT_REACHED` | The group would hold more than 1,000 members. |

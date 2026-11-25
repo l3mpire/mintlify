@@ -3,13 +3,9 @@ openapi: patch /v2/user-groups/{userGroupId}
 description: Renames a user group, replaces its members, or both.
 ---
 
-<Warning>
-  User groups are in beta. To use these endpoints now, contact your lemlist
-  account manager.
-</Warning>
-
 <Note>
-  Admins only: the API key must have been created by an admin of the team.
+  This endpoint requires the **Enterprise** plan. Admins only: the API key must
+  have been created by an admin of the team.
 </Note>
 
 A field left out keeps its value; send at least one. `userIds` replaces the whole member list. To add or remove a few members without sending the whole list, use [Edit User Group Members](/api-reference/endpoints/user-groups/edit-user-group-members).
@@ -20,7 +16,7 @@ A field left out keeps its value; send at least one. `userIds` replaces the whol
 | ---- | ----- |
 | `USER_GROUPS_INVALID_REQUEST` | The body sends neither `name` nor `userIds`, `name` is empty once trimmed or longer than 60 characters, or `userIds` is not an array of at most 1,000 user ids. |
 | `USER_NOT_IN_TEAM` | A user id is not a member of your team. |
-| `USER_GROUPS_PLAN_REQUIRED` | Your team is not on the Enterprise plan, or the user groups beta is not enabled for it. |
+| `USER_GROUPS_PLAN_REQUIRED` | Your team is not on the Enterprise plan. |
 | `USER_NOT_AUTHORIZED` | The API key was created by a team member who is not an admin. |
 | `USER_GROUPS_NOT_FOUND` | No group with this id in your team. |
 | `USER_GROUPS_NAME_TAKEN` | Another group of your team has this name, whatever its case. |
