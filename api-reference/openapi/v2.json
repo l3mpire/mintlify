@@ -27376,11 +27376,11 @@
                   },
                   "sendUserEmail": {
                     "type": "string",
-                    "description": "Sender email address"
+                    "description": "Sender (From) email address. Must be an address of the sendUserMailboxId mailbox: one of its aliases or the address of its connected account (Google, Microsoft, or SMTP/IMAP login). The comparison ignores case. Any other address is refused with 400 \"Alias not found\": when a mailbox's domain or aliases change, update the address your integration sends."
                   },
                   "sendUserMailboxId": {
                     "type": "string",
-                    "description": "Sender mailbox ID"
+                    "description": "Sender mailbox ID. Must be a mailbox of sendUserId in your team."
                   },
                   "contactId": {
                     "type": "string",
@@ -27458,10 +27458,12 @@
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / Invalid sendUserId / Invalid sendUserEmail / Invalid sendUserMailboxId / contactId or leadId is required / Invalid leadId / Lead not found / Failed to send email",
+            "description": "Possible errors: Invalid sendUserId / Invalid sendUserEmail / Invalid sendUserMailboxId / contactId or leadId is required / Invalid leadId / Lead not found / Invalid contactId / Bad mailbox (sendUserMailboxId is not a mailbox of sendUserId in your team) / Invalid replyToActivityId / Alias not found (sendUserEmail is not an address of the sendUserMailboxId mailbox) / Failed to send email",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "example": {
+                  "error": "Alias not found"
+                }
               }
             }
           },
