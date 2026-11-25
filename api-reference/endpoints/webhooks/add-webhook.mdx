@@ -167,12 +167,17 @@ These aggregate multiple activity types into a single lead-state change event.
 | `paused` | Lead paused |
 | `resumed` | Lead resumed |
 | `stopped` | Lead stopped |
+| `leadAdded` | A lead was added to a campaign, from any source |
+| `leadLaunched` | A lead was launched and started its sequence |
+| `leadEnded` | A lead has nothing left to run in its campaign: sequence finished, replied, interested, stopped… |
 | `campaignComplete` | Campaign completed |
 | `campaignEndDateReached` | Campaign reached its end date |
 | `customDomainErrors` | Custom domain error detected |
 | `connectionIssue` | Email account connection issue |
 | `sendLimitReached` | Daily send limit reached |
 | `lemwarmPaused` | Lemwarm paused |
+
+Lead events (`leadAdded`, `leadLaunched`, `leadEnded`) do not mirror an activity: see [Lead events](#lead-events) for the payload.
 
 ### Enrichment
 
@@ -254,7 +259,7 @@ Each event is delivered as a `POST` to your `targetUrl` with a JSON body that mi
 | `leadId` | string | Lead targeted by the activity (campaign events only) |
 | `contactId` | string | Contact the activity relates to |
 | `leadEmail`, `leadFirstName`, `leadLastName`, `leadCompanyName`, `leadPhone`, `leadPicture` | string | Lead identity as it was when the event happened. Campaign events only, and only the variables the lead had at that moment |
-| `email`, `firstName`, `lastName`, `linkedinUrl`, `phone`, `jobTitle`, `companyName`, … | string | Current contact record (its fields, custom fields and company), added at delivery time to every event that has a `contactId`. Never overrides a key already set on the event |
+| `email`, `firstName`, `lastName`, `linkedinUrl`, `phone`, `jobTitle`, `companyName`, … | string | Current contact record (its fields, custom fields and company), added at delivery time to every event that has a `contactId`, except [lead events](#lead-events). Never overrides a key already set on the event |
 | `sendUserId`, `sendUserEmail`, `sendUserName` | string | Sender (lemlist user) identity |
 | `subject` | string | Email subject (email events only) |
 | `secret` | string | Echoed back if a `secret` was set on the webhook |
@@ -307,6 +312,53 @@ When a reply on a thread comes from an address that does **not** match the origi
 ```
 
 Third-party reply payloads omit `campaignId`, `leadId`, and `sequenceId` (since the reply is no longer attached to the original campaign flow). Use the flag to route these events differently if needed.
+
+### Lead events
+
+`leadAdded`, `leadLaunched` and `leadEnded` are not activities. Their body holds only the keys below: no contact fields, none of the other activity keys. A key with no value is left out, not sent empty.
+
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| `_id` | string | Event identifier (`lwe_…`). The same on every delivery of the event: dedupe on it |
+| `type` | string | `leadAdded`, `leadLaunched` or `leadEnded` |
+| `teamId` | string | Team the lead belongs to |
+| `campaignId` | string | Campaign of the lead |
+| `campaignName` | string | Campaign display name |
+| `leadId` | string | The lead |
+| `contactId` | string | Contact of the lead |
+| `leadEmail`, `leadFirstName`, `leadLastName` | string | Lead identity, read when the event is sent |
+| `sendUserId`, `sendUserName`, `sendUserEmail` | string | The lead's sender: the lemlist user, and the mailbox that sends the lead's emails. Absent while the lead has no sender yet, usually on `leadAdded` |
+| `createdAt` | ISO date | When lemlist first saw the event. On `leadEnded` it is usually the end itself, and can be up to a minute earlier |
+| `state` | string | `leadEnded` only: the lead's state when the event is sent, e.g. `emailsReplied`, `manualInterested`, `skipped` |
+| `secret` | string | Echoed back if a `secret` was set on the webhook |
+
+- **Spread over time.** The events of a bulk action (a large import, a launch of many leads) are sent a few at a time, so one can arrive minutes or hours after it happened. Use `createdAt` for when it happened, not the arrival time. The order of two events of one lead is best effort.
+- **At least once.** An event can be delivered more than once, always with the same `_id`.
+- **Checked before sending.** An event that no longer holds when it is sent is dropped: the lead or its campaign was deleted, a launched lead was unlaunched, an ended lead is running again.
+- **`leadLaunched`** fires when the lead gets its sequence, also in a paused campaign. It does not wait for the first step to be sent.
+- **`leadEnded`** fires again if the lead is revived and ends again. It can come without a `leadLaunched`: a lead skipped at review, or unsubscribed before launch, ends without being launched.
+- **Filters.** A webhook with a `campaignId` gets the lead events of that campaign only. A webhook with no `type` gets them too, as it gets every event. `isFirst` has no effect on them.
+
+```json leadEnded
+{
+  "_id": "lwe_A1B2C3D4E5F6G7H8I9",
+  "type": "leadEnded",
+  "teamId": "tea_A1B2C3D4E5F6G7H8I9",
+  "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
+  "campaignName": "Outbound US",
+  "leadId": "lea_A1B2C3D4E5F6G7H8I9",
+  "contactId": "ctc_A1B2C3D4E5F6G7H8I9",
+  "leadEmail": "alice@example.com",
+  "leadFirstName": "Alice",
+  "leadLastName": "Doe",
+  "sendUserId": "usr_A1B2C3D4E5F6G7H8I9",
+  "sendUserName": "Lucas Perret",
+  "sendUserEmail": "lucas@lemlist.com",
+  "createdAt": "2026-11-23T09:00:00.000Z",
+  "state": "emailsReplied",
+  "secret": "s3cret-shared-with-my-endpoint"
+}
+```
 
 ## Examples
 
