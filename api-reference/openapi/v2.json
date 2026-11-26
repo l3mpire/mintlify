@@ -28984,6 +28984,26 @@
             }
           },
           {
+            "name": "linkedinUrl",
+            "in": "query",
+            "required": false,
+            "description": "Find the contact holding this LinkedIn profile URL. Any form copied from LinkedIn is accepted and normalized the way `POST /contacts` stores it (protocol, `www.`, country subdomain, trailing slash and query string ignored); a Sales Navigator URL sent here is matched against `linkedinUrlSalesNav`. The match is exact on the normalized URL: a public profile URL does not find a contact stored with only its Sales Navigator URL, nor the other way round. A company page URL or an empty value is refused. No match returns an empty list (`total: 0`). Combines with the other filters with AND: sent with `linkedinUrlSalesNav`, a contact must hold both URLs.",
+            "example": "https://www.linkedin.com/in/john-doe",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "linkedinUrlSalesNav",
+            "in": "query",
+            "required": false,
+            "description": "Find the contact holding this LinkedIn Sales Navigator URL. Any form copied from Sales Navigator is accepted (`/sales/lead/`, `/sales/people/` or `/sales/profile/`, with or without its `,NAME_SEARCH,…` suffix and query string) and normalized the way `POST /contacts` stores it. A public profile URL or an empty value is refused. No match returns an empty list (`total: 0`). Combines with the other filters with AND.",
+            "example": "https://www.linkedin.com/sales/lead/ACwAABcDeFgHiJkLmNoPqRsTuVwXyZ012345678,NAME_SEARCH,a1b2",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "listId",
             "in": "query",
             "required": false,
@@ -29303,7 +29323,7 @@
             }
           },
           "400": {
-            "description": "Either a plain `{ \"error\": \"...\" }` (`Bad team`, search query too short, invalid `listId` format, invalid `withPrimaryCompany`, `limit` below 1, more than 100 `idsOrEmails` values), or a validation envelope. Possible error codes: `INVALID_CRM_ID` (a `crmIds` list with no usable value, or a value longer than 36 characters), `TOO_MANY_CRM_IDS` (more than 100 `crmIds` values), `MULTIPLE_COMPANY_FILTERS`, `INVALID_COMPANY_ID`, `INVALID_FIELD_REJECTION_REASON`, `INVALID_CRM_SYNC_STATUS`, `NO_CRM_CONNECTED` (`crmSyncStatus` without a connected CRM).",
+            "description": "Either a plain `{ \"error\": \"...\" }` (`Bad team`, search query too short, invalid `listId` format, invalid `withPrimaryCompany`, `limit` below 1, more than 100 `idsOrEmails` values), or a validation envelope. Possible error codes: `INVALID_CRM_ID` (a `crmIds` list with no usable value, or a value longer than 36 characters), `TOO_MANY_CRM_IDS` (more than 100 `crmIds` values), `MULTIPLE_COMPANY_FILTERS`, `INVALID_COMPANY_ID`, `INVALID_LINKEDIN_URL` (a `linkedinUrl` that is not a LinkedIn profile URL, a `linkedinUrlSalesNav` that is not a Sales Navigator URL, an empty value, or either one sent twice; the message names the parameter), `INVALID_FIELD_REJECTION_REASON`, `INVALID_CRM_SYNC_STATUS`, `NO_CRM_CONNECTED` (`crmSyncStatus` without a connected CRM).",
             "content": {
               "application/json": {
                 "schema": {
@@ -31731,6 +31751,26 @@
             }
           },
           {
+            "name": "linkedinUrl",
+            "in": "query",
+            "required": false,
+            "description": "Find the contact holding this LinkedIn profile URL, in any form copied from LinkedIn (protocol, `www.`, country subdomain, trailing slash and query string ignored), normalized the way `POST /contacts` stores it; a Sales Navigator URL sent here is matched against `linkedinUrlSalesNav`. A company page URL or an empty value is refused. No match returns an empty page (`total: 0`). Combines with the other filters with AND.",
+            "example": "https://www.linkedin.com/in/john-doe",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "linkedinUrlSalesNav",
+            "in": "query",
+            "required": false,
+            "description": "Find the contact holding this LinkedIn Sales Navigator URL, in any form copied from Sales Navigator (`/sales/lead/`, `/sales/people/` or `/sales/profile/`, with or without its `,NAME_SEARCH,…` suffix and query string), normalized the way `POST /contacts` stores it. A public profile URL or an empty value is refused. No match returns an empty page (`total: 0`). Combines with the other filters with AND.",
+            "example": "https://www.linkedin.com/sales/lead/ACwAABcDeFgHiJkLmNoPqRsTuVwXyZ012345678,NAME_SEARCH,a1b2",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "listId",
             "in": "query",
             "required": false,
@@ -31981,7 +32021,7 @@
             }
           },
           "400": {
-            "description": "Invalid parameter — a value of the wrong type, an unknown `sortBy`, a filter tree over 5 levels or 50 conditions, `crmIds` sent with another filter, an unknown filter property or operator (`INVALID_FILTER`), two company filters (`MULTIPLE_COMPANY_FILTERS`), a bad company id (`INVALID_COMPANY_ID`), an unknown field-rejection reason (`INVALID_FIELD_REJECTION_REASON`), an unknown CRM sync status (`INVALID_CRM_SYNC_STATUS`), `crmSyncStatus` with no CRM connected (`NO_CRM_CONNECTED`), or `limit + offset` past 10000 (`PAGE_WINDOW_TOO_LARGE`).",
+            "description": "Invalid parameter — a value of the wrong type, an unknown `sortBy`, a filter tree over 5 levels or 50 conditions, `crmIds` sent with another filter, an unknown filter property or operator (`INVALID_FILTER`), two company filters (`MULTIPLE_COMPANY_FILTERS`), a bad company id (`INVALID_COMPANY_ID`), a `linkedinUrl` that is not a LinkedIn profile URL or a `linkedinUrlSalesNav` that is not a Sales Navigator URL, or an empty one (`INVALID_LINKEDIN_URL`), an unknown field-rejection reason (`INVALID_FIELD_REJECTION_REASON`), an unknown CRM sync status (`INVALID_CRM_SYNC_STATUS`), `crmSyncStatus` with no CRM connected (`NO_CRM_CONNECTED`), or `limit + offset` past 10000 (`PAGE_WINDOW_TOO_LARGE`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -32488,6 +32528,26 @@
             }
           },
           {
+            "name": "linkedinUrl",
+            "in": "query",
+            "required": false,
+            "description": "Find the company holding this LinkedIn company URL. Any form copied from LinkedIn is accepted and normalized the way `POST /companies` stores it (sub-pages such as `/about/`, country subdomain, trailing slash and query string ignored); a Sales Navigator company URL sent here is matched against `linkedinUrlSalesNav`. A personal profile URL or an empty value is refused. No match returns an empty list (`total: 0`). Combines with the other filters with AND: sent with `linkedinUrlSalesNav`, a company must hold both URLs.",
+            "example": "https://www.linkedin.com/company/lemlist",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "linkedinUrlSalesNav",
+            "in": "query",
+            "required": false,
+            "description": "Find the company holding this LinkedIn Sales Navigator company URL, normalized the way `POST /companies` stores it (query string ignored). A public company page URL or an empty value is refused. No match returns an empty list (`total: 0`). Combines with the other filters with AND.",
+            "example": "https://www.linkedin.com/sales/company/12345678",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "fields",
             "in": "query",
             "required": false,
@@ -32689,7 +32749,7 @@
             }
           },
           "400": {
-            "description": "Either a plain `{ \"error\": \"...\" }` (`Bad team`, `limit` below 1), or a validation envelope. Possible error codes: `INVALID_CRM_ID` (a `crmIds` list with no usable value, or a value longer than 36 characters), `TOO_MANY_CRM_IDS` (more than 100 `crmIds` values), `INVALID_IDS_OR_DOMAINS` (no valid id or domain in `idsOrDomains`), `TOO_MANY_IDS_OR_DOMAINS` (more than 100 `idsOrDomains` values), `CRM_LIST_ENTITY_MISMATCH` (the `listId` points at a contact list), `CRM_LIST_DYNAMIC` (the list is a legacy dynamic list, evaluated from its saved filters when read, so it has no stored membership to filter on), `INVALID_CRM_SYNC_STATUS`, `NO_CRM_CONNECTED` (`crmSyncStatus` without a connected CRM), `INVALID_FIELD_REJECTION_REASON`.",
+            "description": "Either a plain `{ \"error\": \"...\" }` (`Bad team`, `limit` below 1), or a validation envelope. Possible error codes: `INVALID_CRM_ID` (a `crmIds` list with no usable value, or a value longer than 36 characters), `TOO_MANY_CRM_IDS` (more than 100 `crmIds` values), `INVALID_IDS_OR_DOMAINS` (no valid id or domain in `idsOrDomains`), `TOO_MANY_IDS_OR_DOMAINS` (more than 100 `idsOrDomains` values), `INVALID_LINKEDIN_URL` (a `linkedinUrl` that is not a LinkedIn company URL, a `linkedinUrlSalesNav` that is not a Sales Navigator company URL, or an empty value; the message names the parameter), `CRM_LIST_ENTITY_MISMATCH` (the `listId` points at a contact list), `CRM_LIST_DYNAMIC` (the list is a legacy dynamic list, evaluated from its saved filters when read, so it has no stored membership to filter on), `INVALID_CRM_SYNC_STATUS`, `NO_CRM_CONNECTED` (`crmSyncStatus` without a connected CRM), `INVALID_FIELD_REJECTION_REASON`.",
             "content": {
               "application/json": {
                 "schema": {
