@@ -4941,6 +4941,592 @@
           "canonical_shorthand_name": {
             "type": "string"
           },
+          "shorthand_name_list": {
+            "type": "array",
+            "description": "Every known LinkedIn URL slug of the person",
+            "items": {
+              "type": "string"
+            }
+          },
+          "connections_count": {
+            "type": "integer"
+          },
+          "country": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "description": "Region of the person's location"
+          },
+          "county": {
+            "type": "string",
+            "description": "County of the person's location"
+          },
+          "full_name": {
+            "type": "string"
+          },
+          "headline": {
+            "type": "string",
+            "description": "LinkedIn headline"
+          },
+          "education": {
+            "type": "array",
+            "description": "On request: comes back only when `includes` names `education` or a path under it",
+            "items": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "activities_and_societies": {
+                  "type": "string",
+                  "description": "On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "created": {
+                  "type": "string",
+                  "description": "On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "date_from": {
+                  "type": "string",
+                  "description": "On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "date_to": {
+                  "type": "string",
+                  "description": "On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "deleted": {
+                  "type": "string",
+                  "description": "On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "id": {
+                  "type": "string",
+                  "description": "On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "last_updated": {
+                  "type": "string",
+                  "description": "On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "member_id": {
+                  "type": "string",
+                  "description": "On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "school_url": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "subtitle": {
+                  "type": "string",
+                  "description": "On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "institution": {
+                  "type": "string",
+                  "description": "School name. On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "program": {
+                  "type": "string",
+                  "description": "Degree or field of study. On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "institution_url": {
+                  "type": "string",
+                  "description": "School URL. On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "institution_id": {
+                  "type": "string",
+                  "description": "School id. On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "institution_shorthand_name": {
+                  "type": "string",
+                  "description": "School LinkedIn URL slug. On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "institution_source_id": {
+                  "type": "string",
+                  "description": "School id at the data provider. On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "date_from_year": {
+                  "type": "string",
+                  "description": "Start year. On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "date_to_year": {
+                  "type": "string",
+                  "description": "End year. On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "order_in_profile": {
+                  "type": "string",
+                  "description": "Rank in the profile. On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "created_at": {
+                  "type": "string",
+                  "description": "Record creation date. On request: comes back only when `includes` names `education` or a path under it"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "description": "Record update date. On request: comes back only when `includes` names `education` or a path under it"
+                }
+              }
+            }
+          },
+          "experience_count": {
+            "type": "integer"
+          },
+          "experiences": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true,
+              "properties": {
+                "company_id": {
+                  "type": "integer"
+                },
+                "company_description": {
+                  "type": "string",
+                  "description": "On request: comes back only when `includes` names `experiences.company_description` or a path under it"
+                },
+                "company_employee_count": {
+                  "type": "integer"
+                },
+                "company_followers_count": {
+                  "type": "integer"
+                },
+                "company_founded": {
+                  "type": "integer"
+                },
+                "company_headquarters_city": {
+                  "type": "string"
+                },
+                "company_headquarters_country": {
+                  "type": "string"
+                },
+                "company_industry": {
+                  "type": "string"
+                },
+                "company_subindustry": {
+                  "type": "string",
+                  "description": "Company sub-industry"
+                },
+                "company_subsubindustry": {
+                  "type": "string",
+                  "description": "Company 3rd-level industry"
+                },
+                "company_subsubsubindustry": {
+                  "type": "string",
+                  "description": "Company 4th-level industry"
+                },
+                "company_linkedin_url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "company_logo_url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "company_name": {
+                  "type": "string"
+                },
+                "company_size": {
+                  "type": "string"
+                },
+                "company_type": {
+                  "type": "string"
+                },
+                "company_url": {
+                  "type": "string"
+                },
+                "company_website_url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "revenue_bucket": {
+                  "type": "string"
+                },
+                "company_revenue_bucket": {
+                  "type": "string",
+                  "description": "Company revenue range"
+                },
+                "company_domain": {
+                  "type": "string"
+                },
+                "employees_count_growth": {
+                  "type": "integer"
+                },
+                "headcount": {
+                  "type": "object",
+                  "description": "Company headcount, by department. Counts are integers sent as strings",
+                  "properties": {
+                    "total": {
+                      "type": "string",
+                      "example": "120"
+                    },
+                    "by_department": {
+                      "type": "object",
+                      "description": "Count per department (`customer_service`, `engineering`, `finance_legal_admin`, `human_resources`, `marketing`, `operations`, `other`, `sales`)",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "example": {
+                        "customer_service": "10",
+                        "engineering": "40",
+                        "finance_legal_admin": "5",
+                        "human_resources": "5",
+                        "marketing": "15",
+                        "operations": "10",
+                        "other": "5",
+                        "sales": "30"
+                      }
+                    }
+                  }
+                },
+                "new_hires_last_6m": {
+                  "type": "object",
+                  "description": "Company new hires in the last 6 months, by department. Counts are integers sent as strings",
+                  "properties": {
+                    "total": {
+                      "type": "string",
+                      "example": "12"
+                    },
+                    "by_department": {
+                      "type": "object",
+                      "description": "Count per department (`customer_service`, `engineering`, `finance_legal_admin`, `human_resources`, `marketing`, `operations`, `other`, `sales`)",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "example": {
+                        "customer_service": "1",
+                        "engineering": "5",
+                        "finance_legal_admin": "0",
+                        "human_resources": "1",
+                        "marketing": "1",
+                        "operations": "1",
+                        "other": "0",
+                        "sales": "3"
+                      }
+                    }
+                  }
+                },
+                "decision_makers_new_hires_last_6m": {
+                  "type": "object",
+                  "description": "Company new decision-maker hires in the last 6 months, by department. Counts are integers sent as strings",
+                  "properties": {
+                    "total": {
+                      "type": "string",
+                      "example": "2"
+                    },
+                    "by_department": {
+                      "type": "object",
+                      "description": "Count per department (`customer_service`, `engineering`, `finance_legal_admin`, `human_resources`, `marketing`, `operations`, `other`, `sales`)",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "example": {
+                        "customer_service": "0",
+                        "engineering": "1",
+                        "finance_legal_admin": "0",
+                        "human_resources": "0",
+                        "marketing": "0",
+                        "operations": "0",
+                        "other": "0",
+                        "sales": "1"
+                      }
+                    }
+                  }
+                },
+                "workforce_growth_last_6m": {
+                  "type": "object",
+                  "description": "Company headcount growth in the last 6 months, by department, in people and in percent",
+                  "properties": {
+                    "growth_by_department_numeric": {
+                      "type": "object",
+                      "description": "Growth in people per department (`customer_service`, `engineering`, `finance_legal_admin`, `human_resources`, `marketing`, `operations`, `other`, `sales`). Integers sent as strings",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "example": {
+                        "customer_service": "1",
+                        "engineering": "4",
+                        "finance_legal_admin": "0",
+                        "human_resources": "0",
+                        "marketing": "-1",
+                        "operations": "1",
+                        "other": "0",
+                        "sales": "2"
+                      }
+                    },
+                    "growth_by_department_percentage": {
+                      "type": "object",
+                      "description": "Growth in percent per department (`customer_service`, `engineering`, `finance_legal_admin`, `human_resources`, `marketing`, `operations`, `other`, `sales`)",
+                      "additionalProperties": {
+                        "type": "integer"
+                      },
+                      "example": {
+                        "customer_service": 11,
+                        "engineering": 11,
+                        "finance_legal_admin": 0,
+                        "human_resources": 0,
+                        "marketing": -6,
+                        "operations": 11,
+                        "other": 0,
+                        "sales": 7
+                      }
+                    }
+                  }
+                },
+                "last_funding_round_at": {
+                  "type": "string"
+                },
+                "business_business_customer": {
+                  "type": "string"
+                },
+                "current_exp_bucket": {
+                  "type": "string"
+                },
+                "created": {
+                  "type": "string"
+                },
+                "date_from": {
+                  "type": "string"
+                },
+                "date_to": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "On request: comes back only when `includes` names `experiences.description` or a path under it"
+                },
+                "duration": {
+                  "type": "string"
+                },
+                "id": {
+                  "type": "string"
+                },
+                "last_updated": {
+                  "type": "string"
+                },
+                "location": {
+                  "type": "string"
+                },
+                "member_id": {
+                  "type": "string"
+                },
+                "order_in_profile": {
+                  "type": "integer"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "title_normalized": {
+                  "type": "string"
+                },
+                "main_in_profile": {
+                  "type": "boolean"
+                },
+                "technologies": {
+                  "type": "array",
+                  "description": "Technologies used by the company, on current experiences only (no `date_to`). Capped at the 100 most recently detected; `technologies_total` gives the full count",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "first_seen_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "When the technology was first detected at the company"
+                      },
+                      "scoring": {
+                        "type": "string",
+                        "description": "Detection confidence: `CONFIRMED`, `LIKELY` or `POTENTIAL`. Absent while the technology is not classified",
+                        "enum": [
+                          "CONFIRMED",
+                          "LIKELY",
+                          "POTENTIAL"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "technologies_total": {
+                  "type": "integer",
+                  "description": "Number of technologies the company uses, before the cap on `technologies`. Current experiences only"
+                },
+                "active_job_post": {
+                  "type": "object",
+                  "description": "Job postings the company currently publishes, on current experiences only. Counts are integers sent as strings",
+                  "properties": {
+                    "total": {
+                      "type": "string",
+                      "example": "3"
+                    },
+                    "count_by_department": {
+                      "type": "object",
+                      "description": "Count per department (`customer_service`, `engineering`, `finance_legal_admin`, `human_resources`, `marketing`, `operations`, `other`, `sales`)",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "example": {
+                        "customer_service": "0",
+                        "engineering": "2",
+                        "finance_legal_admin": "0",
+                        "human_resources": "0",
+                        "marketing": "0",
+                        "operations": "0",
+                        "other": "0",
+                        "sales": "1"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "interests": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "interest": {
+                  "type": "string"
+                },
+                "interest_id": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "language": {
+                  "type": "string"
+                },
+                "proficiency": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "last_updated": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string",
+            "description": "Last data update"
+          },
+          "lead_industry": {
+            "type": "string"
+          },
+          "lead_linkedin_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "lead_logo_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "linkedin_short": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "skill": {
+                  "type": "string"
+                },
+                "skill_id": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "inferred_skills": {
+            "type": "array",
+            "description": "Skills inferred from the profile by a model. On request: comes back only when `includes` names `inferred_skills` or a path under it",
+            "items": {
+              "type": "string"
+            }
+          },
+          "summary": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "lead_quality_score": {
+            "type": "integer"
+          },
+          "seniority": {
+            "type": "string"
+          },
+          "department": {
+            "type": "string"
+          },
+          "connections_count_bucket": {
+            "type": "string"
+          },
+          "years_of_exp_bucket": {
+            "type": "string"
+          },
+          "current_exp_company_name": {
+            "type": "string"
+          },
+          "current_exp_company_industry": {
+            "type": "string",
+            "description": "Industry of the current company"
+          },
+          "current_exp_company_subindustry": {
+            "type": "string",
+            "description": "Sub-industry of the current company"
+          },
+          "geopoint": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "lead_location_geopoint_array": {
+            "type": "array",
+            "description": "Location coordinates, `[longitude, latitude]`",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          },
+          "_score": {
+            "type": "number"
+          },
+          "_id": {
+            "type": "string"
+          }
+        }
+      },
+      "PeopleEngagementSchema": {
+        "type": "object",
+        "description": "A person record from lemlist's People database.",
+        "additionalProperties": true,
+        "properties": {
+          "lead_id": {
+            "type": "integer",
+            "description": "Numeric identifier for the person in the People database"
+          },
+          "canonical_shorthand_name": {
+            "type": "string"
+          },
           "connections_count": {
             "type": "integer"
           },
@@ -5310,7 +5896,7 @@
           },
           "company_description": {
             "type": "string",
-            "description": "Long company description"
+            "description": "Long company description. On request: comes back only when `includes` names `company_description` or a path under it"
           },
           "company_employee_count": {
             "type": "string",
@@ -5344,16 +5930,240 @@
             "type": "integer",
             "description": "Employee count growth number"
           },
+          "headcount": {
+            "type": "object",
+            "description": "Company headcount, by department. Counts are integers sent as strings",
+            "properties": {
+              "total": {
+                "type": "string",
+                "example": "120"
+              },
+              "by_department": {
+                "type": "object",
+                "description": "Count per department (`customer_service`, `engineering`, `finance_legal_admin`, `human_resources`, `marketing`, `operations`, `other`, `sales`)",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "example": {
+                  "customer_service": "10",
+                  "engineering": "40",
+                  "finance_legal_admin": "5",
+                  "human_resources": "5",
+                  "marketing": "15",
+                  "operations": "10",
+                  "other": "5",
+                  "sales": "30"
+                }
+              }
+            }
+          },
+          "new_hires_last_6m": {
+            "type": "object",
+            "description": "Company new hires in the last 6 months, by department. Counts are integers sent as strings",
+            "properties": {
+              "total": {
+                "type": "string",
+                "example": "12"
+              },
+              "by_department": {
+                "type": "object",
+                "description": "Count per department (`customer_service`, `engineering`, `finance_legal_admin`, `human_resources`, `marketing`, `operations`, `other`, `sales`)",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "example": {
+                  "customer_service": "1",
+                  "engineering": "5",
+                  "finance_legal_admin": "0",
+                  "human_resources": "1",
+                  "marketing": "1",
+                  "operations": "1",
+                  "other": "0",
+                  "sales": "3"
+                }
+              }
+            }
+          },
+          "decision_makers_new_hires_last_6m": {
+            "type": "object",
+            "description": "Company new decision-maker hires in the last 6 months, by department. Counts are integers sent as strings",
+            "properties": {
+              "total": {
+                "type": "string",
+                "example": "2"
+              },
+              "by_department": {
+                "type": "object",
+                "description": "Count per department (`customer_service`, `engineering`, `finance_legal_admin`, `human_resources`, `marketing`, `operations`, `other`, `sales`)",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "example": {
+                  "customer_service": "0",
+                  "engineering": "1",
+                  "finance_legal_admin": "0",
+                  "human_resources": "0",
+                  "marketing": "0",
+                  "operations": "0",
+                  "other": "0",
+                  "sales": "1"
+                }
+              }
+            }
+          },
+          "workforce_growth_last_6m": {
+            "type": "object",
+            "description": "Company headcount growth in the last 6 months, by department, in people and in percent",
+            "properties": {
+              "growth_by_department_numeric": {
+                "type": "object",
+                "description": "Growth in people per department (`customer_service`, `engineering`, `finance_legal_admin`, `human_resources`, `marketing`, `operations`, `other`, `sales`). Integers sent as strings",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "example": {
+                  "customer_service": "1",
+                  "engineering": "4",
+                  "finance_legal_admin": "0",
+                  "human_resources": "0",
+                  "marketing": "-1",
+                  "operations": "1",
+                  "other": "0",
+                  "sales": "2"
+                }
+              },
+              "growth_by_department_percentage": {
+                "type": "object",
+                "description": "Growth in percent per department (`customer_service`, `engineering`, `finance_legal_admin`, `human_resources`, `marketing`, `operations`, `other`, `sales`)",
+                "additionalProperties": {
+                  "type": "integer"
+                },
+                "example": {
+                  "customer_service": 11,
+                  "engineering": 11,
+                  "finance_legal_admin": 0,
+                  "human_resources": 0,
+                  "marketing": -6,
+                  "operations": 11,
+                  "other": 0,
+                  "sales": 7
+                }
+              }
+            }
+          },
           "last_funding_round_at": {
             "type": "string",
             "description": "Date of last funding round"
           },
-          "techno_used_array": {
+          "technologies": {
             "type": "array",
+            "description": "Technologies detected at the company, with no cap",
             "items": {
-              "type": "string"
-            },
-            "description": "Array of technologies used by the company"
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Technology name"
+                },
+                "first_seen_at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "When the technology was first detected at the company"
+                },
+                "scoring": {
+                  "type": "string",
+                  "description": "Detection confidence: `CONFIRMED`, `LIKELY` or `POTENTIAL`. Absent while the technology is not classified",
+                  "enum": [
+                    "CONFIRMED",
+                    "LIKELY",
+                    "POTENTIAL"
+                  ]
+                }
+              }
+            }
+          },
+          "active_job_post": {
+            "type": "object",
+            "description": "Open job posts of the company, by department. Counts are integers sent as strings",
+            "properties": {
+              "total": {
+                "type": "string",
+                "example": "3"
+              },
+              "count_by_department": {
+                "type": "object",
+                "description": "Count per department (`customer_service`, `engineering`, `finance_legal_admin`, `human_resources`, `marketing`, `operations`, `other`, `sales`)",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "example": {
+                  "customer_service": "0",
+                  "engineering": "2",
+                  "finance_legal_admin": "0",
+                  "human_resources": "0",
+                  "marketing": "0",
+                  "operations": "0",
+                  "other": "0",
+                  "sales": "1"
+                }
+              }
+            }
+          },
+          "job_post_last_6m": {
+            "type": "object",
+            "description": "Job posts of the last 6 months, counted by department. Counts are integers sent as strings",
+            "properties": {
+              "total": {
+                "type": "string",
+                "example": "8"
+              },
+              "count_by_department": {
+                "type": "object",
+                "description": "Count per department (`customer_service`, `engineering`, `finance_legal_admin`, `human_resources`, `marketing`, `operations`, `other`, `sales`)",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "example": {
+                  "customer_service": "0",
+                  "engineering": "4",
+                  "finance_legal_admin": "0",
+                  "human_resources": "1",
+                  "marketing": "1",
+                  "operations": "0",
+                  "other": "0",
+                  "sales": "2"
+                }
+              }
+            }
+          },
+          "job_post_last_6m_array": {
+            "type": "array",
+            "description": "Job posts of the last 6 months",
+            "items": {
+              "type": "object",
+              "properties": {
+                "job_title": {
+                  "type": "string",
+                  "description": "Job title"
+                },
+                "job_url": {
+                  "type": "string",
+                  "description": "Job post URL"
+                },
+                "job_posted_at": {
+                  "type": "string",
+                  "description": "Date the job was posted"
+                },
+                "job_location_city_country": {
+                  "type": "string",
+                  "description": "Job location: city and country"
+                },
+                "job_description": {
+                  "type": "string",
+                  "description": "Full text of the job post. On request: comes back only when `includes` names `job_post_last_6m_array.job_description` or a path under it"
+                }
+              }
+            }
           },
           "business_business_customer": {
             "type": "string",
@@ -5379,6 +6189,10 @@
           "company_subsubindustry": {
             "type": "string",
             "description": "Sub-sub-industry"
+          },
+          "company_subsubsubindustry": {
+            "type": "string",
+            "description": "4th-level industry"
           },
           "company_location": {
             "type": "string",
@@ -23653,7 +24467,7 @@
     "/database/people": {
       "post": {
         "summary": "Search People Database",
-        "description": "This endpoint allows you to query our People database. To do so, you may use the following parameters: filters (required, unless `fromSearchId` is provided), fromSearchId (optional), page (optional), size (optional), and excludes (optional). Each filter should have the following properties: filterId (filter identifier), in (list of the values you want to include), and out (list of the values you want to exclude). Filters of type `slider` (such as `currentCompanyFounded`) take one or more `min|max` ranges in `in`: two numbers joined by `|`, such as `2015|2024`. Their `out` must be an empty array. An `out` value, or a range in another format (such as `2015-2024`), is refused with a 400 `Parameter filters is invalid`. To exclude a range, send the ranges around it in `in`. To know which filters you are able to use, refer to the GET Filters section. To run a previous search again, pass the `search` id it returned as `fromSearchId`.\n\nThe `department` filter accepts the following values: `Sales`, `Customer service`, `Engineering`, `Marketing`, `Operations`, `Human Resources`, `Finance / Legal / Admin`, `Other`.",
+        "description": "This endpoint allows you to query our People database. To do so, you may use the following parameters: filters (required, unless `fromSearchId` is provided), fromSearchId (optional), page (optional), size (optional), includes (optional), and excludes (optional). Each filter should have the following properties: filterId (filter identifier), in (list of the values you want to include), and out (list of the values you want to exclude). Filters of type `slider` (such as `currentCompanyFounded`) take one or more `min|max` ranges in `in`: two numbers joined by `|`, such as `2015|2024`. Their `out` must be an empty array. An `out` value, or a range in another format (such as `2015-2024`), is refused with a 400 `Parameter filters is invalid`. To exclude a range, send the ranges around it in `in`. To know which filters you are able to use, refer to the GET Filters section. To run a previous search again, pass the `search` id it returned as `fromSearchId`.\n\nThe `department` filter accepts the following values: `Sales`, `Customer service`, `Engineering`, `Marketing`, `Operations`, `Human Resources`, `Finance / Legal / Admin`, `Other`.",
         "operationId": "searchPeopleDatabase",
         "tags": [
           "People Database"
@@ -23709,12 +24523,19 @@
                     "maximum": 100,
                     "description": "Size of the results, number between 1 and 100 (optional)"
                   },
+                  "includes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Field paths to return in each row (optional). A dotted path reaches a nested field, through arrays: `experiences.title` is the `title` of every role. Only the first 100 names are read. A value that is not an array of strings answers `400` `Parameter includes or excludes is invalid`, and the search does not run.\n\nWithout `includes`, a row holds every field except the on-request fields. With `includes`, a row holds only the listed paths. `_id` and `_score` come back only when `includes` names them: add `_id` when you need the row id. An array keeps one entry per item: with `education.institution`, a school without `institution` comes back as `{}`.\n\nThe on-request fields are `education`, `inferred_skills`, `experiences.description` and `experiences.company_description`. Each one comes back only when `includes` names it or a path under it, such as `education.institution`. `experiences` alone returns roles without `description` and `company_description`: `[\"experiences\", \"experiences.description\"]` returns roles with `description`.\n\nWith `includes`, `experiences` holds the current roles only. Past roles do not come back: to get them, send no `includes` and trim the rows with `excludes`.\n\nA name that is not a field of the row is ignored. A path known in part counts as its known part: `experiences.foo` counts as `experiences`. If no name is valid, the row is the default row. `excludes` wins over `includes`. Excluding a field also removes the paths under it: `includes: [\"experiences.title\"]` with `excludes: [\"experiences\"]` returns no `experiences`."
+                  },
                   "excludes": {
                     "type": "array",
                     "items": {
                       "type": "string"
                     },
-                    "description": "Array of properties to exclude from the results (optional)"
+                    "description": "Field paths to remove from each row (optional). A dotted path reaches a nested field, through arrays: `experiences.technologies` is the `technologies` of every role. Only the first 100 names are read. A value that is not an array of strings answers `400` `Parameter includes or excludes is invalid`, and the search does not run.\n\nA name is ignored unless its full path is a field of the row. `excludes` wins over `includes`. Excluding a field also removes the paths under it: `includes: [\"experiences.title\"]` with `excludes: [\"experiences\"]` returns no `experiences`."
                   },
                   "search": {
                     "type": "string",
@@ -23722,20 +24543,52 @@
                   }
                 }
               },
-              "example": {
-                "filters": [
-                  {
-                    "filterId": "country",
-                    "in": [
-                      "France"
+              "examples": {
+                "default": {
+                  "summary": "Default fields",
+                  "value": {
+                    "filters": [
+                      {
+                        "filterId": "country",
+                        "in": [
+                          "France"
+                        ],
+                        "out": [
+                          "India"
+                        ]
+                      }
                     ],
-                    "out": [
-                      "India"
+                    "page": 1,
+                    "size": 25
+                  }
+                },
+                "includes": {
+                  "summary": "Fields chosen with includes",
+                  "value": {
+                    "filters": [
+                      {
+                        "filterId": "country",
+                        "in": [
+                          "France"
+                        ],
+                        "out": [
+                          "India"
+                        ]
+                      }
+                    ],
+                    "page": 1,
+                    "size": 1,
+                    "includes": [
+                      "_id",
+                      "full_name",
+                      "headline",
+                      "experiences.title",
+                      "experiences.company_name",
+                      "experiences.description",
+                      "education.institution"
                     ]
                   }
-                ],
-                "page": 1,
-                "size": 25
+                }
               }
             }
           }
@@ -23785,78 +24638,133 @@
                     }
                   }
                 },
-                "example": {
-                  "results": [
-                    {
-                      "lead_id": 434482354,
-                      "canonical_shorthand_name": "alexdoe",
-                      "connections_count": 500,
-                      "country": "France",
-                      "full_name": "Alex Doe",
-                      "education": [],
-                      "experience_count": 3,
-                      "experiences": [
+                "examples": {
+                  "default": {
+                    "summary": "Default fields",
+                    "value": {
+                      "results": [
                         {
-                          "company_shorthand_name": "lemlist",
-                          "company_id": 11750398,
-                          "company_name": "lemlist",
-                          "company_website_url": "https://www.lemlist.com",
-                          "company_linkedin_url": "https://www.linkedin.com/company/lemlist",
-                          "company_employee_count": 151,
-                          "company_size": "51-200",
-                          "company_domain": "lemlist.com",
-                          "company_industry": "Technology, Information and Media",
-                          "title": "Account Executive",
-                          "title_normalized": "Account Executive",
-                          "date_from": "September 2025",
-                          "duration": "1 month",
-                          "location": "Ville de Paris, Île-de-France, France",
-                          "current_exp_bucket": "Less than 6 months"
+                          "lead_id": 123456789,
+                          "canonical_shorthand_name": "alexdoe",
+                          "connections_count": 500,
+                          "country": "France",
+                          "full_name": "Alex Doe",
+                          "experience_count": 3,
+                          "experiences": [
+                            {
+                              "company_id": 987654321,
+                              "company_name": "Acme Inc",
+                              "company_website_url": "https://www.acme.com",
+                              "company_linkedin_url": "https://www.linkedin.com/company/acme-inc",
+                              "company_employee_count": 120,
+                              "company_size": "51-200",
+                              "company_domain": "acme.com",
+                              "company_industry": "Technology, Information and Media",
+                              "title": "Account Executive",
+                              "title_normalized": "Account Executive",
+                              "date_from": "September 2025",
+                              "duration": "1 month",
+                              "location": "Ville de Paris, Île-de-France, France",
+                              "current_exp_bucket": "Less than 6 months"
+                            }
+                          ],
+                          "interests": [],
+                          "languages": [
+                            {
+                              "language": "Français",
+                              "proficiency": "Native or bilingual proficiency"
+                            },
+                            {
+                              "language": "Anglais",
+                              "proficiency": "Professional working proficiency"
+                            }
+                          ],
+                          "lead_linkedin_url": "https://www.linkedin.com/in/alex-doe",
+                          "linkedin_short": "alex-doe",
+                          "skills": [],
+                          "summary": "Passionate about helping sales teams book more meetings",
+                          "headline": "Account Executive at Acme Inc",
+                          "lead_quality_score": 3,
+                          "department": "Sales",
+                          "connections_count_bucket": "500+",
+                          "years_of_exp_bucket": "2 to 5 years",
+                          "location": "Paris, Ile-de-France, France",
+                          "state": "Ile-de-France",
+                          "current_exp_company_name": "Acme Inc",
+                          "_score": 21.294434,
+                          "_id": "123456789"
                         }
                       ],
-                      "interests": [],
-                      "languages": [
-                        {
-                          "language": "Français",
-                          "proficiency": "Native or bilingual proficiency"
-                        },
-                        {
-                          "language": "Anglais",
-                          "proficiency": "Professional working proficiency"
-                        }
-                      ],
-                      "lead_linkedin_url": "https://www.linkedin.com/in/alex-doe",
-                      "linkedin_short": "alex-doe",
-                      "skills": [],
-                      "summary": "Passionate about helping sales teams book more meetings @lemlist",
-                      "headline": "Helping RevOps scale outbound @lemlist",
-                      "lead_quality_score": 3,
-                      "department": "Sales",
-                      "connections_count_bucket": "500+",
-                      "years_of_exp_bucket": "2 to 5 years",
-                      "location": "Paris, Ile-de-France, France",
-                      "state": "Ile-de-France",
-                      "current_exp_company_name": "lemlist",
-                      "_score": 21.294434,
-                      "_id": "434482354"
+                      "total": 91,
+                      "took": 24,
+                      "page": 1,
+                      "size": 1,
+                      "search": "lsh_ExAmPlEXtVzpdwzqw",
+                      "limitation": 1999,
+                      "team": "tea_ExAmPlE31pFS5QP6c"
                     }
-                  ],
-                  "total": 91,
-                  "took": 24,
-                  "page": 1,
-                  "size": 1,
-                  "search": "lsh_Lra0u9F7WXn3XKzB9",
-                  "limitation": 1999,
-                  "team": "tea_8QvkOiBfPdb2ZRhHi"
+                  },
+                  "includes": {
+                    "summary": "Fields chosen with includes",
+                    "value": {
+                      "results": [
+                        {
+                          "_id": "123456789",
+                          "full_name": "Alex Doe",
+                          "headline": "Account Executive at Acme Inc",
+                          "experiences": [
+                            {
+                              "title": "Account Executive",
+                              "company_name": "Acme Inc",
+                              "description": "Sells the Acme Inc platform to mid-market teams in France."
+                            }
+                          ],
+                          "education": [
+                            {
+                              "institution": "Example University"
+                            }
+                          ]
+                        }
+                      ],
+                      "total": 91,
+                      "took": 18,
+                      "page": 1,
+                      "size": 1,
+                      "search": "lsh_ExAmPlE2jh5JtTCAQ",
+                      "limitation": 1998,
+                      "team": "tea_ExAmPlE31pFS5QP6c"
+                    }
+                  }
                 }
               }
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / Parameter filters is invalid. `Parameter filters is invalid` answers any refused filter, including an `out` value on a `slider` filter or a slider range not written `min|max`.",
+            "description": "Possible errors: Parameter filters is invalid / Parameter includes or excludes is invalid. `Parameter filters is invalid` answers any refused filter, including an `out` value on a `slider` filter or a slider range not written `min|max`. `Parameter includes or excludes is invalid` answers an `includes` or `excludes` that is not an array of strings: the search does not run.",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "invalidFilters": {
+                    "summary": "Parameter filters is invalid",
+                    "value": {
+                      "error": "Parameter filters is invalid"
+                    }
+                  },
+                  "invalidFields": {
+                    "summary": "Parameter includes or excludes is invalid",
+                    "value": {
+                      "error": "Parameter includes or excludes is invalid"
+                    }
+                  }
+                }
               }
             }
           },
@@ -24016,7 +24924,7 @@
                             "results": {
                               "type": "array",
                               "items": {
-                                "$ref": "#/components/schemas/PeopleSchema"
+                                "$ref": "#/components/schemas/PeopleEngagementSchema"
                               },
                               "description": "Results array"
                             },
@@ -24289,23 +25197,68 @@
                   "size": {
                     "type": "integer",
                     "description": "Number of results per page (default: 100, max: 500)"
+                  },
+                  "includes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Field paths to return in each row (optional). A dotted path reaches a nested field, through arrays: `technologies.name` is the `name` of every technology. Only the first 100 names are read. A value that is not an array of strings answers `400` `Parameter includes or excludes is invalid`, and the search does not run.\n\nWithout `includes`, a row holds every field except the on-request fields. With `includes`, a row holds only the listed paths. `_id` and `_score` come back only when `includes` names them: add `_id` when you need the row id. An array keeps one entry per item: with `technologies.scoring`, a technology not classified yet comes back as `{}`.\n\nThe on-request fields are `company_description` and `job_post_last_6m_array.job_description`. Each one comes back only when `includes` names it or a path under it. `job_post_last_6m_array` alone returns job posts without `job_description`: `[\"job_post_last_6m_array\", \"job_post_last_6m_array.job_description\"]` returns job posts with `job_description`.\n\nA name that is not a field of the row is ignored. A path known in part counts as its known part: `technologies.foo` counts as `technologies`. If no name is valid, the row is the default row. `excludes` wins over `includes`. Excluding a field also removes the paths under it: `includes: [\"technologies.name\"]` with `excludes: [\"technologies\"]` returns no `technologies`."
+                  },
+                  "excludes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Field paths to remove from each row (optional). A dotted path reaches a nested field, through arrays: `technologies.first_seen_at` is the `first_seen_at` of every technology. Only the first 100 names are read. A value that is not an array of strings answers `400` `Parameter includes or excludes is invalid`, and the search does not run.\n\nA name is ignored unless its full path is a field of the row. `excludes` wins over `includes`. Excluding a field also removes the paths under it: `includes: [\"technologies.name\"]` with `excludes: [\"technologies\"]` returns no `technologies`."
                   }
                 }
               },
-              "example": {
-                "filters": [
-                  {
-                    "filterId": "currentCompanyTechnologies",
-                    "in": [
-                      "Postman"
+              "examples": {
+                "default": {
+                  "summary": "Default fields",
+                  "value": {
+                    "filters": [
+                      {
+                        "filterId": "currentCompanyTechnologies",
+                        "in": [
+                          "Postman"
+                        ],
+                        "out": [
+                          "Haskell"
+                        ]
+                      }
                     ],
-                    "out": [
-                      "Haskell"
+                    "page": 1,
+                    "size": 2
+                  }
+                },
+                "includes": {
+                  "summary": "Fields chosen with includes",
+                  "value": {
+                    "filters": [
+                      {
+                        "filterId": "currentCompanyTechnologies",
+                        "in": [
+                          "Postman"
+                        ],
+                        "out": [
+                          "Haskell"
+                        ]
+                      }
+                    ],
+                    "page": 1,
+                    "size": 1,
+                    "includes": [
+                      "_id",
+                      "company_name",
+                      "company_description",
+                      "technologies.name",
+                      "job_post_last_6m_array.job_title",
+                      "job_post_last_6m_array.job_description"
                     ]
                   }
-                ],
-                "page": 1,
-                "size": 2
+                }
               }
             }
           }
@@ -24355,233 +25308,170 @@
                     }
                   }
                 },
-                "example": {
-                  "results": [
-                    {
-                      "company_id": "88945664",
-                      "company_website_url": "http://acme-tech.example.com",
-                      "company_name": "Acme Technologies",
-                      "company_linkedin_url": "https://www.linkedin.com/company/acme-technologies",
-                      "last_updated": "2025-09-07 02:11:32 UTC",
-                      "company_headquarters_city": "Example City",
-                      "company_headquarters_country": "India",
-                      "company_logo_url": "https://example.com/logo1.png",
-                      "company_description": "Acme, established on Aug-2015 with the idea \"Make Your Imagination Come True\". Which means anyone who came up with their idea, we will give a closely realistic solutions to them. \nAcme Technologies is a new Generation Software Company, with young people with creative mind and immersive energy. We are a team of dedicated and highly skilled software professionals focused on providing world class IT solutions. We offer a variety of services in the area of:\nWebsite Designing & Development, Web Maintenance, E-Business Solutions, Android & iOS app, Blockchain Development, Software Development, Hosting Services.",
-                      "company_employee_count": "31",
-                      "company_type": "Public Company",
-                      "company_founded": "2015",
-                      "company_followers_count": "3958",
-                      "company_size": "11-50",
-                      "company_domain": "acme-tech.example.com",
-                      "employees_count_growth": -3,
-                      "techno_used_array": [
-                        "Apache HTTP Server",
-                        "Lightbox",
-                        "LinkedIn Sales Navigator",
-                        "Atlassian Jira",
-                        "LiteSpeed Cache",
-                        "Underscore.js",
-                        "Remix",
-                        "jsDelivr",
-                        "jQuery",
-                        "Google Fonts API",
-                        "Google Tag Manager",
-                        "X-Content-Type-Options",
-                        "Facebook",
-                        "PWA",
-                        "jQuery CDN",
-                        "ZURB Foundation",
-                        "HSTS",
-                        "WhatsApp Business",
-                        "X-XSS-Protection",
-                        "Google Analytics",
-                        "Flickity",
-                        "HTML",
-                        "LiteSpeed",
-                        "Ethereum",
-                        "Cloudinary",
-                        "OceanWP",
-                        "Goober",
-                        "jQuery Migrate",
-                        "Tailwind CSS",
-                        "Postman",
-                        "LinkedIn",
-                        "Webpack",
-                        "GSAP",
-                        "Essential Addons for Elementor",
-                        "Font Awesome",
-                        "Android",
-                        "PixelYourSite",
-                        "jQuery UI",
-                        "MUI",
-                        "IPFS",
-                        "Upwork",
-                        "cdnjs",
-                        "FlexSlider",
-                        "Elementor",
-                        "ZoomInfo",
-                        "Swiper",
-                        "Microsoft IIS",
-                        "Node.js",
-                        "Ethers",
-                        "Solidity",
-                        "React",
-                        "Priority Hints",
-                        "iOS",
-                        "OWL Carousel",
-                        "MySQL",
-                        "Facebook Pixel",
-                        "Open Graph",
-                        "Laravel",
-                        "Emotion",
-                        "Lucide",
-                        "PHP",
-                        "Blockchain",
-                        "Next.js",
-                        "RSS",
-                        "Google Maps",
-                        "Windows Server",
-                        "WordPress",
-                        "WPForms",
-                        "JavaScript",
-                        "Chainlink",
-                        "Apache",
-                        "Bootstrap"
+                "examples": {
+                  "default": {
+                    "summary": "Default fields",
+                    "value": {
+                      "results": [
+                        {
+                          "company_id": "111111111",
+                          "company_website_url": "http://acme-tech.example.com",
+                          "company_name": "Acme Technologies",
+                          "company_linkedin_url": "https://www.linkedin.com/company/acme-technologies",
+                          "last_updated": "2025-09-07 02:11:32 UTC",
+                          "company_headquarters_city": "Example City",
+                          "company_headquarters_country": "India",
+                          "company_logo_url": "https://example.com/logo1.png",
+                          "company_employee_count": "31",
+                          "company_type": "Public Company",
+                          "company_founded": "2015",
+                          "company_followers_count": "3958",
+                          "company_size": "11-50",
+                          "company_domain": "acme-tech.example.com",
+                          "employees_count_growth": -3,
+                          "technologies": [
+                            {
+                              "name": "Postman",
+                              "first_seen_at": "2024-03-12T00:00:00.000Z",
+                              "scoring": "CONFIRMED"
+                            },
+                            {
+                              "name": "React",
+                              "first_seen_at": "2023-11-02T00:00:00.000Z",
+                              "scoring": "LIKELY"
+                            }
+                          ],
+                          "business_business_customer": "B2B",
+                          "company_quality_score": "3",
+                          "company_industry": "Technology, Information and Media",
+                          "company_subindustry": "Technology, Information and Internet",
+                          "company_subsubindustry": "Software Development",
+                          "company_location": "123 Example Street, Suite 100, Example City, Example Country",
+                          "company_location_geopoint_array": [
+                            73.92,
+                            18.64
+                          ],
+                          "company_occ_lead": "60",
+                          "_score": 10.002095,
+                          "_id": "111111111"
+                        },
+                        {
+                          "company_id": "222222222",
+                          "company_website_url": "http://www.acme-care.example.com",
+                          "company_name": "Acme Care",
+                          "company_linkedin_url": "https://www.linkedin.com/company/acme-care",
+                          "last_updated": "2025-09-04 14:24:45 UTC",
+                          "company_headquarters_city": "San Francisco, California",
+                          "company_headquarters_country": "United States",
+                          "company_logo_url": "https://example.com/logo2.png",
+                          "company_employee_count": "33",
+                          "company_type": "Privately Held",
+                          "company_founded": "2013",
+                          "company_followers_count": "2651",
+                          "company_size": "11-50",
+                          "revenue_bucket": "$5M - $10M",
+                          "company_domain": "acme-care.example.com",
+                          "employees_count_growth": 6,
+                          "last_funding_round_at": "More than 6 months",
+                          "technologies": [
+                            {
+                              "name": "Postman",
+                              "first_seen_at": "2025-01-15T00:00:00.000Z",
+                              "scoring": "CONFIRMED"
+                            },
+                            {
+                              "name": "Python",
+                              "first_seen_at": "2022-06-20T00:00:00.000Z",
+                              "scoring": "POTENTIAL"
+                            }
+                          ],
+                          "business_business_customer": "B2B",
+                          "company_quality_score": "3",
+                          "company_industry": "Technology, Information and Media",
+                          "company_subindustry": "Technology, Information and Internet",
+                          "company_subsubindustry": "Software Development",
+                          "company_location": "San Francisco, California, US",
+                          "company_location_geopoint_array": [
+                            -122.42,
+                            37.78
+                          ],
+                          "company_occ_lead": "117",
+                          "_score": 9.972561,
+                          "_id": "222222222"
+                        }
                       ],
-                      "business_business_customer": "B2B",
-                      "company_quality_score": "3",
-                      "company_industry": "Technology, Information and Media",
-                      "company_subindustry": "Technology, Information and Internet",
-                      "company_subsubindustry": "Software Development",
-                      "company_location": "123 Example Street, Suite 100, Example City, Example Country",
-                      "company_location_geopoint_array": [
-                        73.92,
-                        18.64
-                      ],
-                      "company_occ_lead": "60",
-                      "_score": 10.002095,
-                      "_id": "88945664"
-                    },
-                    {
-                      "company_id": "9903838",
-                      "company_website_url": "http://www.acme-care.example.com",
-                      "company_name": "Acme Care",
-                      "company_linkedin_url": "https://www.linkedin.com/company/acme-care",
-                      "last_updated": "2025-09-04 14:24:45 UTC",
-                      "company_headquarters_city": "San Francisco, California",
-                      "company_headquarters_country": "United States",
-                      "company_logo_url": "https://example.com/logo2.png",
-                      "company_description": "Acme Care provides an automated platform for team-based care management. To learn more, write us at contact@acme-care.example.com.",
-                      "company_employee_count": "33",
-                      "company_type": "Privately Held",
-                      "company_founded": "2013",
-                      "company_followers_count": "2651",
-                      "company_size": "11-50",
-                      "revenue_bucket": "$5M - $10M",
-                      "company_domain": "acme-care.example.com",
-                      "employees_count_growth": 6,
-                      "last_funding_round_at": "More than 6 months",
-                      "techno_used_array": [
-                        "Google Cloud",
-                        "Heap",
-                        "Envoy",
-                        "Google Cloud CDN",
-                        "X-Content-Type-Options",
-                        "Piwik",
-                        "WP Engine",
-                        "React",
-                        "cdnjs",
-                        "Fullstory",
-                        "Cloudflare Bot Management",
-                        "Twitter",
-                        "JSON-LD",
-                        "C3.js",
-                        "Python",
-                        "Google Analytics",
-                        "MediaElement.js",
-                        "SafeBase",
-                        "Emotion",
-                        "Nginx",
-                        "Atlassian Jira",
-                        "PayPal",
-                        "MUI",
-                        "Gravity Forms",
-                        "Zendesk",
-                        "MySQL",
-                        "Webpack",
-                        "PHP",
-                        "Facebook Pixel",
-                        "Google Fonts API",
-                        "OneTrust",
-                        "jQuery",
-                        "Gravatar",
-                        "Google Hosted Libraries",
-                        "Yoast SEO",
-                        "Jamf",
-                        "Cloudflare CDN",
-                        "Angular",
-                        "Postman",
-                        "Cloudflare",
-                        "HubSpot",
-                        "Java",
-                        "HTTP/3",
-                        "Moment.js",
-                        "X-XSS-Protection",
-                        "Open Graph",
-                        "JazzHR",
-                        "Workramp",
-                        "Algolia",
-                        "SSL.com",
-                        "Autoptimize",
-                        "Font Awesome",
-                        "oEmbed",
-                        "Bootstrap",
-                        "Facebook",
-                        "HSTS",
-                        "Ruby",
-                        "Twemoji",
-                        "WordPress",
-                        "Lightbox",
-                        "Adobe Fonts",
-                        "RequireJS",
-                        "Ruby on Rails",
-                        "Lodash",
-                        "reCAPTCHA",
-                        "LinkedIn Ads",
-                        "Hotjar",
-                        "Google Tag Manager"
-                      ],
-                      "business_business_customer": "B2B",
-                      "company_quality_score": "3",
-                      "company_industry": "Technology, Information and Media",
-                      "company_subindustry": "Technology, Information and Internet",
-                      "company_subsubindustry": "Software Development",
-                      "company_location": "San Francisco, California, US",
-                      "company_location_geopoint_array": [
-                        -122.42,
-                        37.78
-                      ],
-                      "company_occ_lead": "117",
-                      "_score": 9.972561,
-                      "_id": "9903838"
+                      "total": 12102,
+                      "took": 17,
+                      "page": 1,
+                      "size": 2,
+                      "search": "lsh_ExAmPlEzq8WRy9FNu",
+                      "limitation": 1998,
+                      "team": "tea_ExAmPlE31pFS5QP6c"
                     }
-                  ],
-                  "total": 12102,
-                  "took": 17,
-                  "page": 1,
-                  "size": 2,
-                  "search": "lsh_8LBpZPgGpxGswp5G7",
-                  "limitation": 1998,
-                  "team": "tea_8QvkOiBfPdb2ZRhHi"
+                  },
+                  "includes": {
+                    "summary": "Fields chosen with includes",
+                    "value": {
+                      "results": [
+                        {
+                          "_id": "111111111",
+                          "company_name": "Acme Technologies",
+                          "company_description": "Acme Technologies builds web and mobile apps for small businesses.",
+                          "technologies": [
+                            {
+                              "name": "Postman"
+                            },
+                            {
+                              "name": "React"
+                            }
+                          ],
+                          "job_post_last_6m_array": [
+                            {
+                              "job_title": "Account Executive",
+                              "job_description": "Acme Technologies is hiring an Account Executive to grow its customer base."
+                            }
+                          ]
+                        }
+                      ],
+                      "total": 12102,
+                      "took": 15,
+                      "page": 1,
+                      "size": 1,
+                      "search": "lsh_ExAmPlEksddoNrQY7",
+                      "limitation": 1997,
+                      "team": "tea_ExAmPlE31pFS5QP6c"
+                    }
+                  }
                 }
               }
             }
           },
           "400": {
-            "description": "Possible errors: Bad team / Parameter filters is invalid. `Parameter filters is invalid` answers any refused filter, including an `out` value on a `slider` filter or a slider range not written `min|max`.",
+            "description": "Possible errors: Parameter filters is invalid / Parameter includes or excludes is invalid. `Parameter filters is invalid` answers any refused filter, including an `out` value on a `slider` filter or a slider range not written `min|max`. `Parameter includes or excludes is invalid` answers an `includes` or `excludes` that is not an array of strings: the search does not run.",
             "content": {
-              "text/plain": {
-                "example": "Bad team"
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "invalidFilters": {
+                    "summary": "Parameter filters is invalid",
+                    "value": {
+                      "error": "Parameter filters is invalid"
+                    }
+                  },
+                  "invalidFields": {
+                    "summary": "Parameter includes or excludes is invalid",
+                    "value": {
+                      "error": "Parameter includes or excludes is invalid"
+                    }
+                  }
+                }
               }
             }
           },
