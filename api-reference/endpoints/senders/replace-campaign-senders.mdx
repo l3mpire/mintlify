@@ -1,0 +1,32 @@
+---
+openapi: put /campaigns/{campaignId}/senders
+description: Replaces the sender pool of a campaign.
+---
+
+<Note>
+The sender pool requires at least the **Email Pro** plan.
+</Note>
+
+<Tip>
+To pin the sender of one step, outside the pool, see
+[Set Step Sender](/api-reference/endpoints/sequences/set-step-sender) in the
+Sequences group.
+</Tip>
+
+Replaces the pool with the senders of the body. Each entry follows the rules of
+[Add Campaign Senders](/api-reference/endpoints/senders/add-campaign-senders).
+
+<Warning>
+A sender or a channel that is not in the body leaves the pool. To add one
+sender, use [Add Campaign Senders](/api-reference/endpoints/senders/add-campaign-senders).
+An empty list (`{ "senders": [] }`) clears the pool.
+</Warning>
+
+## Effects on the leads
+
+- The leads not contacted yet get a sender of the new pool at their next step.
+- The contacted leads keep their sender. When their sender or channel leaves
+  the pool, their next steps stop with a "Send user is missing" error, until
+  the sender comes back in the pool.
+- `impact.contactedLeads` gives the number of these leads. It is present when
+  the change removes a sender or a channel.

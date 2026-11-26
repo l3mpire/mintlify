@@ -1,0 +1,16 @@
+---
+openapi: post /campaigns/{campaignId}/archive
+description: Archives a campaign. A running campaign is paused first.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Campaign" objectPath="campaign" />
+
+Archiving stops sending: a running campaign is paused, then archived, so the response reads
+`"state": "paused"`.
+
+An archived campaign cannot be started. [Unarchive it](/api-reference/endpoints/campaigns/unarchive-campaign)
+first. List archived campaigns with `status=archived` on
+[Get Many Campaigns](/api-reference/endpoints/campaigns/get-many-campaigns).
+
+Archiving a campaign that is already archived changes nothing and answers `200`.

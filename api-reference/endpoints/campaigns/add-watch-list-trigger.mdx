@@ -3,10 +3,6 @@ openapi: post /campaigns/{campaignId}/triggers/watch-lists
 description: Links a Signal Agent to a campaign as its signal trigger.
 ---
 
-<Note>
-This endpoint is in beta: it requires the `campaignSignalTrigger` beta on your team (`403 BETA_NOT_ENABLED` otherwise).
-</Note>
-
 Once linked, every new signal of the Signal Agent pushes its contact into the
 campaign as a lead. Signals detected before the link are not backfilled.
 

@@ -1,0 +1,13 @@
+---
+openapi: patch /domains-core/mailboxes/{mailboxId}
+description: Assigns a mailbox bought through lemlist to another team member.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Domain mailbox" objectPath="domain-mailbox" />
+
+The new user's name is pushed to the mail provider.
+
+<Warning>
+Requires the **Manage domains** permission on the user of the API key. The target user must be a member of the team.
+</Warning>

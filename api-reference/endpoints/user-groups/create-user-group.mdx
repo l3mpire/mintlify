@@ -1,0 +1,26 @@
+---
+openapi: post /v2/user-groups
+description: Creates a user group with its members.
+---
+
+<Warning>
+  User groups are in beta. To use these endpoints now, contact your lemlist
+  account manager.
+</Warning>
+
+<Note>
+  Admins only: the API key must have been created by an admin of the team.
+</Note>
+
+The name is trimmed and its inner spaces collapsed, and a user listed twice is kept once. The response holds the group as stored.
+
+## Error codes
+
+| Code | Cause |
+| ---- | ----- |
+| `USER_GROUPS_INVALID_REQUEST` | `name` is empty once trimmed or longer than 60 characters, or `userIds` is not an array of at most 1,000 user ids. |
+| `USER_NOT_IN_TEAM` | A user id is not a member of your team. |
+| `USER_GROUPS_PLAN_REQUIRED` | Your team is not on the Enterprise plan, or the user groups beta is not enabled for it. |
+| `USER_NOT_AUTHORIZED` | The API key was created by a team member who is not an admin. |
+| `USER_GROUPS_NAME_TAKEN` | Your team already has a group with this name, whatever its case. |
+| `USER_GROUPS_LIMIT_REACHED` | Your team already has 100 groups. |

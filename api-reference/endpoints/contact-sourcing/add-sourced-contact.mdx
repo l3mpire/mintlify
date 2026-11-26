@@ -27,5 +27,6 @@ that did not happen, the call answers `409`.
 | Code | Meaning |
 | ---- | ------- |
 | `201` | Contact created. |
+| `403` | The API key's user does not have the "Create contacts" permission (`ABS_CONTACT_SOURCING_CONTACT_CREATE_NOT_ALLOWED`). Nothing is written. |
 | `404` | The person is already one of your contacts, or no longer in the People Database. Re-run the sourcing to refresh the recommendations. |
 | `409` | The person is already one of your contacts, filed under another account. They were left there. |

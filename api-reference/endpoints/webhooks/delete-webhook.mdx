@@ -5,3 +5,5 @@ description: Deletes a specific webhook.
 import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 
 <SnippetObjectReference objectName="Webhook" objectPath="webhook" />
+
+The API key's user must have the "Edit integrations" permission, otherwise the request fails with `403` and the webhook is kept.

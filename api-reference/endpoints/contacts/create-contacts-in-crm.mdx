@@ -1,0 +1,27 @@
+---
+openapi: post /contacts/crm/create
+description: Pushes contacts to your connected CRM, linking each one to the CRM record found and creating it there when none matches.
+---
+
+Pushes contacts to your connected CRM — the **Create in CRM** action of the Contacts page. Each contact is searched in the CRM first: linked to the record found, created in the CRM otherwise. On Salesforce, `asLead: true` creates the missing contacts as Leads instead of Contacts.
+
+Target the contacts with `idsOrEmails` (lemlist ids or email addresses) **or** with `listId` for a whole contact list, static or dynamic: 10,000 contacts at most either way.
+
+## Asynchronous: read the outcome later
+
+The call queues the work and answers at once with what was **queued**, not with what the CRM returned. Each contact's outcome lands on its `crmSync` block shortly after:
+
+- `GET /contacts?idsOrEmails=...` returns each contact with its `crmSync` block (`searching`, `crmRecordId`, `notFoundAt`, `errors`), 100 contacts per call.
+- `GET /contacts?listId=...&crmSyncStatus=` lists the contacts of a list by state: `searching` while the search runs, then `synced` (linked or created), or `error` (refused by the CRM, with its reason). Without `listId`, the filter reads every contact of the team: do not poll it.
+
+## What the counts mean
+
+- `alreadyLinked`: already linked to a CRM record, synced with it again instead of searched.
+- `toCreate`: searched in the CRM first, then linked or created.
+- `notSearchable`: nothing the CRM can be searched with (no email address or LinkedIn URL), left untouched.
+- `alreadyInProgress`: a CRM search was already queued for them, not queued twice.
+- `notFound`: the references sent that match no contact of your team.
+
+## Who can call it
+
+The API key must belong to a team **admin**, like the action in the app. On Salesforce, the connection must grant the object created (Contact, or Lead with `asLead`).

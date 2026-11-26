@@ -1,0 +1,11 @@
+---
+openapi: post /views
+description: Creates a view on the Contacts, Companies or Tasks list and pins it on the API key user's tabs.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="View" objectPath="view" />
+
+<Note>
+Pick the conditions, and on a task view the sort and columns, from [Get View Fields](/api-reference/endpoints/views/get-view-fields). The response holds the view id and the `url` that opens the list on it.
+</Note>

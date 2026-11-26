@@ -1,0 +1,27 @@
+---
+openapi: get /senders
+description: Lists the team members who can send, with their channels and the health of each channel.
+---
+
+<Tip>
+To pin the sender of one step, outside the pool, see
+[Set Step Sender](/api-reference/endpoints/sequences/set-step-sender) in the
+Sequences group.
+</Tip>
+
+Use this endpoint to get the ids that the sender pool endpoints need: the user
+ids, the mailbox ids, the WhatsApp account ids, the phone numbers and the
+aliases of each mailbox.
+
+- Each channel is evaluated as if a campaign used it. A disconnected account
+  shows its diagnostic even when no campaign uses it.
+- With `campaignId`:
+  - `inPool` tells whether the campaign pool enables each sender and each
+    channel.
+  - `requiredChannelTypes` lists the channel types that the campaign steps use.
+    Only these types can be enabled in the pool.
+  - On a dynamic sender strategy, the list keeps only the senders and the
+    channels that the sender exclusion list of the campaign allows.
+
+The `diagnostics` codes are the same as in
+[Get Campaign Senders](/api-reference/endpoints/senders/get-campaign-senders#diagnostics).

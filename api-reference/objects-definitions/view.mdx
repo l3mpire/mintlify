@@ -1,0 +1,10 @@
+---
+title: View
+openapi-schema: View
+---
+
+A view is a named set of filters on the Contacts, Companies or Tasks list, shown as a tab of that page. Each user sees the lemlist default views, the views shared with the team and their own private views, and picks which ones show as tabs.
+
+Use [List Views](/api-reference/endpoints/views/list-views) to read them, [Get View Fields](/api-reference/endpoints/views/get-view-fields) to discover the fields a view can filter on, and [Create View](/api-reference/endpoints/views/create-view) to save one. Every view carries a `url` that opens the list on it.
+
+The views endpoints act for the user the API key belongs to. The lemlist MCP server exposes the same operations as tools (`get_views`, `get_view_fields`, `create_view`, `update_view`, `duplicate_view`, `delete_view`, `set_view_tabs`).

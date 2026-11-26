@@ -39,6 +39,8 @@ plus Else, `SEQUENCE_BRANCH_CONDITION_NOT_CONFIGURABLE` when it has no branch pa
 <Note>
 On a `customLeadInfo` step every branch tests the **same field** — only the operator and the value
 differ. Sending a `customField` that differs from the step's changes it on every branch at once.
+A company field counts as the same in both of its forms: on a step that tests `variables.companyName`,
+a branch sent as `company.name` keeps `variables.companyName`, like its siblings.
 </Note>
 
 ## When the campaign is running

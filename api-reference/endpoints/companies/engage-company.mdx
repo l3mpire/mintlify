@@ -1,0 +1,30 @@
+---
+openapi: post /companies/{companyId}/engage
+description: Opens the account-based (ABM) campaign of a company.
+---
+
+<Note>
+  Beta: this endpoint requires the ABM beta on your team. Without it, the call
+  answers `403` with `BETA_NOT_ENABLED`.
+</Note>
+
+Does what the Engage button does on a company: reopens its most recent live ABM
+campaign, or creates a draft named after the company, such as `Acme ABM Q4`,
+with the company's contacts already added as leads. The call takes no body.
+
+## One live ABM campaign per company
+
+Calling again returns the same campaign, with `created: false`, until that
+campaign is archived or ended. Concurrent calls on one company are safe: one of
+them creates the campaign and the others return it.
+
+A reopened campaign with no lead is filled again with the company's contacts,
+since the company may have gained some since it was engaged.
+
+| Code | Meaning |
+| ---- | ------- |
+| `200` | Done. `created` tells whether this call created the campaign, `shouldReviewLeads` whether its leads were just added. |
+| `400` | `companyId` is malformed. |
+| `403` | The ABM beta is not enabled. Nothing is written. |
+| `404` | The company does not exist in your team. |
+| `409` | Another engage of this company is still running. Retry in a moment. |

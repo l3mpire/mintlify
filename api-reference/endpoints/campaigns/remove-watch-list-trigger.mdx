@@ -3,10 +3,6 @@ openapi: delete /campaigns/{campaignId}/triggers/watch-lists/{watchListId}
 description: Detaches a Signal Agent from a campaign's signal triggers.
 ---
 
-<Note>
-This endpoint is in beta: it requires the `campaignSignalTrigger` beta on your team (`403 BETA_NOT_ENABLED` otherwise).
-</Note>
-
 New signals of the Signal Agent stop reaching the campaign. Detaching keeps
 everything else in place: the leads already pushed stay in the campaign, the
 Signal Agent itself is not deleted, and the campaign keeps its signal-based

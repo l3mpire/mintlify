@@ -1,0 +1,15 @@
+---
+openapi: post /campaigns/{campaignId}/unarchive
+description: Restores an archived campaign. It does not resume sending.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Campaign" objectPath="campaign" />
+
+Unarchiving does not resume sending: a campaign archived while running stays `paused`. Call
+[Start Campaign](/api-reference/endpoints/campaigns/start-campaign) to resume it.
+
+The response carries `_id` and `state` only: `archived` is removed from the campaign, not set to
+`false`.
+
+Unarchiving a campaign that is not archived changes nothing and answers `200`.

@@ -9,7 +9,19 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <SnippetObjectReference objectName="Lead" objectPath="lead" />
 
 <Note>
-  **This endpoint creates, it never updates.** A contact that already has a lead in this campaign is refused with `400 LEAD_ALREADY_IN_CAMPAIGN`, nothing written; use `PATCH /campaigns/{campaignId}/leads/{leadId}` instead. With `deduplicate=true`, a contact with a lead in another campaign is refused with `409 LEAD_ALREADY_IN_OTHER_CAMPAIGN`; only this parameter drives that check, not the campaign's "remove duplicates" setting.
+  **This endpoint creates, it never updates.** A contact that already has a lead in this campaign is refused with `400 LEAD_ALREADY_IN_CAMPAIGN` (**`409` from December 1, 2026**, same message), nothing written; use `PATCH /campaigns/{campaignId}/leads/{leadId}` instead. With `deduplicate=true`, a contact with a lead in another campaign is refused with `409 LEAD_ALREADY_IN_OTHER_CAMPAIGN`; only this parameter drives that check, not the campaign's "remove duplicates" setting. `POST /campaigns/{campaignId}/leads/{leadIdOrEmail}` behaves the same, with the email in the path.
+</Note>
+
+<Note>
+  **ABM campaigns** target a single company. They only take that company's contacts: a lead whose contact belongs to another company, or to none, is refused with `400` (`The lead's contact doesn't belong to the ABM campaign's company`), nothing written. They hold at most 199 leads; past that, the request fails with `400 CAMPAIGN_LEADS_LIMIT_REACHED` (`{"error": "You can't add more than 199 leads to an ABM campaign"}`).
+</Note>
+
+<Note>
+  The lead is imported as the API key's user. When its company is not in lemlist yet, that user needs the "Create companies" permission, otherwise the request fails with `403` (`{"error": "The user jane@acme.com does not have the permission to create companies"}`) and nothing is written. A company already in lemlist is linked as usual.
+
+  Likewise, when its contact is not in lemlist yet, that user needs the "Create contacts" permission, otherwise the request fails with `403` (`{"error": "The user jane@acme.com does not have the permission to create contacts"}`) and nothing is written, company included. A contact already in lemlist is updated as usual.
+
+  When the API key's user is no longer in the team, they hold no permission there: the error says so (`{"error": "The user jane@acme.com is no longer in this team: ask a current member to create a new API key or reconnect"}`).
 </Note>
 
 <Note>
@@ -27,3 +39,25 @@ import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
 <Note>
   Company fields — `companyName`, `companyDomain`, `companyIndustry`, any `company`-prefixed key — reach the **company record** the lead is matched to, the same record every other lead linked to it reads, not that lead alone. Creating a lead with its company is the intended flow; to edit a company on purpose, use [Upsert Company](/api-reference/endpoints/companies/upsert-company).
 </Note>
+
+## Linking to a CRM record
+
+Send `crmId` with the id of a record in your connected CRM to link the lead's contact to that record. lemlist links it without searching the CRM, then runs a first sync that follows your field mapping (the CRM wins conflicts by default). The response's `hubspotLeadId`, `salesforceContactId`, `salesforceLeadId`, `pipedriveLeadId` or `attioLeadId` shows the record the contact is linked to.
+
+<Warning>
+`crmId` is reserved for this link: it is never stored as a custom variable. It requires an **admin** API key. Among the lead endpoints, only this one reads it as a link: [Update Lead](/api-reference/endpoints/leads/update-lead), [Add Lead Variables](/api-reference/endpoints/leads/add-lead-variables) and [Update Lead Variables](/api-reference/endpoints/leads/update-lead-variables) store `crmId` as a variable like any other key.
+</Warning>
+
+The id takes the formats of [Upsert Contact](/api-reference/endpoints/contacts/upsert-contact#linking-to-a-crm-record): a HubSpot, Pipedrive or Zoho numeric id (send a Zoho id as a string), an Attio record id, or a Salesforce Contact (`003…`) or Lead (`00Q…`) id.
+
+This call adds a lead: it never moves a link, and never refuses the lead because of its `crmId`.
+
+| Situation | Result |
+|-----------|--------|
+| No lemlist contact matches the lead | The contact is created already linked to that record. |
+| The contact the lead matches has no CRM link | It is linked to that record. |
+| The contact the lead matches is already linked to that record | The link stays as it is. |
+| The contact the lead matches is linked to another record | It keeps its link: `warnings` carries `CRM_ID_NOT_APPLIED`, `params.crmId` names the id sent. To move the link, send the contact's `contactId` and the `crmId` to [Upsert Contact](/api-reference/endpoints/contacts/upsert-contact#linking-to-a-crm-record), or change it from the contact page. |
+| Another lemlist contact, which the lead's email and LinkedIn URLs do not match, holds the id | The lead is added without the link: `warnings` carries `CRM_ID_ALREADY_LINKED`, `params.conflictingContactId` names that contact. |
+
+Any other reason the id cannot be applied — an API key that is not an admin's, an id that is not one of your CRM's, no CRM connected, a record missing, merged or converted in the CRM, a CRM that did not answer — adds the lead without the link and names the reason in `warnings` (see the `200` response).

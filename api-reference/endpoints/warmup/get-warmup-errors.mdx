@@ -1,0 +1,13 @@
+---
+openapi: get /warmup/errors
+description: Lists the mailboxes kept out of warmup, with the cause and the fix for each one.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Warmup Error" objectPath="warmup-error" />
+
+<Note>
+Only mailboxes with a recorded cause are returned: a disconnected mailbox, a DNS lock, a pause triggered by bounces or send failures, or a temporary high spam-rate lock. Healthy mailboxes and mailboxes you paused yourself are not listed.
+
+Once the cause is fixed, resume warmup with [Start warmup](/api-reference/endpoints/warmup/start-warmup), using `mailboxId` as the `userMailboxId`.
+</Note>

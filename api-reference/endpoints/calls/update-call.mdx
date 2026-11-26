@@ -1,0 +1,8 @@
+---
+openapi: patch /calls/{id}
+description: Completes a call logged through the API with its status, note, duration, recording or transcript.
+---
+
+Reach the call by the `_id` the log answered, or by the `externalId` you sent. Only calls logged through [`POST /calls`](/api-reference/endpoints/calls/log-call) can be updated here: the status, the note and the media of a call made with the lemlist dialer, Aircall or Ringover are lemlist's own, and such a call answers `404 CALLS_API_CALL_NOT_UPDATABLE` even though [`GET /calls/{id}`](/api-reference/endpoints/calls/get-call) reads it.
+
+The status, the note and the duration reach the CRM call. The recording is fetched in the background: read the call back with [`GET /calls/{id}`](/api-reference/endpoints/calls/get-call) until `hasRecording` turns `true`, and send the `PATCH` again with a reachable URL when it does not.

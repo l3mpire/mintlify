@@ -1,0 +1,40 @@
+---
+openapi: post /domains-core/purchase
+description: Orders a domain, or a transfer of a domain you own elsewhere, and bills the team.
+---
+import {SnippetObjectReference} from '/snippets/snippet-object-reference.jsx'
+
+<SnippetObjectReference objectName="Domain" objectPath="domain" />
+
+<Warning>
+This call bills the team: the domain goes on its own yearly subscription, charged to the team's payment method. Nothing can be canceled through the API; use the lemlist app or contact support.
+</Warning>
+
+## Before the first purchase
+
+The registrar needs a registrant contact. On the team's first purchase, send `billingContact`: it is checked (address, then the registrar itself for `google` and `m365`), stored on the team and reused for every later purchase. Send it again only to change it.
+
+A `.fr` or `.be` domain with `google` or `m365` also needs `billingContact.companyIdentificationCode` (SIREN/SIRET). Some extensions only accept a registrant from given countries (a `.fr` needs an address in the EU/EEA).
+
+## After the call
+
+1. The domain is billed, then registered and set up in the background. Follow its `status` with [List Domains](/api-reference/endpoints/domains/list-domains).
+2. Order its mailboxes with [Order Mailboxes](/api-reference/endpoints/domains/order-mailboxes). You can call it right away: the mailboxes wait for the domain, and are only billed once it is set up.
+
+<Note>
+A domain can be bought without mailboxes. Don't leave a `google` domain without mailboxes for long: Google may delete a Workspace that holds no license, and adding mailboxes then requires support.
+</Note>
+
+## Retrying
+
+Calling again for a domain the team already ordered bills nothing and returns that order with `alreadyOwned: true`. A retry after a timeout is safe.
+
+If the team has no valid payment method, or the payment fails, the order is canceled after about a day. That domain name can then no longer be ordered through lemlist: contact support.
+
+## Transfers
+
+Set `isTransfer: true` with the `authCode` from your current registrar and `provider: "google"`, the only provider that supports transfers. `dnsRecords` lists the records to recreate on the zone once the transfer completes. A transfer can take several days. If the registrar refuses the code, fix it in the lemlist app.
+
+<Warning>
+Requires the **Manage domains** permission on the user of the API key.
+</Warning>

@@ -3,7 +3,11 @@ openapi: post /leads/{leadId}/enrich
 description: Enriches an existing lead in lemlist with additional data.
 ---
 
-You can [enrich a lead](/api-reference/objects-definitions/enrich)with additional data.
+You can [enrich a lead](/api-reference/objects-definitions/enrich) with additional data. The enrichment uses the data of the lead's contact.
+
+A `409` `ALREADY_ENRICHED` answers when none of the requested workflows can add anything: the contact already has the data, a recent enrichment on the same inputs found nothing, `verifyEmail` is requested but the contact has no email, or the value was rejected as a CRM duplicate. `force=true` bypasses only the "already has the data" case. A lead already being enriched answers `409` until that enrichment is over, and `force=true` does not bypass it either.
+
+When the enrichment cannot be started, the answer carries a `code` and a `message`: see [Request errors](/api-reference/objects-definitions/enrich#request-errors).
 
 <Note>
     Check [enrich data](/api-reference/endpoints/enrich/enrich-data) for details on the enrichment result structure.

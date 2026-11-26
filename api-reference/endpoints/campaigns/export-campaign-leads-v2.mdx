@@ -63,6 +63,13 @@ Use the `format` parameter to choose between:
 - **`csv`** (default): Returns a CSV file suitable for Excel, Google Sheets, etc.
 - **`json`**: Returns structured JSON data for programmatic processing
 
+## CRM ids
+
+The export also returns the CRM id of each lead synced with Salesforce, Pipedrive, HubSpot or Attio:
+
+- **CSV**: a last column named after the CRM connected to your team: `salesforceId`, `pipedriveId`, `hubspotId` or `attioId`. The cell stays empty for a lead that is not synced. There is no such column when your team has no CRM connected, or when it is connected to Zoho.
+- **JSON**: each synced lead carries one of these keys, named after the CRM it is synced with. A lead that is not synced has none.
+
 ## Examples
 
 <CodeGroup>

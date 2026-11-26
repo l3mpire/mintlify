@@ -1,0 +1,18 @@
+---
+openapi: get /v2/user-groups/{userGroupId}
+description: Returns one user group of your team.
+---
+
+<Warning>
+  User groups are in beta. To use these endpoints now, contact your lemlist
+  account manager.
+</Warning>
+
+Any member of the team can read a group. A group is addressed by the `ugr_` id returned by [List User Groups](/api-reference/endpoints/user-groups/list-user-groups).
+
+## Error codes
+
+| Code | Cause |
+| ---- | ----- |
+| `USER_GROUPS_PLAN_REQUIRED` | Your team is not on the Enterprise plan, or the user groups beta is not enabled for it. |
+| `USER_GROUPS_NOT_FOUND` | No group with this id in your team. |

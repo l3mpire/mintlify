@@ -1,0 +1,8 @@
+---
+title: Deliverability incident
+openapi-schema: DeliverabilityIncident
+---
+
+A deliverability incident records one problem on one of your mailboxes: a DNS issue that locks sending, a mailbox disconnected from lemlist, a mailbox disconnected while warming up, or a warm-up paused by lemwarm.
+
+It opens as `active` when the problem is detected and becomes `resolved`, with a `resolvedAt` date, once the mailbox recovers. List them with [List Deliverability Incidents](/api-reference/endpoints/deliverability-alerts/list-incidents).

@@ -1,0 +1,32 @@
+---
+openapi: put /team/dynamic-sender-exclusions
+description: Replaces the senders that the dynamic sender strategies of the team cannot select.
+---
+
+<Note>
+This endpoint requires at least the **Email Pro** plan. The user of the API
+key must be allowed to edit the team sending settings. Else the request answers
+`403`.
+</Note>
+
+Replaces the team list with the senders of the body. The entries follow the
+rules of
+[Get Team Sender Exclusions](/api-reference/endpoints/senders/get-team-sender-exclusions).
+
+<Warning>
+The team list applies to each dynamic campaign without a list of its own. A
+change here changes all these campaigns. An empty list (`{ "senders": [] }`)
+excludes nobody.
+</Warning>
+
+## Validation
+
+- Each `userId` is a team member, and appears once.
+- Each channel `id` is an account of its user: the mailbox ID, the WhatsApp
+  account ID or the phone number, as
+  [List Senders](/api-reference/endpoints/senders/list-senders) returns them.
+  A phone shared by several users is a channel of each of them.
+- `linkedin` and `other` take no `id`.
+- A refused request writes nothing.
+
+An account connected a few seconds ago can be refused. Send the request again.

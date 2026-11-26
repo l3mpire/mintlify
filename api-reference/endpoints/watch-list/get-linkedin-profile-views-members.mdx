@@ -1,0 +1,7 @@
+---
+openapi: get /watchlist/linkedin-profile-views/members
+description: Lists the team members whose LinkedIn profile views a Signal Agent can track, the ids the linkedinProfileViewsUserIds filter accepts.
+---
+<Note>
+Only members whose LinkedIn account is connected to lemlist are listed. Put their `_id` in the `linkedinProfileViewsUserIds` filter of a `linkedinProfileViews` Signal Agent ([Create a Signal Agent](/api-reference/endpoints/watch-list/create-watch-list)).
+</Note>

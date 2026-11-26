@@ -1,0 +1,31 @@
+---
+openapi: post /campaigns/{campaignId}/senders
+description: Adds senders, or channels of senders, to the sender pool of a campaign.
+---
+
+<Note>
+The sender pool requires at least the **Email Pro** plan.
+</Note>
+
+<Tip>
+To pin the sender of one step, outside the pool, see
+[Set Step Sender](/api-reference/endpoints/sequences/set-step-sender) in the
+Sequences group.
+</Tip>
+
+Adds senders and channels to the pool. This endpoint never removes a sender or
+a channel, so you can send the same request again with no risk.
+
+- Without `channels`, a sender gets the channel types that the campaign steps
+  use, healthy accounts first. The campaign editor does the same when you
+  enable a sender.
+- A sender already in the pool keeps their channels, and gets the listed
+  channels.
+- A channel type must be used by at least one step of the campaign. Get the
+  types in `requiredChannelTypes` of
+  [List Senders](/api-reference/endpoints/senders/list-senders).
+- Get the user ids, the account ids and the aliases from
+  [List Senders](/api-reference/endpoints/senders/list-senders).
+
+On a running campaign, the leads not contacted yet can get a new sender at
+their next step.

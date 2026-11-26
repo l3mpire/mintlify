@@ -10,13 +10,16 @@ The lemlist API uses standard HTTP status codes to indicate the success or failu
 | Status Code | Meaning |
 |-------------|---------|
 | `200` | **Success** - The request was successful |
+| `202` | **Accepted** - The work is still in progress, ask again later |
 | `400` | **Bad Request** - Invalid parameters or invalid team |
 | `401` | **Unauthorized** - Authentication is missing or invalid |
 | `403` | **Forbidden** - User is blocked |
 | `404` | **Not Found** - Resource does not exist |
 | `405` | **Method Not Allowed** - HTTP method is not allowed for this endpoint |
+| `409` | **Conflict** - The current state of the resource prevents the request |
 | `429` | **Too Many Requests** - Rate limit exceeded |
 | `500` | **Internal Server Error** - An error occurred on the server |
+| `503` | **Service Unavailable** - The service is temporarily paused, retry later |
 
 <Note>
     For authentication related errors, refer to the <a href="/api-reference/getting-started/authentication">Authentication</a> section.

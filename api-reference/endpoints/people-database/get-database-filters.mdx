@@ -9,4 +9,5 @@ Please, note that:
 - you will not be able to use a filter for a People database query if the leads keyword is not listed in the mode property
 - you will not be able to use a filter for a Companies database query if the companies keyword is not listed in the mode property
 - to build a [saved search](/api-reference/objects-definitions/saved-search), call this endpoint with `usage=ui`: saved searches refuse the filters that are not usable in the People Database UI
+- a filter of type `slider` takes `min|max` ranges in `in` (see its `range`); the search, export and [Create persona](/api-reference/endpoints/people-database/create-persona) endpoints refuse an `out` value or a range in another format on it
 </Note>

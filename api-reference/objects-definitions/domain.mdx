@@ -1,0 +1,12 @@
+---
+title: Domain
+openapi-schema: Domain
+---
+
+A domain bought or transferred through lemlist, to send cold emails from mailboxes that do not put your main domain at risk.
+
+The `registrar` is the mailbox provider picked at purchase, and it cannot change: a `google` domain only gets Google Workspace mailboxes, `m365` only Microsoft 365 mailboxes, `infraforge` only SMTP mailboxes.
+
+A domain is set up in the background after [Purchase Domain](/api-reference/endpoints/domains/purchase-domain): its `status` goes from `ordered` to `active`, in a few minutes to a few hours (up to two days with Microsoft 365). There is no webhook: poll [List Domains](/api-reference/endpoints/domains/list-domains).
+
+Mailboxes are bought separately, with [Order Mailboxes](/api-reference/endpoints/domains/order-mailboxes).
