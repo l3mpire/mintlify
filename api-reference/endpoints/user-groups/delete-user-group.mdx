@@ -3,13 +3,9 @@ openapi: delete /v2/user-groups/{userGroupId}
 description: Deletes a user group for good.
 ---
 
-<Warning>
-  User groups are in beta. To use these endpoints now, contact your lemlist
-  account manager.
-</Warning>
-
 <Note>
-  Admins only: the API key must have been created by an admin of the team.
+  This endpoint requires the **Enterprise** plan. Admins only: the API key must
+  have been created by an admin of the team.
 </Note>
 
 The group is also removed from the Reports, Tasks and Campaigns filters saved on it. Its members stay in the team.
@@ -18,6 +14,6 @@ The group is also removed from the Reports, Tasks and Campaigns filters saved on
 
 | Code | Cause |
 | ---- | ----- |
-| `USER_GROUPS_PLAN_REQUIRED` | Your team is not on the Enterprise plan, or the user groups beta is not enabled for it. |
+| `USER_GROUPS_PLAN_REQUIRED` | Your team is not on the Enterprise plan. |
 | `USER_NOT_AUTHORIZED` | The API key was created by a team member who is not an admin. |
 | `USER_GROUPS_NOT_FOUND` | No group with this id in your team. |
