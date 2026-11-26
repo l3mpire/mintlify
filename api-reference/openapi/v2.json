@@ -15299,6 +15299,16 @@
               }
             }
           },
+          "404": {
+            "description": "Possible errors: `Sequence not found` / `SEQUENCE_CAMPAIGN_NOT_FOUND` - the sequence's campaign was deleted / `Campaign not found` - on a `sendToAnotherCampaign` step, `campaignId` names a campaign that does not exist in the workspace or was deleted",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Campaign not found"
+                }
+              }
+            }
+          },
           "405": {
             "description": "Method not allowed"
           },
@@ -15466,7 +15476,7 @@
                   },
                   "campaignId": {
                     "type": "string",
-                    "description": "Target campaign ID for sendToAnotherCampaign steps. The campaign must exist and not be archived"
+                    "description": "Target campaign ID for sendToAnotherCampaign steps. The campaign must exist, not be archived and not be deleted: a campaign in the trash answers `404` like a missing one"
                   },
                   "leadAction": {
                     "type": "string",
@@ -15793,6 +15803,16 @@
               }
             }
           },
+          "404": {
+            "description": "Possible errors: `Sequence not found` / `Step not found` / `SEQUENCE_CAMPAIGN_NOT_FOUND` - the sequence's campaign was deleted / `Campaign not found` - on a `sendToAnotherCampaign` step, `campaignId` names a campaign that does not exist in the workspace or was deleted",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Campaign not found"
+                }
+              }
+            }
+          },
           "405": {
             "description": "Method not allowed"
           },
@@ -15959,7 +15979,7 @@
                   },
                   "campaignId": {
                     "type": "string",
-                    "description": "Target campaign ID for sendToAnotherCampaign steps. The campaign must exist and not be archived"
+                    "description": "Target campaign ID for sendToAnotherCampaign steps. The campaign must exist, not be archived and not be deleted: a campaign in the trash answers `404` like a missing one"
                   },
                   "leadAction": {
                     "type": "string",
@@ -16285,7 +16305,7 @@
             }
           },
           "404": {
-            "description": "`SEQUENCE_NOT_FOUND` or `SEQUENCE_STEP_NOT_FOUND` - no such sequence in this workspace, or no such step on it.",
+            "description": "`SEQUENCE_NOT_FOUND` or `SEQUENCE_STEP_NOT_FOUND` - no such sequence in this workspace, or no such step on it. `SEQUENCE_CAMPAIGN_NOT_FOUND` - the sequence's campaign was deleted.",
             "content": {
               "application/json": {
                 "example": {
@@ -16478,7 +16498,7 @@
             }
           },
           "404": {
-            "description": "`SEQUENCE_NOT_FOUND` or `SEQUENCE_STEP_NOT_FOUND` - no such sequence in this workspace, or no such step on it.",
+            "description": "`SEQUENCE_NOT_FOUND` or `SEQUENCE_STEP_NOT_FOUND` - no such sequence in this workspace, or no such step on it. `SEQUENCE_CAMPAIGN_NOT_FOUND` - the sequence's campaign was deleted.",
             "content": {
               "application/json": {
                 "example": {
@@ -16622,7 +16642,7 @@
             }
           },
           "404": {
-            "description": "`SEQUENCE_NOT_FOUND` or `SEQUENCE_STEP_NOT_FOUND` - no such sequence in this workspace, or no such step on it.",
+            "description": "`SEQUENCE_NOT_FOUND` or `SEQUENCE_STEP_NOT_FOUND` - no such sequence in this workspace, or no such step on it. `SEQUENCE_CAMPAIGN_NOT_FOUND` - the sequence's campaign was deleted.",
             "content": {
               "application/json": {
                 "example": {
@@ -16859,7 +16879,7 @@
             }
           },
           "404": {
-            "description": "`SEQUENCE_NOT_FOUND`, `SEQUENCE_STEP_NOT_FOUND` or `SEQUENCE_BRANCH_NOT_FOUND` - no such sequence, step, or branch on that step.",
+            "description": "`SEQUENCE_NOT_FOUND`, `SEQUENCE_STEP_NOT_FOUND` or `SEQUENCE_BRANCH_NOT_FOUND` - no such sequence, step, or branch on that step. `SEQUENCE_CAMPAIGN_NOT_FOUND` - the sequence's campaign was deleted.",
             "content": {
               "application/json": {
                 "example": {
@@ -16963,7 +16983,7 @@
             }
           },
           "404": {
-            "description": "`SEQUENCE_NOT_FOUND`, `SEQUENCE_STEP_NOT_FOUND` or `SEQUENCE_BRANCH_NOT_FOUND` - no such sequence, step, or branch on that step.",
+            "description": "`SEQUENCE_NOT_FOUND`, `SEQUENCE_STEP_NOT_FOUND` or `SEQUENCE_BRANCH_NOT_FOUND` - no such sequence, step, or branch on that step. `SEQUENCE_CAMPAIGN_NOT_FOUND` - the sequence's campaign was deleted.",
             "content": {
               "application/json": {
                 "example": {
@@ -45228,7 +45248,7 @@
             }
           },
           "404": {
-            "description": "Sequence or step not found",
+            "description": "Sequence or step not found. `SEQUENCE_CAMPAIGN_NOT_FOUND` when the sequence's campaign was deleted.",
             "content": {
               "application/json": {
                 "schema": {
@@ -45353,7 +45373,7 @@
             }
           },
           "404": {
-            "description": "Sequence, step, or A/B test variant not found",
+            "description": "Sequence, step, or A/B test variant not found. `SEQUENCE_CAMPAIGN_NOT_FOUND` when the sequence's campaign was deleted, checked before the variant.",
             "content": {
               "application/json": {
                 "schema": {
@@ -45542,7 +45562,7 @@
             }
           },
           "404": {
-            "description": "Sequence, step, or A/B test variant not found",
+            "description": "Sequence, step, or A/B test variant not found. `SEQUENCE_CAMPAIGN_NOT_FOUND` when the sequence's campaign was deleted, checked before the variant.",
             "content": {
               "application/json": {
                 "schema": {
@@ -45659,7 +45679,7 @@
             }
           },
           "404": {
-            "description": "Sequence, step, or A/B test variant not found",
+            "description": "Sequence, step, or A/B test variant not found. `SEQUENCE_CAMPAIGN_NOT_FOUND` when the sequence's campaign was deleted, checked before the variant.",
             "content": {
               "application/json": {
                 "schema": {
@@ -45819,7 +45839,7 @@
             }
           },
           "404": {
-            "description": "Sequence, step, or A/B test variant not found",
+            "description": "Sequence, step, or A/B test variant not found. `SEQUENCE_CAMPAIGN_NOT_FOUND` when the sequence's campaign was deleted, checked before the variant.",
             "content": {
               "application/json": {
                 "schema": {
