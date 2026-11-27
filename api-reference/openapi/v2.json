@@ -22221,6 +22221,120 @@
         }
       }
     },
+    "/leads/end/{leadIdOrEmail}": {
+      "parameters": [
+        {
+          "name": "leadIdOrEmail",
+          "in": "path",
+          "required": true,
+          "description": "The lead id (`lea_…`) or the lead's email, URL-encoded",
+          "example": "lea_8xJSc7sV7ggpiVnXe",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "summary": "End Lead",
+        "description": "Ends a lead in one campaign, as \"Stop lead\" does in the lemlist app: the lead leaves the campaign's sequence and its pending steps are dropped. An end cannot be undone: resuming the lead does not bring it back.\n\nA paused lead is ended too. The campaign state does not matter.\n\nCalling it on a lead already ended changes nothing and answers `already_ended`.\n\nA lead not launched yet (imported, or waiting for review) cannot be ended (`409`): delete it from the campaign instead.\n\nThis endpoint requires an `emailPro` plan or higher.",
+        "tags": [
+          "Leads"
+        ],
+        "parameters": [
+          {
+            "name": "campaignId",
+            "in": "query",
+            "required": true,
+            "description": "ID of the campaign the lead is ended in",
+            "example": "cam_A1B2C3D4E5F6G7H8I9",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lead ended, or already ended",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "leadId": {
+                          "type": "string"
+                        },
+                        "campaignId": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "ended",
+                            "already_ended"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "leadId": "lea_8xJSc7sV7ggpiVnXe",
+                    "campaignId": "cam_A1B2C3D4E5F6G7H8I9",
+                    "status": "ended"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid lead id or email, or missing campaignId",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Route bad request",
+                  "code": "ROUTE_BAD_REQUEST"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "402": {
+            "description": "The team's plan is below emailPro"
+          },
+          "404": {
+            "description": "No lead with this id or email in this campaign",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Lead not found",
+                  "code": "LEAD_NOT_FOUND"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed"
+          },
+          "409": {
+            "description": "The lead is not launched yet, or the campaign was created by the discontinued AI Copilot",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This lead is not launched yet, so it cannot be ended. Delete it from the campaign instead.",
+                  "code": "LEAD_END_NOT_LAUNCHED"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/leads/review/{leadId}": {
       "parameters": [
         {
