@@ -14221,6 +14221,16 @@
               }
             }
           },
+          "403": {
+            "description": "The user the API key acts as does not hold the `manageWatchLists` permission, which adding and removing a watch-list trigger require",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "You need the \"Manage signal agents\" permission to do this; ask an admin of your team"
+                }
+              }
+            }
+          },
           "404": {
             "description": "`WATCH_LIST_IMPORT_LEADS_CAMPAIGN_NOT_FOUND` or `WATCH_LIST_NOT_FOUND` - the campaign or the Signal Agent does not exist in this workspace.",
             "content": {
@@ -14444,6 +14454,16 @@
                       "code": "ROUTE_UNAUTHORIZED"
                     }
                   }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The user the API key acts as does not hold the `manageWatchLists` permission, which adding and removing a watch-list trigger require",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "You need the \"Manage signal agents\" permission to do this; ask an admin of your team"
                 }
               }
             }
