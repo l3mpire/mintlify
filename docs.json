@@ -109,6 +109,8 @@
                 "expanded": false,
                 "pages": [
                   "api-reference/endpoints/team/get-team",
+                  "api-reference/endpoints/team/get-team-rules-of-engagement",
+                  "api-reference/endpoints/team/set-team-rule-of-engagement",
                   "api-reference/endpoints/team/get-team-senders",
                   "api-reference/endpoints/team/get-team-credits"
                 ]
