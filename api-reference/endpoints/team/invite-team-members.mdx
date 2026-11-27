@@ -1,0 +1,10 @@
+---
+openapi: post /team/invitations
+description: Invites up to 100 email addresses into the team, each with its own role.
+---
+
+Send every address in one call. The answer holds one result per address, in the order sent, so one refused address never blocks the others.
+
+To invite with a custom role, call [Get Team Roles](/api-reference/endpoints/team/get-team-roles) first and pass the role's `id`. A role other than `member` needs the "Edit roles" permission.
+
+An `admin` role, or a custom role that grants billing, answers `status: "pending-approval"`: the team's admins receive one confirmation email for the whole call, and the invitee joins as `member` until they confirm.

@@ -11311,6 +11311,280 @@
         }
       }
     },
+    "/team/invitations": {
+      "post": {
+        "summary": "Invite Team Members",
+        "tags": [
+          "Team"
+        ],
+        "description": "Invite up to 100 email addresses into the team in one call, each with its own role. The answer holds one result per address, in the order sent: a refusal of one address stays in its result and the other addresses are still invited. An `admin` role, or a custom role that grants billing, waits for the team's admins to confirm it by email (one email for the whole call); the invitee joins as `member` until they do.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "invitations"
+                ],
+                "properties": {
+                  "invitations": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 100,
+                    "description": "The people to invite, one entry per address.",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "email"
+                      ],
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                          "description": "The email address to invite."
+                        },
+                        "role": {
+                          "type": "string",
+                          "description": "`member` (default), `admin`, or the id of one of the team's custom roles (`rol_...`, listed by Get Team Roles). Any role other than `member` needs the \"Edit roles\" permission."
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "example": {
+                "invitations": [
+                  {
+                    "email": "jane@acme.com"
+                  },
+                  {
+                    "email": "john@acme.com",
+                    "role": "admin"
+                  },
+                  {
+                    "email": "sam@acme.com",
+                    "role": "rol_A1B2C3D4E5F6G7H8I9"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "One result per address, in the order sent. `invited: true` with `status` `active` (the invitation is sent) or `pending-approval` (the role waits for the admins). `invited: false` with `reason` `already-in-team` or `already-invited` when there is nothing new to send (`status: pending-approval` when the existing invitation's role still waits). `invited: false` with `code` and `error` when that address is refused: the team's invitation or free-user limit, its SSO domain rules, or an invitation that already grants another role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "email": {
+                            "type": "string",
+                            "description": "The address as stored: lowercase, without its `+tag`."
+                          },
+                          "role": {
+                            "type": "string"
+                          },
+                          "invited": {
+                            "type": "boolean"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "active",
+                              "pending-approval"
+                            ]
+                          },
+                          "reason": {
+                            "type": "string",
+                            "enum": [
+                              "already-in-team",
+                              "already-invited"
+                            ]
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "error": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": [
+                    {
+                      "email": "jane@acme.com",
+                      "role": "member",
+                      "invited": true,
+                      "status": "active"
+                    },
+                    {
+                      "email": "john@acme.com",
+                      "role": "admin",
+                      "invited": true,
+                      "status": "pending-approval"
+                    },
+                    {
+                      "email": "sam@acme.com",
+                      "role": "rol_A1B2C3D4E5F6G7H8I9",
+                      "invited": false,
+                      "code": "invalid-email-domain",
+                      "error": "The team email domain rules refuse this address: it must use a domain the team verified for its SSO"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Nothing is sent. `ROUTE_BAD_REQUEST`: the body has no `invitations` array, an entry is malformed, or it holds more than 100 entries. `invalid-role`: a role is neither `member`, `admin` nor a custom role of this team.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This role does not belong to this team: use a built-in role (member, admin) or a role id of the team (rol_...)",
+                  "code": "invalid-role"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "403": {
+            "description": "Nothing is sent. `USER_EDIT_NOT_ALLOWED`: a role other than `member` needs the \"Edit roles\" permission. `not-member`: the API key's author is not a member of the team. `role-selection-not-enabled`: invitations through the API are not enabled for this team.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Granting this role needs the \"Edit roles\" permission: ask a team admin",
+                  "code": "USER_EDIT_NOT_ALLOWED"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "`team-not-found` - the team no longer exists.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Team not found",
+                  "code": "team-not-found"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed - this endpoint only accepts POST"
+          },
+          "429": {
+            "description": "Rate limit exceeded - 20 requests per 2 seconds per API key"
+          }
+        }
+      }
+    },
+    "/team/roles": {
+      "get": {
+        "summary": "Get Team Roles",
+        "tags": [
+          "Team"
+        ],
+        "description": "List the roles an invitation may carry: the built-in `admin` and `member`, then the team's custom roles by name, each with the `id` Invite Team Members takes.",
+        "responses": {
+          "200": {
+            "description": "Built-in roles first, then custom roles sorted by name. `needsApproval` is `true` when an invitation with that role waits for the team's admins to confirm it.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "What `role` takes on an invitation: `admin`, `member` or a `rol_...` id."
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "builtIn": {
+                            "type": "boolean"
+                          },
+                          "needsApproval": {
+                            "type": "boolean"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": "admin",
+                      "name": "admin",
+                      "builtIn": true,
+                      "needsApproval": true
+                    },
+                    {
+                      "id": "member",
+                      "name": "member",
+                      "builtIn": true,
+                      "needsApproval": false
+                    },
+                    {
+                      "id": "rol_A1B2C3D4E5F6G7H8I9",
+                      "name": "SDR",
+                      "builtIn": false,
+                      "needsApproval": false
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing API key",
+            "content": {
+              "text/plain": {
+                "example": "The authentication you supplied is incorrect"
+              }
+            }
+          },
+          "403": {
+            "description": "`role-selection-not-enabled` - invitations through the API are not enabled for this team.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "This team cannot invite with a role: the feature is not enabled for it",
+                  "code": "role-selection-not-enabled"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed - this endpoint only accepts GET"
+          },
+          "429": {
+            "description": "Rate limit exceeded - 20 requests per 2 seconds per API key"
+          }
+        }
+      }
+    },
     "/team/senders": {
       "get": {
         "summary": "Get Team Senders",
