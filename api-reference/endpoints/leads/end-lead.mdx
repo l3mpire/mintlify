@@ -1,0 +1,13 @@
+---
+openapi: post /leads/end/{leadIdOrEmail}
+description: Ends a lead in one campaign, as "Stop lead" does in the lemlist app.
+---
+
+The lead leaves the campaign's sequence and its pending steps are dropped. An
+end cannot be undone: resuming the lead does not bring it back.
+
+- `campaignId` is required: one call ends the lead in one campaign only.
+- A paused lead is ended too.
+- A lead already ended answers `already_ended` and nothing changes.
+- A lead not launched yet (imported, or waiting for review) answers `409`:
+  delete it from the campaign instead.
