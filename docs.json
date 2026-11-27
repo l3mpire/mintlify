@@ -421,6 +421,7 @@
                   "api-reference/endpoints/people-database/search-companies-database",
                   "api-reference/endpoints/people-database/export-people-database",
             "api-reference/endpoints/people-database/export-companies-database",
+                  "api-reference/endpoints/people-database/push-people-to-contacts",
             "api-reference/endpoints/people-database/get-database-filters",
                   "api-reference/endpoints/people-database/list-personas",
                   "api-reference/endpoints/people-database/create-persona",
